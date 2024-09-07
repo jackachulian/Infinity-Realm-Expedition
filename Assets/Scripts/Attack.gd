@@ -8,10 +8,11 @@ class_name Attack
 @onready var state_machine: StateMachine = $"../StateMachine"
 
 func _process(delta):
-	if Input.is_action_just_pressed("attack") and not state_machine.current_state.is_in_delay():
-		# If state machine's current attack combos into another, switch to that
-		var state = state_machine.current_state
-		if state is AttackState and state.combos_into != "":
-			state_machine.switch_to(state.combos_into)
-		else:
-			state_machine.switch_to(attack_state.name)
+	if Input.is_action_just_pressed("attack"):
+		if not state_machine.current_state.is_in_delay():
+			# If state machine's current attack combos into another, switch to that
+			var state = state_machine.current_state
+			if state is AttackState and state.combos_into != "":
+				state_machine.switch_to(state.combos_into)
+			else:
+				state_machine.switch_to(attack_state.name)

@@ -1,6 +1,8 @@
 extends Area3D
 class_name Hurtbox
 
+@export var defense: int = 5
+
 func _init() -> void:
 	# Only receive collisions from layer 2 (mask: 01)
 	collision_layer = 0
@@ -13,4 +15,5 @@ func _on_area_entered(hitbox: Hitbox) -> void:
 		return
 		
 	if get_parent().has_method("take_damage"):
+		print(get_parent().name + " was damaged by "+hitbox.get_parent().name+"'s hitbox")
 		get_parent().take_damage(hitbox.damage)

@@ -40,7 +40,7 @@ func check_transition(delta: float) -> String:
 		
 	return ""
 	
-func is_in_delay():
+func is_in_delay() -> bool:
 	return time_elapsed < cancel_delay
 
 func physics_update(delta: float):
