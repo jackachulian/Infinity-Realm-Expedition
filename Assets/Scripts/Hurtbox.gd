@@ -12,5 +12,5 @@ func _on_area_entered(hitbox: Hitbox) -> void:
 	if not hitbox:
 		return
 		
-	if owner.has_method("take_damage"):
-		owner.take_damage(hitbox.damage)
+	if get_parent().has_method("take_damage"):
+		get_parent().take_damage(hitbox.damage)

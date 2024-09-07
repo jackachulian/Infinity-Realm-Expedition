@@ -41,7 +41,7 @@ func check_transition(delta: float) -> String:
 	return ""
 	
 func is_in_delay():
-	return time_elapsed < cancel_delay	
+	return time_elapsed < cancel_delay
 
 func physics_update(delta: float):
 	time_elapsed += delta
