@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=3 uid="uid://bnq6kyw7csjrm"]
+[gd_scene load_steps=14 format=3 uid="uid://bnq6kyw7csjrm"]
 
 [ext_resource type="PackedScene" uid="uid://5xkk1fd51bor" path="res://Assets/Models/redslime.glb" id="1_f33ua"]
 [ext_resource type="Material" uid="uid://c4r22eyfug44l" path="res://Assets/Materials/Slime/slime-red.tres" id="2_1gwk5"]
@@ -12,6 +12,11 @@
 [ext_resource type="Script" path="res://Assets/Scripts/States/Generic/StandardState.gd" id="6_sthgl"]
 [ext_resource type="Script" path="res://Assets/Scripts/Movement.gd" id="7_w7v2a"]
 
+[sub_resource type="GDScript" id="GDScript_aohox"]
+script/source = "extends Node
+class_name Attack
+"
+
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_hp8ij"]
 height = 0.6
 
@@ -22,26 +27,20 @@ damage_flash_mat = ExtResource("3_quer2")
 [node name="Input" type="Node3D" parent="." index="0"]
 script = ExtResource("3_ytsi7")
 
-[node name="JumpTimer" type="Timer" parent="." index="1"]
-process_callback = 0
-wait_time = 5.0
-one_shot = true
-autostart = true
+[node name="Attack" type="Node" parent="." index="1"]
+script = SubResource("GDScript_aohox")
 
 [node name="StateMachine" type="Node3D" parent="." index="2"]
 script = ExtResource("4_4psyd")
 
-[node name="Idle" type="Node" parent="StateMachine" index="0" node_paths=PackedStringArray("state_timer")]
+[node name="Idle" type="Node" parent="StateMachine" index="0"]
 script = ExtResource("6_sthgl")
-state_timer = NodePath("../../JumpTimer")
-state_on_timer_stopped = "Jump-Start"
 face_input = true
 movement_speed = 4.0
 
-[node name="Jump-Start" type="Node" parent="StateMachine" index="1" node_paths=PackedStringArray("state_timer")]
+[node name="Jump-Start" type="Node" parent="StateMachine" index="1"]
 script = ExtResource("6_sthgl")
 animation_name = "Jump-Start"
-state_timer = NodePath("../../JumpTimer")
 state_on_anim_finish = "Jump-Up"
 face_input = true
 

@@ -10,8 +10,16 @@ class_name MoveState
 @export var rotation_snap: float = 0.0
 
 func check_transition(delta: float) -> String:
+	# Go to idle when movement stops
 	if entity.input.direction == Vector3.ZERO:
 		return "Run-Stop"
+		
+	# Can attack from move
+	if entity.input.main_attack_requested:
+		if entity.input.has_method("clear_main_attack_buffer"):
+			entity.input.clear_main_attack_buffer()
+		return entity.input.main_attack_state.name
+		
 	return ""
 	
 func physics_update(delta: float):

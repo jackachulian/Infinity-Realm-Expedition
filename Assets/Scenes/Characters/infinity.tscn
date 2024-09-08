@@ -1,4 +1,4 @@
-[gd_scene load_steps=40 format=3 uid="uid://c7vlx700fgtqs"]
+[gd_scene load_steps=39 format=3 uid="uid://c7vlx700fgtqs"]
 
 [ext_resource type="PackedScene" uid="uid://bfdvxynauwmtj" path="res://Assets/Models/infinity.glb" id="1_rm5qk"]
 [ext_resource type="Script" path="res://Assets/Scripts/Entity.gd" id="2_pd53c"]
@@ -13,7 +13,6 @@
 [ext_resource type="Script" path="res://Assets/Scripts/States/Generic/AttackState.gd" id="8_73dwl"]
 [ext_resource type="Material" uid="uid://btqrywbouw0tk" path="res://Assets/Materials/Infinity/jacket.tres" id="10_1s82k"]
 [ext_resource type="Material" uid="uid://b1lixdut4rmj2" path="res://Assets/Materials/Infinity/helmet.tres" id="10_cj857"]
-[ext_resource type="Script" path="res://Assets/Scripts/Attack.gd" id="10_tw3ty"]
 [ext_resource type="Material" uid="uid://cjtvf8uctvapd" path="res://Assets/Materials/Infinity/helmet-inner.tres" id="11_egnnu"]
 [ext_resource type="Material" uid="uid://bsrujfkw5md00" path="res://Assets/Materials/Infinity/skin.tres" id="12_sfjbh"]
 [ext_resource type="Material" uid="uid://bajs3rvxxuqh6" path="res://Assets/Materials/Infinity/shoulder-pad.tres" id="13_ehb3q"]
@@ -69,12 +68,12 @@ script = ExtResource("2_pd53c")
 weapon = ExtResource("3_b1uya")
 damage_flash_mat = ExtResource("4_cyyo3")
 
-[node name="Input" type="Node3D" parent="." index="0"]
-script = ExtResource("4_1mgmj")
+[node name="Loadout" type="Node" parent="." index="0"]
+editor_description = "Once weapons/spells are added, if loadout is added to the player, it should be here, processed before input. This is because currently as of writing, main attack state is stored in input, which the state machine reads if it is requested to send to the main attack state."
 
-[node name="Attack" type="Node" parent="." index="1" node_paths=PackedStringArray("attack_state")]
-script = ExtResource("10_tw3ty")
-attack_state = NodePath("../StateMachine/Sword-Attack1")
+[node name="Input" type="Node3D" parent="." index="1" node_paths=PackedStringArray("main_attack_state")]
+script = ExtResource("4_1mgmj")
+main_attack_state = NodePath("../StateMachine/Sword-Attack1")
 
 [node name="StateMachine" type="Node3D" parent="." index="2"]
 script = ExtResource("4_yke0m")
@@ -148,9 +147,7 @@ script = ExtResource("3_p5r50")
 move_accel = 500
 stop_decel = 150
 
-[node name="Weapon" type="Node" parent="." index="4"]
-
-[node name="Armature" parent="." index="5"]
+[node name="Armature" parent="." index="4"]
 transform = Transform3D(-0.8, 0, 6.99382e-08, 0, 0.8, 0, -6.99382e-08, 0, -0.8, 0, 0, 0)
 script = ExtResource("3_11b10")
 
@@ -266,7 +263,7 @@ bones/39/rotation = Quaternion(0.149225, 0.1121, -0.0167389, 0.982286)
 bones/39/scale = Vector3(1, 1, 1)
 
 [node name="Helmet" parent="Armature/Skeleton3D" index="0"]
-transform = Transform3D(0.799595, 0.00972257, -0.0235033, -0.0114596, 0.797673, -0.0598905, 0.0227071, 0.0601968, 0.797409, -0.00343186, 0.285223, -0.0379423)
+transform = Transform3D(0.799595, 0.00972251, -0.0235034, -0.0114596, 0.797673, -0.0598904, 0.0227071, 0.0601969, 0.797409, -0.0034318, 0.285224, -0.0379424)
 
 [node name="Helmet" parent="Armature/Skeleton3D/Helmet" index="0"]
 visible = false
@@ -275,7 +272,7 @@ surface_material_override/1 = ExtResource("11_egnnu")
 surface_material_override/2 = ExtResource("11_egnnu")
 
 [node name="Blade" parent="Armature/Skeleton3D" index="1"]
-transform = Transform3D(0.147011, 0.0627952, 0.473756, 0.47777, -0.00776181, -0.147227, -0.011136, 0.49598, -0.0622855, -0.48784, 0.879022, 0.43674)
+transform = Transform3D(0.14701, 0.0627952, 0.473756, 0.47777, -0.00776153, -0.147227, -0.0111361, 0.49598, -0.0622855, -0.48784, 0.879023, 0.43674)
 
 [node name="Blade" parent="Armature/Skeleton3D/Blade" index="0"]
 surface_material_override/0 = ExtResource("15_6twlw")
@@ -326,16 +323,16 @@ surface_material_override/0 = ExtResource("12_sfjbh")
 surface_material_override/0 = ExtResource("10_1s82k")
 surface_material_override/1 = ExtResource("10_1s82k")
 
-[node name="AnimationPlayer" parent="." index="6"]
+[node name="AnimationPlayer" parent="." index="5"]
 root_motion_track = NodePath("Armature/Skeleton3D:root")
 callback_mode_process = 0
 autoplay = "Sword-Standby"
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="." index="7"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." index="6"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, 0)
 shape = SubResource("CylinderShape3D_aqtno")
 
-[node name="Hurtbox" type="Area3D" parent="." index="8"]
+[node name="Hurtbox" type="Area3D" parent="." index="7"]
 collision_layer = 0
 collision_mask = 0
 script = ExtResource("31_pkqhk")

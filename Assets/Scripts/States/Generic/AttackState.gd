@@ -32,10 +32,21 @@ func check_transition(delta: float) -> String:
 	if anim_finished:
 		return "Idle"
 		
-	# can cancel into move if cancel delay passed
-	if not is_in_delay() and entity.input and entity.input.has_method("is_move_key_just_pressed"):
+	# can cancel into move state if cancel delay passed and move key pressed
+	if not is_in_delay() and entity.input.has_method("is_move_key_just_pressed"):
 		if entity.input.is_move_key_just_pressed():
 			return "Run"
+			
+	# Move to next attack if not in delay and input requested another main attack
+	if not is_in_delay() and entity.input.main_attack_requested:
+		if entity.input.has_method("clear_main_attack_buffer"):
+			entity.input.clear_main_attack_buffer()
+			
+		# Combo into next skill if there is one. if not use main attack.
+		if combos_into != "":
+			return combos_into
+		else:
+			return entity.input.main_attack_state.name
 	
 	return ""
 	

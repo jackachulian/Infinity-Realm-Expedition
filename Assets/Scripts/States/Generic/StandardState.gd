@@ -6,15 +6,6 @@ class_name NoBehaviourState
 # Animtion to play on entering this state, if not empty.
 @export var animation_name: String = "Idle"
 
-# switch to the next state if and once this timer is completed
-@export var state_timer: Timer
-
-# If state_timer is non-null, switch to this state after that many seconds elapsed.
-@export var state_on_timer_stopped: String
-
-# If true, start the given timer upon entering this state
-@export var start_timer_on_enter: bool
-
 # If not null, switch to this state depending on SwitchMode.
 @export var state_on_anim_finish: String
 
@@ -47,9 +38,6 @@ func check_transition(delta: float) -> String:
 	if anim_finished and state_on_anim_finish != "":
 		return state_on_anim_finish
 		
-	if state_timer and state_timer.is_stopped():
-		return state_on_timer_stopped
-		
 	if grounded_state != "" and entity.is_on_floor():
 		return grounded_state
 		
@@ -80,5 +68,3 @@ func on_enter_state():
 		entity.movement.direction = Vector3.ZERO
 	if instant_velocity_on_enter:
 		entity.velocity += instant_velocity_on_enter.rotated(Vector3.UP, entity.rotation.y);
-	if start_timer_on_enter:
-		state_timer.start()
