@@ -18,8 +18,12 @@ class_name NoBehaviourState
 # Immediate velocity force to apply to this entity upon entering this state (entity z forward).
 @export var instant_velocity_on_enter: Vector3
 
-# If true, player will face in inputted direction during this state
-@export var face_input: bool = false
+enum RotateMode {
+	NONE,
+	FACE_INPUT, # player will face in inputted direction during this state
+	FACE_KNOCKBACK # player will face opposite the velocity direction (used for hurt states)
+}
+@export var rotate_mode: RotateMode = RotateMode.NONE
 
 # if above 0, rotation will be snapped to the nearest increment of this if face_input
 @export var rotation_snap: float = 45.0
@@ -53,13 +57,24 @@ func check_transition(delta: float) -> String:
 	
 	return ""
 
-func update(delta):
-	if face_input:
-		var input_angle = atan2(-entity.input.direction.x, -entity.input.direction.z)
-		if rotation_snap > 0:
-			var snap = deg_to_rad(rotation_snap)
-			input_angle = round(input_angle / snap) * snap
-		entity.rotation.y = input_angle
+func update(delta: float):
+	update_rotation(delta)
+	
+func update_rotation(delta: float):
+	if rotate_mode == RotateMode.NONE:
+		return
+	
+	var input_angle
+	
+	if rotate_mode == RotateMode.FACE_INPUT:
+		input_angle = atan2(-entity.input.direction.x, -entity.input.direction.z)
+	elif rotate_mode == RotateMode.FACE_KNOCKBACK:
+		input_angle = atan2(entity.velocity.x, entity.velocity.z)
+		
+	if rotation_snap > 0:
+		var snap = deg_to_rad(rotation_snap)
+		input_angle = round(input_angle / snap) * snap
+	entity.rotation.y = input_angle
 
 func physics_update(delta: float):
 	if movement_mode == MovementMode.FROM_INPUT:

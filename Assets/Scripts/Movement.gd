@@ -6,8 +6,9 @@ class_name Movement
 # and it modifies this value within the state.
 var speed := 5.0
 
-@export var move_accel: int = 40.0
-@export var stop_decel: int = 30.0
+@export var move_accel: int = 60.0
+@export var stop_decel: int = 45.0
+@export var air_decel: int = 30.0
 @export var stun_decel: int = 10.0
 @export var gravity: float = 25.0
 
@@ -31,7 +32,13 @@ func _physics_process(delta):
 		entity.velocity = entity.velocity.move_toward(direction * speed, move_accel * delta)
 	# Otherwise, decelerate towards zero if not in midair (simulates friction with ground)
 	elif entity.is_on_floor():
-		var decel = stop_decel if entity.is_hit_stunned() else stop_decel
+		var decel;
+		if entity.is_hit_stunned():
+			decel = stun_decel
+		elif not entity.is_on_floor():
+			decel = air_decel
+		else:
+			decel = stop_decel
 		entity.velocity = entity.velocity.move_toward(Vector3.ZERO, decel * delta)
 	
 	# restore stored yvel

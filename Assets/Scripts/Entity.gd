@@ -10,6 +10,9 @@ class_name Entity
 # If a material is assigned, character will flash with that material when damaged.
 @export var damage_flash_mat: Material
 
+# State to enter when taking damage
+@export var hurt_state: State
+
 # Nodes that may be used by states to get various info
 # idk how godot works but may want to make these get_node_or_null
 @onready var input: GenericInput = $Input # must have direction: Vector3 property
@@ -44,6 +47,10 @@ func _physics_process(delta: float):
 func take_damage(damage: int):
 	hit_points -= damage
 	damage_flash()
+	if hurt_state:
+		var state_machine: StateMachine = get_node_or_null("StateMachine")
+		if state_machine:
+			state_machine.switch_to(hurt_state.name)
 	print(name+" took "+str(damage)+" damage - HP: "+str(hit_points))
 
 func damage_flash():
@@ -63,7 +70,7 @@ func take_hit_stun(duration: float):
 
 func take_knockback(force: Vector3):
 	print(name+" taking knockback with force "+str(force))
-	velocity += force;
+	velocity = force;
 
 func is_hit_stunned():
 	return hit_stun_timer > 0

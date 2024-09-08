@@ -101,6 +101,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1.98525)
 collision_layer = 0
 collision_mask = 0
 script = ExtResource("20_rq6bb")
+knockback = 4.5
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="StateMachine/Sword-Attack1/Hitbox" index="0"]
 transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, -0.0165758, 0.834441, 0.581865)
@@ -118,7 +119,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1.98525)
 collision_layer = 0
 collision_mask = 0
 script = ExtResource("20_rq6bb")
-knockback = 8.0
+knockback = 5.0
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="StateMachine/Sword-Attack2/Hitbox" index="0"]
 transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, -0.0165758, 0.834441, 0.474717)
@@ -127,7 +128,7 @@ shape = SubResource("CapsuleShape3D_84oai")
 [node name="Sword-Attack3" type="Node3D" parent="StateMachine" index="5"]
 script = ExtResource("8_73dwl")
 attack_name = "Sword-Attack3"
-cancel_delay = 0.375
+cancel_delay = 0.625
 attack_delay = 0.225
 
 [node name="Hitbox" type="Area3D" parent="StateMachine/Sword-Attack3" index="0"]
@@ -136,7 +137,7 @@ collision_layer = 0
 collision_mask = 0
 script = ExtResource("20_rq6bb")
 damage = 8
-knockback = 10.0
+knockback = 8.0
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="StateMachine/Sword-Attack3/Hitbox" index="0"]
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, -0.0165758, 0.742375, 0.433112)

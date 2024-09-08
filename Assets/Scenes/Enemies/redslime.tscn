@@ -15,9 +15,10 @@
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_hp8ij"]
 height = 0.6
 
-[node name="redslime" instance=ExtResource("1_f33ua")]
+[node name="redslime" node_paths=PackedStringArray("hurt_state") instance=ExtResource("1_f33ua")]
 script = ExtResource("2_5lb7x")
 damage_flash_mat = ExtResource("3_quer2")
+hurt_state = NodePath("StateMachine/Hurt")
 
 [node name="Input" type="Node3D" parent="." index="0" node_paths=PackedStringArray("main_attack_state")]
 script = ExtResource("3_ytsi7")
@@ -29,26 +30,32 @@ script = ExtResource("4_4psyd")
 
 [node name="Idle" type="Node" parent="StateMachine" index="0"]
 script = ExtResource("6_sthgl")
-face_input = true
+rotate_mode = 1
 movement_speed = 4.0
 can_attack_from_state = true
 
-[node name="Jump-Start" type="Node" parent="StateMachine" index="1"]
+[node name="Hurt" type="Node" parent="StateMachine" index="1"]
+script = ExtResource("6_sthgl")
+animation_name = "Hurt"
+state_on_anim_finish = "Idle"
+rotate_mode = 2
+
+[node name="Jump-Start" type="Node" parent="StateMachine" index="2"]
 script = ExtResource("6_sthgl")
 animation_name = "Jump-Start"
 state_on_anim_finish = "Jump-Up"
-face_input = true
+rotate_mode = 1
 
-[node name="Jump-Up" type="Node" parent="StateMachine" index="2"]
+[node name="Jump-Up" type="Node" parent="StateMachine" index="3"]
 script = ExtResource("6_sthgl")
 animation_name = "Jump-Up"
-grounded_state = "Jump-Land"
+grounded_state = "Idle"
 falling_state = "Jump-Down"
 instant_velocity_on_enter = Vector3(0, 8, -4)
 movement_mode = 2
 movement_speed = 4.0
 
-[node name="Jump-Down" type="Node" parent="StateMachine" index="3"]
+[node name="Jump-Down" type="Node" parent="StateMachine" index="4"]
 script = ExtResource("6_sthgl")
 animation_name = "Jump-Down"
 grounded_state = "Idle"
@@ -63,9 +70,10 @@ transform = Transform3D(-0.5, 0, 4.37114e-08, 0, 0.5, 0, -4.37114e-08, 0, -0.5, 
 
 [node name="Skeleton3D" parent="Armature" index="0"]
 bones/0/rotation = Quaternion(-0.043466, 1.19097e-07, -5.18156e-09, 0.999055)
-bones/1/rotation = Quaternion(0.693869, -8.54263e-05, 8.39422e-05, 0.720102)
+bones/0/scale = Vector3(1, 1, 1)
+bones/1/rotation = Quaternion(0.693869, -8.54263e-05, 8.39422e-05, 0.720101)
 bones/1/scale = Vector3(1, 1, 1)
-bones/2/rotation = Quaternion(-0.315066, 0.00152962, -0.00050787, 0.949068)
+bones/2/rotation = Quaternion(-0.307313, -0.118347, -0.00759657, 0.94419)
 
 [node name="Cube" parent="Armature/Skeleton3D" index="0"]
 surface_material_override/0 = ExtResource("2_1gwk5")

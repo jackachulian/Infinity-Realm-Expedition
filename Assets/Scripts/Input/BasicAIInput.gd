@@ -8,7 +8,6 @@ var target: Node3D
 
 @onready var entity: Entity = $".."
 
-
 var attack_cooldown_remaining: float
 
 
