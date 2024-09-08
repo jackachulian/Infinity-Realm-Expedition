@@ -10,3 +10,8 @@ func _init() -> void:
 	
 func take_damage(damage: int):
 	get_parent().take_damage(damage)
+
+func take_knockback(force: Vector3):
+	var entity = get_parent()
+	if entity is Entity:
+		entity.velocity += force;

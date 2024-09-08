@@ -49,7 +49,7 @@ func physics_update(delta: float):
 
 func on_enter_state():
 	if hitbox:
-		hitbox.visible = true
+		hitbox.enable_shape()
 	hitbox_activated = false
 	
 	if slash_effect:
@@ -60,4 +60,4 @@ func on_enter_state():
 	
 func on_exit_state():
 	if hitbox:
-		hitbox.visible = false
+		hitbox.disable_shape()
