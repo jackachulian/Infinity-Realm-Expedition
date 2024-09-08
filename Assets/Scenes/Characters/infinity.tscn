@@ -85,7 +85,7 @@ state_on_anim_finished = "Idle"
 script = ExtResource("8_73dwl")
 attack_name = "Sword-Attack1"
 combos_into = "Sword-Attack2"
-cancel_delay = 0.4
+cancel_delay = 0.2
 
 [node name="Hitbox" type="Area3D" parent="StateMachine/Sword-Attack1" index="0"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1.98525)
@@ -101,15 +101,17 @@ shape = SubResource("CapsuleShape3D_osbq5")
 script = ExtResource("8_73dwl")
 attack_name = "Sword-Attack2"
 combos_into = "Sword-Attack3"
-cancel_delay = 0.5
+cancel_delay = 0.25
 
 [node name="Sword-Attack3" type="Node3D" parent="StateMachine" index="5"]
 script = ExtResource("8_73dwl")
 attack_name = "Sword-Attack3"
-cancel_delay = 0.75
+cancel_delay = 0.375
 
 [node name="Movement" type="Node" parent="." index="3"]
 script = ExtResource("3_p5r50")
+move_accel = 160
+stop_decel = 120
 
 [node name="Weapon" type="Node" parent="." index="4"]
 
@@ -229,7 +231,7 @@ bones/39/rotation = Quaternion(0.108899, -0.0208535, -0.0126774, 0.993753)
 bones/39/scale = Vector3(1, 1, 1)
 
 [node name="Helmet" parent="Armature/Skeleton3D" index="0"]
-transform = Transform3D(0.8, 1.97277e-09, -3.56658e-09, -1.35341e-09, 0.8, -1.39698e-07, 2.63879e-09, 1.86265e-09, 0.8, -0.00204646, 0.363883, -0.0276382)
+transform = Transform3D(0.8, -2.20805e-08, -7.32946e-08, 2.07074e-08, 0.8, -3.81842e-07, 7.34194e-08, 3.48315e-07, 0.8, -0.00204643, 0.363883, -0.0276385)
 
 [node name="Helmet" parent="Armature/Skeleton3D/Helmet" index="0"]
 visible = false
@@ -238,7 +240,7 @@ surface_material_override/1 = ExtResource("11_egnnu")
 surface_material_override/2 = ExtResource("11_egnnu")
 
 [node name="Blade" parent="Armature/Skeleton3D" index="1"]
-transform = Transform3D(0.499856, 0.00847332, 0.00847089, 0.00847207, -1.18565e-07, -0.499928, -0.00847209, 0.499928, -0.000143568, -1.11425, 1.55299, 0.340716)
+transform = Transform3D(0.499856, 0.00847306, 0.00847097, 0.00847215, -7.96567e-07, -0.499928, -0.00847187, 0.499928, -0.000144375, -1.11425, 1.55299, 0.340715)
 
 [node name="GPUTrail3D" type="GPUParticles3D" parent="Armature/Skeleton3D/Blade" index="1"]
 transform = Transform3D(1, -1.86265e-09, 7.68341e-09, 0, 1, -7.45058e-09, 4.51691e-08, 2.23517e-08, 1, -0.0157964, 0.703541, -0.0883509)

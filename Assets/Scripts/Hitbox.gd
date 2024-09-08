@@ -1,9 +1,17 @@
 extends Area3D
 class_name Hitbox
 
+# Damage dealt to the target on unshielded hit
 @export var damage := 5
 
-@export var knockback: Vector3 = Vector3.BACK
+# Amount of frames to briefly pause both characters when the attack lands, for more weighty attacks
+@export var hit_pause: float = 0.1
+
+# Amount of frames the target will lose control over their character when this attack hits (unable to move, attack, etc)
+@export var hit_stun: float = 0.25
+
+# The knockback force of this attack.
+@export var knockback: float = 10
 
 @onready var shape: CollisionShape3D = get_child(0)
 
@@ -22,8 +30,10 @@ func deal_damage():
 		print("overlapping with area "+area.name)
 		if area.has_method("take_damage"):
 			area.take_damage(damage)
-		if knockback.length_squared() > 0:
-			area.take_knockback(knockback * quaternion)
+		if area.has_method("take_hit_stun"):
+			area.take_hit_stun(hit_stun)
+		if area.has_method("take_knockback") and knockback > 0:
+			area.take_knockback(knockback * -global_basis.z)
 
 func enable_shape():
 	visible = true

@@ -4,6 +4,11 @@ class_name Movement
 # may be modified by states
 var speed := 5.0
 
+@export var move_accel: int = 40.0
+@export var stop_decel: int = 30.0
+@export var stun_decel: int = 10.0
+
+
 @onready var entity: Entity = $".."
 
 # May be modified by PlayerInput or AI nodes to change move direction
@@ -11,23 +16,16 @@ var direction := Vector2.ZERO
 
 
 func _physics_process(delta):
-	var input_dir = Input.get_vector("left", "right", "forward", "back")
-
-	if direction:
-		entity.velocity.x = direction.x * speed
-		entity.velocity.z = direction.y * speed
+	if direction != Vector2.ZERO and not entity.is_hit_stunned():
+		entity.velocity.x = move_toward(entity.velocity.x, direction.x * speed, move_accel * delta)
+		entity.velocity.z = move_toward(entity.velocity.z, direction.y * speed, move_accel * delta)
 	else:
-		entity.velocity.x = move_toward(entity.velocity.x, 0, speed)
-		entity.velocity.z = move_toward(entity.velocity.z, 0, speed)
-		
+		var decel = stop_decel if entity.is_hit_stunned() else stop_decel
+		entity.velocity.x = move_toward(entity.velocity.x, 0, decel * delta)
+		entity.velocity.z = move_toward(entity.velocity.z, 0, decel * delta)
+
 	# Apply root motion (subtract instead of add because model is flipped 180 degrees)
 	var root_motion_delta = entity.anim.get_root_motion_position()
-	entity.velocity -= entity.get_quaternion() * root_motion_delta / delta;
+	entity.position -= entity.get_quaternion() * root_motion_delta;
 		
 	entity.move_and_slide()
-	
-	
-
-# Check if a move input was just pressed. If so, attacks after delay can cancel into run, etc
-func is_move_key_just_pressed():
-	return Input.is_action_just_pressed("forward") or Input.is_action_just_pressed("back") or Input.is_action_just_pressed("left") or Input.is_action_just_pressed("right")

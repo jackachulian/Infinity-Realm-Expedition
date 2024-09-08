@@ -33,8 +33,9 @@ func check_transition(delta: float) -> String:
 		return "Idle"
 		
 	# can cancel into move if cancel delay passed
-	if not is_in_delay() and entity.movement.is_move_key_just_pressed():
-		return "Run"
+	if not is_in_delay() and entity.input and entity.input.has_method("is_move_key_just_pressed"):
+		if entity.input.is_move_key_just_pressed():
+			return "Run"
 	
 	return ""
 	
