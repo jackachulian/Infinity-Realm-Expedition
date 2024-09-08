@@ -81,4 +81,4 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.0486, 0.510486, 0.489744)
 use_collision = true
 
 [node name="redslime" parent="." instance=ExtResource("3_brrvy")]
-transform = Transform3D(-0.5, 0, -0.866025, 0, 1, 0, 0.866025, 0, -0.5, -0.34705, 0, -1.13199)
+transform = Transform3D(-0.5, 0, -0.866025, 0, 1, 0, 0.866025, 0, -0.5, -4.46173, 0, -2.41939)

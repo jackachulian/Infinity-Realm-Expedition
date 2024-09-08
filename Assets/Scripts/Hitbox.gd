@@ -11,7 +11,7 @@ class_name Hitbox
 @export var hit_stun: float = 0.25
 
 # The knockback force of this attack.
-@export var knockback: float = 10
+@export var knockback: float = 7.5
 
 @onready var shape: CollisionShape3D = get_child(0)
 
