@@ -56,7 +56,7 @@ func on_enter_state():
 	if slash_effect:
 		slash_effect.play()
 	
-	entity.movement.direction = Vector2.ZERO
+	entity.movement.direction = Vector3.ZERO
 	entity.anim.play(attack_name)
 	
 func on_exit_state():

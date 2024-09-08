@@ -5,6 +5,11 @@
 [ext_resource type="PackedScene" uid="uid://bnq6kyw7csjrm" path="res://Assets/Scenes/Enemies/redslime.tscn" id="3_brrvy"]
 [ext_resource type="Environment" uid="uid://bc4nmkhxncgkx" path="res://Assets/Environments/planet-01.tres" id="3_tep02"]
 
+[sub_resource type="QuadMesh" id="QuadMesh_madvk"]
+material = ExtResource("1_lvxvh")
+flip_faces = true
+size = Vector2(2, 2)
+
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_mkdyy"]
 albedo_color = Color(0.0229927, 0.202795, 0.320488, 1)
 roughness = 0.76
@@ -17,11 +22,6 @@ material = SubResource("StandardMaterial3D_mkdyy")
 size = Vector2(20, 20)
 
 [sub_resource type="WorldBoundaryShape3D" id="WorldBoundaryShape3D_drhok"]
-
-[sub_resource type="QuadMesh" id="QuadMesh_madvk"]
-material = ExtResource("1_lvxvh")
-flip_faces = true
-size = Vector2(2, 2)
 
 [node name="Node3D" type="Node3D"]
 
@@ -42,6 +42,25 @@ render_target_update_mode = 4
 
 [node name="infinity" parent="SubViewportContainer/SubViewport" instance=ExtResource("1_ayth2")]
 
+[node name="CameraPivot" type="Node3D" parent="SubViewportContainer/SubViewport"]
+transform = Transform3D(0.707107, 0, 0.707107, 0, 1, 0, -0.707107, 0, 0.707107, 0, 0, 0)
+
+[node name="Camera3D" type="Camera3D" parent="SubViewportContainer/SubViewport/CameraPivot"]
+transform = Transform3D(1, 0, 0, 0, 0.866025, 0.5, 0, -0.5, 0.866025, 0, 5.774, 10)
+projection = 1
+current = true
+size = 12.0
+far = 100.0
+
+[node name="ScreenQuad" type="MeshInstance3D" parent="SubViewportContainer/SubViewport/CameraPivot/Camera3D"]
+visible = false
+extra_cull_margin = 16384.0
+mesh = SubResource("QuadMesh_madvk")
+skeleton = NodePath("../..")
+
+[node name="redslime" parent="SubViewportContainer/SubViewport" instance=ExtResource("3_brrvy")]
+transform = Transform3D(-0.5, 0, -0.866025, 0, 1, 0, 0.866025, 0, -0.5, -4.46173, 0, -2.41939)
+
 [node name="Terrain" type="Node3D" parent="SubViewportContainer/SubViewport"]
 
 [node name="TestGroundPlane" type="MeshInstance3D" parent="SubViewportContainer/SubViewport"]
@@ -60,25 +79,6 @@ shadow_enabled = true
 [node name="WorldEnvironment" type="WorldEnvironment" parent="SubViewportContainer/SubViewport"]
 environment = ExtResource("3_tep02")
 
-[node name="CameraPivot" type="Node3D" parent="SubViewportContainer/SubViewport"]
-transform = Transform3D(0.707107, 0, 0.707107, 0, 1, 0, -0.707107, 0, 0.707107, 0, 0, 0)
-
-[node name="Camera3D" type="Camera3D" parent="SubViewportContainer/SubViewport/CameraPivot"]
-transform = Transform3D(1, 0, 0, 0, 0.866025, 0.5, 0, -0.5, 0.866025, 0, 5.774, 10)
-projection = 1
-current = true
-size = 12.0
-far = 100.0
-
-[node name="ScreenQuad" type="MeshInstance3D" parent="SubViewportContainer/SubViewport/CameraPivot/Camera3D"]
-visible = false
-extra_cull_margin = 16384.0
-mesh = SubResource("QuadMesh_madvk")
-skeleton = NodePath("../..")
-
 [node name="CSGBox3D" type="CSGBox3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.0486, 0.510486, 0.489744)
 use_collision = true
-
-[node name="redslime" parent="." instance=ExtResource("3_brrvy")]
-transform = Transform3D(-0.5, 0, -0.866025, 0, 1, 0, 0.866025, 0, -0.5, -4.46173, 0, -2.41939)

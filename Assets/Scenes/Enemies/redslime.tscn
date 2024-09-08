@@ -1,11 +1,15 @@
-[gd_scene load_steps=9 format=3 uid="uid://bnq6kyw7csjrm"]
+[gd_scene load_steps=13 format=3 uid="uid://bnq6kyw7csjrm"]
 
 [ext_resource type="PackedScene" uid="uid://5xkk1fd51bor" path="res://Assets/Models/redslime.glb" id="1_f33ua"]
 [ext_resource type="Material" uid="uid://c4r22eyfug44l" path="res://Assets/Materials/Slime/slime-red.tres" id="2_1gwk5"]
 [ext_resource type="Script" path="res://Assets/Scripts/Entity.gd" id="2_5lb7x"]
 [ext_resource type="Material" uid="uid://ch6chfqbxbcr3" path="res://Assets/Materials/Slime/eye.tres" id="3_l1tm4"]
+[ext_resource type="Script" path="res://Assets/Scripts/Input/BasicAIInput.gd" id="3_ytsi7"]
+[ext_resource type="Script" path="res://Assets/Scripts/StateMachine/StateMachine.gd" id="4_4psyd"]
 [ext_resource type="Material" uid="uid://dryb2rb71lolt" path="res://Assets/Materials/Slime/pupil.tres" id="4_pue12"]
+[ext_resource type="Script" path="res://Assets/Scripts/States/Generic/MoveState.gd" id="5_42gpm"]
 [ext_resource type="Script" path="res://Assets/Scripts/Hurtbox.gd" id="6_hdqk2"]
+[ext_resource type="Script" path="res://Assets/Scripts/States/Generic/IdleState.gd" id="6_qhxs1"]
 [ext_resource type="Script" path="res://Assets/Scripts/Movement.gd" id="7_w7v2a"]
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_hp8ij"]
@@ -14,7 +18,26 @@ height = 0.6
 [node name="redslime" instance=ExtResource("1_f33ua")]
 script = ExtResource("2_5lb7x")
 
-[node name="Armature" parent="." index="0"]
+[node name="Input" type="Node3D" parent="." index="0"]
+script = ExtResource("3_ytsi7")
+
+[node name="StateMachine" type="Node3D" parent="." index="1"]
+script = ExtResource("4_4psyd")
+
+[node name="Run" type="Node" parent="StateMachine" index="0"]
+script = ExtResource("5_42gpm")
+animation_name = "Idle"
+speed = 2.0
+rotation_snap = 45.0
+
+[node name="Idle" type="Node" parent="StateMachine" index="1"]
+script = ExtResource("6_qhxs1")
+animation_name = "Idle"
+
+[node name="Movement" type="Node" parent="." index="2"]
+script = ExtResource("7_w7v2a")
+
+[node name="Armature" parent="." index="3"]
 transform = Transform3D(-0.5, 0, -4.37114e-08, 0, 0.5, 0, 4.37114e-08, 0, -0.5, 0, 0, 0)
 
 [node name="Skeleton3D" parent="Armature" index="0"]
@@ -32,14 +55,14 @@ surface_material_override/2 = ExtResource("4_pue12")
 [node name="Icosphere" parent="Armature/Skeleton3D" index="1"]
 surface_material_override/0 = ExtResource("2_1gwk5")
 
-[node name="AnimationPlayer" parent="." index="1"]
+[node name="AnimationPlayer" parent="." index="4"]
 autoplay = "Idle"
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="." index="2"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." index="5"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.3, 0)
 shape = SubResource("CylinderShape3D_hp8ij")
 
-[node name="Hurtbox" type="Area3D" parent="." index="3"]
+[node name="Hurtbox" type="Area3D" parent="." index="6"]
 collision_layer = 0
 collision_mask = 0
 script = ExtResource("6_hdqk2")
@@ -47,8 +70,5 @@ script = ExtResource("6_hdqk2")
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Hurtbox" index="0"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.3, 0)
 shape = SubResource("CylinderShape3D_hp8ij")
-
-[node name="Movement" type="Node" parent="." index="4"]
-script = ExtResource("7_w7v2a")
 
 [connection signal="area_entered" from="Hurtbox" to="Hurtbox" method="_on_area_entered"]

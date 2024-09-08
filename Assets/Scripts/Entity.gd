@@ -9,11 +9,11 @@ class_name Entity
 
 # Nodes that may be used by states to get various info
 # idk how godot works but may want to make these get_node_or_null
-@onready var input: GenericInput = $Input
+@onready var input: GenericInput = $Input # must have direction: Vector3 property
 @onready var movement: Movement = $Movement
 #@onready var model: Node3D = $Armature
 @onready var anim: AnimationPlayer = $AnimationPlayer
-@onready var anim_tree: AnimationTree = $AnimationTree
+#@onready var anim_tree: AnimationTree = $AnimationTree
 
 # Amount of seconds of hit stun remaining.
 # Entity is hit stunned if this is above 0.

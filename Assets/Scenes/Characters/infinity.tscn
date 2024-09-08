@@ -5,7 +5,7 @@
 [ext_resource type="Script" path="res://Assets/Scripts/Model.gd" id="3_11b10"]
 [ext_resource type="Resource" uid="uid://h8l81rxv0iwl" path="res://Assets/Database/Weapons/infinity_blade.tres" id="3_b1uya"]
 [ext_resource type="Script" path="res://Assets/Scripts/Movement.gd" id="3_p5r50"]
-[ext_resource type="Script" path="res://Assets/Scripts/PlayerInput.gd" id="4_1mgmj"]
+[ext_resource type="Script" path="res://Assets/Scripts/Input/PlayerInput.gd" id="4_1mgmj"]
 [ext_resource type="Script" path="res://Assets/Scripts/States/Generic/MoveState.gd" id="4_fm0wv"]
 [ext_resource type="Script" path="res://Assets/Scripts/StateMachine/StateMachine.gd" id="4_yke0m"]
 [ext_resource type="Script" path="res://Assets/Scripts/States/Generic/IdleState.gd" id="5_yhrb3"]
@@ -66,7 +66,7 @@ radius = 0.375
 script = ExtResource("2_pd53c")
 weapon = ExtResource("3_b1uya")
 
-[node name="Input" type="Node" parent="." index="0"]
+[node name="Input" type="Node3D" parent="." index="0"]
 script = ExtResource("4_1mgmj")
 
 [node name="Attack" type="Node" parent="." index="1" node_paths=PackedStringArray("attack_state")]
@@ -263,7 +263,7 @@ bones/39/rotation = Quaternion(0.588417, -0.0215962, 0.100447, 0.802004)
 bones/39/scale = Vector3(1, 1, 1)
 
 [node name="Helmet" parent="Armature/Skeleton3D" index="0"]
-transform = Transform3D(0.793728, 0.0167204, 0.0985757, 0.0123237, 0.766359, -0.22922, -0.0992212, 0.228941, 0.760093, -0.0297307, -0.0408719, -0.0588006)
+transform = Transform3D(0.793728, 0.0167203, 0.0985765, 0.012324, 0.766359, -0.22922, -0.0992219, 0.228941, 0.760093, -0.0297304, -0.0408722, -0.0587999)
 
 [node name="Helmet" parent="Armature/Skeleton3D/Helmet" index="0"]
 visible = false
@@ -272,7 +272,7 @@ surface_material_override/1 = ExtResource("11_egnnu")
 surface_material_override/2 = ExtResource("11_egnnu")
 
 [node name="Blade" parent="Armature/Skeleton3D" index="1"]
-transform = Transform3D(-0.0807395, 9.70484e-05, 0.493438, 0.454319, -0.195095, 0.074377, 0.19255, 0.460367, 0.0314156, -0.137453, 0.55315, 1.25989)
+transform = Transform3D(-0.0807401, 9.69664e-05, 0.493438, 0.454319, -0.195095, 0.0743775, 0.192549, 0.460367, 0.0314161, -0.137452, 0.55315, 1.25989)
 
 [node name="GPUTrail3D" type="GPUParticles3D" parent="Armature/Skeleton3D/Blade" index="1"]
 transform = Transform3D(1, -1.86265e-09, 7.68341e-09, 0, 1, -7.45058e-09, 4.51691e-08, 2.23517e-08, 1, -0.0157964, 0.703541, -0.0883509)
