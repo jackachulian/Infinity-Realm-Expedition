@@ -8,7 +8,9 @@ var target: Node3D
 func _ready():
 	target = $"../../infinity"
 	
-	if not target:
+	if target:
+		print(name+" is targeting "+target.name)
+	else:
 		print(name+": could not find player to track")
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
