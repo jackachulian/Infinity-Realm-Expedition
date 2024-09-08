@@ -16,8 +16,7 @@ func check_transition(delta: float) -> String:
 		
 	# Attack from idle (and run-stop which also uses this script)
 	if entity.input.main_attack_requested:
-		if entity.input.has_method("clear_main_attack_buffer"):
-			entity.input.clear_main_attack_buffer()
+		entity.input.clear_main_attack_buffer()
 		return entity.input.main_attack_state.name
 		
 	return ""

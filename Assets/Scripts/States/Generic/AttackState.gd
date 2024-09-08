@@ -39,9 +39,7 @@ func check_transition(delta: float) -> String:
 			
 	# Move to next attack if not in delay and input requested another main attack
 	if not is_in_delay() and entity.input.main_attack_requested:
-		if entity.input.has_method("clear_main_attack_buffer"):
-			entity.input.clear_main_attack_buffer()
-			
+		entity.input.clear_main_attack_buffer()
 		# Combo into next skill if there is one. if not use main attack.
 		if combos_into != "":
 			return combos_into

@@ -10,3 +10,7 @@ var direction: Vector3
 # Requested state. 
 # if true, states may react to this. ex. idle state, attack state cambo into another, etc
 var main_attack_requested: bool
+
+# Clear the attack buffer and lets this input know its attack was registered just now
+func clear_main_attack_buffer():
+	pass

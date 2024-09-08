@@ -34,6 +34,9 @@ enum MovementMode {
 
 @export var movement_speed: float
 
+# If true, can switch to main attack during this state if main attack is requested
+@export var can_attack_from_state: bool
+
 func check_transition(delta: float) -> String:	
 	if anim_finished and state_on_anim_finish != "":
 		return state_on_anim_finish
@@ -43,16 +46,20 @@ func check_transition(delta: float) -> String:
 		
 	if falling_state != "" and entity.velocity.y < 0:
 		return falling_state
+		
+	if can_attack_from_state and entity.input.main_attack_requested:
+		entity.input.clear_main_attack_buffer()
+		return entity.input.main_attack_state.name
 	
 	return ""
 
 func update(delta):
 	if face_input:
-		var angle = atan2(-entity.input.direction.x, -entity.input.direction.z)
+		var input_angle = atan2(-entity.input.direction.x, -entity.input.direction.z)
 		if rotation_snap > 0:
 			var snap = deg_to_rad(rotation_snap)
-			angle = round(angle / snap) * snap
-		entity.rotation.y = angle
+			input_angle = round(input_angle / snap) * snap
+		entity.rotation.y = input_angle
 
 func physics_update(delta: float):
 	if movement_mode == MovementMode.FROM_INPUT:
@@ -67,4 +74,5 @@ func on_enter_state():
 	if movement_mode == MovementMode.STOP:
 		entity.movement.direction = Vector3.ZERO
 	if instant_velocity_on_enter:
-		entity.velocity += instant_velocity_on_enter.rotated(Vector3.UP, entity.rotation.y);
+		var input_angle = atan2(-entity.input.direction.x, -entity.input.direction.z)
+		entity.velocity += instant_velocity_on_enter.rotated(Vector3.UP, input_angle);

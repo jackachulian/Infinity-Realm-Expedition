@@ -16,8 +16,7 @@ func check_transition(delta: float) -> String:
 		
 	# Can attack from move
 	if entity.input.main_attack_requested:
-		if entity.input.has_method("clear_main_attack_buffer"):
-			entity.input.clear_main_attack_buffer()
+		entity.input.clear_main_attack_buffer()
 		return entity.input.main_attack_state.name
 		
 	return ""
