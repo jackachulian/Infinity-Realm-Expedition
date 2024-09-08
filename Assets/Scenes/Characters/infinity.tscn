@@ -66,7 +66,7 @@ script = ExtResource("4_1mgmj")
 script = ExtResource("10_tw3ty")
 attack_state = NodePath("../StateMachine/Sword-Attack1")
 
-[node name="StateMachine" type="Node" parent="." index="2"]
+[node name="StateMachine" type="Node3D" parent="." index="2"]
 script = ExtResource("4_yke0m")
 
 [node name="Idle" type="Node" parent="StateMachine" index="0"]
@@ -81,7 +81,7 @@ script = ExtResource("5_yhrb3")
 animation_name = "Run-Stop"
 state_on_anim_finished = "Idle"
 
-[node name="Sword-Attack1" type="Node" parent="StateMachine" index="3"]
+[node name="Sword-Attack1" type="Node3D" parent="StateMachine" index="3"]
 script = ExtResource("8_73dwl")
 attack_name = "Sword-Attack1"
 combos_into = "Sword-Attack2"
@@ -89,7 +89,7 @@ cancel_delay = 0.4
 
 [node name="Hitbox" type="Area3D" parent="StateMachine/Sword-Attack1" index="0"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1.98525)
-collision_layer = 2
+collision_layer = 0
 collision_mask = 0
 script = ExtResource("20_rq6bb")
 
@@ -97,13 +97,13 @@ script = ExtResource("20_rq6bb")
 transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, -0.0165758, 0.834441, 0.812489)
 shape = SubResource("CapsuleShape3D_osbq5")
 
-[node name="Sword-Attack2" type="Node" parent="StateMachine" index="4"]
+[node name="Sword-Attack2" type="Node3D" parent="StateMachine" index="4"]
 script = ExtResource("8_73dwl")
 attack_name = "Sword-Attack2"
 combos_into = "Sword-Attack3"
 cancel_delay = 0.5
 
-[node name="Sword-Attack3" type="Node" parent="StateMachine" index="5"]
+[node name="Sword-Attack3" type="Node3D" parent="StateMachine" index="5"]
 script = ExtResource("8_73dwl")
 attack_name = "Sword-Attack3"
 cancel_delay = 0.75
@@ -297,7 +297,7 @@ shape = SubResource("CylinderShape3D_aqtno")
 
 [node name="Hurtbox" type="Area3D" parent="." index="8"]
 collision_layer = 0
-collision_mask = 2
+collision_mask = 0
 script = ExtResource("31_pkqhk")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Hurtbox" index="0"]

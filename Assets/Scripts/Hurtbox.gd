@@ -5,15 +5,8 @@ class_name Hurtbox
 
 func _init() -> void:
 	# Only receive collisions from layer 2 (mask: 01)
-	collision_layer = 0
-	collision_mask = 2
+	collision_layer = 2
+	collision_mask = 0
 	
-
-# if any node (Area3D) that is not a Hitbox is passed, will automatically be null.
-func _on_area_entered(hitbox: Hitbox) -> void:
-	if not hitbox:
-		return
-		
-	if get_parent().has_method("take_damage"):
-		print(get_parent().name + " was damaged by "+hitbox.get_parent().name+"'s hitbox")
-		get_parent().take_damage(hitbox.damage)
+func take_damage(damage: int):
+	get_parent().take_damage(damage)

@@ -13,7 +13,7 @@ func physics_update(delta: float):
 	entity.movement.direction = entity.input.direction
 	
 func update(delta: float):
-	entity.model.rotation.y = atan2(-entity.input.direction.x, -entity.input.direction.y)
+	entity.rotation.y = atan2(-entity.input.direction.x, -entity.input.direction.y)
 	
 func on_enter_state():
 	if entity.anim_tree:

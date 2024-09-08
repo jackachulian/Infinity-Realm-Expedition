@@ -25,8 +25,7 @@ var hitbox_activated: bool = false
 
 func _ready():
 	if hitbox:
-		hitbox.monitoring = false;
-		hitbox.monitorable = false;
+		hitbox.visible = false
 
 func check_transition(delta: float) -> String:
 	# go to idle after anim is completely finished
@@ -37,27 +36,23 @@ func check_transition(delta: float) -> String:
 	if not is_in_delay() and entity.movement.is_move_key_just_pressed():
 		return "Run"
 	
-		
 	return ""
 	
 func is_in_delay() -> bool:
 	return time_elapsed < cancel_delay
 
 func physics_update(delta: float):
-	time_elapsed += delta
-	if not hitbox_activated and time_elapsed > attack_delay:
-		print("attack frame!")
-		hitbox_activated = true;
+	if not hitbox_activated and time_elapsed >= attack_delay:
+		hitbox_activated = true
 		if hitbox:
-			hitbox.monitoring = true;
-			hitbox.monitorable = true;
+			hitbox.deal_damage()
 
 func on_enter_state():
+	if hitbox:
+		hitbox.visible = true
 	hitbox_activated = false
 	
 	if slash_effect:
-		slash_effect.rotation = entity.model.rotation;
-		slash_effect.rotation_degrees.y += 180
 		slash_effect.play()
 	
 	entity.movement.direction = Vector2.ZERO
@@ -65,5 +60,4 @@ func on_enter_state():
 	
 func on_exit_state():
 	if hitbox:
-		hitbox.monitoring = false;
-		hitbox.monitorable = false;
+		hitbox.visible = false

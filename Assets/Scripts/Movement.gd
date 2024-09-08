@@ -20,9 +20,9 @@ func _physics_process(delta):
 		entity.velocity.x = move_toward(entity.velocity.x, 0, speed)
 		entity.velocity.z = move_toward(entity.velocity.z, 0, speed)
 		
-	# Apply root motion
+	# Apply root motion (subtract instead of add because model is flipped 180 degrees)
 	var root_motion_delta = entity.anim.get_root_motion_position()
-	entity.velocity -= entity.model.get_quaternion() * root_motion_delta / delta;
+	entity.velocity -= entity.get_quaternion() * root_motion_delta / delta;
 		
 	entity.move_and_slide()
 	
