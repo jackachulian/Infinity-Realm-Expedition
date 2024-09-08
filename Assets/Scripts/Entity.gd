@@ -7,6 +7,9 @@ class_name Entity
 # Amount of damage this entity can take before it is defeated.
 @export var hit_points: int = 50
 
+# If a material is assigned, character will flash with that material when damaged.
+@export var damage_flash_mat: Material
+
 # Nodes that may be used by states to get various info
 # idk how godot works but may want to make these get_node_or_null
 @onready var input: GenericInput = $Input # must have direction: Vector3 property
@@ -15,20 +18,47 @@ class_name Entity
 @onready var anim: AnimationPlayer = $AnimationPlayer
 #@onready var anim_tree: AnimationTree = $AnimationTree
 
+# Amount of seconds this character will show damage_flash_mat for on all meshes
+var flash_timer: float = 0
+
 # Amount of seconds of hit stun remaining.
 # Entity is hit stunned if this is above 0.
 # Will not be able to control movement during hit stun, input attacks, etc
-var hit_stun: float = 0
+var hit_stun_timer: float = 0
+
+# All meshes on this character, saved to this array on ready, for use with damage flashes.
+var flash_meshes: Array[MeshInstance3D]
+
+func _ready():
+	if damage_flash_mat:
+		for mesh in $Armature.find_children("*", "MeshInstance3D", true):
+			flash_meshes.append(mesh)
+
+func _process(delta: float):
+	if flash_timer > 0:
+		damage_flash_tick(delta)
 
 func _physics_process(delta: float):
-	hit_stun = move_toward(hit_stun, 0, delta)
+	hit_stun_timer = move_toward(hit_stun_timer, 0, delta)
 
 func take_damage(damage: int):
 	hit_points -= damage
+	damage_flash()
 	print(name+" took "+str(damage)+" damage - HP: "+str(hit_points))
 
+func damage_flash():
+	flash_timer = 0.125
+	for mesh in flash_meshes:
+		mesh.material_override = damage_flash_mat
+		
+func damage_flash_tick(delta: float):
+	flash_timer -= delta
+	if flash_timer <= 0:
+		for mesh in flash_meshes:
+			mesh.material_override = null
+
 func take_hit_stun(duration: float):
-	hit_stun = maxf(hit_stun, duration)
+	hit_stun_timer = maxf(hit_stun_timer, duration)
 	print(name+" stunned for "+str(duration)+"s")
 
 func take_knockback(force: Vector3):
@@ -36,4 +66,4 @@ func take_knockback(force: Vector3):
 	velocity += force;
 
 func is_hit_stunned():
-	return hit_stun > 0
+	return hit_stun_timer > 0

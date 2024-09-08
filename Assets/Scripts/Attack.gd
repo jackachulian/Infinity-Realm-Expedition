@@ -9,7 +9,7 @@ class_name Attack
 
 func _process(delta):
 	if Input.is_action_just_pressed("attack"):
-		if not state_machine.current_state.is_in_delay():
+		if state_machine and not state_machine.current_state.is_in_delay():
 			# If state machine's current attack combos into another, switch to that
 			var state = state_machine.current_state
 			if state is AttackState and state.combos_into != "":

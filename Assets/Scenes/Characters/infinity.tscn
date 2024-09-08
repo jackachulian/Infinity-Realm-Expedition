@@ -1,4 +1,4 @@
-[gd_scene load_steps=38 format=3 uid="uid://c7vlx700fgtqs"]
+[gd_scene load_steps=40 format=3 uid="uid://c7vlx700fgtqs"]
 
 [ext_resource type="PackedScene" uid="uid://bfdvxynauwmtj" path="res://Assets/Models/infinity.glb" id="1_rm5qk"]
 [ext_resource type="Script" path="res://Assets/Scripts/Entity.gd" id="2_pd53c"]
@@ -6,6 +6,7 @@
 [ext_resource type="Resource" uid="uid://h8l81rxv0iwl" path="res://Assets/Database/Weapons/infinity_blade.tres" id="3_b1uya"]
 [ext_resource type="Script" path="res://Assets/Scripts/Movement.gd" id="3_p5r50"]
 [ext_resource type="Script" path="res://Assets/Scripts/Input/PlayerInput.gd" id="4_1mgmj"]
+[ext_resource type="Material" uid="uid://bwwxf12w26ovn" path="res://Assets/Materials/damage-flash.tres" id="4_cyyo3"]
 [ext_resource type="Script" path="res://Assets/Scripts/States/Generic/MoveState.gd" id="4_fm0wv"]
 [ext_resource type="Script" path="res://Assets/Scripts/StateMachine/StateMachine.gd" id="4_yke0m"]
 [ext_resource type="Script" path="res://Assets/Scripts/States/Generic/IdleState.gd" id="5_yhrb3"]
@@ -18,6 +19,7 @@
 [ext_resource type="Material" uid="uid://bajs3rvxxuqh6" path="res://Assets/Materials/Infinity/shoulder-pad.tres" id="13_ehb3q"]
 [ext_resource type="Material" uid="uid://dl40ym1buxucx" path="res://Assets/Materials/Infinity/pants.tres" id="14_3o2lr"]
 [ext_resource type="Material" uid="uid://7yw07gmjjvev" path="res://Assets/Materials/Infinity/cape.tres" id="14_qrtd5"]
+[ext_resource type="Material" uid="uid://h6t15d7jcetu" path="res://Assets/Materials/Attacks/blade.tres" id="15_6twlw"]
 [ext_resource type="Material" uid="uid://da74du0n3h152" path="res://Assets/Materials/Infinity/hair.tres" id="15_71fgo"]
 [ext_resource type="Material" uid="uid://co0ctj87h8mt7" path="res://Assets/Materials/Infinity/boots.tres" id="15_d8i71"]
 [ext_resource type="Shader" path="res://Packages/GPUTrail-main/shaders/trail.gdshader" id="15_rhd6w"]
@@ -65,6 +67,7 @@ radius = 0.375
 [node name="infinity" instance=ExtResource("1_rm5qk")]
 script = ExtResource("2_pd53c")
 weapon = ExtResource("3_b1uya")
+damage_flash_mat = ExtResource("4_cyyo3")
 
 [node name="Input" type="Node3D" parent="." index="0"]
 script = ExtResource("4_1mgmj")
@@ -273,6 +276,9 @@ surface_material_override/2 = ExtResource("11_egnnu")
 
 [node name="Blade" parent="Armature/Skeleton3D" index="1"]
 transform = Transform3D(-0.0807401, 9.69664e-05, 0.493438, 0.454319, -0.195095, 0.0743775, 0.192549, 0.460367, 0.0314161, -0.137452, 0.55315, 1.25989)
+
+[node name="Blade" parent="Armature/Skeleton3D/Blade" index="0"]
+surface_material_override/0 = ExtResource("15_6twlw")
 
 [node name="GPUTrail3D" type="GPUParticles3D" parent="Armature/Skeleton3D/Blade" index="1"]
 transform = Transform3D(1, -1.86265e-09, 7.68341e-09, 0, 1, -7.45058e-09, 4.51691e-08, 2.23517e-08, 1, -0.0157964, 0.703541, -0.0883509)
