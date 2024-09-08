@@ -75,6 +75,7 @@ shape = SubResource("WorldBoundaryShape3D_drhok")
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="SubViewportContainer/SubViewport"]
 transform = Transform3D(0.866025, 0.353554, -0.353553, -1.63475e-08, 0.707107, 0.707107, 0.5, -0.612372, 0.612373, 0, 5, 0)
 shadow_enabled = true
+shadow_bias = 0.125
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="SubViewportContainer/SubViewport"]
 environment = ExtResource("3_tep02")

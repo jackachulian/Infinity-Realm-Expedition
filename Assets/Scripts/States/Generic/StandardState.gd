@@ -69,6 +69,8 @@ func update_rotation(delta: float):
 	if rotate_mode == RotateMode.FACE_INPUT:
 		input_angle = atan2(-entity.input.direction.x, -entity.input.direction.z)
 	elif rotate_mode == RotateMode.FACE_KNOCKBACK:
+		if entity.velocity == Vector3.ZERO:
+			return
 		input_angle = atan2(entity.velocity.x, entity.velocity.z)
 		
 	if rotation_snap > 0:

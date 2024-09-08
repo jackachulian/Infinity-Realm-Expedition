@@ -51,19 +51,19 @@ script = ExtResource("6_sthgl")
 animation_name = "Jump-Up"
 grounded_state = "Idle"
 falling_state = "Jump-Down"
-instant_velocity_on_enter = Vector3(0, 8, -4)
+instant_velocity_on_enter = Vector3(0, 8.5, -4)
 movement_mode = 2
-movement_speed = 4.0
+movement_speed = 6.0
 
 [node name="Jump-Down" type="Node" parent="StateMachine" index="4"]
 script = ExtResource("6_sthgl")
 animation_name = "Jump-Down"
 grounded_state = "Idle"
 movement_mode = 2
-movement_speed = 4.0
 
 [node name="Movement" type="Node" parent="." index="2"]
 script = ExtResource("7_w7v2a")
+move_accel = 8000
 
 [node name="Armature" parent="." index="3"]
 transform = Transform3D(-0.5, 0, 4.37114e-08, 0, 0.5, 0, -4.37114e-08, 0, -0.5, 0, 0, 0)
@@ -73,7 +73,7 @@ bones/0/rotation = Quaternion(-0.043466, 1.19097e-07, -5.18156e-09, 0.999055)
 bones/0/scale = Vector3(1, 1, 1)
 bones/1/rotation = Quaternion(0.693869, -8.54263e-05, 8.39422e-05, 0.720101)
 bones/1/scale = Vector3(1, 1, 1)
-bones/2/rotation = Quaternion(-0.307313, -0.118347, -0.00759657, 0.94419)
+bones/2/rotation = Quaternion(-0.247572, 0.00188227, 0.0193892, 0.968674)
 
 [node name="Cube" parent="Armature/Skeleton3D" index="0"]
 surface_material_override/0 = ExtResource("2_1gwk5")

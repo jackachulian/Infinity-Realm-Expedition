@@ -94,14 +94,14 @@ state_on_anim_finished = "Idle"
 script = ExtResource("8_73dwl")
 attack_name = "Sword-Attack1"
 combos_into = "Sword-Attack2"
-cancel_delay = 0.2
+cancel_delay = 0.265
 
 [node name="Hitbox" type="Area3D" parent="StateMachine/Sword-Attack1" index="0"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1.98525)
 collision_layer = 0
 collision_mask = 0
 script = ExtResource("20_rq6bb")
-knockback = 4.5
+knockback = 3.5
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="StateMachine/Sword-Attack1/Hitbox" index="0"]
 transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, -0.0165758, 0.834441, 0.581865)
@@ -111,7 +111,7 @@ shape = SubResource("CapsuleShape3D_osbq5")
 script = ExtResource("8_73dwl")
 attack_name = "Sword-Attack2"
 combos_into = "Sword-Attack3"
-cancel_delay = 0.25
+cancel_delay = 0.3
 attack_delay = 0.125
 
 [node name="Hitbox" type="Area3D" parent="StateMachine/Sword-Attack2" index="0"]
@@ -119,7 +119,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1.98525)
 collision_layer = 0
 collision_mask = 0
 script = ExtResource("20_rq6bb")
-knockback = 5.0
+knockback = 4.25
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="StateMachine/Sword-Attack2/Hitbox" index="0"]
 transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, -0.0165758, 0.834441, 0.474717)
@@ -137,7 +137,8 @@ collision_layer = 0
 collision_mask = 0
 script = ExtResource("20_rq6bb")
 damage = 8
-knockback = 8.0
+hit_stun = 0.35
+knockback = 6.0
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="StateMachine/Sword-Attack3/Hitbox" index="0"]
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, -0.0165758, 0.742375, 0.433112)
@@ -239,32 +240,32 @@ bones/30/rotation = Quaternion(-0.503419, -0.356755, 0.240451, 0.749319)
 bones/30/scale = Vector3(1, 1, 1)
 bones/31/rotation = Quaternion(-0.707107, 0.707107, -1.72868e-08, 2.65887e-08)
 bones/32/position = Vector3(0.126529, -0.0152242, -0.0114849)
-bones/32/rotation = Quaternion(0.261755, 0.336262, 0.902026, -0.069008)
+bones/32/rotation = Quaternion(0.261425, 0.332101, 0.903098, -0.0760268)
 bones/32/scale = Vector3(1.00002, 1, 1.00001)
 bones/33/position = Vector3(2.8847e-08, 0.457059, 2.30237e-08)
-bones/33/rotation = Quaternion(0.011803, 0.868774, -0.256414, -0.423491)
+bones/33/rotation = Quaternion(0.0114434, 0.870611, -0.2486, -0.424387)
 bones/33/scale = Vector3(1.00001, 0.999998, 0.999997)
 bones/34/position = Vector3(-3.52822e-09, 0.441339, -6.7314e-09)
-bones/34/rotation = Quaternion(0.0662031, 0.79037, -0.571748, 0.209849)
+bones/34/rotation = Quaternion(0.082813, 0.789522, -0.564927, 0.225068)
 bones/34/scale = Vector3(0.999978, 1.00002, 1)
 bones/35/position = Vector3(2.06637e-08, 0.229654, -3.73276e-09)
-bones/35/rotation = Quaternion(0.111404, -0.0284217, 0.0160171, 0.99324)
-bones/35/scale = Vector3(0.999999, 1, 1)
+bones/35/rotation = Quaternion(0.110847, -0.0595345, 0.0194998, 0.991861)
+bones/35/scale = Vector3(0.999998, 1, 1)
 bones/36/position = Vector3(-0.12631, -0.0187229, -0.00826977)
-bones/36/rotation = Quaternion(-0.320774, -0.118583, 0.928063, 0.147449)
+bones/36/rotation = Quaternion(-0.321737, -0.114831, 0.927381, 0.152525)
 bones/36/scale = Vector3(1, 1, 1)
 bones/37/position = Vector3(-7.45324e-09, 0.457059, 1.15521e-08)
-bones/37/rotation = Quaternion(-0.00014421, 0.898887, -0.00313069, 0.43817)
+bones/37/rotation = Quaternion(-0.000144312, 0.898887, -0.00313335, 0.438169)
 bones/37/scale = Vector3(0.999999, 1, 1)
 bones/38/position = Vector3(-4.56801e-08, 0.44134, -1.14002e-08)
-bones/38/rotation = Quaternion(-0.0761775, 0.68203, -0.713461, -0.141441)
+bones/38/rotation = Quaternion(-0.0728161, 0.702784, -0.691122, -0.152126)
 bones/38/scale = Vector3(0.999998, 1, 1)
 bones/39/position = Vector3(-4.1685e-09, 0.229654, 7.74456e-09)
-bones/39/rotation = Quaternion(0.149225, 0.1121, -0.0167389, 0.982286)
+bones/39/rotation = Quaternion(0.161523, 0.1506, -0.0153249, 0.97519)
 bones/39/scale = Vector3(1, 1, 1)
 
 [node name="Helmet" parent="Armature/Skeleton3D" index="0"]
-transform = Transform3D(0.799595, 0.00972251, -0.0235034, -0.0114596, 0.797673, -0.0598904, 0.0227071, 0.0601969, 0.797409, -0.0034318, 0.285224, -0.0379424)
+transform = Transform3D(0.799595, 0.00972257, -0.0235033, -0.0114596, 0.797673, -0.0598905, 0.0227071, 0.0601968, 0.797409, -0.00343186, 0.285223, -0.0379423)
 
 [node name="Helmet" parent="Armature/Skeleton3D/Helmet" index="0"]
 visible = false
@@ -273,7 +274,7 @@ surface_material_override/1 = ExtResource("11_egnnu")
 surface_material_override/2 = ExtResource("11_egnnu")
 
 [node name="Blade" parent="Armature/Skeleton3D" index="1"]
-transform = Transform3D(0.14701, 0.0627952, 0.473756, 0.47777, -0.00776153, -0.147227, -0.0111361, 0.49598, -0.0622855, -0.48784, 0.879023, 0.43674)
+transform = Transform3D(0.147011, 0.0627952, 0.473756, 0.47777, -0.00776181, -0.147227, -0.011136, 0.49598, -0.0622855, -0.48784, 0.879022, 0.43674)
 
 [node name="Blade" parent="Armature/Skeleton3D/Blade" index="0"]
 surface_material_override/0 = ExtResource("15_6twlw")
