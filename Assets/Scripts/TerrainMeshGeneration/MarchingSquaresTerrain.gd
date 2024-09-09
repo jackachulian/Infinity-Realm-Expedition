@@ -10,7 +10,6 @@ var dimensions: Vector3i = Vector3i(10, 1, 10):
 		dimensions = new_dimensions
 		generate_height_map()
 		generate_mesh()
-		
 
 var height_map = []
 
