@@ -3,6 +3,8 @@ class_name MoveState
 
 @export var animation_name: String = "Run"
 
+@export var move_stop_state: State
+
 # speed that the entity moves in this state
 @export var speed: float = 5.0
 
@@ -12,12 +14,16 @@ class_name MoveState
 func check_transition(delta: float) -> String:
 	# Go to idle when movement stops
 	if entity.input.direction == Vector3.ZERO:
-		return "Run-Stop"
+		if move_stop_state:
+			return move_stop_state.name
+		else:
+			return "Idle"
 		
-	# Can attack from move
-	if entity.input.main_attack_requested:
-		entity.input.clear_main_attack_buffer()
-		return entity.input.main_attack_state.name
+	# Accept general action. but don't go into move while already in move 
+	# (would cause incorrect anim loop)
+	var requested_action = entity.input.request_action()
+	if requested_action != "" and requested_action != "Move":
+		return requested_action
 		
 	return ""
 	

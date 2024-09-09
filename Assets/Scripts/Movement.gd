@@ -6,10 +6,10 @@ class_name Movement
 # and it modifies this value within the state.
 var speed := 5.0
 
-@export var move_accel: int = 60.0
-@export var stop_decel: int = 45.0
-@export var air_decel: int = 30.0
-@export var stun_decel: int = 10.0
+@export var move_accel: float = 60.0
+@export var stop_decel: float = 45.0
+@export var air_decel: float = 30.0
+@export var stun_decel: float = 10.0
 @export var gravity: float = 25.0
 
 @onready var entity: Entity = $".."
@@ -33,7 +33,11 @@ func _physics_process(delta):
 	# Otherwise, decelerate towards zero if not in midair (simulates friction with ground)
 	elif entity.is_on_floor():
 		var decel;
-		if entity.is_hit_stunned():
+		
+		var decel_override = entity.state_machine.current_state.get_decel_override() if entity.state_machine.current_state else -1
+		if decel_override >= 0:
+			decel = decel_override
+		elif entity.is_hit_stunned():
 			decel = stun_decel
 		elif not entity.is_on_floor():
 			decel = air_decel

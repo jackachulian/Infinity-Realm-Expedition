@@ -21,6 +21,10 @@ func update(delta: float):
 func physics_update(delta: float):
 	pass
 
+# If 0 or higher, overrides movement deceleration during this state.
+func get_decel_override():
+	return -1
+
 # If currently in delay. Player can only attack, dash, shield, etc. while not on delay.
 func is_in_delay() -> bool:
 	return false

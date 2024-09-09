@@ -6,8 +6,14 @@ class_name NoBehaviourState
 # Animtion to play on entering this state, if not empty.
 @export var animation_name: String = "Idle"
 
-# If not null, switch to this state depending on SwitchMode.
+# If true, will try to use a requested action at the end of the animation
+@export var action_on_anim_finish: bool = false
+
+# If not null, switch to this state depending on SwitchMode. 
+# If action_on_anim_finish is true, that will be checked first, then to this state if no requested action.
 @export var state_on_anim_finish: String
+
+
 
 # If not null, switch to this state when touching the ground.
 @export var grounded_state: String
@@ -20,7 +26,8 @@ class_name NoBehaviourState
 
 enum RotateMode {
 	NONE,
-	FACE_INPUT, # player will face in inputted direction during this state
+	FACE_INPUT_AT_START, # player turns to face input direction when entering the state
+	FACE_INPUT_DURING, # player will face in inputted direction during this state
 	FACE_KNOCKBACK # player will face opposite the velocity direction (used for hurt states)
 }
 @export var rotate_mode: RotateMode = RotateMode.NONE
@@ -32,18 +39,35 @@ enum RotateMode {
 enum MovementMode {
 	STOP,
 	FROM_INPUT,
-	NO_CHANGE
+	NO_CHANGE,
+	SET_SPEED_ON_ENTER
 }
 @export var movement_mode: MovementMode = MovementMode.STOP
 
 @export var movement_speed: float
 
-# If true, can switch to main attack during this state if main attack is requested
-@export var can_attack_from_state: bool
+# if above 0, overrides movement deceleration during this state
+@export var decel_override: float = -1
+
+# If true, can cancel into 
+@export var can_use_actions: bool
+
+# If can_use_actions, minimum state time elapsed before actions can be registered.
+@export var action_delay: float = 0.0
+
+# If true, this state cannot switch to itself via action request.
+@export var prevent_self_action_request: bool = false
 
 func check_transition(delta: float) -> String:	
-	if anim_finished and state_on_anim_finish != "":
-		return state_on_anim_finish
+	if anim_finished:
+		if action_on_anim_finish:
+			var requested_action = entity.input.request_action()
+			if requested_action != "":
+				return requested_action
+	
+		# after possible action check, if branch skipped or no action requested, go to state on anim finished.
+		if state_on_anim_finish != "":
+			return state_on_anim_finish
 		
 	if grounded_state != "" and entity.is_on_floor():
 		return grounded_state
@@ -51,9 +75,13 @@ func check_transition(delta: float) -> String:
 	if falling_state != "" and entity.velocity.y < 0:
 		return falling_state
 		
-	if can_attack_from_state and entity.input.main_attack_requested:
-		entity.input.clear_main_attack_buffer()
-		return entity.input.main_attack_state.name
+	if can_use_actions and action_delay >= time_elapsed:
+		var requested_action = entity.input.request_action()
+		# If a state is requested, return that action
+		# Prevent same state if prevent_self_action_request bool is true, 
+		# but ignore that clause if requested action isn't this state
+		if requested_action != "" and (not prevent_self_action_request or requested_action != name):
+			return requested_action
 	
 	return ""
 
@@ -66,17 +94,16 @@ func update_rotation(delta: float):
 	
 	var input_angle
 	
-	if rotate_mode == RotateMode.FACE_INPUT:
+	if rotate_mode == RotateMode.FACE_INPUT_DURING:
 		input_angle = atan2(-entity.input.direction.x, -entity.input.direction.z)
 	elif rotate_mode == RotateMode.FACE_KNOCKBACK:
 		if entity.velocity == Vector3.ZERO:
 			return
 		input_angle = atan2(entity.velocity.x, entity.velocity.z)
+	else:
+		return
 		
-	if rotation_snap > 0:
-		var snap = deg_to_rad(rotation_snap)
-		input_angle = round(input_angle / snap) * snap
-	entity.rotation.y = input_angle
+	entity.face_angle(input_angle)
 
 func physics_update(delta: float):
 	if movement_mode == MovementMode.FROM_INPUT:
@@ -90,6 +117,12 @@ func on_enter_state():
 		entity.anim.play(animation_name)
 	if movement_mode == MovementMode.STOP:
 		entity.movement.direction = Vector3.ZERO
+	
+	var input_angle = atan2(-entity.input.direction.x, -entity.input.direction.z)
+	if rotate_mode == RotateMode.FACE_INPUT_AT_START or rotate_mode == RotateMode.FACE_INPUT_DURING:
+		entity.face_angle(input_angle)
 	if instant_velocity_on_enter:
-		var input_angle = atan2(-entity.input.direction.x, -entity.input.direction.z)
-		entity.velocity += instant_velocity_on_enter.rotated(Vector3.UP, input_angle);
+		entity.velocity = instant_velocity_on_enter.rotated(Vector3.UP, input_angle);
+
+func get_decel_override():
+	return decel_override

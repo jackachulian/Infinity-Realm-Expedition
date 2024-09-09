@@ -32,19 +32,11 @@ func check_transition(delta: float) -> String:
 	if anim_finished:
 		return "Idle"
 		
-	# can cancel into move state if cancel delay passed and move key pressed
-	if not is_in_delay() and entity.input.has_method("is_move_key_just_pressed"):
-		if entity.input.is_move_key_just_pressed():
-			return "Run"
-			
-	# Move to next attack if not in delay and input requested another main attack
-	if not is_in_delay() and entity.input.main_attack_requested:
-		entity.input.clear_main_attack_buffer()
-		# Combo into next skill if there is one. if not use main attack.
-		if combos_into != "":
-			return combos_into
-		else:
-			return entity.input.main_attack_state.name
+	# can cancel into action if cancel delay passed
+	if not is_in_delay():
+		var requested_action = entity.input.request_action()
+		if requested_action != "":
+			return requested_action
 	
 	return ""
 	
@@ -61,6 +53,11 @@ func on_enter_state():
 	if hitbox:
 		hitbox.enable_shape()
 	hitbox_activated = false
+	
+	# upon entering this attack state, turn to face the input direction
+	if entity.input.direction:
+		var input_angle = atan2(-entity.input.direction.x, -entity.input.direction.z)
+		entity.face_angle(input_angle)
 	
 	if slash_effect:
 		slash_effect.play()

@@ -16,10 +16,10 @@ class_name Entity
 # Nodes that may be used by states to get various info
 # idk how godot works but may want to make these get_node_or_null
 @onready var input: GenericInput = $Input # must have direction: Vector3 property
+@onready var state_machine: StateMachine = $StateMachine
 @onready var movement: Movement = $Movement
-#@onready var model: Node3D = $Armature
 @onready var anim: AnimationPlayer = $AnimationPlayer
-#@onready var anim_tree: AnimationTree = $AnimationTree
+
 
 # Amount of seconds this character will show damage_flash_mat for on all meshes
 var flash_timer: float = 0
@@ -44,13 +44,18 @@ func _process(delta: float):
 func _physics_process(delta: float):
 	hit_stun_timer = move_toward(hit_stun_timer, 0, delta)
 
+# Face the given angle. Snap to the nearest increment if rotation_snap is above 0
+func face_angle(angle: float, rotation_snap: float = 45):
+	if rotation_snap > 0:
+		var snap = deg_to_rad(rotation_snap)
+		angle = round(angle / snap) * snap
+	rotation.y = angle
+
 func take_damage(damage: int):
 	hit_points -= damage
 	damage_flash()
 	if hurt_state:
-		var state_machine: StateMachine = get_node_or_null("StateMachine")
-		if state_machine:
-			state_machine.switch_to(hurt_state.name)
+		state_machine.switch_to(hurt_state.name)
 	print(name+" took "+str(damage)+" damage - HP: "+str(hit_points))
 
 func damage_flash():

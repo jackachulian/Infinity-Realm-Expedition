@@ -36,21 +36,21 @@ script = ExtResource("4_4psyd")
 
 [node name="Idle" type="Node" parent="StateMachine" index="0"]
 script = ExtResource("6_sthgl")
-rotate_mode = 1
+rotate_mode = 2
 movement_speed = 4.0
-can_attack_from_state = true
+can_use_actions = true
 
 [node name="Hurt" type="Node" parent="StateMachine" index="1"]
 script = ExtResource("6_sthgl")
 animation_name = "Hurt"
 state_on_anim_finish = "Idle"
-rotate_mode = 2
+rotate_mode = 3
 
 [node name="Jump-Start" type="Node" parent="StateMachine" index="2"]
 script = ExtResource("6_sthgl")
 animation_name = "Jump-Start"
 state_on_anim_finish = "Jump-Up"
-rotate_mode = 1
+rotate_mode = 2
 
 [node name="Jump-Up" type="Node" parent="StateMachine" index="3"]
 script = ExtResource("6_sthgl")
@@ -58,6 +58,7 @@ animation_name = "Jump-Up"
 grounded_state = "Idle"
 falling_state = "Jump-Down"
 instant_velocity_on_enter = Vector3(0, 8.5, -4.5)
+rotate_mode = 1
 movement_mode = 2
 movement_speed = 4.5
 
@@ -69,7 +70,6 @@ movement_mode = 2
 
 [node name="Movement" type="Node" parent="." index="2"]
 script = ExtResource("7_w7v2a")
-move_accel = 600
 
 [node name="Armature" parent="." index="3"]
 transform = Transform3D(-0.5, 0, 4.37114e-08, 0, 0.5, 0, -4.37114e-08, 0, -0.5, 0, 0, 0)

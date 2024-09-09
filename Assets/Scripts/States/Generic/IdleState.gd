@@ -6,18 +6,18 @@ class_name IdleState
 @export var state_on_anim_finished: String
 
 func check_transition(delta: float) -> String:
-	# Go to run (move) state when movement starts
-	if entity.input.direction != Vector3.ZERO:
-		return "Run"
+	# Go to run (move) state when movement starts (does not matter if move key was just pressed)
+	if entity.input.direction != Vector3.ZERO and entity.input.move_state:
+		return entity.input.move_state.name
 		
 	# used for run-stop
 	if anim_finished and state_on_anim_finished != "":
 		return state_on_anim_finished
 		
-	# Attack from idle (and run-stop which also uses this script)
-	if entity.input.main_attack_requested:
-		entity.input.clear_main_attack_buffer()
-		return entity.input.main_attack_state.name
+	# check for general action input (attack, dash, shield, etc)
+	var requested_action = entity.input.request_action()
+	if requested_action != "":
+		return requested_action
 		
 	return ""
 	
