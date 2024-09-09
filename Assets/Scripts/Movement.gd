@@ -14,18 +14,51 @@ var speed := 5.0
 
 @onready var entity: Entity = $".."
 
+@onready var camera: Node3D = get_viewport().get_camera_3d()
+
 # May be modified by move states
 # ex. infinity's run state copies inputted direction to this move direction during run
 var direction: Vector3 = Vector3.ZERO
 
+# The matrix that stretches out movements so that characters move at a uniform speed on the screen.
+const scale_matrix = Transform3D()
+
+# Points in the direction that objects should be scaled in to produce screen uniform movement
+var camera_axis: Vector3
+var scale_factor: float = 16.0/9.0
+
+func camera_screen_uniform_setup():
+	camera_axis = -camera.global_transform.basis.z
+	camera_axis.y = 0
+	camera_axis = camera_axis.normalized()
+	#scale_factor = 1 / -sin(camera.global_rotation.x)
+	
+func screen_uniform_vector(v: Vector3) -> Vector3:
+	var v_parallel = camera_axis * v.dot(camera_axis)
+	var v_perpendicular = v - v_parallel
+	var v_stretched = v_perpendicular + v_parallel * scale_factor
+	return v_stretched
+	
+func inverse_screen_uniform_vector(v: Vector3) -> Vector3:
+	var v_parallel = camera_axis * v.dot(camera_axis)
+	var v_perpendicular = v - v_parallel
+	var v_stretched = v_perpendicular + v_parallel / scale_factor
+	return v_stretched
+
+func _ready():
+	camera_screen_uniform_setup()
+
 func _physics_process(delta):
 	# Apply root motion (subtract instead of add because model is flipped 180 degrees)
 	var root_motion_delta = entity.anim.get_root_motion_position()
-	entity.position -= entity.get_quaternion() * root_motion_delta;
+	entity.position -= screen_uniform_vector(entity.get_quaternion() * root_motion_delta);
 	
 	# store y velocity and set to 0, so that x/z calculations do not use yvel at all
 	var stored_yvel = entity.velocity.y;
 	entity.velocity.y = 0
+	
+	# temporarily undo screen uniform velocity, to prevent uneven acceleration
+	entity.velocity = inverse_screen_uniform_vector(entity.velocity);
 	
 	# Accelerate into in input direction if non-zero input and not stunned
 	if direction != Vector3.ZERO and not entity.is_hit_stunned():
@@ -44,6 +77,9 @@ func _physics_process(delta):
 		else:
 			decel = stop_decel
 		entity.velocity = entity.velocity.move_toward(Vector3.ZERO, decel * delta)
+	
+	# re-apply screen uiform movement
+	entity.velocity = screen_uniform_vector(entity.velocity);
 	
 	# restore stored yvel
 	entity.velocity.y = stored_yvel

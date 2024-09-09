@@ -13,20 +13,37 @@ extends GenericInput
 # counts down seconds for attack buffer
 var attack_buffer_remaining: float = 0
 
+# total amt. of seconds that inputted direction has been non-zero
+var move_input_hold_elapsed: float = 0
+
+# true when dash requested. may need to wait until after brief multi-direction leeway window passes
+var dash_press_queued: bool = false
+
 func _process(delta):
 	super._process(delta)
 	var input_dir = Input.get_vector("left", "right", "forward", "back")
 	var forward = Vector3(input_dir.x, 0, input_dir.y).rotated(Vector3.UP, camera.global_rotation.y)
 	direction = forward.normalized()
 	
+	if input_dir == Vector2.ZERO:
+		move_input_hold_elapsed = 0
+	else:
+		move_input_hold_elapsed += delta
+	
 	if Input.is_action_just_pressed("attack"):
 		attack_buffer_remaining = attack_buffer
 	elif attack_buffer_remaining > 0:
 		attack_buffer_remaining = move_toward(attack_buffer_remaining, 0, delta)
+
+# Check if a move input was just pressed. If so, attacks after delay can cancel into run, etc
+func is_move_key_just_pressed():
+	return Input.is_action_just_pressed("forward") or Input.is_action_just_pressed("back") or Input.is_action_just_pressed("left") or Input.is_action_just_pressed("right")
 	
 func is_dash_requested():
-	# Dash while moving and shield just pressed
-	var shield_pressed = Input.is_action_just_pressed("shield") and direction != Vector3.ZERO
+	# Dash while moving and shield just pressed 
+	
+	# move must be held for just a tiny bit longer than 0, allows leeway for diagonal dash input
+	var shield_pressed = Input.is_action_just_pressed("shield") and direction != Vector3.ZERO and move_input_hold_elapsed > 0.05
 	# Likewise, dash while shielding and move just pressed
 	var move_pressed = Input.is_action_pressed("shield") and is_move_key_just_pressed()
 	
@@ -41,10 +58,6 @@ func is_shield_requested():
 	# Shield while holding shield button and not moving
 	# Dash is checked before shield in GenericInput. Otherwise, shield would always be inputted
 	return Input.is_action_pressed("shield")
-	
-# Check if a move input was just pressed. If so, attacks after delay can cancel into run, etc
-func is_move_key_just_pressed():
-	return Input.is_action_just_pressed("forward") or Input.is_action_just_pressed("back") or Input.is_action_just_pressed("left") or Input.is_action_just_pressed("right")
 
 # Called when an attack is registered by the state machine. 
 # ensures one attack input doesn't trigger multiple attacks.

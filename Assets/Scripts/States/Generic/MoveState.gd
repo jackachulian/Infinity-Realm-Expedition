@@ -31,11 +31,7 @@ func physics_update(delta: float):
 	entity.movement.direction = entity.input.direction
 	
 func update(delta: float):
-	var angle = atan2(-entity.input.direction.x, -entity.input.direction.z)
-	if rotation_snap > 0:
-		var snap = deg_to_rad(rotation_snap)
-		angle = round(angle / snap) * snap
-	entity.rotation.y = angle
+	entity.rotation.y = entity.input.uniform_input_angle()
 	
 func on_enter_state():
 	entity.anim.play(animation_name)

@@ -75,7 +75,7 @@ func check_transition(delta: float) -> String:
 	if falling_state != "" and entity.velocity.y < 0:
 		return falling_state
 		
-	if can_use_actions and action_delay >= time_elapsed:
+	if can_use_actions and time_elapsed >= action_delay:
 		var requested_action = entity.input.request_action()
 		# If a state is requested, return that action
 		# Prevent same state if prevent_self_action_request bool is true, 

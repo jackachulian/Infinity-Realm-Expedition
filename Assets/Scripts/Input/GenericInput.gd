@@ -53,6 +53,14 @@ func _process(delta):
 	if (dash_cooldown_remaining <= 0):
 		dashes_left = dash_count
 
+func uniform_input_angle(snap: bool = true):
+	var uniform_input = entity.movement.screen_uniform_vector(Vector3(-direction.x, 0, -direction.z))
+	var angle = atan2(uniform_input.x, uniform_input.z)
+	if snap:
+		var snap_rad = deg_to_rad(45)
+		angle = round(angle / snap_rad) * snap_rad
+	return angle
+
 # Returns the action that the entity is trying to perform.
 # May interact with buffers and/or clear them in the process of generating the input
 # to be returned to state machine, meaning it should be called once per check_transition,

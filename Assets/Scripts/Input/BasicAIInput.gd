@@ -30,4 +30,4 @@ func clear_main_attack_buffer():
 	attack_cooldown_remaining = main_attack_cooldown
 
 func is_main_attack_requested():
-	return attack_cooldown_remaining == 0
+	return attack_cooldown_remaining <= 0

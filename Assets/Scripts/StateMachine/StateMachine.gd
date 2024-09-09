@@ -62,6 +62,9 @@ func switch_to(state: String):
 	
 	print(entity.name+"'s state changed to "+current_state.name)
 
+func is_in_state(state_name: String):
+	return current_state and current_state.name == state_name
+
 func _on_anim_finished(anim_name: StringName) -> void:
 	if current_state:
 		current_state.anim_finished = true
