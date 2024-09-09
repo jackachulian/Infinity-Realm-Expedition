@@ -95,11 +95,14 @@ func update_rotation(delta: float):
 	var input_angle
 	
 	if rotate_mode == RotateMode.FACE_INPUT_DURING:
-		input_angle = atan2(-entity.input.direction.x, -entity.input.direction.z)
+		input_angle = entity.input.uniform_input_angle()
 	elif rotate_mode == RotateMode.FACE_KNOCKBACK:
 		if entity.velocity == Vector3.ZERO:
 			return
-		input_angle = atan2(entity.velocity.x, entity.velocity.z)
+		var screen_uniform_vel = entity.movement.screen_uniform_vector(entity.velocity)
+		input_angle = atan2(screen_uniform_vel.x, screen_uniform_vel.z)
+		var snap_rad = deg_to_rad(45)
+		input_angle = round(input_angle / snap_rad) * snap_rad
 	else:
 		return
 		
@@ -110,7 +113,7 @@ func physics_update(delta: float):
 		entity.movement.direction = entity.input.direction
 
 func on_enter_state():
-	if movement_mode != MovementMode.NO_CHANGE:
+	if movement_mode == MovementMode.SET_SPEED_ON_ENTER:
 		entity.movement.speed = movement_speed
 	
 	if animation_name != "":
@@ -118,11 +121,11 @@ func on_enter_state():
 	if movement_mode == MovementMode.STOP:
 		entity.movement.direction = Vector3.ZERO
 	
-	var input_angle = atan2(-entity.input.direction.x, -entity.input.direction.z)
+	var input_angle = entity.input.uniform_input_angle()
 	if rotate_mode == RotateMode.FACE_INPUT_AT_START or rotate_mode == RotateMode.FACE_INPUT_DURING:
 		entity.face_angle(input_angle)
 	if instant_velocity_on_enter:
-		entity.velocity = instant_velocity_on_enter.rotated(Vector3.UP, input_angle);
+		entity.velocity = entity.movement.screen_uniform_vector(instant_velocity_on_enter.rotated(Vector3.UP, input_angle));
 
 func get_decel_override():
 	return decel_override
