@@ -15,6 +15,10 @@ func check_transition(delta: float) -> String:
 		
 	return ""
 	
+func update(delta: float):
+	# TODO: Shield should face aim direction
+	pass
+	
 func physics_update(delta: float):
 	pass
 

@@ -121,11 +121,10 @@ func on_enter_state():
 	if movement_mode == MovementMode.STOP:
 		entity.movement.direction = Vector3.ZERO
 	
-	var input_angle = entity.input.uniform_input_angle()
 	if rotate_mode == RotateMode.FACE_INPUT_AT_START or rotate_mode == RotateMode.FACE_INPUT_DURING:
-		entity.face_angle(input_angle)
+		entity.face_angle(entity.input.uniform_input_angle(true))
 	if instant_velocity_on_enter:
-		entity.velocity = entity.movement.screen_uniform_vector(instant_velocity_on_enter.rotated(Vector3.UP, input_angle));
+		entity.velocity = entity.movement.screen_uniform_vector(instant_velocity_on_enter.rotated(Vector3.UP, entity.input.uniform_input_angle(false)));
 
 func get_decel_override():
 	return decel_override

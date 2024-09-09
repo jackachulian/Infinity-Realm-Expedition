@@ -234,7 +234,6 @@ bones/17/rotation = Quaternion(0.443564, 0.704926, -0.539295, 0.12446)
 bones/17/scale = Vector3(1, 1, 1)
 bones/18/position = Vector3(-6.81765e-08, 0.190818, -8.28666e-09)
 bones/18/rotation = Quaternion(-0.00512209, 0.0230803, -0.187445, 0.98199)
-bones/18/scale = Vector3(1, 1, 1)
 bones/19/position = Vector3(-1.03759e-07, 0.269378, -7.64442e-08)
 bones/19/rotation = Quaternion(0.0105437, 0.0316221, -0.126825, 0.991365)
 bones/19/scale = Vector3(1, 1, 1)
@@ -296,7 +295,7 @@ bones/39/rotation = Quaternion(0.108899, -0.0208534, -0.0126774, 0.993753)
 bones/39/scale = Vector3(1, 1, 0.999997)
 
 [node name="Helmet" parent="Armature/Skeleton3D" index="0"]
-transform = Transform3D(0.8, 4.19471e-09, -9.83394e-09, -4.27582e-09, 0.8, -1.49012e-07, 3.81877e-09, 2.14204e-08, 0.8, -0.00204646, 0.363882, -0.0276381)
+transform = Transform3D(0.8, -2.38484e-08, -8.90689e-08, 2.16616e-08, 0.8, -4.18164e-07, 8.83828e-08, 3.75323e-07, 0.8, -0.00204643, 0.363882, -0.0276384)
 
 [node name="Helmet" parent="Armature/Skeleton3D/Helmet" index="0"]
 visible = false
@@ -305,7 +304,7 @@ surface_material_override/1 = ExtResource("11_egnnu")
 surface_material_override/2 = ExtResource("11_egnnu")
 
 [node name="Blade" parent="Armature/Skeleton3D" index="1"]
-transform = Transform3D(0.499856, 0.00847336, 0.00847104, 0.00847217, -6.51891e-08, -0.499929, -0.00847216, 0.499928, -0.000143556, -1.11425, 1.55299, 0.340716)
+transform = Transform3D(0.499857, 0.00847297, 0.00847099, 0.00847217, -7.97209e-07, -0.499928, -0.00847176, 0.499928, -0.000144387, -1.11426, 1.55299, 0.340715)
 
 [node name="Blade" parent="Armature/Skeleton3D/Blade" index="0"]
 surface_material_override/0 = ExtResource("15_6twlw")
