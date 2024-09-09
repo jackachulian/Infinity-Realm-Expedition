@@ -64,6 +64,9 @@ height = 1.8
 radius = 0.375
 
 [node name="infinity" instance=ExtResource("1_rm5qk")]
+collision_layer = 4
+collision_mask = 5
+platform_floor_layers = 1
 script = ExtResource("2_pd53c")
 weapon = ExtResource("3_b1uya")
 damage_flash_mat = ExtResource("4_cyyo3")

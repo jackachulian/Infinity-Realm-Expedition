@@ -16,6 +16,12 @@
 height = 0.6
 
 [node name="redslime" node_paths=PackedStringArray("hurt_state") instance=ExtResource("1_f33ua")]
+collision_layer = 4
+collision_mask = 5
+axis_lock_angular_x = true
+axis_lock_angular_y = true
+axis_lock_angular_z = true
+platform_floor_layers = 1
 script = ExtResource("2_5lb7x")
 damage_flash_mat = ExtResource("3_quer2")
 hurt_state = NodePath("StateMachine/Hurt")
@@ -51,9 +57,9 @@ script = ExtResource("6_sthgl")
 animation_name = "Jump-Up"
 grounded_state = "Idle"
 falling_state = "Jump-Down"
-instant_velocity_on_enter = Vector3(0, 8.5, -4)
+instant_velocity_on_enter = Vector3(0, 8.5, -4.5)
 movement_mode = 2
-movement_speed = 6.0
+movement_speed = 4.5
 
 [node name="Jump-Down" type="Node" parent="StateMachine" index="4"]
 script = ExtResource("6_sthgl")
@@ -63,7 +69,7 @@ movement_mode = 2
 
 [node name="Movement" type="Node" parent="." index="2"]
 script = ExtResource("7_w7v2a")
-move_accel = 8000
+move_accel = 600
 
 [node name="Armature" parent="." index="3"]
 transform = Transform3D(-0.5, 0, 4.37114e-08, 0, 0.5, 0, -4.37114e-08, 0, -0.5, 0, 0, 0)
