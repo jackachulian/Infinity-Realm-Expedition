@@ -100,15 +100,15 @@ func generate_mesh():
 				if brh and not (trh or blh):
 					add_corner_wall(x, y, z, 1, 1, false)
 					
-				# If one corner is lower or equal to current height and all others are higher,
+				# If one corner is lower or equal to current height and adjacent are higher,
 				# an inner corner is needed.
-				if not tlh and trh and blh and brh:
+				if not tlh and trh and blh:
 					add_corner_wall(x, y, z, 0, 0, true)
-				if not trh and tlh and blh and brh:
+				if not trh and tlh and brh:
 					add_corner_wall(x, y, z, 1, 0, true)
-				if not blh and trh and tlh and brh:
+				if not blh and tlh and brh:
 					add_corner_wall(x, y, z, 0, 1, true)
-				if not brh and trh and blh and tlh:
+				if not brh and trh and blh:
 					add_corner_wall(x, y, z, 1, 1, true)
 					
 				# If both corners on an edge are higher and the opposite corners are lower or equal,
@@ -138,14 +138,14 @@ func generate_mesh():
 				if tl and tr and bl and brh:
 					add_inner_corner_floor(x, y, z, 1, 1)
 				
-				# If only one corner is equal but one is higher, put an outer corner floor there.
-				if tl and trh and blh and brh:
+				# If a corner is equal but adjacent are higher, put an outer corner floor there.
+				if tl and trh and blh:
 					add_outer_corner_floor(x, y, z, 0, 0)
-				if tlh and tr and blh and brh:
+				if tr and tlh and brh:
 					add_outer_corner_floor(x, y, z, 1, 0)
-				if tlh and trh and bl and brh:
+				if bl and tlh and brh:
 					add_outer_corner_floor(x, y, z, 0, 1)
-				if tlh and trh and blh and br:
+				if br and trh and blh:
 					add_outer_corner_floor(x, y, z, 1, 1)
 					
 				# If one edge is equal and opposite edge is higher, add an edge floor.
@@ -157,6 +157,19 @@ func generate_mesh():
 					add_rectangle_floor(x, y, z, 0, 0.5, 1, 1)
 				if tr and br and tlh and blh:
 					add_rectangle_floor(x, y, z, 0.5, 0, 1, 1)
+					
+				# If in between a gap where opposite corners are equal/higher (at least 1 equal) 
+				# and the other corners are higher or lower and both adjacent are not higher,
+				# place an inner floor covering all but corners,
+				# and then create floors for the only visible corners.
+				if (tl or br) and (tl or tlh) and (br or brh) and not (trh or blh) and not tr and not bl:
+					add_outer_corner_floor(x, y, z, 0, 0)
+					add_outer_corner_floor(x, y, z, 1, 1)
+					add_inner_floor(x, y, z)
+				if (tr or bl) and (tr or trh) and (bl or blh) and not (tlh or brh) and not tl and not br:
+					add_outer_corner_floor(x, y, z, 0, 1)
+					add_outer_corner_floor(x, y, z, 1, 0)
+					add_inner_floor(x, y, z)
 					
 				# If thers is a corner where the adjacent corners are both lower, add a corner floor there.
 				# This means two corners might be added on a single tile. this is fine, they shouldn't overlap, they are in their own corners
@@ -182,15 +195,17 @@ func generate_mesh():
 					add_rectangle_floor(x, y, z, 0.5, 0, 1, 1)
 					
 				# Check for inner corner floors.
-				# Corner must be lower, all others corners must be at current height or higher, 
-				# and at least one corner must be at current height for this floor to be visible.
-				if not (tl or tlh) and (tr or trh) and (bl or blh) and (br or brh) and (tr or bl or br):
+				# Corner must be lower, all others corners must be at current height or higher, at least one must be at current height.
+				# NOTE: if this is to work with CSG in the cuture, then all points other than corner must be at same height,
+				# and handling corners where one is lower, one is same and two others are higher must be added.
+				# too complex for me r and i will probably rewrite the system to be less brute forcey before that anyways.
+				if not (tl or tlh) and (tr or bl or br) and (tr or trh) and (bl or blh) and (br or brh):
 					add_inner_corner_floor(x, y, z, 0, 0)
-				if not (tr or trh) and (tl or tlh) and (bl or blh) and (br or brh) and (tl or bl or br):
+				if not (tr or trh) and (tl or bl or br) and (tl or tlh) and (bl or blh) and (br or brh):
 					add_inner_corner_floor(x, y, z, 1, 0)
-				if not (bl or blh) and (tl or tlh) and (tr or trh) and (br or brh) and (tl or tr or br):
+				if not (bl or blh) and (tl or tr or br) and (tl or tlh) and (tr or trh) and (br or brh):
 					add_inner_corner_floor(x, y, z, 0, 1)
-				if not (br or brh) and (tl or tlh) and (tr or trh) and (bl or blh) and (tl or tr or bl):
+				if not (br or brh) and (tl or tr or bl) and (tl or tlh) and (tr or trh) and (bl or blh):
 					add_inner_corner_floor(x, y, z, 1, 1)
 
 	# Commit to a mesh.
@@ -278,6 +293,27 @@ func add_full_floor(x: int, y: int, z: int):
 	
 	st.set_uv(Vector2(1, 0))
 	st.add_vertex(Vector3(x+1, y, z))
+	
+# Add a floor covering all but the outer corners.
+func add_inner_floor(x: int, y: int, z: int):
+	st.set_uv(Vector2(0.5, 0))
+	st.add_vertex(Vector3(x+0.5, y, z))
+	
+	st.set_uv(Vector2(1, 0.5))
+	st.add_vertex(Vector3(x+1, y, z+0.5))
+
+	st.set_uv(Vector2(0, 0.5))
+	st.add_vertex(Vector3(x, y, z+0.5))
+	
+	
+	st.set_uv(Vector2(0.5, 1))
+	st.add_vertex(Vector3(x+0.5, y, z+1))
+
+	st.set_uv(Vector2(0, 0.5))
+	st.add_vertex(Vector3(x, y, z+0.5))
+	
+	st.set_uv(Vector2(1, 0.5))
+	st.add_vertex(Vector3(x+1, y, z+0.5))
 	
 # Adds an outer corner, covering only 1 of 4 corners of the tile.
 # if connect_x is 0, will connect to left (negative x direction), right if connect_x is 1.
