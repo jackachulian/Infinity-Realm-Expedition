@@ -1,5 +1,5 @@
 @tool
-class_name MarchingSquaresTerrain
+class_name BruteForceMarchingSquares
 extends MeshInstance3D
 
 # im gonna forget what this code does a day after i write it, even with the comments
