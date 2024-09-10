@@ -1,6 +1,6 @@
 [gd_scene load_steps=6 format=4 uid="uid://xex0wmxv1o4i"]
 
-[ext_resource type="Script" path="res://Assets/Scripts/TerrainMeshGeneration/SurfaceToolMarchingSquares.gd" id="1_8l7j6"]
+[ext_resource type="Script" path="res://Assets/Scripts/TerrainMeshGeneration/BruteForceMarchingSquares.gd" id="1_8l7j6"]
 [ext_resource type="Shader" path="res://Assets/Shaders/terrain.gdshader" id="1_jwihy"]
 [ext_resource type="Texture2D" uid="uid://bvwn1hn01y1sv" path="res://Assets/Textures/Heightmaps/test1.png" id="3_2tmsv"]
 

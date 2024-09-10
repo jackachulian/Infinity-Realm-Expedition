@@ -2,6 +2,8 @@
 class_name MarchingSquaresTerrain
 extends MeshInstance3D
 
+# im gonna forget what this code does a day after i write it, even with the comments
+# that is why i'mmm gonna try to make a new one.
 
 # Dimensions of the terrain.
 # x = x length
