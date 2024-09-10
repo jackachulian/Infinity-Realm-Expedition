@@ -84,11 +84,9 @@ func generate_mesh():
 				var bl: bool = height_map[z+1][x] == y
 				var br: bool = height_map[z+1][x+1] == y
 				
-				## Defines which corners' heights are greater OR equal to the current height layer
-				#var tl = tlh or tle
-				#var tr = trh or tre
-				#var bl = blh or ble
-				#var br = brh or bre
+				# If all four corners are lower than the current height, no floor can be here
+				if not (tl or tlh) and not (tr or trh) and not (bl or blh) and not (br or brh):
+					continue
 					
 				# If all corners are equal or higher, put a full floor here, as no corners are lower so floor covers full tile.
 				# Part of the floor may be under walls but this is okay as they will be fully underground and not visible.
@@ -120,6 +118,17 @@ func generate_mesh():
 					add_rectangle_floor(x, y, z, 0, 0.5, 1, 1)
 				if (tr or trh) and (br or brh) and (tr or br) and not (tl or blh) and not (bl or blh):
 					add_rectangle_floor(x, y, z, 0.5, 0, 1, 1)
+					
+				# Check for inner corners.
+				# Corner must be missing and oppisite corner must be at current height.
+				if not tl and (tr or trh) and (bl or blh) and (br):
+					add_inner_corner_floor(x, y, z, 0, 0)
+				if not tr and (tl or tlh) and (bl) and (br or brh):
+					add_inner_corner_floor(x, y, z, 1, 0)
+				if not bl and (tl or tlh) and (tr) and (br or brh):
+					add_inner_corner_floor(x, y, z, 0, 1)
+				if not br and (tl) and (tr or trh) and (bl or blh):
+					add_inner_corner_floor(x, y, z, 1, 1)
 
 	# Commit to a mesh.
 	mesh = st.commit()
@@ -168,6 +177,63 @@ func add_outer_corner_floor(x: int, y: int, z: int, connect_x: int, connect_z: i
 		# add x edge
 		st.set_uv(Vector2(connect_x, 0.5))
 		st.add_vertex(Vector3(x+connect_x, y, z+0.5))
+	
+# Adds an inner corner, covering 3 of 4 corners of the tile and leaving 1 corner uncovered.
+# if connect_x is 0, will connect to left (negative x direction), right if connect_x is 1.
+# if connect_z is 0 will connect to back (negative z dirrection), forward if connect_z is 1.
+func add_inner_corner_floor(x: int, y: int, z: int, connect_x: int, connect_z: int):
+	# add corner tile
+	
+	# add corner opposite of connection corner
+	var add_opposite_corner = func():
+		st.set_uv(Vector2(1-connect_x, 1-connect_z)) # this vertex is used in all 3 tris, is the one opposite the empty corner
+		st.add_vertex(Vector3(x+1-connect_x, y, z+1-connect_z))
+	
+	# add corner that shares x with connection corner
+	var add_x_corner = func():
+		st.set_uv(Vector2(connect_x, 1-connect_z))
+		st.add_vertex(Vector3(x+connect_x, y, z+1-connect_z))
+		
+	# add corner that shares z with connection corner
+	var add_z_corner = func():
+		st.set_uv(Vector2(1-connect_x, connect_z))
+		st.add_vertex(Vector3(x+1-connect_x, y, z+connect_z))
+	
+	# add the x connection point
+	var add_x_connector = func():
+		st.set_uv(Vector2(connect_x, 0.5))
+		st.add_vertex(Vector3(x+connect_x, y, z+0.5))
+	
+	# add the z connection point
+	var add_z_connector = func():
+		st.set_uv(Vector2(0.5, connect_z))
+		st.add_vertex(Vector3(x+0.5, y, z+connect_z))
+		
+	# use different orientation based on the corner orientations
+	if (connect_x == connect_z):
+		add_opposite_corner.call()
+		add_x_connector.call()
+		add_z_connector.call()
+		
+		add_opposite_corner.call()
+		add_x_corner.call()
+		add_x_connector.call()
+		
+		add_opposite_corner.call()
+		add_z_connector.call()
+		add_z_corner.call()
+	else:
+		add_opposite_corner.call()
+		add_z_connector.call()
+		add_x_connector.call()
+		
+		add_opposite_corner.call()
+		add_x_connector.call()
+		add_x_corner.call()
+		
+		add_opposite_corner.call()
+		add_z_corner.call()
+		add_z_connector.call()
 	
 # Add a rectangle floor within the passed tile.
 # x, y, z is the coordinates of the top-left corner.
