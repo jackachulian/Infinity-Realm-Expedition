@@ -37,7 +37,7 @@ stretch_shrink = 4
 
 [node name="SubViewport" type="SubViewport" parent="SubViewportContainer"]
 handle_input_locally = false
-size = Vector2i(360, 202)
+size = Vector2i(480, 270)
 render_target_update_mode = 4
 
 [node name="CameraPivot" type="Node3D" parent="SubViewportContainer/SubViewport"]

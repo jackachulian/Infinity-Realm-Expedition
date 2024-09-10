@@ -1,26 +1,57 @@
 @tool
+class_name MarchingSquaresTerrain
 extends MeshInstance3D
+
 
 # Dimensions of the terrain.
 # x = x length
 # y = max height.
 # z = z length
-var dimensions: Vector3i = Vector3i(10, 1, 10):
+@export var dimensions: Vector3i = Vector3i(10, 1, 10):
 	set(new_dimensions):
 		dimensions = new_dimensions
-		generate_height_map()
+		load_height_map()
 		generate_mesh()
 
-var height_map = []
+var height_map: Array
+
+@export var height_map_image: Texture2D
 
 var rng = RandomNumberGenerator.new()
 
 var st: SurfaceTool
 
 func _ready() -> void:
-	generate_height_map()
+	load_height_map()
 	generate_mesh()
 
+func load_height_map():	
+	height_map = []
+	height_map.resize(dimensions.z)
+	
+	for z in range(dimensions.z):
+		height_map[z] = []
+		height_map[z].resize(dimensions.x)
+		for x in range(dimensions.x):
+			height_map[z][x] = 0
+		
+	if not height_map_image:
+		generate_random_height_map()
+		return
+	
+	var image = height_map_image.get_image()
+	
+	for z in range(min(dimensions.z, image.get_height()+1) - 1):
+		for x in range(min(dimensions.x, image.get_width()+1) - 1):
+			var height = round(image.get_pixel(x, z).r * dimensions.y)
+			
+			height_map[z][x] = height
+			
+			# raise all 4 corners to the mighest out of any height assigned to it yet.
+			#height_map[z][x] = max(height_map[z][x], height)
+			#height_map[z][x+1] = max(height_map[z][x+1], height)
+			#height_map[z+1][x] = max(height_map[z+1][x], height)
+			#height_map[z+1][x+1] = max(height_map[z+1][x+1], height)
 	
 func generate_mesh():
 	st = SurfaceTool.new()
@@ -52,34 +83,42 @@ func generate_mesh():
 				var tr: bool = height_map[z][x+1] == y
 				var bl: bool = height_map[z+1][x] == y
 				var br: bool = height_map[z+1][x+1] == y
+				
+				## Defines which corners' heights are greater OR equal to the current height layer
+				#var tl = tlh or tle
+				#var tr = trh or tre
+				#var bl = blh or ble
+				#var br = brh or bre
 					
 				# If all corners are equal or higher, put a full floor here, as no corners are lower so floor covers full tile.
 				# Part of the floor may be under walls but this is okay as they will be fully underground and not visible.
 				# It is already guaranteed the floor will be at least partially visible, because at least one of its corners are at the current height,
 				# as the code block will not reach this point if all four corners are higher.
-				if (tl or tlh) and (tr or tlh) and (bl or blh) and (br or blh):
+				if (tl or tlh) and (tr or trh) and (bl or blh) and (br or brh):
 					add_full_floor(x, y, z)
 					continue
 					
-				# If a corner is equal but the adjacent corners are not, add a corner floor there.
+				# If thers is a corner where the adjacent corners are both lower, add a corner floor there.
 				# This means two corners might be added on a single tile. this is fine, they shouldn't overlap, they are in their own corners
-				if tl and not (tr or bl):
+				# optional visual change though: bridge the two corners instead of making two separate corner pieces
+				if tl and not (tr or trh) and not (bl or blh):
 					add_outer_corner_floor(x, y, z, 0, 0)
-				if tr and not (tl or br):
+				if tr and not (tl or tlh) and not (br or brh):
 					add_outer_corner_floor(x, y, z, 1, 0)
-				if bl and not (tl or br):
+				if bl and not (tl or tlh) and not (br or brh):
 					add_outer_corner_floor(x, y, z, 0, 1)
-				if br and not (tr or bl):
+				if br and not (tr or trh) and not (bl or blh):
 					add_outer_corner_floor(x, y, z, 1, 1)
 					
-				# If one side is equal and other side is not, add a half floor along that edge.
-				if (tl and tr) and not (bl and br):
+				# If there is one edge where both corners are equal or higher with at least one of them equal, 
+				# and the opposite edge is lower, add a half floor along that edge.
+				if (tl or tlh) and (tr or trh) and (tl or tr) and not (bl or blh) and not (br or brh):
 					add_rectangle_floor(x, y, z, 0, 0, 1, 0.5)
-				if (tl and bl) and not (tr and br):
+				if (tl or tlh) and (bl or blh) and (tl or bl) and not (tr or trh) and not (br or brh):
 					add_rectangle_floor(x, y, z, 0, 0, 0.5, 1)
-				if (bl and br) and not (tl and tr):
+				if (bl or blh) and (br or brh) and (bl or br) and not (tl or tlh) and not (tr or trh):
 					add_rectangle_floor(x, y, z, 0, 0.5, 1, 1)
-				if (tr and br) and not (tl and bl):
+				if (tr or trh) and (br or brh) and (tr or br) and not (tl or blh) and not (bl or blh):
 					add_rectangle_floor(x, y, z, 0.5, 0, 1, 1)
 
 	# Commit to a mesh.
@@ -115,19 +154,26 @@ func add_outer_corner_floor(x: int, y: int, z: int, connect_x: int, connect_z: i
 	st.set_uv(Vector2(connect_x, connect_z))
 	st.add_vertex(Vector3(x+connect_x, y, z+connect_z))
 	
-	# add x edge
-	st.set_uv(Vector2(connect_x, 0.5))
-	st.add_vertex(Vector3(x+connect_x, y, z+0.5))
+	# Add the x edgevertex after z if doing so will make clockwise face up, which is tr and bl (found out heuristically idk the math)
+	if (connect_x != connect_z):
+		# add x edge
+		st.set_uv(Vector2(connect_x, 0.5))
+		st.add_vertex(Vector3(x+connect_x, y, z+0.5))
 	
 	# add z edge
 	st.set_uv(Vector2(0.5, connect_z))
 	st.add_vertex(Vector3(x+0.5, y, z+connect_z))
 	
+	if (connect_x == connect_z):
+		# add x edge
+		st.set_uv(Vector2(connect_x, 0.5))
+		st.add_vertex(Vector3(x+connect_x, y, z+0.5))
+	
 # Add a rectangle floor within the passed tile.
 # x, y, z is the coordinates of the top-left corner.
 # start_x, start_z, end_x and end_z define coordinates relative to the top-left corner.
 # start_x should be lower than end_x and start_z should be lower than end_z; otherwise, UVs might get messed up
-func add_rectangle_floor(x: int, y: int, z: int, start_x: int, start_z: int, end_x: int, end_z: int):
+func add_rectangle_floor(x: int, y: int, z: int, start_x: float, start_z: float, end_x: float, end_z: float):
 	# Top-left tri
 	st.set_uv(Vector2(start_x, start_z))
 	st.add_vertex(Vector3(x+start_x, y, z+start_z))
@@ -150,7 +196,7 @@ func add_rectangle_floor(x: int, y: int, z: int, start_x: int, start_z: int, end
 	st.add_vertex(Vector3(x+end_x, y, z+start_z))
 	
 	
-func generate_height_map():
+func generate_random_height_map():
 	height_map = []
 	height_map.resize(dimensions.z)
 	
