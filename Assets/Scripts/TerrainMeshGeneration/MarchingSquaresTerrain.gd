@@ -13,9 +13,7 @@ var height_map: Array
 @export var height_map_image: Texture2D
 
 # The max height distance between points before a wall is created between them
-@export var max_slope: float = 0.1
-
-var rng = RandomNumberGenerator.new()
+@export var merge_threshold: float = 0.06
 
 var st: SurfaceTool
 
@@ -28,23 +26,18 @@ func generate_mesh():
 	st = SurfaceTool.new()
 
 	st.begin(Mesh.PRIMITIVE_TRIANGLES)
-	
-	var rules: Array[MarchingSquareRule] = []
-	for rule in get_children():
-		if rule is MarchingSquareRule:
-			rules.append(rule)
-	
+			
 	# Loop over all xz coordinates
 	for z in range(dimensions.z - 1):
 		for x in range(dimensions.x - 1):
-			# Move upward and add any rule tiles that apply
-			for y in range(dimensions.y + 1):
-				for rule in rules:
-					for rotation in range(4):
-						if rule.check_valid()
+			var a_height = height_map[z][x] # top-left
+			var b_height = height_map[z][x+1] # top-right
+			var c_height = height_map[z+1][x] # bottom-left
+			var d_height = height_map[z+1][x+1]
+			
+			
 	
 	mesh = st.commit()
-	
 	
 func load_height_map():	
 	height_map = []
@@ -54,7 +47,7 @@ func load_height_map():
 		height_map[z] = []
 		height_map[z].resize(dimensions.x)
 		for x in range(dimensions.x):
-			height_map[z][x] = 0
+			height_map[z][x] = 0.0
 		
 	if not height_map_image:
 		return
