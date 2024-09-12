@@ -12,6 +12,9 @@ var height_map: Array
 
 @export var height_map_image: Texture2D
 
+# possible change: have  aflat lciffs variable. if false, cliffs points will be from the heightmap.
+# would probably need some kind of system to note the amount of adjacent points for each lower point. idk how i would even implement that
+
 # The max height distance between points before a wall is created between them
 @export var merge_threshold: float = 0.06
 
@@ -30,7 +33,12 @@ var ay: float
 var by: float
 var cy: float
 var dy: float
-# amount of times to rotate placed vertices counter-clockwise
+# Whether or not edges are connected
+var ab: bool
+var bd: bool
+var cd: bool
+var ac: bool
+# amount of times to rotate placed vertices clockwise in order to translate to the current rotation case
 var r: int = 0
 			
 func generate_mesh():
@@ -54,27 +62,20 @@ func generate_mesh():
 			dy = height_map[z+1][x+1] # bottom-right
 			
 			# Track which edges shold be connected and not have a wall bewteen them.
-			var ab = abs(by-ay) < merge_threshold # top edge
-			var bd = abs(dy-by) < merge_threshold # left edge
-			var dc = abs(cy-dy) < merge_threshold # right edge
-			var ca = abs(ay-cy) < merge_threshold # bottom edge
+			ab = abs(by-ay) < merge_threshold # top edge
+			bd = abs(dy-by) < merge_threshold # left edge
+			cd = abs(cy-dy) < merge_threshold # right edge
+			ac = abs(ay-cy) < merge_threshold # bottom edge
 			
-			# Marching square case should be used if the corner is part of either connecting wall edge
-			var a = ab or ca
-			var b = bd or ab
-			var c = ca or dc
-			var d = dc or bd
-			
-			# If all four edges are connected, add a full floor here
-			if ab and bd and dc and ca:
+			# If all four edges are connected, full floor here
+			if ab and bd and cd and ac:
 				add_full_floor()
-				
+				continue
+
 			# edges going clockwise around the cell
-			var cell_edges = [ab, bd, dc, ca]
+			var cell_edges = [ab, bd, cd, ac]
 			# point heights going clockwise around the cell
 			var point_heights = [ay, by, dy, cy]
-			# point has-edge states going clockwise around the cell
-			var points = [a, b, d, c]
 			
 			# Sort the points by ascending height, storing the point indexes in height here
 			var point_heights_relative = [0, 1, 2, 3]
@@ -82,45 +83,52 @@ func generate_mesh():
 				return point_heights[p1] < point_heights[p2]
 			point_heights_relative.sort_custom(sort)
 			
-			
-			
-			# Get the height of the corner at the given index. For top-left case it is [A, B, D, C]
-			# 0 = top left, 1 = top right, 2 = bottom right, 3 = bottom left
-			
-			# The edge of the wall below the current height.
-			# If null / zero, there is no wall below (current height is the bottom).
-			var edge_below: Vector4
-			
 			# Starting from the lowest corner, build the tile up
 			for i in range(4):
 				# Use the rotation of the corner - the amount of counter-clockwise rotations for it to become the top-left corner, which is just its index in the point lists.
 				r = point_heights_relative[i]
+				
+				ab = cell_edges[r]
+				bd = cell_edges[(r+1)%4]
+				cd = cell_edges[(r+2)%4]
+				ac = cell_edges[(r+3)%4]
 				
 				ay = point_heights[r]
 				by = point_heights[(r+1)%4]
 				dy = point_heights[(r+2)%4]
 				cy = point_heights[(r+3)%4]
 				
-				# If current point shares no edges, add a corner wall here
-				if not points[r]:
-					if edge_below:
-						pass
-					else:
-						var edge = add_outer_corner_floor(x, z)
-					
+				# If opposite corners are within merge distance,
+				# this is inside a diagonal, but all corners will already be covered.
+				# use pythagorean distance.
+				# If they are not within distance, the corner case will instead place a corner between them.
+				if abs(dy-ay) < merge_threshold * 1.4 and not (ab or bd or cd or ac):
+					add_diagonal_floor()
+					continue
+
+				# If A and B are higher than C and D,
+				# add an edge around AB.
+				# B may be higher than A. or C may be higher than D. (This means a corner will be on top of the edge).
+				# Do not add if AC or BD are connected
 				
+				if ay > cy and by > dy and not (ac or bd):
+					# If the edge's corners are not connected
+					# set the height of the higher corner to the lower corner's
+					if not ab:
+						ay = min(ay, by)
+						by = ay
+					add_edge(x, z)
+					continue
 					
-				# If current point shares the edge clockwise to the right and not the edge clockwise to the left,
-				# add a horizontal wall
-				#if cell_edges[r] and not cell_edges[(r+3)%4]:
-					#var edges = add_horizontal_edge_floor(x, z)
-					#add_wall(edges, ay, cy, by, dy)
-					
-				#If adjcaent edges exist but not the other two non-adjacent,
-				# put down
-					
-			
-	
+				# If A is higher than D (opposite corner)
+				# add a corner around A.
+				# Do not add if A is connected to B or C.
+				if ay > dy and not (ab or ac):
+					# will use global var R to tell which corner to place on, 
+					# and global ay,by,dy,cy for corner heights
+					add_corner(x, z)
+					continue
+				
 	st.generate_normals()
 	
 	mesh = st.commit()
@@ -143,7 +151,7 @@ func add_point(x: float, y: float, z: float):
 # floor will be rotated [rotation] times.
 
 # full floor (used in case 0, case 15 will not show up because it collapses to case 0)
-func add_full_floor() -> Vector4:
+func add_full_floor():
 	# ABC tri
 	add_point(0, ay, 0)
 	add_point(1, by, 0)
@@ -152,66 +160,95 @@ func add_full_floor() -> Vector4:
 	add_point(1, dy, 1)
 	add_point(0, cy, 1)
 	add_point(1, by, 0)
-	# floor has no open edges
-	return Vector4.ZERO
 	
-# outer corner floor
-# used for outer corner raised floors (case 1, 2, 4, 8)
-# also used below inner corner floors (case 7, 11, 13, 14)
-# Case where A does not share an edge with B or C, eigher above or below
-# "outer" for these purposes means that the corner surrounds A
-func add_outer_corner_floor(x: int, z: int) -> Vector4:
-	# all points use A's height
-	
-	# A-T-L tri
+#Use for a diagonal floor, where A and D are higher than B and C.
+# Will still be a full floor but will use different 
+func add_diagonal_floor():
+	# ABC tri
 	add_point(0, ay, 0)
-	# point T as on middle of top edge, halfway bewteen A and B
-	add_point(0.5, ay, 0)
-	# point L in middle of left edge
-	add_point(0, ay, 0.5)
+	add_point(1, ay, 0)
+	add_point(0, ay, 1)
+	# DCB tri
+	add_point(1, dy, 1)
+	add_point(0, dy, 1)
+	add_point(1, dy, 0)
 	
-	# return L as left edge, T as right edge
-	return Vector4(0, 0.5, 0.5, 0)
+# Add a corner where A is higher than B,C,D (upper corner cliff surrounds A).
+func add_corner(x: int, z: int):
+	# ABC tri - use height of A
+	add_point(0, ay, 0)
+	add_point(1, ay, 0)
+	add_point(0, ay, 1)
+
+	# TODO: only place wall if the opposite corner is not higher (that wall would be invisible)
+	##C - B - Clower tri
+	#add_point(0, cy, 1)
+	#add_point(1, by, 0)
+	#add_point(0, dy, 1)
+	#
+	## Blower - Clower - B tri
+	#add_point(1, dy, 0)
+	#add_point(0, dy, 1)
+	#add_point(1, by, 0)
+
+	# DCB
+	# Only make there floor if this is the highest corner. 
+	# This is the easieest way to make sure only one corner places the floor tri for its cell.
+	if ay > by and ay > cy and ay > dy:
+		# only use the corner's actual height if it is connected to D, otherwise use D's height
+		add_point(1, dy, 1)
+		add_point(0, cy if cd else dy, 1)
+		add_point(1, by if bd else dy, 0)
 	
-# edge floor
-# used for when one edge is disconnected from the other
-# edge splits AB and CD.
-func add_horizontal_edge_floor(x: int, z: int):
-	# A-B-L tri
+## Add an inner corner where A is lower than B,C,D (corner surrounds D).
+#func add_inner_corner(x: int, z: int):
+	## Make sure the base of the cliff is always flat, so use the same height as the upper corner.
+	## ABC tri. use heightmap heights
+	#add_point(0, ay, 0)
+	#add_point(1, by, 0)
+	#add_point(0, cy, 1)
+#
+	## C - Cupper - B tri
+	#add_point(0, cy, 1)
+	#add_point(0, dy, 1)
+	#add_point(1, by, 0)
+	## BUpper - B - CUpper tri
+	#add_point(1, dy, 0)
+	#add_point(1, by, 0)
+	#add_point(0, dy, 1)
+	#
+	## DCB - use flat height of D corner
+	#add_point(1, dy, 1)
+	#add_point(0, dy, 1)
+	#add_point(1, dy, 0)
+	
+# Add an edge, where AB and CD are connected, but AC and BD are disconnected.
+# Used in the case where A and B are both higher than C and D.
+# Because a corner may be aabove an edge, pass in its own ay and by.
+func add_edge(x: int, z: int):
+	# AB is higher, use only heights of AB edge for upper floor
+	# ABC tri
 	add_point(0, ay, 0)
 	add_point(1, by, 0)
-	add_point(0, ay, 0.5)
-	# R-L-B tri
-	add_point(1, by, 0.5)
-	add_point(0, ay, 0.5)
+	add_point(0, ay, 1)
+	# DCB tri
+	add_point(1, by, 1)
+	add_point(0, ay, 1)
 	add_point(1, by, 0)
 	
-	return Vector4(0, 0.5, 1, 0.5)
+	# Walls - the lower points will connect to the floor of the adjacent lower tile
+	# C - D - Clower tri
+	#add_point(0, ay, 1)
+	#add_point(1, by, 1)
+	#add_point(0, cy, 1)
+	#
+	## Dlower - Clower - D tri
+	#add_point(1, dy, 1)
+	#add_point(0, cy, 1)
+	#add_point(1, by, 1)
 	
-# same as horizontal edge, but instead AC and BD are seperated.
-func add_vertical_edge_floor(x: int, z: int):
-	add_point(0, ay, 0)
-	add_point(0.5, ay, 0)
-	add_point(0, cy, 1)
 	
-	add_point(0.5, cy, 1)
-	add_point(0, cy, 1)
-	add_point(0.5, ay, 0)
 	
-	return Vector4(0.5, 1, 0.5, 0)
-	
-# Wall
-# Used to connect a floor to the floor above it using a passed ledt edge + right edge Vector4
-func add_wall(edges: Vector4, left_height: float, left_above_height: float, right_height: float, right_above_height: float):
-	# Make a wall bewteen the passed edges witht he given heights
-	# Left edge tri (covers bottom-left of wall)
-	add_point(edges.x, left_height, edges.y)
-	add_point(edges.z, right_height, edges.w)
-	add_point(edges.x, left_above_height, edges.y)
-	# Right edge tri (covers top-right of wall)
-	add_point(edges.z, right_above_height, edges.w)
-	add_point(edges.x, left_above_height, edges.y)
-	add_point(edges.z, right_height, edges.w)
 	
 func load_height_map():	
 	height_map = []
