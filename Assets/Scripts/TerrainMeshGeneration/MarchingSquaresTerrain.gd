@@ -98,12 +98,34 @@ func generate_mesh():
 				dy = point_heights[(r+2)%4]
 				cy = point_heights[(r+3)%4]
 				
+				# If AB and AC are connected and BD and CD are not,
+				# and A is higher than D,
+				# then D is the edge of a corner.
+				# Put a full floor here
+				if ab and ac and not bd and not cd and ay > dy:
+					# temporarily set dy to the the avg. between BY and CY.
+					dy = (by+cy)/2
+					add_full_floor()
+					continue
+					
+				# If A is higher than D (opposite corner)
+				# add a corner around A.
+				# Do not add if A is connected to B or C.
+				if ay > dy and ay > by and ay > cy and not (ab or ac):
+					# if bd and cd are not connected, use the average of B and C height.
+					if not bd and not cd:
+						dy = (by+cy)/2
+					add_corner(x, z)
+					continue
+				
 				# If opposite corners are within merge distance,
 				# this is inside a diagonal, but all corners will already be covered.
-				# use pythagorean distance.
 				# If they are not within distance, the corner case will instead place a corner between them.
-				if abs(dy-ay) < merge_threshold * 1.4 and not (ab or bd or cd or ac):
-					add_diagonal_floor()
+				if abs(dy-ay) < merge_threshold and not (ab or bd or cd or ac):
+					# ay and dy corners will be the avg of the other corners
+					ay = (by+cy)/2
+					dy = ay
+					add_full_floor()
 					continue
 
 				# If A and B are higher than C and D,
@@ -118,15 +140,6 @@ func generate_mesh():
 						ay = min(ay, by)
 						by = ay
 					add_edge(x, z)
-					continue
-					
-				# If A is higher than D (opposite corner)
-				# add a corner around A.
-				# Do not add if A is connected to B or C.
-				if ay > dy and not (ab or ac):
-					# will use global var R to tell which corner to place on, 
-					# and global ay,by,dy,cy for corner heights
-					add_corner(x, z)
 					continue
 				
 	st.generate_normals()
@@ -161,18 +174,6 @@ func add_full_floor():
 	add_point(0, cy, 1)
 	add_point(1, by, 0)
 	
-#Use for a diagonal floor, where A and D are higher than B and C.
-# Will still be a full floor but will use different 
-func add_diagonal_floor():
-	# ABC tri
-	add_point(0, ay, 0)
-	add_point(1, ay, 0)
-	add_point(0, ay, 1)
-	# DCB tri
-	add_point(1, dy, 1)
-	add_point(0, dy, 1)
-	add_point(1, dy, 0)
-	
 # Add a corner where A is higher than B,C,D (upper corner cliff surrounds A).
 func add_corner(x: int, z: int):
 	# ABC tri - use height of A
@@ -181,18 +182,18 @@ func add_corner(x: int, z: int):
 	add_point(0, ay, 1)
 
 	# TODO: only place wall if the opposite corner is not higher (that wall would be invisible)
-	##C - B - Clower tri
-	#add_point(0, cy, 1)
-	#add_point(1, by, 0)
-	#add_point(0, dy, 1)
-	#
-	## Blower - Clower - B tri
-	#add_point(1, dy, 0)
-	#add_point(0, dy, 1)
-	#add_point(1, by, 0)
+	#C - Cupper - B tri
+	add_point(0, cy, 1)
+	add_point(0, ay, 1)
+	add_point(1, by, 0)
+	
+	# Bupper - B - Cupper tri
+	add_point(1, ay, 0)
+	add_point(1, by, 0)
+	add_point(0, ay, 1)
 
 	# DCB
-	# Only make there floor if this is the highest corner. 
+	# Only make the floor for this cell if A (current corner out of the 4) is the highest corner. 
 	# This is the easieest way to make sure only one corner places the floor tri for its cell.
 	if ay > by and ay > cy and ay > dy:
 		# only use the corner's actual height if it is connected to D, otherwise use D's height
@@ -238,14 +239,14 @@ func add_edge(x: int, z: int):
 	
 	# Walls - the lower points will connect to the floor of the adjacent lower tile
 	# C - D - Clower tri
-	#add_point(0, ay, 1)
-	#add_point(1, by, 1)
-	#add_point(0, cy, 1)
-	#
-	## Dlower - Clower - D tri
-	#add_point(1, dy, 1)
-	#add_point(0, cy, 1)
-	#add_point(1, by, 1)
+	add_point(0, ay, 1)
+	add_point(1, by, 1)
+	add_point(0, cy, 1)
+	
+	# Dlower - Clower - D tri
+	add_point(1, dy, 1)
+	add_point(0, cy, 1)
+	add_point(1, by, 1)
 	
 	
 	

@@ -6,8 +6,8 @@ void vertex() {
 }
 
 void fragment() {
-	ALBEDO = vec3(UV.x, UV.y, 0);
-	//ALBEDO = NORMAL;
+	//ALBEDO = vec3(UV.x, UV.y, 0);
+	ALBEDO = NORMAL;
 }
 
 //void light() {
