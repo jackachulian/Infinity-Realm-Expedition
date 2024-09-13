@@ -244,13 +244,14 @@ func add_inner_corner():
 	var inner_by = by if bc else min(by,cy)
 	var inner_cy = cy if bc else min(by,cy)
 	
+	# Wall
 	add_point(0, ay, 0.5)
-	add_point(0, inner_cy, 0.5)
 	add_point(0.5, ay, 0)
+	add_point(0, inner_cy, 0.5)
 	
 	add_point(0.5, inner_by, 0)
-	add_point(0.5, ay, 0)
 	add_point(0, inner_cy, 0.5)
+	add_point(0.5, ay, 0)
 	
 	# If fully flat on top, add full floor for rest of tile
 	if bd and cd:
