@@ -114,15 +114,16 @@ func generate_mesh():
 				dy = point_heights[(r+2)%4]
 				cy = point_heights[(r+3)%4]
 				
-				ad = abs(ay-dy) < merge_threshold * 1.4
-				bc = abs(by-cy) < merge_threshold * 1.4
+				# Shortcuts to see if opposite corners are connected through either edge loop
+				ad = abs(ay-dy) < merge_threshold
+				bc = abs(by-cy) < merge_threshold
 				
 				# If A is higher than *all* other corners
 				# and is not connected to adjacent corners,
 				# put an outer corner here.
 				outer_corner = ay > by and ay > cy and not ab and not ac
 				
-				# If A and B are higher than both C and D, neither AC, AD, BC or BD are not connected,
+				# If A and B are higher than both C and D, and all opposite edge points are completely disconnected from one another
 				# put an edge here.
 				edge = ay > cy and ay > dy and by > cy and by > dy and not (ac or ad or bc or bd)
 
@@ -183,55 +184,34 @@ func add_outer_corner():
 	add_point(0.5, by, 0)
 	add_point(0, ay, 0.5)
 	
-	
-	
-	# Lower floor
-	# If point D is connected to B and C, there is a flat floor underneath.
-	#if bd and cd:
-		#add_point(0, cy, 0.5)
-		#add_point(0.5, by, 0)
-		#add_point(1, dy, 1)
-		#return
-		
-	# If there is an edge below being placed at the same rotation,
-	# place a floor to cover just the top of the edge
-	if edge:
-		# use the height of the edge point that is not the current higher corner, which is B.
-		add_point(0, by, 0.5)
-		add_point(0.5, by, 0)
-		add_point(1, by, 0.5)
-		
-		add_point(1, by, 0)
-		add_point(1, by, 0.5)
-		add_point(0.5, by, 0)
-
-	# Also check if an edge is placed here at one counter-clockwise rotation. (use C as the main corner.)
-	var cc_edge = cy > dy and cy > by and ay > dy and ay > by and not (cd or bc or ad or ab)
-	if cc_edge:
-		# use the height of the edge point that is not the current higher corner, which is C.
-		add_point(0.5, cy, 0)
-		add_point(0.5, cy, 1)
-		add_point(0, cy, 0.5)
-		
+	# Only place a flat floor below if BD and CD are connected
+	if bd and cd:
+		add_point(1, dy, 1)
 		add_point(0, cy, 1)
 		add_point(0, cy, 0.5)
-		add_point(0.5, cy, 1)
 		
-	## Middle
-	#add_point(0, cy, 0.5)
-	#add_point(0.5, by, 0)
-	#add_point(0.5, cy, 1)
-	#
-	#add_point(1, by, 0.5)
-	#add_point(0.5, cy, 1)
-	#add_point(0.5, by, 0)
+		add_point(1, dy, 1)
+		add_point(0, cy, 0.5)
+		add_point(0.5, by, 0)
 		
+		add_point(1, dy, 1)
+		add_point(0.5, by, 0)
+		add_point(1, by, 0)	
 	
 # Add an edge, where AB is the raised edge.
 func add_edge():
 	# if A and B are not connected, use the lower of the two heights
 	var edge_ay = ay if ab else min(ay,by)
 	var edge_by = by if ab else min(ay,by)
+	
+	# Upper floor - use A and B for heights
+	add_point(0, edge_ay, 0)
+	add_point(1, edge_by, 0)
+	add_point(0, edge_ay, 0.5)
+	
+	add_point(1, edge_by, 0.5)
+	add_point(0, edge_ay, 0.5)
+	add_point(1, edge_by, 0)
 	
 	# Wall from left to right edge
 	add_point(0, cy, 0.5)
@@ -242,8 +222,24 @@ func add_edge():
 	add_point(1, dy, 0.5)
 	add_point(0, edge_ay, 0.5)
 	
+	# Lower floor - use C and D for height
+	# Only place a flar floor below if CD is connected
+	if cd:
+		add_point(0, cy, 0.5)
+		add_point(1, dy, 0.5)
+		add_point(0, cy, 1)
+		
+		add_point(1, dy, 1)
+		add_point(0, cy, 1)
+		add_point(1, dy, 0.5)
+	
 # Add an inner corner, where A is the lowered corner.
 func add_inner_corner():
+	# Lower floor with height of point A
+	add_point(0, ay, 0)
+	add_point(0.5, ay, 0)
+	add_point(0, ay, 0.5)
+	
 	# If B and C are not connected, use the lower of the two heights
 	var inner_by = by if bc else min(by,cy)
 	var inner_cy = cy if bc else min(by,cy)
@@ -256,6 +252,61 @@ func add_inner_corner():
 	add_point(0.5, ay, 0)
 	add_point(0, inner_cy, 0.5)
 	
+	# If fully flat on top, add full floor for rest of tile
+	if bd and cd:
+		add_point(1, dy, 1)
+		add_point(0, cy, 1)
+		add_point(0, cy, 0.5)
+		
+		add_point(1, dy, 1)
+		add_point(0, cy, 0.5)
+		add_point(0.5, by, 0)
+		
+		add_point(1, dy, 1)
+		add_point(0.5, by, 0)
+		add_point(1, by, 0)
+		
+	# if C and D are both higher than B, and B does not connect the corners, there's an edge above, place floors that will connect to the CD edge
+	elif cy > by and dy > by and not bc:
+		# use height of B corner
+		add_point(1, by, 0.5)
+		add_point(0, by, 0.5)
+		add_point(0.5, by, 0)
+		
+		add_point(1, by, 0.5)
+		add_point(0.5, by, 0)
+		add_point(1, by, 0)
+		
+	# if B and D are both higher than C, and C does not connect the corners, there's an edge above, place floors that will connect to the BD edge
+	elif by > cy and dy > cy and not bc:
+		# use height of C corner
+		add_point(0.5, cy, 1)
+		add_point(0, cy, 1)
+		add_point(0, cy, 0.5)
+		
+		add_point(0.5, cy, 1)
+		add_point(0, cy, 0.5)
+		add_point(0.5, cy, 0)
+		
+	# otherwise, D is fully disconnected from B and C.
+	# If BC is connected, add a diagonal floor separating the corners
+	# in the future, may want to place some kind of cliff between them if distance is too high. not sure yet
+	elif bc:
+		add_point(1, by, 0)
+		add_point(1, by, 0.5)
+		add_point(0.5, by, 0)
+		
+		add_point(0.5, by, 0)
+		add_point(1, by, 0.5)
+		add_point(0.5, cy, 1)
+		
+		add_point(0.5, cy, 1)
+		add_point(0, cy, 0.5)
+		add_point(0.5, by, 0)
+		
+		add_point(0, cy, 1)
+		add_point(0, cy, 0.5)
+		add_point(0.5, cy, 1)
 
 func load_height_map():	
 	height_map = []
@@ -276,5 +327,6 @@ func load_height_map():
 		for x in range(min(dimensions.x, image.get_width()+1) - 1):
 			var height = image.get_pixel(x, z).r * dimensions.y
 			height += randf_range(-random_noise, random_noise)
+			height = max(0, height)
 			
 			height_map[z][x] = height
