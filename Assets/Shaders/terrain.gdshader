@@ -1,5 +1,5 @@
 shader_type spatial;
-//render_mode cull_disabled;
+render_mode cull_disabled;
 
 void vertex() {
 	// Called for every vertex the material is visible on.
@@ -7,7 +7,8 @@ void vertex() {
 
 void fragment() {
 	//ALBEDO = vec3(UV.x, UV.y, 0);
-	ALBEDO = NORMAL;
+	//ALBEDO = NORMAL;
+	ALBEDO = COLOR.rgb;
 }
 
 //void light() {

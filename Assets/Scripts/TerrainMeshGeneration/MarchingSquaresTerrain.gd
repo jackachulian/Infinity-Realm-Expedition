@@ -18,29 +18,35 @@ var height_map: Array
 # The max height distance between points before a wall is created between them
 @export var merge_threshold: float = 0.06
 
+@export var random_noise: float = 0.1
+
 var st: SurfaceTool
 
 func _ready() -> void:
 	load_height_map()
 	generate_mesh()
 	
-# Class-local variables used in tri generating methods without having to pass stuff everywhere
-# XZ coordinate of square cell currently being built
+# cell coordinates currently being evaluated
 var cell_x: int
 var cell_z: int
-# heights of the 4 corners
+	
+# current amount of counter-clockwise rotations performed on original heightmap to reach current state
+var r: int
+	
+# heights of the 4 corners ini current rotation
 var ay: float
 var by: float
 var cy: float
 var dy: float
-# Whether or not edges are connected
+# Edge connected state	
 var ab: bool
+var ac: bool
 var bd: bool
 var cd: bool
-var ac: bool
-# amount of times to rotate placed vertices clockwise in order to translate to the current rotation case
-var r: int = 0
-			
+# Corner connected state
+var ad: bool
+var bc: bool
+		
 func generate_mesh():
 	st = SurfaceTool.new()
 
@@ -49,11 +55,11 @@ func generate_mesh():
 	# will produce sharp normals
 	st.set_smooth_group(-1)
 			
-	# Loop over all xz coordinates
 	for z in range(dimensions.z - 1):
 		cell_z = z
 		for x in range(dimensions.x - 1):
 			cell_x = x
+			r = 0
 			
 			# Get heights of 4 surrounding corners
 			ay = height_map[z][x] # top-left
@@ -62,16 +68,17 @@ func generate_mesh():
 			dy = height_map[z+1][x+1] # bottom-right
 			
 			# Track which edges shold be connected and not have a wall bewteen them.
-			ab = abs(by-ay) < merge_threshold # top edge
-			bd = abs(dy-by) < merge_threshold # left edge
-			cd = abs(cy-dy) < merge_threshold # right edge
+			ab = abs(ay-by) < merge_threshold # top edge
 			ac = abs(ay-cy) < merge_threshold # bottom edge
+			bd = abs(by-dy) < merge_threshold # right edge
+			cd = abs(cy-dy) < merge_threshold # bottom edge
 			
-			# If all four edges are connected, full floor here
-			if ab and bd and cd and ac:
+			# if all 4 edges are connected, there is a full floor here
+			if ab and ac and bd and cd:
+				st.set_color(Color(0.5, 0.5, 0.5))
 				add_full_floor()
 				continue
-
+			
 			# edges going clockwise around the cell
 			var cell_edges = [ab, bd, cd, ac]
 			# point heights going clockwise around the cell
@@ -83,11 +90,16 @@ func generate_mesh():
 				return point_heights[p1] < point_heights[p2]
 			point_heights_relative.sort_custom(sort)
 			
+			# Keeps track of which points on the midpoint od edges
+			# already have walls against them.
+			# [ ab, bd, cd, ac ]
+			var edge_walls = [ false, false, false, false ]
+			
 			# Starting from the lowest corner, build the tile up
 			for i in range(4):
 				# Use the rotation of the corner - the amount of counter-clockwise rotations for it to become the top-left corner, which is just its index in the point lists.
 				r = point_heights_relative[i]
-				
+
 				ab = cell_edges[r]
 				bd = cell_edges[(r+1)%4]
 				cd = cell_edges[(r+2)%4]
@@ -98,49 +110,27 @@ func generate_mesh():
 				dy = point_heights[(r+2)%4]
 				cy = point_heights[(r+3)%4]
 				
-				# If AB and AC are connected and BD and CD are not,
-				# and A is higher than D,
-				# then D is the edge of a corner.
-				# Put a full floor here
-				if ab and ac and not bd and not cd and ay > dy:
-					# temporarily set dy to the the avg. between BY and CY.
-					dy = (by+cy)/2
-					add_full_floor()
-					continue
-					
-				# If A is higher than D (opposite corner)
-				# add a corner around A.
-				# Do not add if A is connected to B or C.
-				if ay > dy and ay > by and ay > cy and not (ab or ac):
-					# if bd and cd are not connected, use the average of B and C height.
-					if not bd and not cd:
-						dy = (by+cy)/2
-					add_corner(x, z)
-					continue
-				
-				# If opposite corners are within merge distance,
-				# this is inside a diagonal, but all corners will already be covered.
-				# If they are not within distance, the corner case will instead place a corner between them.
-				if abs(dy-ay) < merge_threshold and not (ab or bd or cd or ac):
-					# ay and dy corners will be the avg of the other corners
-					ay = (by+cy)/2
-					dy = ay
-					add_full_floor()
-					continue
+				ad = abs(ay-dy) < merge_threshold * 1.4
+				bc = abs(by-cy) < merge_threshold * 1.4
 
-				# If A and B are higher than C and D,
-				# add an edge around AB.
-				# B may be higher than A. or C may be higher than D. (This means a corner will be on top of the edge).
-				# Do not add if AC or BD are connected
-				
-				if ay > cy and by > dy and not (ac or bd):
-					# If the edge's corners are not connected
-					# set the height of the higher corner to the lower corner's
-					if not ab:
-						ay = min(ay, by)
-						by = ay
-					add_edge(x, z)
-					continue
+				# If A is higher than *all* other corners
+				# and is not connected to adjacent corners,
+				# put an outer corner here.
+				if ay > by and ay > cy and not ab and not ac:
+					st.set_color(Color(0.8, 0.1, 0.1))
+					add_outer_corner()
+					
+				# If A and B are higher than both C and D, neither AC or BD are not connected,
+				# put an edge here.
+				if ay > cy and ay > dy and by > cy and by > dy and not ac and not bd:
+					st.set_color(Color(0.1, 0.8, 0.1))
+					add_edge()
+					
+				# If A is lower than adjacent corners and not connected to adjacent corners,
+				# put an inner corner here.
+				if ay < by and ay < cy and not ab and not ac:
+					st.set_color(Color(0.1, 0.1, 0.8))
+					add_inner_corner()
 				
 	st.generate_normals()
 	
@@ -149,21 +139,14 @@ func generate_mesh():
 
 # Adds a point. Coordinates are relative to the top-left corner (not mesh origin relative).
 func add_point(x: float, y: float, z: float):
-	var temp
 	for i in range(r):
-		temp = x
+		var temp = x
 		x = 1 - z
 		z = temp
 	
 	st.set_uv(Vector2(x, z))
 	st.add_vertex(Vector3(cell_x+x, y, cell_z+z))
 
-# == FLOORS ==
-# All floors should return the left and right x and z coordinates (packed into a vector4 for convenience).
-# if there is a rotation parameter, implementation is for corner on A and rotated to fit the other corners
-# floor will be rotated [rotation] times.
-
-# full floor (used in case 0, case 15 will not show up because it collapses to case 0)
 func add_full_floor():
 	# ABC tri
 	add_point(0, ay, 0)
@@ -173,84 +156,48 @@ func add_full_floor():
 	add_point(1, dy, 1)
 	add_point(0, cy, 1)
 	add_point(1, by, 0)
-	
-# Add a corner where A is higher than B,C,D (upper corner cliff surrounds A).
-func add_corner(x: int, z: int):
-	# ABC tri - use height of A
-	add_point(0, ay, 0)
-	add_point(1, ay, 0)
-	add_point(0, ay, 1)
 
-	# TODO: only place wall if the opposite corner is not higher (that wall would be invisible)
-	#C - Cupper - B tri
-	add_point(0, cy, 1)
-	add_point(0, ay, 1)
-	add_point(1, by, 0)
+# Add an outer corner, where A is the raised corner.
+func add_outer_corner():
+	# Wall bases will use B and C height, while cliff top will use A height.
+	add_point(0, cy, 0.5)
+	add_point(0, ay, 0.5)
+	add_point(0.5, by, 0)
 	
-	# Bupper - B - Cupper tri
-	add_point(1, ay, 0)
-	add_point(1, by, 0)
-	add_point(0, ay, 1)
+	add_point(0.5, ay, 0)
+	add_point(0.5, by, 0)
+	add_point(0, ay, 0.5)
+	
+# Add an edge, where AB is the raised edge.
+func add_edge():
+	# if A and B are not connected, use the lower of the two heights
+	var edge_ay = ay if ab else min(ay,by)
+	var edge_by = by if ab else min(ay,by)
+	
+	# Wall from left to right edge
+	add_point(0, cy, 0.5)
+	add_point(0, edge_ay, 0.5)
+	add_point(1, dy, 0.5)
+	
+	add_point(1, edge_by, 0.5)
+	add_point(1, dy, 0.5)
+	add_point(0, edge_ay, 0.5)
+	
+# Add an inner corner, where A is the lowered corner.
+func add_inner_corner():
+	# If B and C are not connected, use the lower of the two heights
+	var inner_by = by if bc else min(by,cy)
+	var inner_cy = cy if bc else min(by,cy)
+	
+	add_point(0, ay, 0.5)
+	add_point(0, inner_cy, 0.5)
+	add_point(0.5, ay, 0)
+	
+	add_point(0.5, inner_by, 0)
+	add_point(0.5, ay, 0)
+	add_point(0, inner_cy, 0.5)
+	
 
-	# DCB
-	# Only make the floor for this cell if A (current corner out of the 4) is the highest corner. 
-	# This is the easieest way to make sure only one corner places the floor tri for its cell.
-	if ay > by and ay > cy and ay > dy:
-		# only use the corner's actual height if it is connected to D, otherwise use D's height
-		add_point(1, dy, 1)
-		add_point(0, cy if cd else dy, 1)
-		add_point(1, by if bd else dy, 0)
-	
-## Add an inner corner where A is lower than B,C,D (corner surrounds D).
-#func add_inner_corner(x: int, z: int):
-	## Make sure the base of the cliff is always flat, so use the same height as the upper corner.
-	## ABC tri. use heightmap heights
-	#add_point(0, ay, 0)
-	#add_point(1, by, 0)
-	#add_point(0, cy, 1)
-#
-	## C - Cupper - B tri
-	#add_point(0, cy, 1)
-	#add_point(0, dy, 1)
-	#add_point(1, by, 0)
-	## BUpper - B - CUpper tri
-	#add_point(1, dy, 0)
-	#add_point(1, by, 0)
-	#add_point(0, dy, 1)
-	#
-	## DCB - use flat height of D corner
-	#add_point(1, dy, 1)
-	#add_point(0, dy, 1)
-	#add_point(1, dy, 0)
-	
-# Add an edge, where AB and CD are connected, but AC and BD are disconnected.
-# Used in the case where A and B are both higher than C and D.
-# Because a corner may be aabove an edge, pass in its own ay and by.
-func add_edge(x: int, z: int):
-	# AB is higher, use only heights of AB edge for upper floor
-	# ABC tri
-	add_point(0, ay, 0)
-	add_point(1, by, 0)
-	add_point(0, ay, 1)
-	# DCB tri
-	add_point(1, by, 1)
-	add_point(0, ay, 1)
-	add_point(1, by, 0)
-	
-	# Walls - the lower points will connect to the floor of the adjacent lower tile
-	# C - D - Clower tri
-	add_point(0, ay, 1)
-	add_point(1, by, 1)
-	add_point(0, cy, 1)
-	
-	# Dlower - Clower - D tri
-	add_point(1, dy, 1)
-	add_point(0, cy, 1)
-	add_point(1, by, 1)
-	
-	
-	
-	
 func load_height_map():	
 	height_map = []
 	height_map.resize(dimensions.z)
@@ -268,6 +215,7 @@ func load_height_map():
 	
 	for z in range(min(dimensions.z, image.get_height()+1) - 1):
 		for x in range(min(dimensions.x, image.get_width()+1) - 1):
-			var height = round(image.get_pixel(x, z).r * dimensions.y)
+			var height = image.get_pixel(x, z).r * dimensions.y
+			height += randf_range(-random_noise, random_noise)
 			
 			height_map[z][x] = height
