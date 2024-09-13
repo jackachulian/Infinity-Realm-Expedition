@@ -120,9 +120,9 @@ func generate_mesh():
 					st.set_color(Color(0.8, 0.1, 0.1))
 					add_outer_corner()
 					
-				# If A and B are higher than both C and D, neither AC or BD are not connected,
+				# If A and B are higher than both C and D, neither AC, AD, BC or BD are not connected,
 				# put an edge here.
-				if ay > cy and ay > dy and by > cy and by > dy and not ac and not bd:
+				if ay > cy and ay > dy and by > cy and by > dy and not (ac or ad or bc or bd):
 					st.set_color(Color(0.1, 0.8, 0.1))
 					add_edge()
 					
