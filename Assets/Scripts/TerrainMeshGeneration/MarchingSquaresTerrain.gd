@@ -346,6 +346,8 @@ func add_inner_corner():
 	# otherwise, if all corners are disconnected, add a diagonal floor
 	# in the future, may want to place some kind of cliff between them if distance is too high. not sure yet
 	elif not (ab or ac or bd or cd):
+		# if B and C are not close enough,
+		# put a cliff here.
 		add_point(1, by, 0)
 		add_point(1, by, 0.5)
 		add_point(0.5, by, 0)
