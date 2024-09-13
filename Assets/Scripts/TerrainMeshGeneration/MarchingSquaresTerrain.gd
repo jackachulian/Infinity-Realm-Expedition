@@ -46,6 +46,10 @@ var cd: bool
 # Corner connected state
 var ad: bool
 var bc: bool
+# Keeps track of what types of geometry are going to be placed on the current cell at the current rotation
+var outer_corner: bool
+var edge: bool
+var inner_corner: bool
 		
 func generate_mesh():
 	st = SurfaceTool.new()
@@ -112,23 +116,29 @@ func generate_mesh():
 				
 				ad = abs(ay-dy) < merge_threshold * 1.4
 				bc = abs(by-cy) < merge_threshold * 1.4
-
+				
 				# If A is higher than *all* other corners
 				# and is not connected to adjacent corners,
 				# put an outer corner here.
-				if ay > by and ay > cy and not ab and not ac:
-					st.set_color(Color(0.8, 0.1, 0.1))
-					add_outer_corner()
-					
+				outer_corner = ay > by and ay > cy and not ab and not ac
+				
 				# If A and B are higher than both C and D, neither AC, AD, BC or BD are not connected,
 				# put an edge here.
-				if ay > cy and ay > dy and by > cy and by > dy and not (ac or ad or bc or bd):
+				edge = ay > cy and ay > dy and by > cy and by > dy and not (ac or ad or bc or bd)
+
+				# If A is lower than adjacent corners and not connected to adjacent corners,
+				# put an inner corner here.
+				inner_corner = ay < by and ay < cy and not ab and not ac
+				
+				if outer_corner:
+					st.set_color(Color(0.8, 0.1, 0.1))
+					add_outer_corner()
+				
+				if edge:
 					st.set_color(Color(0.1, 0.8, 0.1))
 					add_edge()
 					
-				# If A is lower than adjacent corners and not connected to adjacent corners,
-				# put an inner corner here.
-				if ay < by and ay < cy and not ab and not ac:
+				if inner_corner:
 					st.set_color(Color(0.1, 0.1, 0.8))
 					add_inner_corner()
 				
@@ -159,7 +169,12 @@ func add_full_floor():
 
 # Add an outer corner, where A is the raised corner.
 func add_outer_corner():
-	# Wall bases will use B and C height, while cliff top will use A height.
+	# Upper floor - use a for all heights
+	add_point(0, ay, 0)
+	add_point(0.5, ay, 0)
+	add_point(0, ay, 0.5)
+	
+	# Walls - bases will use B and C height, while cliff top will use A height.
 	add_point(0, cy, 0.5)
 	add_point(0, ay, 0.5)
 	add_point(0.5, by, 0)
@@ -167,6 +182,50 @@ func add_outer_corner():
 	add_point(0.5, ay, 0)
 	add_point(0.5, by, 0)
 	add_point(0, ay, 0.5)
+	
+	
+	
+	# Lower floor
+	# If point D is connected to B and C, there is a flat floor underneath.
+	#if bd and cd:
+		#add_point(0, cy, 0.5)
+		#add_point(0.5, by, 0)
+		#add_point(1, dy, 1)
+		#return
+		
+	# If there is an edge below being placed at the same rotation,
+	# place a floor to cover just the top of the edge
+	if edge:
+		# use the height of the edge point that is not the current higher corner, which is B.
+		add_point(0, by, 0.5)
+		add_point(0.5, by, 0)
+		add_point(1, by, 0.5)
+		
+		add_point(1, by, 0)
+		add_point(1, by, 0.5)
+		add_point(0.5, by, 0)
+
+	# Also check if an edge is placed here at one counter-clockwise rotation. (use C as the main corner.)
+	var cc_edge = cy > dy and cy > by and ay > dy and ay > by and not (cd or bc or ad or ab)
+	if cc_edge:
+		# use the height of the edge point that is not the current higher corner, which is C.
+		add_point(0.5, cy, 0)
+		add_point(0.5, cy, 1)
+		add_point(0, cy, 0.5)
+		
+		add_point(0, cy, 1)
+		add_point(0, cy, 0.5)
+		add_point(0.5, cy, 1)
+		
+	## Middle
+	#add_point(0, cy, 0.5)
+	#add_point(0.5, by, 0)
+	#add_point(0.5, cy, 1)
+	#
+	#add_point(1, by, 0.5)
+	#add_point(0.5, cy, 1)
+	#add_point(0.5, by, 0)
+		
 	
 # Add an edge, where AB is the raised edge.
 func add_edge():
