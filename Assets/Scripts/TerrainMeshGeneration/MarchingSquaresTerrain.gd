@@ -20,6 +20,10 @@ var height_map: Array
 
 @export var random_noise: float = 0.1
 
+@export var seed: int = 1
+
+var rng := RandomNumberGenerator.new()
+
 var st: SurfaceTool
 
 func _ready() -> void:
@@ -125,7 +129,7 @@ func generate_mesh():
 				
 				# If A and B are higher than both C and D, and all opposite edge points are completely disconnected from one another
 				# put an edge here.
-				edge = ay > cy and ay > dy and by > cy and by > dy and not (ac or ad or bc or bd)
+				edge = ay > cy and ay > dy and by > cy and by > dy and not (ac or bd) and (not (ad or bc) or ab)
 				
 				# Half-edge. covers the cases where A is higher than C to break the merge threshold, but D still manages to be above B, creating an edge base.
 				var edge_base = ab and cd and ((bd and not ac and ay > cy) or (ac and not bd and by > dy))
@@ -133,6 +137,13 @@ func generate_mesh():
 				# If A is lower than adjacent corners and not connected to adjacent corners,
 				# put an inner corner here.
 				inner_corner = ay < by and ay < cy and not ab and not ac
+				
+				# prevent outer corner if there should instead be an inner corner base on the same tile
+				if ay > by and not ab and bd and dy > cy and not cd and not ac:
+					outer_corner = false
+				if ay > cy and not ac and cd and dy > by and not bd and not ab:
+					outer_corner = false
+					
 				
 				if outer_corner:
 					st.set_color(Color(0.8, 0.1, 0.1))
@@ -286,28 +297,16 @@ func add_inner_corner():
 	add_point(0, ay, 0)
 	add_point(0.5, ay, 0)
 	add_point(0, ay, 0.5)
+
+	var inner_by = by
+	var inner_cy = cy
 	
-	# If B and C are not connected, use the lower of the two heights
-	var inner_by = by if bc else min(by,cy)
-	var inner_cy = cy if bc else min(by,cy)
-	
-	# Wall
-	add_point(0, ay, 0.5)
-	add_point(0.5, ay, 0)
-	add_point(0, inner_cy, 0.5)
-	
-	add_point(0.5, inner_by, 0)
-	add_point(0, inner_cy, 0.5)
-	add_point(0.5, ay, 0)
-	
-	# If fully flat on top, add full floor for rest of tile
+	# If fully flat on top, add full floor for rest of tile 
 	if bd and cd:
-		#bottom floor
 		add_point(1, dy, 1)
 		add_point(0, cy, 1)
 		add_point(0, cy, 0.5)
 		
-		#wall
 		add_point(1, dy, 1)
 		add_point(0, cy, 0.5)
 		add_point(0.5, by, 0)
@@ -327,8 +326,11 @@ func add_inner_corner():
 		add_point(0.5, by, 0)
 		add_point(1, by, 0)
 		
+		inner_by = by
+		inner_cy = by
+		
 	# if B and D are both higher than C, and C does not connect the corners, there's an edge above, place floors that will connect to the BD edge
-	elif by > cy and dy > cy and not bc and not cd:
+	elif by > cy and dy > cy and not bc and not cd: 
 		# use height of C corner
 		add_point(0.5, cy, 1)
 		add_point(0, cy, 1)
@@ -337,6 +339,9 @@ func add_inner_corner():
 		add_point(0.5, cy, 1)
 		add_point(0, cy, 0.5)
 		add_point(0.5, cy, 0)
+		
+		inner_by = cy
+		inner_cy = cy
 		
 	# otherwise, if all corners are disconnected, add a diagonal floor
 	# in the future, may want to place some kind of cliff between them if distance is too high. not sure yet
@@ -357,11 +362,79 @@ func add_inner_corner():
 		add_point(0, cy, 0.5)
 		add_point(0.5, cy, 1)
 		
-	# otherwise, this is an "inner corner base".
-	# depending on if BD or CD is connected (both will not be),
-	# create a base for the corner/edge here.
-	else:
-		pass
+	# if not, there is also an inner corner base here - handled in another branch from the main generate loop
+	elif (cd or bd):
+		add_inner_corner_base()
+		
+	# Now, add a wall with the appropriate height
+	add_point(0, ay, 0.5)
+	add_point(0.5, ay, 0)
+	add_point(0, inner_cy, 0.5)
+	
+	add_point(0.5, inner_by, 0)
+	add_point(0, inner_cy, 0.5)
+	add_point(0.5, ay, 0)
+
+func add_inner_corner_base():
+	# Lower floor with height of point A
+	add_point(0, ay, 0)
+	add_point(0.5, ay, 0)
+	add_point(0, ay, 0.5)
+	
+	# wall on inner corner side
+	add_point(0, ay, 0.5)
+	add_point(0.5, ay, 0)
+	add_point(0, cy, 0.5)
+	
+	add_point(0.5, by, 0)
+	add_point(0, cy, 0.5)
+	add_point(0.5, ay, 0)
+	
+	# fill in the corner at D, then the open corner at the bottom of the base corner, and then the wall that leads up to it, then a wall covering the open side
+	if cd:
+		st.set_color(Color(0.75, 0.1, 0.75))
+		var cdy = (cy+dy)/2
+		# corner floors
+		add_point(1, dy, 1)
+		add_point(0.5, cdy, 1)
+		add_point(1, dy, 0.5)
+	
+		add_point(0, cy, 1)
+		add_point(0, cy, 0.5)
+		add_point(0.5, cdy, 1)
+		
+		add_point(1, by, 0)
+		add_point(1, by, 0.5)
+		add_point(0.5, by, 0)
+		
+		## corner base floors
+		#add_point(0, cy, 0.5)
+		#add_point(0.5, by, 0)
+		#add_point(0.5, cdy, 1)
+		#
+		#add_point(1, by, 0.5)
+		#add_point(0.5, cdy, 1)
+		#add_point(0.5, by, 0)
+		#
+		## wall
+		#add_point(0.5, cdy, 1)
+		#add_point(1, by, 0.5)
+		#add_point(1, dy, 0.5)
+	elif bd:
+		st.set_color(Color(0.75, 0.75, 0.1))
+		var bdy = (by+dy)/2
+		# corner floors
+		add_point(1, dy, 1)
+		add_point(0.5, dy, 1)
+		add_point(1, bdy, 0.5)
+	
+		add_point(0, cy, 1)
+		add_point(0, cy, 0.5)
+		add_point(0.5, cy, 1)
+		
+		add_point(1, by, 0)
+		add_point(1, bdy, 0.5)
+		add_point(0.5, by, 0)
 
 func load_height_map():	
 	height_map = []
@@ -378,10 +451,13 @@ func load_height_map():
 	
 	var image = height_map_image.get_image()
 	
+	rng.seed = seed
+	rng.state = 0
+	
 	for z in range(min(dimensions.z, image.get_height()+1) - 1):
 		for x in range(min(dimensions.x, image.get_width()+1) - 1):
 			var height = image.get_pixel(x, z).r * dimensions.y
-			height += randf_range(-random_noise, random_noise)
+			height += rng.randf_range(-random_noise, random_noise)
 			height = max(0, height)
 			
 			height_map[z][x] = height
