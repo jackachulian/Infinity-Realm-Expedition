@@ -302,10 +302,12 @@ func add_inner_corner():
 	
 	# If fully flat on top, add full floor for rest of tile
 	if bd and cd:
+		#bottom floor
 		add_point(1, dy, 1)
 		add_point(0, cy, 1)
 		add_point(0, cy, 0.5)
 		
+		#wall
 		add_point(1, dy, 1)
 		add_point(0, cy, 0.5)
 		add_point(0.5, by, 0)
@@ -315,7 +317,7 @@ func add_inner_corner():
 		add_point(1, by, 0)
 		
 	# if C and D are both higher than B, and B does not connect the corners, there's an edge above, place floors that will connect to the CD edge
-	elif cy > by and dy > by and not bc:
+	elif cy > by and dy > by and not bc and not bd:
 		# use height of B corner
 		add_point(1, by, 0.5)
 		add_point(0, by, 0.5)
@@ -326,7 +328,7 @@ func add_inner_corner():
 		add_point(1, by, 0)
 		
 	# if B and D are both higher than C, and C does not connect the corners, there's an edge above, place floors that will connect to the BD edge
-	elif by > cy and dy > cy and not bc:
+	elif by > cy and dy > cy and not bc and not cd:
 		# use height of C corner
 		add_point(0.5, cy, 1)
 		add_point(0, cy, 1)
@@ -336,10 +338,9 @@ func add_inner_corner():
 		add_point(0, cy, 0.5)
 		add_point(0.5, cy, 0)
 		
-	# otherwise, D is fully disconnected from B and C.
-	# If BC is connected, add a diagonal floor separating the corners
+	# otherwise, if all corners are disconnected, add a diagonal floor
 	# in the future, may want to place some kind of cliff between them if distance is too high. not sure yet
-	elif bc:
+	elif not (ab or ac or bd or cd):
 		add_point(1, by, 0)
 		add_point(1, by, 0.5)
 		add_point(0.5, by, 0)
@@ -355,6 +356,12 @@ func add_inner_corner():
 		add_point(0, cy, 1)
 		add_point(0, cy, 0.5)
 		add_point(0.5, cy, 1)
+		
+	# otherwise, this is an "inner corner base".
+	# depending on if BD or CD is connected (both will not be),
+	# create a base for the corner/edge here.
+	else:
+		pass
 
 func load_height_map():	
 	height_map = []
