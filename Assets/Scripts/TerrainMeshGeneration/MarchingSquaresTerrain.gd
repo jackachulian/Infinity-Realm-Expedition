@@ -120,15 +120,14 @@ func generate_mesh():
 				
 				var inner_corner = (ay < by and not ab) and (ay < cy and not ac)
 
-				var inner_corner_base_bd_edge = inner_corner and false
+				var inner_corner_base_bd_edge = not (ab or ac) and false
 				
-				var inner_corner_base_cd_edge = inner_corner and false
+				var inner_corner_base_cd_edge = not (ab or ac) and false
 				
 				var inner_corner_base = inner_corner_base_bd_edge or inner_corner_base_cd_edge
 
 				if inner_corner_base:
-					st.set_color(Color(0.1, 0.1, 0.8))
-					add_inner_corner()
+					add_inner_corner_base()
 					continue
 			
 				if inner_corner:
@@ -146,7 +145,7 @@ func generate_mesh():
 					add_edge()
 					
 				# Edge base
-				if false:
+				if ab and bd and cd and not ac:
 					st.set_color(Color(0.1, 0.75, 0.75))
 					add_edge_base()
 					break
@@ -355,7 +354,7 @@ func add_inner_corner():
 		
 	# if not, there is also an inner corner base here - handled in another branch from the main generate loop
 	elif (cd or bd):
-		add_inner_corner_base()
+		pass
 		
 	# Now, add a wall with the appropriate height
 	add_point(0, ay, 0.5)
