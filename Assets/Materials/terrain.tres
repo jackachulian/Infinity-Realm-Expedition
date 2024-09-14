@@ -1,0 +1,9 @@
+[gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://pigftq7b1lfr"]
+
+[ext_resource type="Shader" path="res://Assets/Shaders/terrain.gdshader" id="1_nlvcj"]
+
+[resource]
+render_priority = 0
+shader = ExtResource("1_nlvcj")
+shader_parameter/grass_color = Color(0.0616973, 0.441469, 0.638415, 1)
+shader_parameter/rock_color = Color(0.293403, 0.377418, 0.421346, 1)

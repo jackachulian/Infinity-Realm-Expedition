@@ -8,6 +8,7 @@ void vertex() {
 }
 
 void fragment() {
+	//ALBEDO = COLOR.rgb;
 	vec3 world_normal = (INV_VIEW_MATRIX * vec4(NORMAL.xyz, 0.0)).xyz;
 	
 	if (world_normal.y > 0.25) {

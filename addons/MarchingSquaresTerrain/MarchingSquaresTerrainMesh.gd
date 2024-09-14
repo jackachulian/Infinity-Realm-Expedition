@@ -4,9 +4,10 @@ extends MeshInstance3D
 
 @export var dimensions: Vector3i = Vector3i(10, 1, 10):
 	set(new_dimensions):
-		dimensions = new_dimensions
-		load_height_map()
-		generate_mesh()
+		if Engine.is_editor_hint():
+			dimensions = new_dimensions
+			load_height_map()
+			generate_mesh()
 		
 var height_map: Array
 
@@ -25,10 +26,6 @@ var height_map: Array
 var rng := RandomNumberGenerator.new()
 
 var st: SurfaceTool
-
-func _ready() -> void:
-	load_height_map()
-	generate_mesh()
 	
 # cell coordinates currently being evaluated
 var cell_x: int
@@ -52,12 +49,20 @@ var cd: bool
 		
 func generate_mesh():
 	st = SurfaceTool.new()
-
 	st.begin(Mesh.PRIMITIVE_TRIANGLES)
 	
-	# will produce sharp normals
-	st.set_smooth_group(-1)
-			
+	generate_terrain_cells()
+				
+	st.generate_normals()
+	var terrain_mesh = st.commit()
+	
+	ResourceSaver.save(terrain_mesh, "res://terrain/"+name+".tres", ResourceSaver.FLAG_COMPRESS)
+	
+	mesh = terrain_mesh
+	
+	print("generated mesh")
+
+func generate_terrain_cells():
 	for z in range(dimensions.z - 1):
 		cell_z = z
 		for x in range(dimensions.x - 1):
@@ -196,6 +201,7 @@ func generate_mesh():
 					add_inner_corner(true, false, true)
 					
 					# D corner. B edge is connected, so use halfway point bewteen B and D
+					start_floor()
 					add_point(1, dy, 1)
 					add_point(0.5, dy, 1)
 					add_point(1, (by+dy)/2, 0.5)
@@ -214,8 +220,9 @@ func generate_mesh():
 					add_point(0, by, 0.5)
 					add_point(1, (by+dy)/2, 0.5)
 					
-					st.set_color(Color(0.8, 0.1, 0.25))
 					# Walls to upper corner
+					st.set_color(Color(0.8, 0.1, 0.25))
+					start_wall()
 					add_point(0, by, 0.5)
 					add_point(0.5, dy, 1)
 					add_point(0, cy, 0.5)
@@ -225,6 +232,7 @@ func generate_mesh():
 					add_point(0.5, dy, 1)
 					
 					# C upper floor
+					start_floor()
 					add_point(0, cy, 1)
 					add_point(0, cy, 0.5)
 					add_point(0.5, cy, 1)
@@ -235,6 +243,7 @@ func generate_mesh():
 					add_inner_corner(true, false, true)
 					
 					# D corner. C edge is connected, so use halfway point bewteen C and D
+					start_floor()
 					add_point(1, dy, 1)
 					add_point(0.5, (dy+cy)/2, 1)
 					add_point(1, dy, 0.5)
@@ -253,8 +262,9 @@ func generate_mesh():
 					add_point(0.5, (dy+cy)/2, 1)
 					add_point(0.5, cy, 0)
 					
-					st.set_color(Color(0.8, 0.1, 0.25))
 					# Walls to upper corner
+					st.set_color(Color(0.8, 0.1, 0.25))
+					start_wall()
 					add_point(0.5, cy, 0)
 					add_point(0.5, by, 0)
 					add_point(1, dy, 0.5)
@@ -264,6 +274,7 @@ func generate_mesh():
 					add_point(0.5, by, 0)
 					
 					# B upper floor
+					start_floor()
 					add_point(1, by, 0)
 					add_point(1, by, 0.5)
 					add_point(0.5, by, 0)
@@ -348,6 +359,7 @@ func generate_mesh():
 					var edge_dy = (by+dy)/2 if bd else dy
 					
 					# Upper floor - use A and B edge for heights
+					start_floor()
 					add_point(0, ay, 0)
 					add_point(1, by, 0)
 					add_point(0, edge_ay, 0.5)
@@ -357,6 +369,7 @@ func generate_mesh():
 					add_point(1, by, 0)
 					
 					# Wall from left to right edge
+					start_wall()
 					if (edge_ay != edge_cy):
 						add_point(0, edge_cy, 0.5)
 						add_point(0, edge_ay, 0.5)
@@ -368,6 +381,7 @@ func generate_mesh():
 						add_point(0, edge_ay, 0.5)
 					
 					# Lower floor - use C and D edge
+					start_floor()
 					add_point(0, edge_cy, 0.5)
 					add_point(1, edge_dy, 0.5)
 					add_point(1, dy, 1)
@@ -387,12 +401,6 @@ func generate_mesh():
 				#invalid / unknown cell type. put a full floor here and hope it looks fine
 				st.set_color(Color(0.3, 0.3, 0.3))
 				add_full_floor()
-				
-				
-	st.generate_normals()
-	
-	mesh = st.commit()
-	print("generated mesh")
 
 # True if A is higher than B and outside of merge distance
 func is_higher(a: float, b: float):
@@ -428,8 +436,15 @@ func add_point(x: float, y: float, z: float):
 	
 	st.set_uv(Vector2((cell_x+x) / dimensions.x, (cell_z+z) / dimensions.z))
 	st.add_vertex(Vector3(cell_x+x, y, cell_z+z))
+	
+func start_floor():
+	st.set_smooth_group(0)
+
+func start_wall():
+	st.set_smooth_group(-1)
 
 func add_full_floor():
+	start_floor()
 	# ABC tri
 	add_point(0, ay, 0)
 	add_point(1, by, 0)
@@ -446,11 +461,13 @@ func add_outer_corner(floor_below: bool = true, floor_above: bool = true, flatte
 	var edge_cy = bottom_height if flatten_bottom else cy
 	
 	if floor_above:
+		start_floor()
 		add_point(0, ay, 0)
 		add_point(0.5, ay, 0)
 		add_point(0, ay, 0.5)
 	
 	# Walls - bases will use B and C height, while cliff top will use A height.
+	start_wall()
 	add_point(0, edge_cy, 0.5)
 	add_point(0, ay, 0.5)
 	add_point(0.5, edge_by, 0)
@@ -460,6 +477,7 @@ func add_outer_corner(floor_below: bool = true, floor_above: bool = true, flatte
 	add_point(0, ay, 0.5)
 
 	if floor_below:
+		start_floor()
 		add_point(1, dy, 1)
 		add_point(0, cy, 1)
 		add_point(0, cy, 0.5)
@@ -484,6 +502,7 @@ func add_edge(floor_below: bool, floor_above: bool, a_x: float = 0, b_x: float =
 	
 	# Upper floor - use A and B for heights
 	if floor_above:
+		start_floor()
 		add_point(a_x, edge_ay, 0)
 		add_point(b_x, edge_by, 0)
 		add_point(0, edge_ay, 0.5)
@@ -493,6 +512,7 @@ func add_edge(floor_below: bool, floor_above: bool, a_x: float = 0, b_x: float =
 		add_point(b_x, edge_by, 0)
 	
 	# Wall from left to right edge
+	start_wall()
 	add_point(0, edge_cy, 0.5)
 	add_point(0, edge_ay, 0.5)
 	add_point(1, edge_dy, 0.5)
@@ -504,6 +524,7 @@ func add_edge(floor_below: bool, floor_above: bool, a_x: float = 0, b_x: float =
 	# Lower floor - use C and D for height
 	# Only place a flat floor below if CD is connected
 	if floor_below:
+		start_floor()
 		add_point(0, cy, 0.5)
 		add_point(1, dy, 0.5)
 		add_point(0, cy, 1)
@@ -520,10 +541,12 @@ func add_inner_corner(lower_floor: bool = true, full_upper_floor: bool = true, f
 	
 	# Lower floor with height of point A
 	if lower_floor:
+		start_floor()
 		add_point(0, ay, 0)
 		add_point(0.5, ay, 0)
 		add_point(0, ay, 0.5)
 
+	start_wall()
 	add_point(0, ay, 0.5)
 	add_point(0.5, ay, 0)
 	add_point(0, corner_cy, 0.5)
@@ -532,6 +555,7 @@ func add_inner_corner(lower_floor: bool = true, full_upper_floor: bool = true, f
 	add_point(0, corner_cy, 0.5)
 	add_point(0.5, ay, 0)
 
+	start_floor()
 	if full_upper_floor:
 		add_point(1, dy, 1)
 		add_point(0, corner_cy, 1)
@@ -569,6 +593,7 @@ func add_inner_corner(lower_floor: bool = true, full_upper_floor: bool = true, f
 		
 # Add a diagonal floor, using heights of B and C and connecting their points using passed heights.
 func add_diagonal_floor(b_floor: bool, c_floor: bool, b_y: float, c_y: float):
+	start_floor()
 	
 	if b_floor:
 		add_point(1, b_y, 0)
@@ -588,67 +613,6 @@ func add_diagonal_floor(b_floor: bool, c_floor: bool, b_y: float, c_y: float):
 		add_point(0, c_y, 0.5)
 		add_point(0.5, c_y, 1)
 		
-	
-func add_inner_corner_base():
-	# Lower floor with height of point A
-	add_point(0, ay, 0)
-	add_point(0.5, ay, 0)
-	add_point(0, ay, 0.5)
-	
-	# wall on inner corner side
-	add_point(0, ay, 0.5)
-	add_point(0.5, ay, 0)
-	add_point(0, cy, 0.5)
-	
-	add_point(0.5, by, 0)
-	add_point(0, cy, 0.5)
-	add_point(0.5, ay, 0)
-	
-	# fill in the corner at D, then the open corner at the bottom of the base corner, and then the wall that leads up to it, then a wall covering the open side
-	if cd:
-		st.set_color(Color(0.75, 0.1, 0.75))
-		var cdy = (cy+dy)/2
-		# corner floors
-		add_point(1, dy, 1)
-		add_point(0.5, cdy, 1)
-		add_point(1, dy, 0.5)
-	
-		add_point(0, cy, 1)
-		add_point(0, cy, 0.5)
-		add_point(0.5, cdy, 1)
-		
-		add_point(1, by, 0)
-		add_point(1, by, 0.5)
-		add_point(0.5, by, 0)
-		
-		## corner base floors
-		#add_point(0, cy, 0.5)
-		#add_point(0.5, by, 0)
-		#add_point(0.5, cdy, 1)
-		#
-		#add_point(1, by, 0.5)
-		#add_point(0.5, cdy, 1)
-		#add_point(0.5, by, 0)
-		#
-		## wall
-		#add_point(0.5, cdy, 1)
-		#add_point(1, by, 0.5)
-		#add_point(1, dy, 0.5)
-	elif bd:
-		st.set_color(Color(0.75, 0.75, 0.1))
-		var bdy = (by+dy)/2
-		# corner floors
-		add_point(1, dy, 1)
-		add_point(0.5, dy, 1)
-		add_point(1, bdy, 0.5)
-	
-		add_point(0, cy, 1)
-		add_point(0, cy, 0.5)
-		add_point(0.5, cy, 1)
-		
-		add_point(1, by, 0)
-		add_point(1, bdy, 0.5)
-		add_point(0.5, by, 0)
 
 func load_height_map():	
 	height_map = []

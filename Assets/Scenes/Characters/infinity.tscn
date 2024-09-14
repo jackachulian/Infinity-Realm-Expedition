@@ -68,6 +68,7 @@ radius = 0.375
 [node name="infinity" instance=ExtResource("1_rm5qk")]
 collision_layer = 4
 collision_mask = 5
+floor_constant_speed = true
 platform_floor_layers = 1
 script = ExtResource("2_pd53c")
 weapon = ExtResource("3_b1uya")
@@ -133,6 +134,7 @@ knockback = 3.5
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="StateMachine/Sword-Attack1/Hitbox" index="0"]
 transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, -0.0165758, 0.834441, 0.581865)
+visible = false
 shape = SubResource("CapsuleShape3D_osbq5")
 
 [node name="Sword-Attack2" type="Node3D" parent="StateMachine" index="7"]
@@ -151,6 +153,7 @@ knockback = 4.25
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="StateMachine/Sword-Attack2/Hitbox" index="0"]
 transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, -0.0165758, 0.834441, 0.474717)
+visible = false
 shape = SubResource("CapsuleShape3D_84oai")
 
 [node name="Sword-Attack3" type="Node3D" parent="StateMachine" index="8"]
@@ -170,6 +173,7 @@ knockback = 6.0
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="StateMachine/Sword-Attack3/Hitbox" index="0"]
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, -0.0165758, 0.742375, 0.433112)
+visible = false
 shape = SubResource("CapsuleShape3D_5b5ov")
 
 [node name="Movement" type="Node" parent="." index="3"]
@@ -294,7 +298,7 @@ bones/39/rotation = Quaternion(0.108899, -0.0208534, -0.0126774, 0.993753)
 bones/39/scale = Vector3(1, 1, 0.999997)
 
 [node name="Helmet" parent="Armature/Skeleton3D" index="0"]
-transform = Transform3D(0.8, -2.38484e-08, -8.90689e-08, 2.16616e-08, 0.8, -4.18164e-07, 8.83828e-08, 3.75323e-07, 0.8, -0.00204643, 0.363882, -0.0276384)
+transform = Transform3D(0.8, -2.38484e-08, -8.9069e-08, 2.16616e-08, 0.8, -4.16301e-07, 8.83828e-08, 3.7346e-07, 0.8, -0.00204643, 0.363883, -0.0276385)
 
 [node name="Helmet" parent="Armature/Skeleton3D/Helmet" index="0"]
 visible = false
@@ -303,7 +307,7 @@ surface_material_override/1 = ExtResource("11_egnnu")
 surface_material_override/2 = ExtResource("11_egnnu")
 
 [node name="Blade" parent="Armature/Skeleton3D" index="1"]
-transform = Transform3D(0.499857, 0.00847297, 0.00847099, 0.00847217, -7.97209e-07, -0.499928, -0.00847176, 0.499928, -0.000144387, -1.11426, 1.55299, 0.340715)
+transform = Transform3D(0.499857, 0.00847299, 0.00847097, 0.00847218, -7.99071e-07, -0.499928, -0.00847175, 0.499928, -0.000144376, -1.11426, 1.55299, 0.340715)
 
 [node name="Blade" parent="Armature/Skeleton3D/Blade" index="0"]
 surface_material_override/0 = ExtResource("15_6twlw")
