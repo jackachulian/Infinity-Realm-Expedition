@@ -149,7 +149,8 @@ func generate_mesh():
 					st.set_color(Color(0.8, 0.3, 0.1))
 					add_outer_corner(false, true, true, cy)
 					
-				# Case 5: B and C are higher than A and D (diagonal stretch between B and C)
+				# Case 5: B and C are higher than A and D.
+				# Diagonal raised floor between B and C.
 				# B and C must be within merge distance.
 				elif is_lower(ay, by) and is_lower(ay, cy) and is_lower(dy, by) and is_lower(dy, cy) and is_merged(by, cy):
 					st.set_color(Color(0.3, 0.3, 0.7))
@@ -157,6 +158,22 @@ func generate_mesh():
 					add_diagonal_floor(true, true, by, cy)
 					rotate_cell(2)
 					add_inner_corner(true, false)
+					
+				# Case 5.5: B and C are higher than A and D, and B is higher than C.
+				# Place a raised diagonal floor between, and an outer corner around B.
+				elif is_lower(ay, by) and is_lower(ay, cy) and is_lower(dy, by) and is_lower(dy, cy) and is_higher(by, cy):
+					st.set_color(Color(0.4, 0.2, 0.7))
+					add_inner_corner(true, false, true)
+					add_diagonal_floor(true, true, cy, cy)
+					
+					# opposite lower floor
+					rotate_cell(2)
+					add_inner_corner(true, false, true)
+					
+					# higher corner B
+					st.set_color(Color(0.7, 0.2, 0.4))
+					rotate_cell(-1)
+					add_outer_corner(false, true)
 					
 				# Case 6: inner corner, where A is lower than B and C, and D is connected to B and C.
 				elif is_lower(ay, by) and is_lower(ay, cy) and bd and cd:
@@ -190,12 +207,12 @@ func generate_mesh():
 					
 					# Center floors
 					add_point(0.5, by, 0)
-					add_point(0, by, 0.5)
 					add_point(1, (by+dy)/2, 0.5)
+					add_point(0, by, 0.5)
 					
 					add_point(0.5, dy, 1)
-					add_point(1, (by+dy)/2, 0.5)
 					add_point(0, by, 0.5)
+					add_point(1, (by+dy)/2, 0.5)
 					
 					st.set_color(Color(0.8, 0.1, 0.25))
 					# Walls to upper corner
@@ -209,8 +226,8 @@ func generate_mesh():
 					
 					# C upper floor
 					add_point(0, cy, 1)
-					add_point(0.5, cy, 1)
 					add_point(0, cy, 0.5)
+					add_point(0.5, cy, 1)
 					#
 				# Case 9: Inner corner surrounding A, with an outer corner sitting atop B.
 				elif is_lower(ay, by) and is_lower(ay, cy) and is_lower(dy, by) and cd:
@@ -318,6 +335,46 @@ func generate_mesh():
 					rotate_cell(1)
 					st.set_color(Color(0.9, 0.1, 0.1))
 					add_outer_corner(false, true, true, cy)
+					
+				# Case 16: All edges are connected except either AC or BD.
+				# Make an edge here, but merge one side of the edge together
+				elif ab and cd and ((ac and not bd) or (bd and not ac)):
+					st.set_color(Color(0.5, 0.8, 0.5))
+					# Only merge the ay/cy edge if AC edge is connected
+					var edge_ay = (ay+cy)/2 if ac else ay
+					var edge_cy = (ay+cy)/2 if ac else cy
+					# Same with BD
+					var edge_by = (by+dy)/2 if bd else by
+					var edge_dy = (by+dy)/2 if bd else dy
+					
+					# Upper floor - use A and B edge for heights
+					add_point(0, ay, 0)
+					add_point(1, by, 0)
+					add_point(0, edge_ay, 0.5)
+					
+					add_point(1, edge_by, 0.5)
+					add_point(0, edge_ay, 0.5)
+					add_point(1, by, 0)
+					
+					# Wall from left to right edge
+					if (edge_ay != edge_cy):
+						add_point(0, edge_cy, 0.5)
+						add_point(0, edge_ay, 0.5)
+						add_point(1, edge_dy, 0.5)
+					
+					if (edge_by != edge_dy):
+						add_point(1, edge_by, 0.5)
+						add_point(1, edge_dy, 0.5)
+						add_point(0, edge_ay, 0.5)
+					
+					# Lower floor - use C and D edge
+					add_point(0, edge_cy, 0.5)
+					add_point(1, edge_dy, 0.5)
+					add_point(1, dy, 1)
+					
+					add_point(0, cy, 1)
+					add_point(0, edge_cy, 0.5)
+					add_point(1, dy, 1)
 				
 					
 				else:
@@ -454,45 +511,7 @@ func add_edge(floor_below: bool, floor_above: bool, a_x: float = 0, b_x: float =
 		add_point(1, dy, 1)
 		add_point(0, cy, 1)
 		add_point(1, dy, 0.5)
-		
-# Creates the base of edge. In this case, only AC or BD is disconnected and all other corners are connected.
-func add_edge_base():
-	
-	# Only merge the ay/cy edge if AC edge is connected
-	var edge_ay = (ay+cy)/2 if ac else ay
-	var edge_cy = (ay+cy)/2 if ac else cy
-	# Same with BD
-	var edge_by = (by+dy)/2 if bd else by
-	var edge_dy = (by+dy)/2 if bd else dy
-	
-	# Upper floor - use A and B edge for heights
-	add_point(0, ay, 0)
-	add_point(1, by, 0)
-	add_point(0, edge_ay, 0.5)
-	
-	add_point(1, edge_by, 0.5)
-	add_point(0, edge_ay, 0.5)
-	add_point(1, by, 0)
-	
-	# Wall from left to right edge
-	if (edge_ay != edge_cy):
-		add_point(0, edge_cy, 0.5)
-		add_point(0, edge_ay, 0.5)
-		add_point(1, edge_dy, 0.5)
-	
-	if (edge_by != edge_dy):
-		add_point(1, edge_by, 0.5)
-		add_point(1, edge_dy, 0.5)
-		add_point(0, edge_ay, 0.5)
-	
-	# Lower floor - use C and D edge
-	add_point(0, edge_cy, 0.5)
-	add_point(1, edge_dy, 0.5)
-	add_point(1, dy, 1)
-	
-	add_point(0, cy, 1)
-	add_point(0, edge_cy, 0.5)
-	add_point(1, dy, 1)
+
 	
 # Add an inner corner, where A is the lowered corner.
 func add_inner_corner(lower_floor: bool = true, full_upper_floor: bool = true, flatten: bool = false, bd_floor: bool = false, cd_floor: bool = false):
