@@ -668,8 +668,8 @@ func load_height_map():
 	rng.seed = seed
 	rng.state = 0
 	
-	for z in range(min(dimensions.z, image.get_height()+1) - 1):
-		for x in range(min(dimensions.x, image.get_width()+1) - 1):
+	for z in range(min(dimensions.z, image.get_height()+1)):
+		for x in range(min(dimensions.x, image.get_width()+1)):
 			var height = image.get_pixel(x, z).r * dimensions.y
 			height += rng.randf_range(-random_noise, random_noise)
 			height = max(0, height)
