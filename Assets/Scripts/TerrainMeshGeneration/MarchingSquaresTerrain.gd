@@ -50,10 +50,6 @@ var cd: bool
 # Corner connected state
 var ad: bool
 var bc: bool
-# Keeps track of what types of geometry are going to be placed on the current cell at the current rotation
-var outer_corner: bool
-var edge: bool
-var inner_corner: bool
 		
 func generate_mesh():
 	st = SurfaceTool.new()
@@ -122,45 +118,38 @@ func generate_mesh():
 				ad = abs(ay-dy) < merge_threshold
 				bc = abs(by-cy) < merge_threshold
 				
-				# If A is higher than *all* other corners
-				# and is not connected to adjacent corners,
-				# put an outer corner here.
-				outer_corner = ay > by and ay > cy and not ab and not ac
-				
-				# If A and B are higher than both C and D, and all opposite edge points are completely disconnected from one another
-				# put an edge here.
-				edge = ay > cy and ay > dy and by > cy and by > dy and not (ac or bd) and (not (ad or bc) or ab)
-				
-				# Half-edge. covers the cases where A is higher than C to break the merge threshold, but D still manages to be above B, creating an edge base.
-				var edge_base = ab and cd and ((bd and not ac and ay > cy) or (ac and not bd and by > dy))
+				var inner_corner = (ay < by and not ab) and (ay < cy and not ac)
 
-				# If A is lower than adjacent corners and not connected to adjacent corners,
-				# put an inner corner here.
-				inner_corner = ay < by and ay < cy and not ab and not ac
+				var inner_corner_base_bd_edge = inner_corner and false
 				
-				# prevent outer corner if there should instead be an inner corner base on the same tile
-				if ay > by and not ab and bd and dy > cy and not cd and not ac:
-					outer_corner = false
-				if ay > cy and not ac and cd and dy > by and not bd and not ab:
-					outer_corner = false
-					
+				var inner_corner_base_cd_edge = inner_corner and false
 				
-				if outer_corner:
-					st.set_color(Color(0.8, 0.1, 0.1))
-					add_outer_corner()
-				
-				if edge:
-					st.set_color(Color(0.1, 0.8, 0.1))
-					add_edge()
-					
-				if edge_base:
-					st.set_color(Color(0.1, 0.75, 0.75))
-					add_edge_base()
-					break
-					
+				var inner_corner_base = inner_corner_base_bd_edge or inner_corner_base_cd_edge
+
+				if inner_corner_base:
+					st.set_color(Color(0.1, 0.1, 0.8))
+					add_inner_corner()
+					continue
+			
 				if inner_corner:
 					st.set_color(Color(0.1, 0.1, 0.8))
 					add_inner_corner()
+				
+				# Outer corner
+				if (ay > by and not ab) and (ay > cy and not ac):
+					st.set_color(Color(0.8, 0.1, 0.1))
+					add_outer_corner()
+				
+				# Edge
+				if ay > cy and ay > dy and by > cy and by > dy and not (ac or bd or ad or bc):
+					st.set_color(Color(0.1, 0.8, 0.1))
+					add_edge()
+					
+				# Edge base
+				if false:
+					st.set_color(Color(0.1, 0.75, 0.75))
+					add_edge_base()
+					break
 				
 	st.generate_normals()
 	
