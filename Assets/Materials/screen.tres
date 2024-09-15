@@ -5,7 +5,7 @@
 [resource]
 render_priority = 0
 shader = ExtResource("1_puo0m")
-shader_parameter/depth_threshold = 0.05
+shader_parameter/depth_threshold = 0.25
 shader_parameter/reverse_depth_threshold = 0.25
 shader_parameter/normal_threshold = 0.6
 shader_parameter/darken_amount = 0.3

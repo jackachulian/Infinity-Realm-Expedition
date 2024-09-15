@@ -30,7 +30,7 @@
 [ext_resource type="Script" path="res://Assets/Scripts/Hitbox.gd" id="20_rq6bb"]
 [ext_resource type="Material" uid="uid://ddecb3fjj6ate" path="res://Assets/Materials/Infinity-Standard/hair-highlight.tres" id="23_janfc"]
 [ext_resource type="Material" uid="uid://n502w5ce2vmv" path="res://Assets/Materials/Infinity/Skin.tres" id="24_fpikq"]
-[ext_resource type="Material" uid="uid://b50mkpi5datgy" path="res://Assets/Materials/Infinity/Jacket.tres" id="25_21o6v"]
+[ext_resource type="Material" uid="uid://2eqit1nas224" path="res://Assets/Materials/Infinity/Jacket.tres" id="25_21o6v"]
 [ext_resource type="Material" uid="uid://dvscr3pbyeye4" path="res://Assets/Materials/Infinity/Pants.tres" id="26_j2c6c"]
 [ext_resource type="Material" uid="uid://c8h8f8r6xq5dv" path="res://Assets/Materials/Infinity/Boots.tres" id="27_ol7bj"]
 [ext_resource type="Script" path="res://Assets/Scripts/Hurtbox.gd" id="31_pkqhk"]

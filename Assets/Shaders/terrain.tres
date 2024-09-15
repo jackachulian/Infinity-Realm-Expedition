@@ -2,8 +2,8 @@
 
 [sub_resource type="Gradient" id="Gradient_kecrm"]
 interpolation_mode = 1
-offsets = PackedFloat32Array(0, 0.744856, 0.909465)
-colors = PackedColorArray(0, 0.556863, 0.996078, 1, 0.0350722, 0.419786, 0.74767, 1, 0.0205434, 0.247247, 0.556476, 1)
+offsets = PackedFloat32Array(0, 0.744856, 0.893004)
+colors = PackedColorArray(0.100873, 0.380179, 0.670351, 1, 0.113184, 0.31537, 0.628051, 1, 0.027265, 0.228419, 0.491962, 1)
 
 [sub_resource type="GradientTexture2D" id="GradientTexture2D_fr4j3"]
 gradient = SubResource("Gradient_kecrm")
@@ -53,7 +53,7 @@ void fragment() {
 
 }
 "
-graph_offset = Vector2(-948.906, 185.475)
+graph_offset = Vector2(188.515, 366.187)
 nodes/fragment/2/node = SubResource("VisualShaderNodeTexture_o2jxl")
 nodes/fragment/2/position = Vector2(-220, 220)
 nodes/fragment/3/node = SubResource("VisualShaderNodeInput_5relf")

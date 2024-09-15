@@ -17,6 +17,9 @@ var height_map: Array
 # The max height distance between points before a wall is created between them
 @export var merge_threshold: float = 0.06
 
+# If above 0, round height values to this nearest interval.
+@export var height_banding: float = 0.1
+
 @export var random_noise: float = 0.1
 
 @export var seed: int = 1
@@ -48,17 +51,18 @@ var bd: bool
 var cd: bool
 		
 func _enter_tree():
-	load_height_map()
-	generate_mesh()
+	if Engine.is_editor_hint():
+		load_height_map()
+		generate_mesh()
 		
 func generate_mesh():
 	floor = SurfaceTool.new()
 	floor.begin(Mesh.PRIMITIVE_TRIANGLES)
-	floor.set_smooth_group(0)
+	floor.set_smooth_group(-1)
 	
 	wall = SurfaceTool.new()
 	wall.begin(Mesh.PRIMITIVE_TRIANGLES)
-	wall.set_smooth_group(0)
+	wall.set_smooth_group(-1)
 	
 	generate_terrain_cells()
 				
@@ -664,6 +668,8 @@ func load_height_map():
 			var height = image.get_pixel(x, z).r * dimensions.y
 			if random_noise != 0:
 				height += rng.randf_range(-random_noise, random_noise)
-			height = max(0, height)
+			
+			if height_banding > 0:
+				height = round(height / height_banding) * height_banding
 			
 			height_map[z][x] = height

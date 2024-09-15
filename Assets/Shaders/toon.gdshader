@@ -37,10 +37,11 @@ void light() {
 	float specular_intensity = pow(NdotH, 1.0 / _glossiness);
 	vec3 specular = vec3(smoothstep(0.5 - _specular_smoothness, 0.5 + _specular_smoothness, specular_intensity));
 
-	// rim
+	//// rim
 	float rimDot = 1.0 - dot(VIEW, NORMAL);
 	float rim_intensity = rimDot * NdotL;
 	vec3 rim = vec3(smoothstep(1.0 -_rim_size - _rim_smoothness, 1.0 -_rim_size + _rim_smoothness, rim_intensity));
+	//vec3 rim = vec3(0);
 
 	DIFFUSE_LIGHT = mix(ALBEDO * shadow_color.rgb, (ALBEDO + (rim + specular) * _specular_strength) * LIGHT_COLOR.rgb * 0.33, NdotL + 0.33 * (smoothstep(1.0 -_rim_size - _rim_smoothness, 1.0 -_rim_size + _rim_smoothness, rimDot)));
 }

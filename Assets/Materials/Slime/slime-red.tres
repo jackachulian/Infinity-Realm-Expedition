@@ -1,8 +1,16 @@
-[gd_resource type="StandardMaterial3D" format=3 uid="uid://c4r22eyfug44l"]
+[gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://c2846f7m7sd1j"]
+
+[ext_resource type="Shader" path="res://Assets/Shaders/toon.gdshader" id="1_6ylbq"]
 
 [resource]
-diffuse_mode = 3
-specular_mode = 1
-albedo_color = Color(0.575617, 0.128842, 0.165668, 1)
-metallic_specular = 1.0
-roughness = 0.04
+render_priority = 0
+shader = ExtResource("1_6ylbq")
+shader_parameter/color = Color(0.849469, 0.18492, 0.300639, 1)
+shader_parameter/shadow = 0.5
+shader_parameter/shadow_width = 0.0
+shader_parameter/shadow_color = Color(0.705, 0.705, 0.705, 0.705)
+shader_parameter/_specular_smoothness = 0.01
+shader_parameter/_specular_strength = 0.19
+shader_parameter/_glossiness = 0.075
+shader_parameter/_rim_size = 0.464
+shader_parameter/_rim_smoothness = 0.0

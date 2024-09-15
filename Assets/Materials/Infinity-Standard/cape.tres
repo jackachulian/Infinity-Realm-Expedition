@@ -9,6 +9,4 @@ roughness = 0.02
 clearcoat_roughness = 0.95
 anisotropy = 0.01
 heightmap_scale = 2.945
-backlight_enabled = true
 backlight = Color(0.0475577, 0.0475576, 0.0475576, 1)
-disable_receive_shadows = true
