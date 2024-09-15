@@ -1,9 +1,7 @@
 [gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://calcofamg4x2l"]
 
-[ext_resource type="Shader" path="res://Assets/Shaders/simple-terrain.gdshader" id="1_13j0r"]
+[ext_resource type="Shader" uid="uid://cc1lbryfrmdu1" path="res://Assets/Shaders/terrain.tres" id="1_reqxy"]
 
 [resource]
 render_priority = 0
-shader = ExtResource("1_13j0r")
-shader_parameter/grass_color = Color(0, 0.443137, 0.847059, 1)
-shader_parameter/rock_color = Color(0.0199946, 0.140245, 0.445582, 1)
+shader = ExtResource("1_reqxy")

@@ -2,12 +2,10 @@
 class_name MarchingSquaresTerrain
 extends MeshInstance3D
 
-@export var dimensions: Vector3i = Vector3i(10, 1, 10):
-	set(new_dimensions):
-		if Engine.is_editor_hint():
-			dimensions = new_dimensions
-			load_height_map()
-			generate_mesh()
+@export var floor_material: Material
+@export var wall_material: Material
+
+@export var dimensions: Vector3i = Vector3i(10, 1, 10)
 		
 var height_map: Array
 
@@ -49,6 +47,10 @@ var ac: bool
 var bd: bool
 var cd: bool
 		
+func _enter_tree():
+	load_height_map()
+	generate_mesh()
+		
 func generate_mesh():
 	floor = SurfaceTool.new()
 	floor.begin(Mesh.PRIMITIVE_TRIANGLES)
@@ -66,6 +68,9 @@ func generate_mesh():
 	# Create a new mesh out of floor, and add the wall surface to it
 	var terrain_mesh = floor.commit()
 	wall.commit(terrain_mesh)
+	
+	terrain_mesh.surface_set_material(0, floor_material)
+	terrain_mesh.surface_set_material(1, wall_material)
 	
 	ResourceSaver.save(terrain_mesh, "res://terrain/"+name+".tres", ResourceSaver.FLAG_COMPRESS)
 	
