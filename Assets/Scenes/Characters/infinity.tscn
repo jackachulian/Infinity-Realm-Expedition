@@ -1,4 +1,4 @@
-[gd_scene load_steps=41 format=3 uid="uid://c7vlx700fgtqs"]
+[gd_scene load_steps=43 format=3 uid="uid://c7vlx700fgtqs"]
 
 [ext_resource type="PackedScene" uid="uid://bfdvxynauwmtj" path="res://Assets/Models/infinity.glb" id="1_rm5qk"]
 [ext_resource type="Script" path="res://Assets/Scripts/Entity.gd" id="2_pd53c"]
@@ -12,26 +12,27 @@
 [ext_resource type="Script" path="res://Assets/Scripts/States/Generic/IdleState.gd" id="5_yhrb3"]
 [ext_resource type="Script" path="res://Assets/Scripts/States/Generic/AttackState.gd" id="8_73dwl"]
 [ext_resource type="Script" path="res://Assets/Scripts/States/Generic/StandardState.gd" id="9_blb1u"]
-[ext_resource type="Material" uid="uid://btqrywbouw0tk" path="res://Assets/Materials/Infinity/jacket.tres" id="10_1s82k"]
-[ext_resource type="Material" uid="uid://b1lixdut4rmj2" path="res://Assets/Materials/Infinity/helmet.tres" id="10_cj857"]
+[ext_resource type="Material" uid="uid://b1lixdut4rmj2" path="res://Assets/Materials/Infinity-Standard/helmet.tres" id="10_cj857"]
 [ext_resource type="Script" path="res://Assets/Scripts/States/Generic/ShieldState.gd" id="10_jxd4a"]
-[ext_resource type="Material" uid="uid://cjtvf8uctvapd" path="res://Assets/Materials/Infinity/helmet-inner.tres" id="11_egnnu"]
-[ext_resource type="Material" uid="uid://bsrujfkw5md00" path="res://Assets/Materials/Infinity/skin.tres" id="12_sfjbh"]
-[ext_resource type="Material" uid="uid://bajs3rvxxuqh6" path="res://Assets/Materials/Infinity/shoulder-pad.tres" id="13_ehb3q"]
-[ext_resource type="Material" uid="uid://dl40ym1buxucx" path="res://Assets/Materials/Infinity/pants.tres" id="14_3o2lr"]
-[ext_resource type="Material" uid="uid://7yw07gmjjvev" path="res://Assets/Materials/Infinity/cape.tres" id="14_qrtd5"]
+[ext_resource type="Material" uid="uid://cjtvf8uctvapd" path="res://Assets/Materials/Infinity-Standard/helmet-inner.tres" id="11_egnnu"]
+[ext_resource type="Material" uid="uid://bajs3rvxxuqh6" path="res://Assets/Materials/Infinity-Standard/shoulder-pad.tres" id="13_ehb3q"]
+[ext_resource type="Material" uid="uid://dl40ym1buxucx" path="res://Assets/Materials/Infinity-Standard/pants.tres" id="14_3o2lr"]
+[ext_resource type="Material" uid="uid://7yw07gmjjvev" path="res://Assets/Materials/Infinity-Standard/cape.tres" id="14_qrtd5"]
 [ext_resource type="Material" uid="uid://h6t15d7jcetu" path="res://Assets/Materials/Attacks/blade.tres" id="15_6twlw"]
-[ext_resource type="Material" uid="uid://da74du0n3h152" path="res://Assets/Materials/Infinity/hair.tres" id="15_71fgo"]
-[ext_resource type="Material" uid="uid://co0ctj87h8mt7" path="res://Assets/Materials/Infinity/boots.tres" id="15_d8i71"]
+[ext_resource type="Material" uid="uid://da74du0n3h152" path="res://Assets/Materials/Infinity-Standard/hair.tres" id="15_71fgo"]
 [ext_resource type="Shader" path="res://Packages/GPUTrail-main/shaders/trail.gdshader" id="15_rhd6w"]
-[ext_resource type="Material" uid="uid://bn60d6lka13wa" path="res://Assets/Materials/Infinity/shirt.tres" id="16_jlivn"]
+[ext_resource type="Material" uid="uid://bn60d6lka13wa" path="res://Assets/Materials/Infinity-Standard/shirt.tres" id="16_jlivn"]
 [ext_resource type="Shader" path="res://Packages/GPUTrail-main/shaders/trail_draw_pass.gdshader" id="16_qm1pa"]
 [ext_resource type="Texture2D" uid="uid://crk6pkb7e5rwc" path="res://Packages/GPUTrail-main/defaults/texture.tres" id="17_pvvl0"]
 [ext_resource type="Texture2D" uid="uid://ct31fhxvcragr" path="res://Packages/GPUTrail-main/defaults/curve.tres" id="18_7jk02"]
 [ext_resource type="Script" path="res://Packages/GPUTrail-main/GPUTrail3D.gd" id="19_0mkq7"]
 [ext_resource type="Texture2D" uid="uid://d0aqx8k5y48w8" path="res://Assets/Sprites/slash-effect.png" id="19_2vl7e"]
 [ext_resource type="Script" path="res://Assets/Scripts/Hitbox.gd" id="20_rq6bb"]
-[ext_resource type="Material" uid="uid://ddecb3fjj6ate" path="res://Assets/Materials/Infinity/hair-highlight.tres" id="23_janfc"]
+[ext_resource type="Material" uid="uid://ddecb3fjj6ate" path="res://Assets/Materials/Infinity-Standard/hair-highlight.tres" id="23_janfc"]
+[ext_resource type="Material" uid="uid://n502w5ce2vmv" path="res://Assets/Materials/Infinity/Skin.tres" id="24_fpikq"]
+[ext_resource type="Material" uid="uid://b50mkpi5datgy" path="res://Assets/Materials/Infinity/Jacket.tres" id="25_21o6v"]
+[ext_resource type="Material" uid="uid://dvscr3pbyeye4" path="res://Assets/Materials/Infinity/Pants.tres" id="26_j2c6c"]
+[ext_resource type="Material" uid="uid://c8h8f8r6xq5dv" path="res://Assets/Materials/Infinity/Boots.tres" id="27_ol7bj"]
 [ext_resource type="Script" path="res://Assets/Scripts/Hurtbox.gd" id="31_pkqhk"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_osbq5"]
@@ -61,14 +62,23 @@ shader_parameter/curve = ExtResource("18_7jk02")
 [sub_resource type="QuadMesh" id="QuadMesh_1tap5"]
 material = SubResource("ShaderMaterial_p8nx8")
 
-[sub_resource type="CylinderShape3D" id="CylinderShape3D_aqtno"]
-height = 1.8
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_5hlel"]
 radius = 0.375
+height = 1.8
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_yofg8"]
+radius = 0.375
+height = 1.8
 
 [node name="infinity" instance=ExtResource("1_rm5qk")]
 collision_layer = 4
 collision_mask = 5
+axis_lock_angular_x = true
+axis_lock_angular_y = true
+axis_lock_angular_z = true
 floor_constant_speed = true
+floor_max_angle = 0.872665
+floor_snap_length = 0.4
 platform_floor_layers = 1
 script = ExtResource("2_pd53c")
 weapon = ExtResource("3_b1uya")
@@ -329,14 +339,14 @@ curve = ExtResource("18_7jk02")
 _defaults_have_been_set = true
 
 [node name="Arm" parent="Armature/Skeleton3D" index="2"]
-surface_material_override/0 = ExtResource("12_sfjbh")
-surface_material_override/1 = ExtResource("10_1s82k")
-surface_material_override/2 = ExtResource("10_1s82k")
+surface_material_override/0 = ExtResource("24_fpikq")
+surface_material_override/1 = ExtResource("25_21o6v")
+surface_material_override/2 = ExtResource("25_21o6v")
 
 [node name="Body" parent="Armature/Skeleton3D" index="3"]
-surface_material_override/0 = ExtResource("12_sfjbh")
-surface_material_override/1 = ExtResource("14_3o2lr")
-surface_material_override/2 = ExtResource("15_d8i71")
+surface_material_override/0 = ExtResource("24_fpikq")
+surface_material_override/1 = ExtResource("26_j2c6c")
+surface_material_override/2 = ExtResource("27_ol7bj")
 surface_material_override/3 = ExtResource("16_jlivn")
 surface_material_override/4 = ExtResource("14_3o2lr")
 
@@ -349,14 +359,14 @@ surface_material_override/0 = ExtResource("15_71fgo")
 surface_material_override/1 = ExtResource("23_janfc")
 
 [node name="Hand" parent="Armature/Skeleton3D" index="6"]
-surface_material_override/0 = ExtResource("12_sfjbh")
+surface_material_override/0 = ExtResource("24_fpikq")
 
 [node name="Head" parent="Armature/Skeleton3D" index="7"]
-surface_material_override/0 = ExtResource("12_sfjbh")
+surface_material_override/0 = ExtResource("24_fpikq")
 
 [node name="Jacket" parent="Armature/Skeleton3D" index="8"]
-surface_material_override/0 = ExtResource("10_1s82k")
-surface_material_override/1 = ExtResource("10_1s82k")
+surface_material_override/0 = ExtResource("25_21o6v")
+surface_material_override/1 = ExtResource("25_21o6v")
 
 [node name="AnimationPlayer" parent="." index="5"]
 root_motion_track = NodePath("Armature/Skeleton3D:root")
@@ -365,7 +375,7 @@ autoplay = "Sword-Standby"
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." index="6"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, 0)
-shape = SubResource("CylinderShape3D_aqtno")
+shape = SubResource("CapsuleShape3D_5hlel")
 
 [node name="Hurtbox" type="Area3D" parent="." index="7"]
 collision_layer = 0
@@ -374,6 +384,6 @@ script = ExtResource("31_pkqhk")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Hurtbox" index="0"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, 0)
-shape = SubResource("CylinderShape3D_aqtno")
+shape = SubResource("CapsuleShape3D_yofg8")
 
 [connection signal="area_entered" from="Hurtbox" to="Hurtbox" method="_on_area_entered"]

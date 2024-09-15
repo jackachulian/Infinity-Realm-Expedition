@@ -1,9 +1,22 @@
-[gd_resource type="StandardMaterial3D" format=3 uid="uid://co0ctj87h8mt7"]
+[gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://c8h8f8r6xq5dv"]
+
+[ext_resource type="Shader" path="res://Assets/Shaders/flexible-toon-shader.gdshader" id="1_d57da"]
 
 [resource]
-diffuse_mode = 3
-specular_mode = 1
-albedo_color = Color(0.271568, 0.300046, 0.290468, 1)
-metallic = 0.4
-metallic_specular = 0.0
-roughness = 0.2
+render_priority = 0
+shader = ExtResource("1_d57da")
+shader_parameter/albedo = Color(0.662452, 0.662452, 0.662452, 1)
+shader_parameter/clamp_diffuse_to_max = true
+shader_parameter/cuts = 3
+shader_parameter/wrap = 0.0
+shader_parameter/steepness = 1.0
+shader_parameter/use_attenuation = true
+shader_parameter/use_specular = false
+shader_parameter/specular_strength = 1.0
+shader_parameter/specular_shininess = 16.0
+shader_parameter/use_rim = false
+shader_parameter/rim_width = 8.0
+shader_parameter/rim_color = Color(1, 1, 1, 1)
+shader_parameter/use_ramp = false
+shader_parameter/use_borders = false
+shader_parameter/border_width = 0.01

@@ -1,13 +1,13 @@
-[gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://dvscr3pbyeye4"]
+[gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://cypm7q1s0to0r"]
 
-[ext_resource type="Shader" path="res://Assets/Shaders/flexible-toon-shader.gdshader" id="1_450cm"]
+[ext_resource type="Shader" path="res://Assets/Shaders/flexible-toon-shader.gdshader" id="1_crh58"]
 
 [resource]
 render_priority = 0
-shader = ExtResource("1_450cm")
-shader_parameter/albedo = Color(0.264022, 0.36396, 0.532312, 1)
-shader_parameter/clamp_diffuse_to_max = true
-shader_parameter/cuts = 2
+shader = ExtResource("1_crh58")
+shader_parameter/albedo = Color(0.31356, 0.401559, 0.473845, 1)
+shader_parameter/clamp_diffuse_to_max = false
+shader_parameter/cuts = 3
 shader_parameter/wrap = 0.0
 shader_parameter/steepness = 1.0
 shader_parameter/use_attenuation = true
