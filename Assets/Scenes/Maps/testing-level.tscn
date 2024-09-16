@@ -78,12 +78,12 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.0486, 0.510486, 0.489744)
 use_collision = true
 
 [node name="CameraPivot" type="Node3D" parent="SubViewportContainer/SubViewport" node_paths=PackedStringArray("follow")]
-transform = Transform3D(0.707107, 0, 0.707107, 0, 1, 0, -0.707107, 0, 0.707107, 0, 0, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 script = ExtResource("1_3mcvw")
 follow = NodePath("../infinity")
 
 [node name="Camera3D" type="Camera3D" parent="SubViewportContainer/SubViewport/CameraPivot"]
-transform = Transform3D(1, 0, 0, 0, 0.866025, 0.5, 0, -0.5, 0.866025, 0, 8.661, 15)
+transform = Transform3D(1, 0, 0, 0, 0.798635, 0.601815, 0, -0.601815, 0.798635, 0, 8.661, 9.205)
 projection = 1
 current = true
 size = 16.0
@@ -126,6 +126,7 @@ shadow_enabled = true
 
 [node name="CloudsQuad" type="MeshInstance3D" parent="SubViewportContainer/SubViewport"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -37, 50, 36)
+visible = false
 mesh = SubResource("QuadMesh_f0svx")
 skeleton = NodePath("../CameraPivot")
 surface_material_override/0 = ExtResource("8_747v1")
