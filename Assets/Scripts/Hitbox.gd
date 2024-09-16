@@ -13,12 +13,18 @@ class_name Hitbox
 # The knockback force of this attack.
 @export var knockback: float = 7.5
 
+@export var hit_players: bool = false
+
+@export var hit_enemies: bool = true
+
+@export var hit_objects: bool = true
+
 @onready var shape: CollisionShape3D = get_child(0)
 
 func _init() -> void:
 	# Only send collisions to hurtboxes, which have mask of 01
 	collision_layer = 0
-	collision_mask = 2
+	collision_mask = (2 if hit_players else 0) + (4 if hit_enemies else 0) + (8 if hit_objects else 0)
 	
 func _ready():
 	disable_shape()

@@ -1,22 +1,36 @@
-[gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://n502w5ce2vmv"]
+[gd_resource type="ShaderMaterial" load_steps=6 format=3 uid="uid://dnx8w2objmy6q"]
 
-[ext_resource type="Shader" path="res://Assets/Shaders/flexible-toon-shader.gdshader" id="1_gorob"]
+[ext_resource type="Shader" path="res://Assets/Shaders/cel.gdshader" id="1_5lyyb"]
+
+[sub_resource type="Gradient" id="Gradient_ys8c5"]
+interpolation_mode = 1
+offsets = PackedFloat32Array(0, 0.251534, 0.634969)
+colors = PackedColorArray(0, 0, 0, 1, 0.08469, 0.0846899, 0.0846899, 1, 1, 1, 1, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_ear3p"]
+gradient = SubResource("Gradient_ys8c5")
+
+[sub_resource type="Gradient" id="Gradient_xpt3u"]
+interpolation_mode = 1
+offsets = PackedFloat32Array(0, 0.493865)
+colors = PackedColorArray(0, 0, 0, 1, 0.558611, 0.370359, 0.365436, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_g0dcm"]
+gradient = SubResource("Gradient_xpt3u")
 
 [resource]
 render_priority = 0
-shader = ExtResource("1_gorob")
-shader_parameter/albedo = Color(0.843359, 0.8371, 0.883631, 1)
-shader_parameter/clamp_diffuse_to_max = true
-shader_parameter/cuts = 3
-shader_parameter/wrap = 0.0
-shader_parameter/steepness = 1.0
-shader_parameter/use_attenuation = true
-shader_parameter/use_specular = false
-shader_parameter/specular_strength = 1.0
-shader_parameter/specular_shininess = 16.0
-shader_parameter/use_rim = false
-shader_parameter/rim_width = 8.0
-shader_parameter/rim_color = Color(0, 0.574872, 0.575915, 1)
-shader_parameter/use_ramp = false
-shader_parameter/use_borders = false
-shader_parameter/border_width = 0.01
+shader = ExtResource("1_5lyyb")
+shader_parameter/albedo = Color(0.826791, 0.784093, 0.794957, 1)
+shader_parameter/point_size = 0.0
+shader_parameter/roughness = 0.0
+shader_parameter/metallic_texture_channel = null
+shader_parameter/specular = 0.0
+shader_parameter/metallic = 0.0
+shader_parameter/normal_scale = 7.6e-07
+shader_parameter/uv1_scale = null
+shader_parameter/uv1_offset = null
+shader_parameter/uv2_scale = null
+shader_parameter/uv2_offset = null
+shader_parameter/color_gradient = SubResource("GradientTexture1D_ear3p")
+shader_parameter/fresnel_gradient = SubResource("GradientTexture1D_g0dcm")

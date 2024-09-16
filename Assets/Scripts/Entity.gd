@@ -1,6 +1,15 @@
 extends CharacterBody3D # as of writing only CharacterBody3D uses but going to write work with any node for now
 class_name Entity
 
+enum EntityType {
+	PLAYER,
+	ENEMY,
+	OBJECT
+}
+
+# True if this should take damage from enemy attacks and any hitbox that can damage players.
+@export var entity_type: EntityType
+
 # Currently equipped weapon if any.
 @export var weapon: Weapon
 

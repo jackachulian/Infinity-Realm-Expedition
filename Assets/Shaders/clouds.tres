@@ -1,4 +1,4 @@
-[gd_resource type="VisualShader" load_steps=10 format=3 uid="uid://1e4duaatt6c5"]
+[gd_resource type="VisualShader" load_steps=10 format=3 uid="uid://ct7fphngx86l1"]
 
 [sub_resource type="VisualShaderNodeVec2Parameter" id="VisualShaderNodeVec2Parameter_dy3ls"]
 parameter_name = "ScaleDirection"

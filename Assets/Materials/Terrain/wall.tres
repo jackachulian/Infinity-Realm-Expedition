@@ -1,22 +1,7 @@
-[gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://cypm7q1s0to0r"]
+[gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://c6ou7s7ngwebr"]
 
-[ext_resource type="Shader" path="res://Assets/Shaders/flexible-toon-shader.gdshader" id="1_crh58"]
+[ext_resource type="Shader" uid="uid://cc10vbuevpxgj" path="res://Assets/Shaders/wall.tres" id="1_g1n26"]
 
 [resource]
 render_priority = 0
-shader = ExtResource("1_crh58")
-shader_parameter/albedo = Color(0.31356, 0.401559, 0.473845, 1)
-shader_parameter/clamp_diffuse_to_max = false
-shader_parameter/cuts = 3
-shader_parameter/wrap = 0.0
-shader_parameter/steepness = 1.0
-shader_parameter/use_attenuation = true
-shader_parameter/use_specular = false
-shader_parameter/specular_strength = 1.0
-shader_parameter/specular_shininess = 16.0
-shader_parameter/use_rim = false
-shader_parameter/rim_width = 8.0
-shader_parameter/rim_color = Color(1, 1, 1, 1)
-shader_parameter/use_ramp = false
-shader_parameter/use_borders = false
-shader_parameter/border_width = 0.01
+shader = ExtResource("1_g1n26")

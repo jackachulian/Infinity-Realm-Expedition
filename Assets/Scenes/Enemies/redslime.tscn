@@ -1,7 +1,7 @@
 [gd_scene load_steps=13 format=3 uid="uid://bnq6kyw7csjrm"]
 
 [ext_resource type="PackedScene" uid="uid://5xkk1fd51bor" path="res://Assets/Models/redslime.glb" id="1_f33ua"]
-[ext_resource type="Material" uid="uid://c2846f7m7sd1j" path="res://Assets/Materials/Slime/slime-red.tres" id="2_1gwk5"]
+[ext_resource type="Material" uid="uid://c4r22eyfug44l" path="res://Assets/Materials/Slime/slime-red.tres" id="2_1gwk5"]
 [ext_resource type="Script" path="res://Assets/Scripts/Entity.gd" id="2_5lb7x"]
 [ext_resource type="Material" uid="uid://ch6chfqbxbcr3" path="res://Assets/Materials/Slime/eye.tres" id="3_l1tm4"]
 [ext_resource type="Material" uid="uid://bwwxf12w26ovn" path="res://Assets/Materials/damage-flash.tres" id="3_quer2"]
@@ -23,6 +23,7 @@ axis_lock_angular_y = true
 axis_lock_angular_z = true
 platform_floor_layers = 1
 script = ExtResource("2_5lb7x")
+entity_type = 1
 damage_flash_mat = ExtResource("3_quer2")
 hurt_state = NodePath("StateMachine/Hurt")
 

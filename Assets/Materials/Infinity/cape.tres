@@ -1,32 +1,32 @@
-[gd_resource type="ShaderMaterial" load_steps=6 format=3 uid="uid://bcmynfr7wfkk3"]
+[gd_resource type="ShaderMaterial" load_steps=6 format=3 uid="uid://ct3inusdkhyx2"]
 
-[ext_resource type="Shader" path="res://Assets/Shaders/cel.gdshader" id="1_myqw0"]
+[ext_resource type="Shader" path="res://Assets/Shaders/cel.gdshader" id="1_yic8t"]
 
 [sub_resource type="Gradient" id="Gradient_ys8c5"]
 interpolation_mode = 1
-offsets = PackedFloat32Array(0, 0.481595, 0.748466)
-colors = PackedColorArray(0, 0, 0, 1, 0.172833, 0.172833, 0.172833, 1, 1, 1, 1, 1)
+offsets = PackedFloat32Array(0, 0.251534, 0.634969)
+colors = PackedColorArray(0, 0, 0, 1, 0.08469, 0.0846899, 0.0846899, 1, 1, 1, 1, 1)
 
 [sub_resource type="GradientTexture1D" id="GradientTexture1D_ear3p"]
 gradient = SubResource("Gradient_ys8c5")
 
 [sub_resource type="Gradient" id="Gradient_xpt3u"]
 interpolation_mode = 1
-offsets = PackedFloat32Array(0, 0.613497)
-colors = PackedColorArray(0, 0, 0, 1, 0.261968, 0.236092, 0.215157, 1)
+offsets = PackedFloat32Array(0, 0.493865)
+colors = PackedColorArray(0, 0, 0, 1, 0.00451803, 0.00787344, 0.0206044, 1)
 
 [sub_resource type="GradientTexture1D" id="GradientTexture1D_g0dcm"]
 gradient = SubResource("Gradient_xpt3u")
 
 [resource]
 render_priority = 0
-shader = ExtResource("1_myqw0")
-shader_parameter/albedo = Color(0.433199, 0.463054, 0.490761, 1)
+shader = ExtResource("1_yic8t")
+shader_parameter/albedo = Color(0, 0.381914, 0.89369, 1)
 shader_parameter/point_size = 0.0
 shader_parameter/roughness = 0.0
 shader_parameter/metallic_texture_channel = null
-shader_parameter/specular = 0.448
-shader_parameter/metallic = 0.463
+shader_parameter/specular = 0.0
+shader_parameter/metallic = 0.0
 shader_parameter/normal_scale = 7.6e-07
 shader_parameter/uv1_scale = null
 shader_parameter/uv1_offset = null

@@ -58,16 +58,26 @@ func _enter_tree():
 func generate_mesh():
 	floor = SurfaceTool.new()
 	floor.begin(Mesh.PRIMITIVE_TRIANGLES)
-	floor.set_smooth_group(-1)
+	#floor.set_smooth_group(-1)
 	
 	wall = SurfaceTool.new()
 	wall.begin(Mesh.PRIMITIVE_TRIANGLES)
 	wall.set_smooth_group(-1)
 	
+	var start_time: int = Time.get_ticks_msec()
+	
 	generate_terrain_cells()
 				
 	floor.generate_normals()
 	wall.generate_normals()
+	
+	floor.index()
+	wall.index()
+	
+	var elapsed_time: int = Time.get_ticks_msec() - start_time
+	print("generated terrain in "+str(elapsed_time)+"ms")
+	
+	
 	
 	# Create a new mesh out of floor, and add the wall surface to it
 	var terrain_mesh = floor.commit()
@@ -76,11 +86,13 @@ func generate_mesh():
 	terrain_mesh.surface_set_material(0, floor_material)
 	terrain_mesh.surface_set_material(1, wall_material)
 	
+	var floor_verts = len(terrain_mesh.surface_get_arrays(0)[Mesh.ARRAY_VERTEX])
+	var wall_verts = len(terrain_mesh.surface_get_arrays(1)[Mesh.ARRAY_VERTEX])
+	print("total tris: "+str((floor_verts + wall_verts)/3))
+	
 	ResourceSaver.save(terrain_mesh, "res://terrain/"+name+".tres", ResourceSaver.FLAG_COMPRESS)
 	
 	mesh = terrain_mesh
-	
-	print("generated mesh")
 
 func generate_terrain_cells():
 	for z in range(dimensions.z - 1):
@@ -369,9 +381,9 @@ func generate_terrain_cells():
 					
 					# Wall from left to right edge
 					start_wall()
-					add_point(0, cy, 0.5)
-					add_point(0, ay, 0.5)
-					add_point(1, edge_dy, 0.5)
+					add_point(0, cy, 0.5, 0, 0)
+					add_point(0, ay, 0.5, 0, ay - cy)
+					add_point(1, edge_dy, 0.5, 1, 0)
 					
 					# Lower floor - use C and D edge
 					start_floor()
@@ -384,7 +396,7 @@ func generate_terrain_cells():
 					add_point(1, edge_dy, 0.5)
 
 
-				# Case 17: All edges are connected, except AC, and A is higher than C.
+				# Case 17: All edges are connected, except BD, and B is higher than D.
 				# Make an edge here, but merge one side of the edge together
 				elif ab and ac and cd and is_higher(by, dy):
 					# Only merge the ay/cy edge if AC edge is connected
@@ -403,9 +415,9 @@ func generate_terrain_cells():
 					
 					# Wall from left to right edge
 					start_wall()
-					add_point(1, by, 0.5)
-					add_point(1, dy, 0.5)
-					add_point(0, edge_ay, 0.5)
+					add_point(1, by, 0.5, 1, by  - dy)
+					add_point(1, dy, 0.5, 1, 0)
+					add_point(0, edge_ay, 0.5, 0, 0)
 					
 					# Lower floor - use C and D edge
 					start_floor()
@@ -502,13 +514,13 @@ func add_outer_corner(floor_below: bool = true, floor_above: bool = true, flatte
 	
 	# Walls - bases will use B and C height, while cliff top will use A height.
 	start_wall()
-	add_point(0, edge_cy, 0.5)
-	add_point(0, ay, 0.5)
-	add_point(0.5, edge_by, 0)
+	add_point(0, edge_cy, 0.5, 0, 0)
+	add_point(0, ay, 0.5, 0, ay - edge_cy)
+	add_point(0.5, edge_by, 0, 1, 0)
 	
-	add_point(0.5, ay, 0)
-	add_point(0.5, edge_by, 0)
-	add_point(0, ay, 0.5)
+	add_point(0.5, ay, 0, 1, ay - edge_by)
+	add_point(0.5, edge_by, 0, 1, 0)
+	add_point(0, ay, 0.5, 0, ay - edge_cy)
 
 	if floor_below:
 		start_floor()
@@ -547,13 +559,13 @@ func add_edge(floor_below: bool, floor_above: bool, a_x: float = 0, b_x: float =
 	
 	# Wall from left to right edge
 	start_wall()
-	add_point(0, edge_cy, 0.5)
-	add_point(0, edge_ay, 0.5)
-	add_point(1, edge_dy, 0.5)
+	add_point(0, edge_cy, 0.5, 0, 0)
+	add_point(0, edge_ay, 0.5, 0, edge_ay - edge_cy)
+	add_point(1, edge_dy, 0.5, 1, 0)
 	
-	add_point(1, edge_by, 0.5)
-	add_point(1, edge_dy, 0.5)
-	add_point(0, edge_ay, 0.5)
+	add_point(1, edge_by, 0.5, 1, edge_by - edge_dy)
+	add_point(1, edge_dy, 0.5, 1, 0)
+	add_point(0, edge_ay, 0.5, 0, edge_ay - edge_cy)
 	
 	# Lower floor - use C and D for height
 	# Only place a flat floor below if CD is connected
@@ -581,13 +593,13 @@ func add_inner_corner(lower_floor: bool = true, full_upper_floor: bool = true, f
 		add_point(0, ay, 0.5, 1, 0)
 
 	start_wall()
-	add_point(0, ay, 0.5)
-	add_point(0.5, ay, 0)
-	add_point(0, corner_cy, 0.5)
+	add_point(0, ay, 0.5, 1, 0)
+	add_point(0.5, ay, 0, 0, 0)
+	add_point(0, corner_cy, 0.5, 1, corner_cy - ay)
 	
-	add_point(0.5, corner_by, 0)
-	add_point(0, corner_cy, 0.5)
-	add_point(0.5, ay, 0)
+	add_point(0.5, corner_by, 0, 0, corner_by - ay)
+	add_point(0, corner_cy, 0.5, 1, corner_cy - ay)
+	add_point(0.5, ay, 0, 0, 0)
 
 	start_floor()
 	if full_upper_floor:
