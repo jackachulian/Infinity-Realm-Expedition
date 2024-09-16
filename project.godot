@@ -33,7 +33,8 @@ folder_colors={
 "res://Assets/Scenes/": "orange",
 "res://Assets/Scripts/": "blue",
 "res://Assets/Shaders/": "purple",
-"res://Assets/Sprites/": "yellow"
+"res://Assets/Sprites/": "yellow",
+"res://Assets/Textures/": "green"
 }
 
 [filesystem]

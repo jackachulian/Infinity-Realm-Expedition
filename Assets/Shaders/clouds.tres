@@ -1,4 +1,4 @@
-[gd_resource type="VisualShader" load_steps=10 format=3 uid="uid://ct7fphngx86l1"]
+[gd_resource type="VisualShader" load_steps=9 format=3 uid="uid://1e4duaatt6c5"]
 
 [sub_resource type="VisualShaderNodeVec2Parameter" id="VisualShaderNodeVec2Parameter_dy3ls"]
 parameter_name = "ScaleDirection"
@@ -9,12 +9,8 @@ default_value = Vector2(0.01, 0.005)
 default_input_values = [0, Vector2(0, 0), 1, Vector2(1, 1), 2, Vector2(0, 0)]
 op_type = 1
 
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_wn8yo"]
-frequency = 0.005
-fractal_octaves = 6
-
 [sub_resource type="NoiseTexture2D" id="NoiseTexture2D_qpa6j"]
-noise = SubResource("FastNoiseLite_wn8yo")
+seamless = true
 
 [sub_resource type="VisualShaderNodeTexture" id="VisualShaderNodeTexture_o1lxb"]
 output_port_for_preview = 1
@@ -27,7 +23,7 @@ default_input_values = [0, 0.75, 1, 0.0]
 [sub_resource type="VisualShaderNodeFloatParameter" id="VisualShaderNodeFloatParameter_hqkv2"]
 parameter_name = "Edge"
 default_value_enabled = true
-default_value = 0.75
+default_value = 0.7
 
 [sub_resource type="VisualShaderNodeInput" id="VisualShaderNodeInput_6um3c"]
 input_name = "uv"
@@ -39,7 +35,7 @@ input_name = "time"
 code = "shader_type spatial;
 render_mode blend_premul_alpha, depth_draw_opaque, cull_back, diffuse_lambert, specular_disabled, depth_prepass_alpha, unshaded, shadows_disabled;
 
-uniform float Edge = 0.75;
+uniform float Edge = 0.69999998807907;
 uniform vec2 ScaleDirection = vec2(0.010000, 0.005000);
 uniform sampler2D tex_frg_2;
 
@@ -81,7 +77,7 @@ void fragment() {
 
 }
 "
-graph_offset = Vector2(-926.662, -123.735)
+graph_offset = Vector2(-1411.19, -34.0162)
 modes/blend = 4
 modes/specular = 2
 flags/depth_prepass_alpha = true

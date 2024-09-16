@@ -5,3 +5,5 @@
 [resource]
 render_priority = 0
 shader = ExtResource("1_148f1")
+shader_parameter/Edge = 0.75
+shader_parameter/ScaleDirection = Vector2(0.02, 0.01)

@@ -468,7 +468,7 @@ func rotate_cell(rotations: int):
 
 # Adds a point. Coordinates are relative to the top-left corner (not mesh origin relative).
 # UV.x is closeness to the bottom of an edge. and UV.Y is closeness to the edge of a cliff.
-func add_point(x: float, y: float, z: float, uv_x: float = 0, uv_y: float = 0):
+func add_point(x: float, y: float, z: float, uv_x: float = 0, uv_y: float = 0, uv2_x: float = 0, uv2_y: float = 0):
 	for i in range(r):
 		var temp = x
 		x = 1 - z
@@ -477,7 +477,11 @@ func add_point(x: float, y: float, z: float, uv_x: float = 0, uv_y: float = 0):
 	var st = floor if floor_mode else wall
 	
 	#st.set_uv(Vector2((cell_x+x) / dimensions.x, (cell_z+z) / dimensions.z))
-	st.set_uv(Vector2(uv_x, uv_y))
+	if floor_mode:
+		st.set_uv(Vector2(x, z))
+		st.set_uv2(Vector2(uv_x, uv_y))
+	else:
+		st.set_uv(Vector2(uv_x, uv_y))
 	st.add_vertex(Vector3(cell_x+x, y, cell_z+z))
 	
 # if true, currently making floor geometry. if false, currently making wall geometry.
