@@ -99,7 +99,7 @@ skeleton = NodePath("../..")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
 
 [node name="redslime" parent="SubViewportContainer/SubViewport" instance=ExtResource("3_brrvy")]
-transform = Transform3D(0.00830746, 0, -0.999965, 0, 1, 0, 0.999965, 0, 0.00830746, -5, 1, 0)
+transform = Transform3D(-0.963742, 0, -0.266834, 0, 1, 0, 0.266834, 0, -0.963742, -5, 0.497995, 0)
 
 [node name="Terrain" type="MeshInstance3D" parent="SubViewportContainer/SubViewport"]
 transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, -32, -9, -32)

@@ -1,7 +1,7 @@
 [gd_resource type="VisualShader" load_steps=24 format=3 uid="uid://6rk1j17jkel3"]
 
 [ext_resource type="Texture2D" uid="uid://bn1xhfmluopby" path="res://Assets/Textures/rock.tres" id="1_jv2jo"]
-[ext_resource type="Texture2D" uid="uid://b6j1ifkybyob6" path="res://Assets/Textures/rock_wall_gradient.tres" id="2_yercq"]
+[ext_resource type="Texture2D" uid="uid://b6j1ifkybyob6" path="res://Assets/Textures/rock_gradient.tres" id="2_yercq"]
 [ext_resource type="Texture2D" uid="uid://dgirkgvtwdgey" path="res://Assets/Textures/terrain_lighting.tres" id="3_ec8x3"]
 
 [sub_resource type="VisualShaderNodeTexture" id="VisualShaderNodeTexture_tm2d6"]
