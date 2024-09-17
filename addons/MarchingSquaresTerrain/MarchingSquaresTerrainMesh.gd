@@ -375,7 +375,7 @@ func generate_terrain_cells():
 					add_point(1, by, 0) # B
 					add_point(1, edge_by, 0.5) #D
 					
-					add_point(1, edge_by, 0.5) #D
+					add_point(1, edge_by, 0.5, 0, 1) #D
 					add_point(0, ay, 0.5, 0, 1) #C
 					add_point(0, ay, 0) #A
 					
@@ -388,7 +388,7 @@ func generate_terrain_cells():
 					# Lower floor - use C and D edge
 					start_floor()
 					add_point(0, cy, 0.5, 1, 0)
-					add_point(1, edge_dy, 0.5)
+					add_point(1, edge_dy, 0.5, 1, 0)
 					add_point(0, cy, 1)
 					
 					add_point(1, dy, 1)
@@ -410,7 +410,7 @@ func generate_terrain_cells():
 					add_point(0, edge_ay, 0.5)
 					
 					add_point(1, by, 0.5, 0, 1)
-					add_point(0, edge_ay, 0.5)
+					add_point(0, edge_ay, 0.5, 0, 1)
 					add_point(1, by, 0)
 					
 					# Wall from left to right edge
@@ -421,7 +421,7 @@ func generate_terrain_cells():
 					
 					# Lower floor - use C and D edge
 					start_floor()
-					add_point(0, edge_cy, 0.5)
+					add_point(0, edge_cy, 0.5, 1, 0)
 					add_point(1, dy, 0.5, 1, 0)
 					add_point(1, dy, 1)
 					
