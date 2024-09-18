@@ -1,12 +1,12 @@
 [gd_resource type="GradientTexture1D" load_steps=2 format=3 uid="uid://dgirkgvtwdgey"]
 
-[sub_resource type="Gradient" id="Gradient_iyrih"]
+[sub_resource type="Gradient" id="Gradient_mfyxu"]
 interpolation_mode = 1
-offsets = PackedFloat32Array(0, 0.40625, 0.59375, 0.75, 0.84375, 0.9375)
-colors = PackedColorArray(0, 0, 0, 1, 0.0284548, 0.075808, 0.182057, 1, 0.113995, 0.142692, 0.261743, 1, 0.280516, 0.302429, 0.391958, 1, 0.36535, 0.361624, 0.402197, 1, 1, 1, 1, 1)
+offsets = PackedFloat32Array(0, 0.40625, 0.59375, 0.78125, 0.9375)
+colors = PackedColorArray(0, 0, 0, 1, 0.0284548, 0.075808, 0.182057, 1, 0.113995, 0.142692, 0.261743, 1, 0.36535, 0.361624, 0.402197, 1, 1, 1, 1, 1)
 metadata/_snap_enabled = true
 metadata/_snap_count = 32
 
 [resource]
-gradient = SubResource("Gradient_iyrih")
+gradient = SubResource("Gradient_mfyxu")
 width = 512

@@ -17,4 +17,3 @@ ambient_light_sky_contribution = 0.0
 ambient_light_energy = 0.25
 reflected_light_source = 1
 ssao_intensity = 16.0
-glow_enabled = true

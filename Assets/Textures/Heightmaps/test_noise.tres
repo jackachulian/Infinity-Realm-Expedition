@@ -5,6 +5,6 @@ seed = 1
 frequency = 0.015
 
 [resource]
-width = 32
-height = 32
+width = 64
+height = 64
 noise = SubResource("FastNoiseLite_uc1u3")

@@ -1,4 +1,4 @@
-[gd_resource type="VisualShader" load_steps=9 format=3 uid="uid://1e4duaatt6c5"]
+[gd_resource type="VisualShader" load_steps=7 format=3 uid="uid://1e4duaatt6c5"]
 
 [sub_resource type="VisualShaderNodeVec2Parameter" id="VisualShaderNodeVec2Parameter_dy3ls"]
 parameter_name = "ScaleDirection"
@@ -9,20 +9,8 @@ default_value = Vector2(0.01, 0.005)
 default_input_values = [0, Vector2(0, 0), 1, Vector2(1, 1), 2, Vector2(0, 0)]
 op_type = 1
 
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_nbmvg"]
-frequency = 0.0035
-fractal_lacunarity = 1.9
-fractal_weighted_strength = 0.5
-
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_qpa6j"]
-width = 1024
-height = 1024
-seamless = true
-noise = SubResource("FastNoiseLite_nbmvg")
-
 [sub_resource type="VisualShaderNodeTexture" id="VisualShaderNodeTexture_o1lxb"]
 output_port_for_preview = 1
-texture = SubResource("NoiseTexture2D_qpa6j")
 
 [sub_resource type="VisualShaderNodeStep" id="VisualShaderNodeStep_n34k2"]
 default_input_values = [0, 0.65, 1, 0.0]

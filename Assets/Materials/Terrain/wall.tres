@@ -1,7 +1,9 @@
-[gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://cypm7q1s0to0r"]
+[gd_resource type="ShaderMaterial" load_steps=3 format=3 uid="uid://cypm7q1s0to0r"]
 
 [ext_resource type="Shader" uid="uid://6rk1j17jkel3" path="res://Assets/Shaders/wall.tres" id="1_g1n26"]
+[ext_resource type="NoiseTexture3D" uid="uid://3jnauc3rxtsh" path="res://Assets/Textures/Heightmaps/wall_3d_noise.tres" id="2_wtkqt"]
 
 [resource]
 render_priority = 0
 shader = ExtResource("1_g1n26")
+shader_parameter/Texture3DParameter = ExtResource("2_wtkqt")

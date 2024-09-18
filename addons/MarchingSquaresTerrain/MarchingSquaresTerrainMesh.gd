@@ -68,7 +68,7 @@ func generate_mesh():
 	
 	generate_terrain_cells()
 				
-	floor.generate_normals()
+	#floor.generate_normals()
 	wall.generate_normals()
 	
 	floor.index()
@@ -382,7 +382,7 @@ func generate_terrain_cells():
 					# Wall from left to right edge
 					start_wall()
 					add_point(0, cy, 0.5, 0, 0)
-					add_point(0, ay, 0.5, 0, ay - cy)
+					add_point(0, ay, 0.5, 0, 1)
 					add_point(1, edge_dy, 0.5, 1, 0)
 					
 					# Lower floor - use C and D edge
@@ -415,7 +415,7 @@ func generate_terrain_cells():
 					
 					# Wall from left to right edge
 					start_wall()
-					add_point(1, by, 0.5, 1, by  - dy)
+					add_point(1, by, 0.5, 1, 1)
 					add_point(1, dy, 0.5, 1, 0)
 					add_point(0, edge_ay, 0.5, 0, 0)
 					
@@ -480,6 +480,7 @@ func add_point(x: float, y: float, z: float, uv_x: float = 0, uv_y: float = 0, u
 	if floor_mode:
 		st.set_uv(Vector2(x, z))
 		st.set_uv2(Vector2(uv_x, uv_y))
+		st.set_normal(Vector3(0, 1, 0))
 	else:
 		st.set_uv(Vector2(uv_x, uv_y))
 	st.add_vertex(Vector3(cell_x+x, y, cell_z+z))
@@ -519,12 +520,12 @@ func add_outer_corner(floor_below: bool = true, floor_above: bool = true, flatte
 	# Walls - bases will use B and C height, while cliff top will use A height.
 	start_wall()
 	add_point(0, edge_cy, 0.5, 0, 0)
-	add_point(0, ay, 0.5, 0, ay - edge_cy)
+	add_point(0, ay, 0.5, 0, 1)
 	add_point(0.5, edge_by, 0, 1, 0)
 	
-	add_point(0.5, ay, 0, 1, ay - edge_by)
+	add_point(0.5, ay, 0, 1, 1)
 	add_point(0.5, edge_by, 0, 1, 0)
-	add_point(0, ay, 0.5, 0, ay - edge_cy)
+	add_point(0, ay, 0.5, 0, 1)
 
 	if floor_below:
 		start_floor()
@@ -564,12 +565,12 @@ func add_edge(floor_below: bool, floor_above: bool, a_x: float = 0, b_x: float =
 	# Wall from left to right edge
 	start_wall()
 	add_point(0, edge_cy, 0.5, 0, 0)
-	add_point(0, edge_ay, 0.5, 0, edge_ay - edge_cy)
+	add_point(0, edge_ay, 0.5, 0, 1)
 	add_point(1, edge_dy, 0.5, 1, 0)
 	
-	add_point(1, edge_by, 0.5, 1, edge_by - edge_dy)
+	add_point(1, edge_by, 0.5, 1, 1)
 	add_point(1, edge_dy, 0.5, 1, 0)
-	add_point(0, edge_ay, 0.5, 0, edge_ay - edge_cy)
+	add_point(0, edge_ay, 0.5, 0, 1)
 	
 	# Lower floor - use C and D for height
 	# Only place a flat floor below if CD is connected
@@ -599,10 +600,10 @@ func add_inner_corner(lower_floor: bool = true, full_upper_floor: bool = true, f
 	start_wall()
 	add_point(0, ay, 0.5, 1, 0)
 	add_point(0.5, ay, 0, 0, 0)
-	add_point(0, corner_cy, 0.5, 1, corner_cy - ay)
+	add_point(0, corner_cy, 0.5, 1, 1)
 	
-	add_point(0.5, corner_by, 0, 0, corner_by - ay)
-	add_point(0, corner_cy, 0.5, 1, corner_cy - ay)
+	add_point(0.5, corner_by, 0, 0, 1)
+	add_point(0, corner_cy, 0.5, 1, 1)
 	add_point(0.5, ay, 0, 0, 0)
 
 	start_floor()
