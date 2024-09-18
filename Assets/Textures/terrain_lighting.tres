@@ -2,10 +2,11 @@
 
 [sub_resource type="Gradient" id="Gradient_iyrih"]
 interpolation_mode = 1
-offsets = PackedFloat32Array(0, 0.4375, 0.59375, 0.75, 0.8125, 0.9375)
-colors = PackedColorArray(0, 0, 0, 1, 0.065915, 0.111259, 0.186926, 1, 0.149213, 0.178823, 0.249796, 1, 0.237584, 0.261558, 0.356947, 1, 0.430243, 0.473015, 0.509017, 1, 1, 1, 1, 1)
+offsets = PackedFloat32Array(0, 0.40625, 0.59375, 0.75, 0.84375, 0.9375)
+colors = PackedColorArray(0, 0, 0, 1, 0.0284548, 0.075808, 0.182057, 1, 0.113995, 0.142692, 0.261743, 1, 0.280516, 0.302429, 0.391958, 1, 0.36535, 0.361624, 0.402197, 1, 1, 1, 1, 1)
 metadata/_snap_enabled = true
 metadata/_snap_count = 32
 
 [resource]
 gradient = SubResource("Gradient_iyrih")
+width = 512

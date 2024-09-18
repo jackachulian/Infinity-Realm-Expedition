@@ -5,13 +5,13 @@
 [resource]
 render_priority = 0
 shader = ExtResource("1_ydlbb")
-shader_parameter/albedo = Color(0.290334, 0.708787, 0.961449, 1)
+shader_parameter/albedo = Color(0.219608, 0.741176, 1, 1)
 shader_parameter/clamp_diffuse_to_max = true
-shader_parameter/cuts = 3
-shader_parameter/wrap = -0.0499999
+shader_parameter/cuts = 2
+shader_parameter/wrap = 0.0
 shader_parameter/steepness = 1.0
 shader_parameter/use_attenuation = true
-shader_parameter/use_specular = false
+shader_parameter/use_specular = true
 shader_parameter/specular_strength = 1.0
 shader_parameter/specular_shininess = 16.0
 shader_parameter/use_rim = false

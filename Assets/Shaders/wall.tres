@@ -1,8 +1,15 @@
-[gd_resource type="VisualShader" load_steps=24 format=3 uid="uid://6rk1j17jkel3"]
+[gd_resource type="VisualShader" load_steps=26 format=3 uid="uid://6rk1j17jkel3"]
 
 [ext_resource type="Texture2D" uid="uid://bn1xhfmluopby" path="res://Assets/Textures/rock.tres" id="1_jv2jo"]
 [ext_resource type="Texture2D" uid="uid://b6j1ifkybyob6" path="res://Assets/Textures/rock_gradient.tres" id="2_yercq"]
 [ext_resource type="Texture2D" uid="uid://dgirkgvtwdgey" path="res://Assets/Textures/terrain_lighting.tres" id="3_ec8x3"]
+
+[sub_resource type="VisualShaderNodeFloatOp" id="VisualShaderNodeFloatOp_prteu"]
+default_input_values = [0, 0.0, 1, 2.0]
+operator = 5
+
+[sub_resource type="VisualShaderNodeRemap" id="VisualShaderNodeRemap_8kpcr"]
+default_input_values = [1, 0.0, 2, 1.0, 3, 0.0, 4, 0.75]
 
 [sub_resource type="VisualShaderNodeTexture" id="VisualShaderNodeTexture_tm2d6"]
 expanded_output_ports = [0]
@@ -102,9 +109,27 @@ void fragment() {
 	float n_out5p1 = n_out5p0.r;
 
 
+	float n_out11p0;
+// Remap:11
+	float n_in11p1 = 0.00000;
+	float n_in11p2 = 1.00000;
+	float n_in11p3 = 0.00000;
+	float n_in11p4 = 0.75000;
+	{
+		float __input_range = n_in11p2 - n_in11p1;
+		float __output_range = n_in11p4 - n_in11p3;
+		n_out11p0 = n_in11p3 + __output_range * ((n_out5p1 - n_in11p1) / __input_range);
+	}
+
+
+// FloatOp:10
+	float n_in10p1 = 2.00000;
+	float n_out10p0 = pow(n_out11p0, n_in10p1);
+
+
 // VectorCompose:7
 	float n_in7p1 = 0.00000;
-	vec2 n_out7p0 = vec2(n_out5p1, n_in7p1);
+	vec2 n_out7p0 = vec2(n_out10p0, n_in7p1);
 
 
 // Texture2D:6
@@ -189,22 +214,26 @@ void light() {
 
 }
 "
-graph_offset = Vector2(-980.045, 58.3345)
+graph_offset = Vector2(-853.355, 150.256)
 nodes/vertex/2/node = SubResource("VisualShaderNodeInput_hvf0d")
 nodes/vertex/2/position = Vector2(-200, 300)
 nodes/vertex/connections = PackedInt32Array(2, 0, 0, 6)
 nodes/fragment/0/position = Vector2(620, 140)
 nodes/fragment/5/node = SubResource("VisualShaderNodeTexture_tm2d6")
-nodes/fragment/5/position = Vector2(-420, 280)
+nodes/fragment/5/position = Vector2(-800, 280)
 nodes/fragment/6/node = SubResource("VisualShaderNodeTexture_p4d01")
 nodes/fragment/6/position = Vector2(140, 320)
 nodes/fragment/7/node = SubResource("VisualShaderNodeVectorCompose_d6olp")
 nodes/fragment/7/position = Vector2(-120, 380)
 nodes/fragment/8/node = SubResource("VisualShaderNodeInput_genvq")
-nodes/fragment/8/position = Vector2(-1360, 300)
+nodes/fragment/8/position = Vector2(-1600, 360)
 nodes/fragment/9/node = SubResource("VisualShaderNodeVectorOp_xux4w")
-nodes/fragment/9/position = Vector2(-695.337, 327.312)
-nodes/fragment/connections = PackedInt32Array(7, 0, 6, 0, 6, 0, 0, 0, 5, 1, 7, 0, 9, 0, 5, 0, 8, 0, 9, 0)
+nodes/fragment/9/position = Vector2(-1120, 340)
+nodes/fragment/10/node = SubResource("VisualShaderNodeFloatOp_prteu")
+nodes/fragment/10/position = Vector2(-340, 420)
+nodes/fragment/11/node = SubResource("VisualShaderNodeRemap_8kpcr")
+nodes/fragment/11/position = Vector2(-560, 420)
+nodes/fragment/connections = PackedInt32Array(7, 0, 6, 0, 6, 0, 0, 0, 9, 0, 5, 0, 8, 0, 9, 0, 10, 0, 7, 0, 5, 1, 11, 0, 11, 0, 10, 0)
 nodes/light/2/node = SubResource("VisualShaderNodeDotProduct_pky2v")
 nodes/light/2/position = Vector2(-2080, -280)
 nodes/light/3/node = SubResource("VisualShaderNodeInput_nw3bf")

@@ -24,15 +24,15 @@
 [ext_resource type="Script" path="res://Packages/GPUTrail-main/GPUTrail3D.gd" id="19_0mkq7"]
 [ext_resource type="Texture2D" uid="uid://d0aqx8k5y48w8" path="res://Assets/Sprites/slash-effect.png" id="19_2vl7e"]
 [ext_resource type="Script" path="res://Assets/Scripts/Hitbox.gd" id="20_rq6bb"]
-[ext_resource type="Material" uid="uid://dnx8w2objmy6q" path="res://Assets/Materials/Infinity/skin.tres" id="24_fpikq"]
+[ext_resource type="Material" uid="uid://d3m017nu85hnp" path="res://Assets/Materials/Infinity/skin.tres" id="24_fpikq"]
 [ext_resource type="Material" uid="uid://2eqit1nas224" path="res://Assets/Materials/Infinity/jacket.tres" id="25_21o6v"]
-[ext_resource type="Material" uid="uid://clln0di7wj150" path="res://Assets/Materials/Infinity/pants.tres" id="26_j2c6c"]
-[ext_resource type="Material" uid="uid://bcmynfr7wfkk3" path="res://Assets/Materials/Infinity/boots.tres" id="27_ol7bj"]
-[ext_resource type="Material" uid="uid://dsuq4yrgsbdtl" path="res://Assets/Materials/Infinity/shirt.tres" id="29_bvntd"]
-[ext_resource type="Material" uid="uid://bmgctns2jcb5c" path="res://Assets/Materials/Infinity/shoulder.tres" id="30_2o3ah"]
-[ext_resource type="Material" uid="uid://ct3inusdkhyx2" path="res://Assets/Materials/Infinity/cape.tres" id="31_ipwxg"]
+[ext_resource type="Material" uid="uid://cw4o7epccvtei" path="res://Assets/Materials/Infinity/pants.tres" id="26_j2c6c"]
+[ext_resource type="Material" uid="uid://cvlx4cl1n214p" path="res://Assets/Materials/Infinity/boots.tres" id="27_ol7bj"]
+[ext_resource type="Material" uid="uid://cj38r6nupxs11" path="res://Assets/Materials/Infinity/shirt.tres" id="29_bvntd"]
+[ext_resource type="Material" uid="uid://c8d6wenx5grby" path="res://Assets/Materials/Infinity/shoulder.tres" id="30_2o3ah"]
+[ext_resource type="Material" uid="uid://un2bpk7bnsek" path="res://Assets/Materials/Infinity/cape.tres" id="31_ipwxg"]
 [ext_resource type="Script" path="res://Assets/Scripts/Hurtbox.gd" id="31_pkqhk"]
-[ext_resource type="Material" uid="uid://fiwgpxojhmlh" path="res://Assets/Materials/Infinity/hair-highlight.tres" id="33_pat5a"]
+[ext_resource type="Material" uid="uid://ch3saou8ijta3" path="res://Assets/Materials/Infinity/hair-highlight.tres" id="33_pat5a"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_osbq5"]
 radius = 1.07228
@@ -333,7 +333,6 @@ length = 20
 texture = ExtResource("19_2vl7e")
 color_ramp = ExtResource("17_pvvl0")
 curve = ExtResource("18_7jk02")
-_defaults_have_been_set = true
 
 [node name="Arm" parent="Armature/Skeleton3D" index="2"]
 surface_material_override/0 = ExtResource("24_fpikq")
