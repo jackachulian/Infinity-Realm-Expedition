@@ -44,7 +44,8 @@ void fragment() {
 	float edge = 1.0 - clamp(ledgeThickness - (rockNoise - 0.5)*rockNoiseAmplify*0.5, 0, 1);
 	//float grassRockEdge = step(edge, length(UV2));
 	//float grassRockEdge = step(edge, UV2.x + UV2.y);
-	float grassRockEdge = step(edge, max(UV2.x, UV2.y));
+	//float grassRockEdge = step(edge, max(UV2.x, UV2.y));
+	float grassRockEdge = step(edge, max(UV2.x, UV2.y) + (UV2.x + UV2.y)*0.15);
 	vec3 grassRockMix = mix(grassColor, rockColor, grassRockEdge);
 	
 	ALBEDO = grassRockMix;
