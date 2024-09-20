@@ -46,10 +46,10 @@ height = 3.3702
 radius = 1.25265
 height = 3.01501
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_pnt47"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_7xpib"]
 shader = ExtResource("15_rhd6w")
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_p8nx8"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_4h78l"]
 resource_local_to_scene = true
 render_priority = 0
 shader = ExtResource("16_qm1pa")
@@ -59,8 +59,8 @@ shader_parameter/tex = ExtResource("19_2vl7e")
 shader_parameter/color_ramp = ExtResource("17_pvvl0")
 shader_parameter/curve = ExtResource("18_7jk02")
 
-[sub_resource type="QuadMesh" id="QuadMesh_1tap5"]
-material = SubResource("ShaderMaterial_p8nx8")
+[sub_resource type="QuadMesh" id="QuadMesh_2x54a"]
+material = SubResource("ShaderMaterial_4h78l")
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_5hlel"]
 radius = 0.375
@@ -326,13 +326,14 @@ amount = 20
 lifetime = 20.0
 explosiveness = 1.0
 fixed_fps = 0
-process_material = SubResource("ShaderMaterial_pnt47")
-draw_pass_1 = SubResource("QuadMesh_1tap5")
+process_material = SubResource("ShaderMaterial_7xpib")
+draw_pass_1 = SubResource("QuadMesh_2x54a")
 script = ExtResource("19_0mkq7")
 length = 20
 texture = ExtResource("19_2vl7e")
 color_ramp = ExtResource("17_pvvl0")
 curve = ExtResource("18_7jk02")
+_defaults_have_been_set = true
 
 [node name="Arm" parent="Armature/Skeleton3D" index="2"]
 surface_material_override/0 = ExtResource("24_fpikq")
