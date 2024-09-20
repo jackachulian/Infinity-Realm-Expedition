@@ -1,0 +1,30 @@
+[gd_resource type="ShaderMaterial" load_steps=7 format=3 uid="uid://cw068lng8rddd"]
+
+[ext_resource type="Shader" path="res://Assets/Shaders/terrain.gdshader" id="1_21hti"]
+[ext_resource type="Gradient" uid="uid://esrkv883fv0f" path="res://Assets/Textures/grass_gradient.tres" id="2_32845"]
+[ext_resource type="Texture2D" uid="uid://b6j1ifkybyob6" path="res://Assets/Textures/rock_gradient.tres" id="3_sbgp3"]
+[ext_resource type="NoiseTexture3D" uid="uid://3jnauc3rxtsh" path="res://Assets/Textures/wall_3d_noise.tres" id="4_folow"]
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_rogdu"]
+noise_type = 3
+fractal_octaves = 2
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_e4a7h"]
+width = 1024
+height = 1024
+color_ramp = ExtResource("2_32845")
+noise = SubResource("FastNoiseLite_rogdu")
+
+[resource]
+render_priority = 0
+shader = ExtResource("1_21hti")
+shader_parameter/rockNoiseStretch = Vector3(6, 9, 6)
+shader_parameter/rockNoiseAmplify = 1.5
+shader_parameter/ledgeThickness = 0.5
+shader_parameter/ledgeTopBrightness = 0.45
+shader_parameter/ledgeWallTopBrightness = 0.3
+shader_parameter/ledgeBottomBrightness = -0.2
+shader_parameter/ledgeWallBottomBrightness = -0.15
+shader_parameter/colorMap = SubResource("NoiseTexture2D_e4a7h")
+shader_parameter/rockNoiseTexture = ExtResource("4_folow")
+shader_parameter/rockGradient = ExtResource("3_sbgp3")

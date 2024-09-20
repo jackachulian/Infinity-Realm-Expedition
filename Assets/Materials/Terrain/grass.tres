@@ -1,6 +1,6 @@
 [gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://calcofamg4x2l"]
 
-[ext_resource type="Shader" uid="uid://cc1lbryfrmdu1" path="res://Assets/Shaders/terrain.tres" id="1_reqxy"]
+[ext_resource type="Shader" uid="uid://cc1lbryfrmdu1" path="res://Assets/Shaders/terrain-graph.tres" id="1_reqxy"]
 
 [resource]
 render_priority = 0

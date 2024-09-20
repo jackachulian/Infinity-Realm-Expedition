@@ -476,13 +476,15 @@ func add_point(x: float, y: float, z: float, uv_x: float = 0, uv_y: float = 0, u
 		
 	var st = floor if floor_mode else wall
 	
-	#st.set_uv(Vector2((cell_x+x) / dimensions.x, (cell_z+z) / dimensions.z))
+	
 	if floor_mode:
-		st.set_uv(Vector2(x, z))
+		st.set_color(Color(cell_x+x, y, cell_z+z))
+		st.set_uv(Vector2((cell_x+x) / dimensions.x, (cell_z+z) / dimensions.z))
 		st.set_uv2(Vector2(uv_x, uv_y))
-		st.set_normal(Vector3(0, 1, 0))
+		#st.set_normal(Vector3(0, 1, 0))
 	else:
 		st.set_uv(Vector2(uv_x, uv_y))
+		st.set_uv2(Vector2(1, 1))
 	st.add_vertex(Vector3(cell_x+x, y, cell_z+z))
 	
 # if true, currently making floor geometry. if false, currently making wall geometry.
