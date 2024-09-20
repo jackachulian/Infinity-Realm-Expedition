@@ -13,6 +13,7 @@ uniform float ledgeTopBrightness = 0.45;
 uniform float ledgeWallTopBrightness = 0.3;
 uniform float ledgeBottomBrightness = -0.3;
 uniform float ledgeWallBottomBrightness = -0.15;
+uniform float wallMaxGradientValue = 0.8;
 
 void vertex() {
 	COLOR.rgb = VERTEX;
@@ -33,11 +34,17 @@ void fragment() {
 	
 	float rockNoise = texture(rockNoiseTexture, COLOR.rgb / rockNoiseStretch).r;
 	float rockNoiseAmplified = (rockNoise - 0.5)*rockNoiseAmplify + 0.5;
-	float rockBrightness = clamp(rockNoiseAmplified + brightness, 0.02, 0.98);
+	float amplifiedBrightness = rockNoiseAmplified + brightness;
+	if (isWall) {
+		amplifiedBrightness *= wallMaxGradientValue;
+	}
+	float rockBrightness = clamp(amplifiedBrightness, 0.02, 0.98);
 	vec3 rockColor = texture(rockGradient, vec2(rockBrightness, 0)).rgb;
 	
-	//float grassRockEdge = step(1.0 - ledgeThickness, length(UV2));
-	float grassRockEdge = step(1.0 - ledgeThickness - (rockNoise - 0.5)*rockNoiseAmplify*0.5, UV2.x + UV2.y);
+	float edge = 1.0 - clamp(ledgeThickness - (rockNoise - 0.5)*rockNoiseAmplify*0.5, 0, 1);
+	//float grassRockEdge = step(edge, length(UV2));
+	//float grassRockEdge = step(edge, UV2.x + UV2.y);
+	float grassRockEdge = step(edge, max(UV2.x, UV2.y));
 	vec3 grassRockMix = mix(grassColor, rockColor, grassRockEdge);
 	
 	ALBEDO = grassRockMix;

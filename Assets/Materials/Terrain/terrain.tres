@@ -7,6 +7,7 @@
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_rogdu"]
 noise_type = 3
+frequency = 0.001
 fractal_octaves = 2
 
 [sub_resource type="NoiseTexture2D" id="NoiseTexture2D_e4a7h"]
@@ -25,6 +26,7 @@ shader_parameter/ledgeTopBrightness = 0.45
 shader_parameter/ledgeWallTopBrightness = 0.3
 shader_parameter/ledgeBottomBrightness = -0.2
 shader_parameter/ledgeWallBottomBrightness = -0.15
+shader_parameter/wallMaxGradientValue = 0.8
 shader_parameter/colorMap = SubResource("NoiseTexture2D_e4a7h")
 shader_parameter/rockNoiseTexture = ExtResource("4_folow")
 shader_parameter/rockGradient = ExtResource("3_sbgp3")
