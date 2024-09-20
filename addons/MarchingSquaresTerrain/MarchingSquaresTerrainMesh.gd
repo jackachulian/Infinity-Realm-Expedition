@@ -211,7 +211,7 @@ func generate_terrain_cells():
 					add_inner_corner(true, true)
 					
 				# Case 7: A is lower than B and C, B and C are merged, and D is higher than B and C.
-				# Outer corner around A, and on top of htat an inner corner around D
+				# Outer corner around A, and on top of that an inner corner around D
 				elif is_lower(ay, by) and is_lower(ay, cy) and is_higher(dy, by) and is_higher(dy, cy) and is_merged(by, cy):
 					add_inner_corner(true, false)
 					add_diagonal_floor(by, cy, true, false)
@@ -222,19 +222,6 @@ func generate_terrain_cells():
 				elif is_lower(ay, by) and is_lower(ay, cy) and is_lower(dy, cy) and bd:
 					add_inner_corner(true, false, true)
 					start_floor()
-					
-					#add_point(1, dy, 1)
-					#add_point(0.5, dy, 1, 1, 0)
-					#add_point(0, by, 0.5, 1, 1)
-					#
-					#add_point(1, dy, 1)
-					#add_point(0, by, 0.5, 1, 0)
-					#add_point(0.25, by, 0.25)
-					#
-					#add_point(1, dy, 1)
-					#add_point(0.25, by, 0.25)
-					#add_point(0.5, by, 0)
-					
 					
 					# D corner. B edge is connected, so use halfway point bewteen B and D
 					add_point(1, dy, 1)
@@ -478,13 +465,17 @@ func add_point(x: float, y: float, z: float, uv_x: float = 0, uv_y: float = 0, u
 	
 	
 	if floor_mode:
-		st.set_color(Color(cell_x+x, y, cell_z+z))
-		st.set_uv(Vector2((cell_x+x) / dimensions.x, (cell_z+z) / dimensions.z))
-		st.set_uv2(Vector2(uv_x, uv_y))
+		#st.set_color(Color(cell_x+x, y, cell_z+z))
+		st.set_uv(Vector2(uv_x, uv_y))
+		# use this for completely flat looking floors
 		#st.set_normal(Vector3(0, 1, 0))
 	else:
-		st.set_uv(Vector2(uv_x, uv_y))
-		st.set_uv2(Vector2(1, 1))
+		# walls will always have UV of 1, 1
+		st.set_uv(Vector2(1, 1))
+	
+	# UV2 = terrain space coordinates. 0,0 = top left of heightmap, 1,1 = bottom right of heightmap
+	st.set_uv2(Vector2((cell_x+x) / dimensions.x, (cell_z+z) / dimensions.z))
+		
 	st.add_vertex(Vector3(cell_x+x, y, cell_z+z))
 	
 # if true, currently making floor geometry. if false, currently making wall geometry.
@@ -558,10 +549,10 @@ func add_edge(floor_below: bool, floor_above: bool, a_x: float = 0, b_x: float =
 		start_floor()
 		add_point(a_x, edge_ay, 0, 1 if a_x > 0 else 0, 0)
 		add_point(b_x, edge_by, 0, 1 if b_x < 1 else 0, 0)
-		add_point(0, edge_ay, 0.5, 0, 1)
+		add_point(0, edge_ay, 0.5, -1 if b_x < 1 else (1 if a_x > 0 else 0), 1)
 		
-		add_point(1, edge_by, 0.5, 0, 1)
-		add_point(0, edge_ay, 0.5, 0, 1)
+		add_point(1, edge_by, 0.5, -1 if a_x > 0  else (1 if b_x < 1 else 0), 1)
+		add_point(0, edge_ay, 0.5, -1 if b_x < 1 else (1 if a_x > 0 else 0), 1)
 		add_point(b_x, edge_by, 0, 1 if b_x < 1 else 0, 0)
 	
 	# Wall from left to right edge
@@ -625,24 +616,24 @@ func add_inner_corner(lower_floor: bool = true, full_upper_floor: bool = true, f
 	# if C and D are both higher than B, and B does not connect the corners, there's an edge above, place floors that will connect to the CD edge
 	if cd_floor:
 		# use height of B corner
-		add_point(1, by, 0.5, 1, 0)
-		add_point(0.5, by, 0, 0, 1)
-		add_point(1, by, 0)
+		add_point(1, by, 0, 0, 0)
+		add_point(0, by, 0.5, 1, 1)
+		add_point(0.5, by, 0, -1, 1)
 		
-		add_point(1, by, 0.5, 1, 0)
-		add_point(0, by, 0.5, 0, 1)
-		add_point(0.5, by, 0, 0, 1)
+		add_point(1, by, 0, 0, 0)
+		add_point(1, by, 0.5, 1, -1)
+		add_point(0, by, 0.5, 1, 1)
 		
 	# if B and D are both higher than C, and C does not connect the corners, there's an edge above, place floors that will connect to the BD edge
 	if bd_floor: 
 		# use height of C corner
-		add_point(0.5, cy, 1, 1, 0)
-		add_point(0, cy, 1)
-		add_point(0, cy, 0.5, 0, 1)
+		add_point(0.5, cy, 1, 1, -1)
+		add_point(0, cy, 1, 0, 0)
+		add_point(0, cy, 0.5, -1, 1)
 		
-		add_point(0.5, cy, 1, 1, 0)
-		add_point(0, cy, 0.5, 0, 1)
-		add_point(0.5, cy, 0, 0, 1)
+		add_point(0.5, cy, 1, 1, -1)
+		add_point(0, cy, 0.5, -1, 1)
+		add_point(0.5, cy, 0, 1, 1)
 		
 # Add a diagonal floor, using heights of B and C and connecting their points using passed heights.
 func add_diagonal_floor(b_y: float, c_y: float, a_cliff: bool, d_cliff: bool):
