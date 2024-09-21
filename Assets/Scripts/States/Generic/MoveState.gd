@@ -1,5 +1,5 @@
-extends State
 class_name MoveState
+extends State
 
 @export var animation_name: String = "Run"
 
@@ -25,7 +25,7 @@ func check_transition(delta: float) -> String:
 	# When running into a wall, auto-jump
 	if entity.is_on_floor() and entity.is_on_wall():
 		# Only jump if wall normal is close to opposite of input vector
-		if (entity.get_wall_normal() + entity.movement.direction).length() < 0.5:
+		if (entity.get_wall_normal() + entity.movement.direction).length() < 1.01:
 			# Check raycast to make sure there is a ledge the player can jump onto in front of them. 
 			# if the ledge is too tall, the ray won't hit anything.
 			if jump_check.is_colliding():
@@ -36,6 +36,10 @@ func check_transition(delta: float) -> String:
 	var requested_action = entity.input.request_action()
 	if requested_action != "" and requested_action != "Move":
 		return requested_action
+		
+	# check for fall
+	if entity.velocity.y < 0:
+		return "JumpFall";
 		
 	return ""
 	

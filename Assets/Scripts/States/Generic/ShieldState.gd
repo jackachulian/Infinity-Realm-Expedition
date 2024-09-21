@@ -1,5 +1,5 @@
-extends State
 class_name ShieldState
+extends State
 
 @export var animation_name: String = "Shield"
 

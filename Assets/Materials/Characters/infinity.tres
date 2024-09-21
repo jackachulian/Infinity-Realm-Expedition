@@ -1,11 +1,11 @@
 [gd_resource type="ShaderMaterial" load_steps=3 format=3 uid="uid://damvbnurwgl56"]
 
-[ext_resource type="Shader" path="res://Assets/Shaders/botw-toon-shader.gdshader" id="1_jprm1"]
-[ext_resource type="Texture2D" uid="uid://cmvegsp4n66em" path="res://Assets/Textures/Characters/infinity.png" id="2_3567b"]
+[ext_resource type="Shader" path="res://Assets/Shaders/botw-toon-shader.gdshader" id="1_vdixj"]
+[ext_resource type="Texture2D" uid="uid://fkmkn0ubq3w6" path="res://Assets/Models/infinity_infinity.png" id="2_60k7q"]
 
 [resource]
 render_priority = 0
-shader = ExtResource("1_jprm1")
+shader = ExtResource("1_vdixj")
 shader_parameter/tint = Color(1, 1, 1, 1)
 shader_parameter/metallic = 0.0
 shader_parameter/shadow_size = 0.045
@@ -24,4 +24,4 @@ shader_parameter/light_bias = Vector3(0, 0, 0)
 shader_parameter/use_view = false
 shader_parameter/view_bias = Color(1, 0, 1, 1)
 shader_parameter/view_multiplier = -1.0
-shader_parameter/albedo_texture = ExtResource("2_3567b")
+shader_parameter/albedo_texture = ExtResource("2_60k7q")

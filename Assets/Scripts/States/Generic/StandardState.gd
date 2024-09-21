@@ -40,11 +40,14 @@ enum MovementMode {
 	STOP,
 	FROM_INPUT,
 	NO_CHANGE,
-	SET_SPEED_ON_ENTER
+	SET_SPEED_ON_ENTER,
+	FROM_FACING
 }
 @export var movement_mode: MovementMode = MovementMode.STOP
 
 @export var movement_speed: float
+
+@export var prevent_wall_slide: bool = false
 
 # if above 0, overrides movement deceleration during this state
 @export var decel_override: float = -1
@@ -115,9 +118,14 @@ func physics_update(delta: float):
 	if movement_mode == MovementMode.FROM_INPUT:
 		entity.movement.direction = entity.input.direction
 
+var stored_wall_slide
 func on_enter_state():
 	if movement_mode == MovementMode.SET_SPEED_ON_ENTER:
 		entity.movement.speed = movement_speed
+		
+	if prevent_wall_slide:
+		stored_wall_slide = entity.wall_min_slide_angle
+		entity.wall_min_slide_angle = deg_to_rad(85)
 	
 	if animation_name != "":
 		entity.anim.play(animation_name)
@@ -128,6 +136,11 @@ func on_enter_state():
 		entity.face_angle(entity.input.uniform_input_angle(true))
 	if instant_velocity_on_enter:
 		entity.velocity = entity.movement.screen_uniform_vector(instant_velocity_on_enter.rotated(Vector3.UP, entity.input.uniform_input_angle(false)));
+
+func on_exit_state():
+	if prevent_wall_slide:
+		entity.wall_min_slide_angle = stored_wall_slide
+		
 
 func get_decel_override():
 	return decel_override

@@ -1,5 +1,5 @@
-extends State
 class_name IdleState
+extends State
 
 @export var animation_name: String = "Sword-Standby"
 
@@ -18,6 +18,10 @@ func check_transition(delta: float) -> String:
 	var requested_action = entity.input.request_action()
 	if requested_action != "":
 		return requested_action
+		
+	# check for fall
+	if entity.velocity.y < 0:
+		return "JumpFall";
 		
 	return ""
 	
