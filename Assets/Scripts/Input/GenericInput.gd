@@ -34,6 +34,10 @@ var dash_cooldown_remaining: float = 0
 # Clear the attack buffer and lets this input know its attack was registered just now
 func clear_main_attack_buffer():
 	pass
+	
+# Clear the move buffer and lets this input know its move *or attack* was registered just now
+func clear_move_buffer():
+	pass
 
 func is_dash_requested() -> bool:
 	return false
@@ -44,7 +48,7 @@ func is_main_attack_requested() -> bool:
 func is_shield_requested() -> bool:
 	return false
 
-func is_move_just_pressed() -> bool:
+func is_move_requested() -> bool:
 	return false
 
 
@@ -77,6 +81,7 @@ func request_action() -> String:
 	# Main Attack
 	if is_main_attack_requested():
 		clear_main_attack_buffer()
+		clear_move_buffer()
 		
 		# if current state combos into another attack, return that
 		# otherwise, return main attack
@@ -91,7 +96,9 @@ func request_action() -> String:
 		return shield_state.name
 			
 	# Move
-	if is_move_just_pressed() and move_state:
+	if is_move_requested() and move_state:
+		clear_move_buffer()
+		
 		return move_state.name
 		
 	return ""

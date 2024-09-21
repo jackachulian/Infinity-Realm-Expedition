@@ -83,11 +83,13 @@ bones/1/scale = Vector3(1, 1, 1)
 bones/2/rotation = Quaternion(-0.247572, 0.00188227, 0.0193892, 0.968674)
 
 [node name="Cube" parent="Armature/Skeleton3D" index="0"]
+layers = 2
 surface_material_override/0 = ExtResource("2_1gwk5")
 surface_material_override/1 = ExtResource("3_l1tm4")
 surface_material_override/2 = ExtResource("4_pue12")
 
 [node name="Icosphere" parent="Armature/Skeleton3D" index="1"]
+layers = 2
 cast_shadow = 0
 surface_material_override/0 = ExtResource("2_1gwk5")
 

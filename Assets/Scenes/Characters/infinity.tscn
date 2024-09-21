@@ -60,7 +60,6 @@ height = 1.8
 
 [node name="infinity" instance=ExtResource("1_rm5qk")]
 collision_layer = 4
-collision_mask = 5
 axis_lock_angular_x = true
 axis_lock_angular_y = true
 axis_lock_angular_z = true
@@ -121,7 +120,7 @@ script = ExtResource("10_jxd4a")
 script = ExtResource("8_73dwl")
 attack_name = "Sword-Attack1"
 combos_into = "Sword-Attack2"
-cancel_delay = 0.265
+cancel_delay = 0.3
 
 [node name="Hitbox" type="Area3D" parent="StateMachine/Sword-Attack1" index="0"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1.98525)
@@ -138,7 +137,7 @@ shape = SubResource("CapsuleShape3D_osbq5")
 script = ExtResource("8_73dwl")
 attack_name = "Sword-Attack2"
 combos_into = "Sword-Attack3"
-cancel_delay = 0.3
+cancel_delay = 0.325
 attack_delay = 0.125
 
 [node name="Hitbox" type="Area3D" parent="StateMachine/Sword-Attack2" index="0"]
@@ -155,7 +154,7 @@ shape = SubResource("CapsuleShape3D_84oai")
 [node name="Sword-Attack3" type="Node3D" parent="StateMachine" index="8"]
 script = ExtResource("8_73dwl")
 attack_name = "Sword-Attack3"
-cancel_delay = 0.625
+cancel_delay = 0.65
 attack_delay = 0.225
 
 [node name="Hitbox" type="Area3D" parent="StateMachine/Sword-Attack3" index="0"]
@@ -295,9 +294,13 @@ transform = Transform3D(0.8, 1.86625e-09, 2.53848e-09, -6.89021e-09, 0.8, -1.154
 
 [node name="Helmet" parent="Armature/Skeleton3D/Helmet" index="0"]
 visible = false
+layers = 4
 
 [node name="Blade" parent="Armature/Skeleton3D" index="1"]
 transform = Transform3D(0.499857, 0.00847341, 0.00847094, 0.00847213, -9.87173e-08, -0.499928, -0.00847211, 0.499928, -0.000143559, -1.11426, 1.55299, 0.340716)
+
+[node name="Blade" parent="Armature/Skeleton3D/Blade" index="0"]
+layers = 8
 
 [node name="GPUTrail3D" type="GPUParticles3D" parent="Armature/Skeleton3D/Blade" index="1"]
 transform = Transform3D(1, -1.86265e-09, 7.68341e-09, 0, 1, -7.45058e-09, 4.51691e-08, 2.23517e-08, 1, -0.0157964, 0.703541, -0.0883509)
@@ -314,6 +317,27 @@ texture = ExtResource("19_2vl7e")
 color_ramp = ExtResource("17_pvvl0")
 curve = ExtResource("18_7jk02")
 _defaults_have_been_set = true
+
+[node name="Arm" parent="Armature/Skeleton3D" index="2"]
+layers = 4
+
+[node name="Body" parent="Armature/Skeleton3D" index="3"]
+layers = 4
+
+[node name="Cape" parent="Armature/Skeleton3D" index="4"]
+layers = 4
+
+[node name="Hair" parent="Armature/Skeleton3D" index="5"]
+layers = 4
+
+[node name="Hand" parent="Armature/Skeleton3D" index="6"]
+layers = 4
+
+[node name="Head" parent="Armature/Skeleton3D" index="7"]
+layers = 4
+
+[node name="Jacket" parent="Armature/Skeleton3D" index="8"]
+layers = 4
 
 [node name="AnimationPlayer" parent="." index="5"]
 root_motion_track = NodePath("Armature/Skeleton3D:root")

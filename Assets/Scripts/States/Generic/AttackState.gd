@@ -7,7 +7,7 @@ class_name AttackState
 # When attack button is pressed again, once cancel delay is over, this attack is used next in the combo. if empty, same attack is used again.
 @export var combos_into: String
 
-# Player can cancel the attack and start a new attack after this many seconds into the attack
+# Player can cancel the attack and start a new attack/action after this many seconds into the attack
 @export var cancel_delay: float = 0.1
 
 # Amount of frames before the hitbox should attack
