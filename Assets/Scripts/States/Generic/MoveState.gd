@@ -11,6 +11,9 @@ class_name MoveState
 # if above 0, rotation will be snapped to the nearest increment of this
 @export var rotation_snap: float = 0.0
 
+@onready var jump_check: RayCast3D = $JumpCheckRayCast3D
+
+
 func check_transition(delta: float) -> String:
 	# Go to idle when movement stops
 	if entity.input.direction == Vector3.ZERO:
@@ -23,7 +26,10 @@ func check_transition(delta: float) -> String:
 	if entity.is_on_floor() and entity.is_on_wall():
 		# Only jump if wall normal is close to opposite of input vector
 		if (entity.get_wall_normal() + entity.movement.direction).length() < 0.5:
-			return "JumpRise"
+			# Check raycast to make sure there is a ledge the player can jump onto in front of them. 
+			# if the ledge is too tall, the ray won't hit anything.
+			if jump_check.is_colliding():
+				return "JumpRise"
 		
 	# Accept general action. but don't go into move while already in move 
 	# (would cause incorrect anim loop)
