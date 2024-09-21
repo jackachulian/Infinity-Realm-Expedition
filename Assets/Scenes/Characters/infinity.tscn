@@ -122,7 +122,7 @@ script = ExtResource("10_jxd4a")
 script = ExtResource("9_blb1u")
 animation_name = "JumpRise"
 falling_state = "JumpFall"
-instant_velocity_on_enter = Vector3(0, 7.5, 0)
+instant_velocity_on_enter = Vector3(0, 10, 0)
 rotate_mode = 1
 movement_mode = 2
 can_use_actions = true
@@ -196,6 +196,8 @@ shape = SubResource("CapsuleShape3D_5b5ov")
 script = ExtResource("3_p5r50")
 move_accel = 500.0
 stop_decel = 150.0
+rise_gravity = 37.5
+fall_gravity = 50.0
 
 [node name="Armature" parent="." index="4"]
 transform = Transform3D(-0.8, 0, 6.99382e-08, 0, 0.8, 0, -6.99382e-08, 0, -0.8, 0, 0, 0)

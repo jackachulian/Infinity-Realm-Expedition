@@ -21,7 +21,9 @@ func check_transition(delta: float) -> String:
 			
 	# When running into a wall, auto-jump
 	if entity.is_on_floor() and entity.is_on_wall():
-		return "JumpRise"
+		# Only jump if wall normal is close to opposite of input vector
+		if (entity.get_wall_normal() + entity.movement.direction).length() < 0.5:
+			return "JumpRise"
 		
 	# Accept general action. but don't go into move while already in move 
 	# (would cause incorrect anim loop)

@@ -10,7 +10,8 @@ var speed := 5.0
 @export var stop_decel: float = 45.0
 @export var air_decel: float = 30.0
 @export var stun_decel: float = 10.0
-@export var gravity: float = 25.0
+@export var rise_gravity: float = 25.0
+@export var fall_gravity: float = 25.0
 
 @onready var entity: Entity = $".."
 
@@ -86,6 +87,6 @@ func _physics_process(delta):
 	entity.velocity.y = stored_yvel
 	
 	if not entity.is_on_floor():
-		entity.velocity.y -= gravity * delta
+		entity.velocity.y -= (rise_gravity if entity.velocity.y > 0 else fall_gravity) * delta
 		
 	entity.move_and_slide()
