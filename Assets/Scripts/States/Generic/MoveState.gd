@@ -25,10 +25,10 @@ func check_transition(delta: float) -> String:
 	# When running into a wall, auto-jump
 	if entity.is_on_floor() and entity.is_on_wall():
 		# Only jump if wall normal is close to opposite of input vector
-		if (entity.get_wall_normal() + entity.movement.direction).length() < 1.01:
+		if (entity.get_wall_normal() + entity.movement.direction).length() <= 0.5:
 			# Check raycast to make sure there is a ledge the player can jump onto in front of them. 
 			# if the ledge is too tall, the ray won't hit anything.
-			if jump_check.is_colliding():
+			if jump_check.is_colliding() and (jump_check.get_collision_point().y - entity.global_position.y) >= 0.01:
 				return "JumpRise"
 		
 	# Accept general action. but don't go into move while already in move 
