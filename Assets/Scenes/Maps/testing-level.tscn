@@ -1,8 +1,9 @@
-[gd_scene load_steps=14 format=4 uid="uid://cnn0jerhkfw2f"]
+[gd_scene load_steps=15 format=4 uid="uid://cnn0jerhkfw2f"]
 
 [ext_resource type="Script" path="res://Assets/Scripts/Follow.gd" id="1_3mcvw"]
 [ext_resource type="PackedScene" uid="uid://c7vlx700fgtqs" path="res://Assets/Scenes/Characters/infinity.tscn" id="1_ayth2"]
 [ext_resource type="Script" path="res://Assets/Scripts/Camera3DTexelSnapped.gd" id="2_jq2uv"]
+[ext_resource type="PackedScene" uid="uid://bnq6kyw7csjrm" path="res://Assets/Scenes/Enemies/redslime.tscn" id="3_brrvy"]
 [ext_resource type="Environment" uid="uid://bc4nmkhxncgkx" path="res://Assets/Environments/planet-01.tres" id="3_tep02"]
 [ext_resource type="Script" path="res://addons/MarchingSquaresTerrain/MarchingSquaresTerrainMesh.gd" id="5_k6asf"]
 [ext_resource type="Texture2D" uid="uid://c2n2qm5kod2m3" path="res://Assets/Textures/Heightmaps/test_noise.tres" id="9_8g5ko"]
@@ -81,6 +82,9 @@ skeleton = NodePath("../..")
 
 [node name="infinity" parent="EntityViewport" groups=["screen_snap"] instance=ExtResource("1_ayth2")]
 transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, -1.48123, 0)
+
+[node name="redslime" parent="EntityViewport" instance=ExtResource("3_brrvy")]
+transform = Transform3D(-0.707107, 0, -0.707107, 0, 1, 0, 0.707107, 0, -0.707107, -4.75152, -1.45382, -1.97512)
 
 [node name="TerrainViewport" type="SubViewport" parent="."]
 handle_input_locally = false
