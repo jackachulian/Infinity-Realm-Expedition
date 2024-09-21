@@ -1,4 +1,4 @@
-[gd_scene load_steps=30 format=3 uid="uid://c7vlx700fgtqs"]
+[gd_scene load_steps=31 format=3 uid="uid://c7vlx700fgtqs"]
 
 [ext_resource type="PackedScene" uid="uid://bfdvxynauwmtj" path="res://Assets/Models/infinity.glb" id="1_rm5qk"]
 [ext_resource type="Script" path="res://Assets/Scripts/Entity.gd" id="2_pd53c"]
@@ -49,6 +49,8 @@ shader_parameter/curve = ExtResource("18_7jk02")
 
 [sub_resource type="QuadMesh" id="QuadMesh_2x54a"]
 material = SubResource("ShaderMaterial_4h78l")
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_v8du6"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_5hlel"]
 radius = 0.375
@@ -227,7 +229,6 @@ bones/16/position = Vector3(0.0391013, 0.0297616, -0.00203171)
 bones/16/rotation = Quaternion(-0.141079, 0.102591, -0.531994, 0.828586)
 bones/17/position = Vector3(0.0470707, 0.234492, 0.137489)
 bones/17/rotation = Quaternion(0.443564, 0.704926, -0.539295, 0.12446)
-bones/17/scale = Vector3(1, 1, 1)
 bones/18/position = Vector3(-6.81765e-08, 0.190818, -8.28666e-09)
 bones/18/rotation = Quaternion(-0.00512209, 0.0230803, -0.187446, 0.98199)
 bones/18/scale = Vector3(1, 1, 1)
@@ -290,14 +291,14 @@ bones/39/rotation = Quaternion(0.108899, -0.0208534, -0.0126774, 0.993753)
 bones/39/scale = Vector3(1, 1, 0.999999)
 
 [node name="Helmet" parent="Armature/Skeleton3D" index="0"]
-transform = Transform3D(0.8, 1.86625e-09, 2.53848e-09, -6.89021e-09, 0.8, -1.15484e-07, 3.66197e-09, 3.72529e-09, 0.8, -0.00204646, 0.363882, -0.0276382)
+transform = Transform3D(0.8, -2.39003e-08, -8.81525e-08, 2.1294e-08, 0.8, -3.82774e-07, 8.82264e-08, 3.46452e-07, 0.8, -0.00204643, 0.363883, -0.0276385)
 
 [node name="Helmet" parent="Armature/Skeleton3D/Helmet" index="0"]
 visible = false
 layers = 4
 
 [node name="Blade" parent="Armature/Skeleton3D" index="1"]
-transform = Transform3D(0.499857, 0.00847341, 0.00847094, 0.00847213, -9.87173e-08, -0.499928, -0.00847211, 0.499928, -0.000143559, -1.11426, 1.55299, 0.340716)
+transform = Transform3D(0.499856, 0.00847327, 0.00847092, 0.00847214, -2.83119e-07, -0.499928, -0.00847202, 0.499928, -0.000143789, -1.11425, 1.55299, 0.340716)
 
 [node name="Blade" parent="Armature/Skeleton3D/Blade" index="0"]
 layers = 8
@@ -316,7 +317,6 @@ length = 20
 texture = ExtResource("19_2vl7e")
 color_ramp = ExtResource("17_pvvl0")
 curve = ExtResource("18_7jk02")
-_defaults_have_been_set = true
 
 [node name="Arm" parent="Armature/Skeleton3D" index="2"]
 layers = 4
@@ -339,16 +339,23 @@ layers = 4
 [node name="Jacket" parent="Armature/Skeleton3D" index="8"]
 layers = 4
 
-[node name="AnimationPlayer" parent="." index="5"]
+[node name="ShadowMesh" type="CSGMesh3D" parent="." index="5"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.8437, 0)
+visible = false
+layers = 16
+cast_shadow = 3
+mesh = SubResource("CapsuleMesh_v8du6")
+
+[node name="AnimationPlayer" parent="." index="6"]
 root_motion_track = NodePath("Armature/Skeleton3D:root")
 callback_mode_process = 0
 autoplay = "Sword-Standby"
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="." index="6"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." index="7"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, 0)
 shape = SubResource("CapsuleShape3D_5hlel")
 
-[node name="Hurtbox" type="Area3D" parent="." index="7"]
+[node name="Hurtbox" type="Area3D" parent="." index="8"]
 collision_layer = 0
 collision_mask = 0
 script = ExtResource("31_pkqhk")
