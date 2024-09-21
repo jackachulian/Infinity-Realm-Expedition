@@ -85,7 +85,5 @@ void fragment() {
 	vec3 edge_mix = mix(normal_col, depth_col, depth_edge);
 
 	ALBEDO = mix(original, edge_mix, (depth_edge > 0.0 ? depth_edge : normal_edge));
-	if (depth_edge < 0.01) {
-		ALPHA = texture(screen_texture, SCREEN_UV).a;
-	}
+	
 }

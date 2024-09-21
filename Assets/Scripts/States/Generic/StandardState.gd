@@ -1,5 +1,5 @@
 extends State
-class_name NoBehaviourState
+class_name StandardState
 
 #Standard state that will fit a lot of use cases.
 
@@ -52,6 +52,9 @@ enum MovementMode {
 # If true, can cancel into 
 @export var can_use_actions: bool
 
+# If can use actions is true but this is false, cannot transition to "Move" state
+@export var can_move: bool = true
+
 # If can_use_actions, minimum state time elapsed before actions can be registered.
 @export var action_delay: float = 0.0
 
@@ -62,7 +65,7 @@ func check_transition(delta: float) -> String:
 	if anim_finished:
 		if action_on_anim_finish:
 			var requested_action = entity.input.request_action()
-			if requested_action != "":
+			if requested_action != "" and (can_move or requested_action != "Move"):
 				return requested_action
 	
 		# after possible action check, if branch skipped or no action requested, go to state on anim finished.
@@ -72,7 +75,7 @@ func check_transition(delta: float) -> String:
 	if grounded_state != "" and entity.is_on_floor():
 		return grounded_state
 		
-	if falling_state != "" and entity.velocity.y < 0:
+	if falling_state != "" and entity.velocity.y <= 0:
 		return falling_state
 		
 	if can_use_actions and time_elapsed >= action_delay:
@@ -80,7 +83,7 @@ func check_transition(delta: float) -> String:
 		# If a state is requested, return that action
 		# Prevent same state if prevent_self_action_request bool is true, 
 		# but ignore that clause if requested action isn't this state
-		if requested_action != "" and (not prevent_self_action_request or requested_action != name):
+		if requested_action != "" and (can_move or requested_action != "Move") and (not prevent_self_action_request or requested_action != name):
 			return requested_action
 	
 	return ""
