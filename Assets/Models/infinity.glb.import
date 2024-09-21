@@ -7230,6 +7230,12 @@ _subresources={
 "slices/amount": 0
 }
 },
+"materials": {
+"Infinity": {
+"use_external/enabled": true,
+"use_external/path": "res://Assets/Materials/Infinity/infinity.tres"
+}
+},
 "nodes": {
 "PATH:Armature/Skeleton3D": {
 "rest_pose/external_animation_library": null,

@@ -1,0 +1,13 @@
+[gd_resource type="NoiseTexture2D" load_steps=3 format=3 uid="uid://bj4dkjgl0shna"]
+
+[sub_resource type="Gradient" id="Gradient_7nq7o"]
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_ooknt"]
+noise_type = 3
+frequency = 0.0078
+fractal_octaves = 1
+
+[resource]
+normalize = false
+color_ramp = SubResource("Gradient_7nq7o")
+noise = SubResource("FastNoiseLite_ooknt")

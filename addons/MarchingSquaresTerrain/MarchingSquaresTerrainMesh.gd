@@ -6,8 +6,6 @@ extends MeshInstance3D
 @export var wall_material: Material
 
 @export var dimensions: Vector3i = Vector3i(10, 1, 10)
-		
-var height_map: Array
 
 @export var height_map_image: Texture2D
 
@@ -49,6 +47,12 @@ var ab: bool
 var ac: bool
 var bd: bool
 var cd: bool
+
+# Stores the heights from the heightmap (red channel of image)
+var height_map: Array
+
+# Stores the average delta height of heightmap coordinate to surrounding tiles.
+var surrounding_delta_height_map: Array
 		
 func _enter_tree():
 	if Engine.is_editor_hint():
@@ -68,7 +72,7 @@ func generate_mesh():
 	
 	generate_terrain_cells()
 				
-	#floor.generate_normals()
+	floor.generate_normals()
 	wall.generate_normals()
 	
 	floor.index()
@@ -465,7 +469,6 @@ func add_point(x: float, y: float, z: float, uv_x: float = 0, uv_y: float = 0, u
 	
 	
 	if floor_mode:
-		#st.set_color(Color(cell_x+x, y, cell_z+z))
 		st.set_uv(Vector2(uv_x, uv_y))
 		# use this for completely flat looking floors
 		#st.set_normal(Vector3(0, 1, 0))
@@ -473,8 +476,9 @@ func add_point(x: float, y: float, z: float, uv_x: float = 0, uv_y: float = 0, u
 		# walls will always have UV of 1, 1
 		st.set_uv(Vector2(1, 1))
 	
-	# UV2 = terrain space coordinates. 0,0 = top left of heightmap, 1,1 = bottom right of heightmap
-	st.set_uv2(Vector2((cell_x+x) / dimensions.x, (cell_z+z) / dimensions.z))
+	# Color = terrain space coordinates. 
+	# for XZ, 0,0,0 = top left of heightmap at lowest height, 1,1,1 = bottom right of heightmap at highest height
+	st.set_color(Color((cell_x+x) / dimensions.x, y / dimensions.y, (cell_z+z) / dimensions.z))
 		
 	st.add_vertex(Vector3(cell_x+x, y, cell_z+z))
 	
@@ -618,7 +622,7 @@ func add_inner_corner(lower_floor: bool = true, full_upper_floor: bool = true, f
 		# use height of B corner
 		add_point(1, by, 0, 0, 0)
 		add_point(0, by, 0.5, 1, 1)
-		add_point(0.5, by, 0, -1, 1)
+		add_point(0.5, by, 0, 0, 1)
 		
 		add_point(1, by, 0, 0, 0)
 		add_point(1, by, 0.5, 1, -1)
@@ -627,12 +631,16 @@ func add_inner_corner(lower_floor: bool = true, full_upper_floor: bool = true, f
 	# if B and D are both higher than C, and C does not connect the corners, there's an edge above, place floors that will connect to the BD edge
 	if bd_floor: 
 		# use height of C corner
-		add_point(0.5, cy, 1, 1, -1)
+		#add_point(0.5, cy, 1, 1, -1)
+		#add_point(0, cy, 0.5, -1, 1)
+		#add_point(0, cy, 0.5, -1, 1)
+		
+		add_point(0, cy, 0.5, 0, 1)
+		add_point(0.5, cy, 0, 1, 1)
 		add_point(0, cy, 1, 0, 0)
-		add_point(0, cy, 0.5, -1, 1)
 		
 		add_point(0.5, cy, 1, 1, -1)
-		add_point(0, cy, 0.5, -1, 1)
+		add_point(0, cy, 1, 0, 0)
 		add_point(0.5, cy, 0, 1, 1)
 		
 # Add a diagonal floor, using heights of B and C and connecting their points using passed heights.

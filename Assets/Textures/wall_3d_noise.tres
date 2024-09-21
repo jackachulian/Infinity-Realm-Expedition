@@ -2,7 +2,7 @@
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_eyo1l"]
 noise_type = 2
-frequency = 0.05
+frequency = 0.0261
 fractal_lacunarity = 2.5
 fractal_gain = 0.75
 metadata/_preview_in_3d_space_ = true
