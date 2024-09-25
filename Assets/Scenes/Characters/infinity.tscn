@@ -1,4 +1,4 @@
-[gd_scene load_steps=31 format=3 uid="uid://c7vlx700fgtqs"]
+[gd_scene load_steps=32 format=3 uid="uid://c7vlx700fgtqs"]
 
 [ext_resource type="PackedScene" uid="uid://bfdvxynauwmtj" path="res://Assets/Models/infinity.glb" id="1_rm5qk"]
 [ext_resource type="Script" path="res://Assets/Scripts/Entity.gd" id="2_pd53c"]
@@ -20,6 +20,7 @@
 [ext_resource type="Script" path="res://Packages/GPUTrail-main/GPUTrail3D.gd" id="19_0mkq7"]
 [ext_resource type="Texture2D" uid="uid://d0aqx8k5y48w8" path="res://Assets/Sprites/slash-effect.png" id="19_2vl7e"]
 [ext_resource type="Script" path="res://Assets/Scripts/Hitbox.gd" id="20_rq6bb"]
+[ext_resource type="Material" uid="uid://damvbnurwgl56" path="res://Assets/Materials/Characters/infinity.tres" id="21_yqi7e"]
 [ext_resource type="Script" path="res://Assets/Scripts/Hurtbox.gd" id="31_pkqhk"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_osbq5"]
@@ -318,7 +319,7 @@ bones/38/rotation = Quaternion(0.108899, -0.0208534, -0.0126774, 0.993753)
 bones/38/scale = Vector3(1, 1, 0.999999)
 
 [node name="Blade" parent="Armature/Skeleton3D" index="0"]
-transform = Transform3D(0.499857, 0.00847339, 0.00847087, 0.00847213, -9.75543e-08, -0.499928, -0.00847212, 0.499928, -0.000143571, -1.11425, 1.55299, 0.340716)
+transform = Transform3D(0.499857, 0.00847296, 0.00847094, 0.00847216, -7.81145e-07, -0.499928, -0.00847177, 0.499928, -0.000144363, -1.11426, 1.55299, 0.340715)
 
 [node name="Blade" parent="Armature/Skeleton3D/Blade" index="0"]
 layers = 8
@@ -341,24 +342,31 @@ _defaults_have_been_set = true
 
 [node name="Arm" parent="Armature/Skeleton3D" index="1"]
 layers = 4
+material_override = ExtResource("21_yqi7e")
 
 [node name="Body" parent="Armature/Skeleton3D" index="2"]
 layers = 4
+material_override = ExtResource("21_yqi7e")
 
 [node name="Cape" parent="Armature/Skeleton3D" index="3"]
 layers = 4
+material_override = ExtResource("21_yqi7e")
 
 [node name="Hair" parent="Armature/Skeleton3D" index="4"]
 layers = 4
+material_override = ExtResource("21_yqi7e")
 
 [node name="Hand" parent="Armature/Skeleton3D" index="5"]
 layers = 4
+material_override = ExtResource("21_yqi7e")
 
 [node name="Head" parent="Armature/Skeleton3D" index="6"]
 layers = 4
+material_override = ExtResource("21_yqi7e")
 
 [node name="Jacket" parent="Armature/Skeleton3D" index="7"]
 layers = 4
+material_override = ExtResource("21_yqi7e")
 
 [node name="ShadowMesh" type="CSGMesh3D" parent="." index="5"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.8437, 0)

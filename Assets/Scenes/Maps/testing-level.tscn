@@ -69,7 +69,7 @@ script = ExtResource("1_3mcvw")
 follow = NodePath("../infinity")
 
 [node name="PlayerCamera" type="Camera3D" parent="SubViewport/CameraPivot"]
-transform = Transform3D(1, 0, 0, 0, 0.577858, 0.816138, 0, -0.816138, 0.577858, 0, 37.844, 26.485)
+transform = Transform3D(1, 0, 0, 0, 0.816138, 0.577858, 0, -0.577858, 0.816138, 0, 20.169, 26.485)
 cull_mask = 31
 projection = 1
 current = true

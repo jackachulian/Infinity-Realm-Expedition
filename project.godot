@@ -22,7 +22,7 @@ window/size/viewport_height=810
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/MarchingSquaresTerrain/plugin.cfg")
+enabled=PackedStringArray()
 
 [file_customization]
 

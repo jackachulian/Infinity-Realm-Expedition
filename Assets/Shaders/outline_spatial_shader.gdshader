@@ -1,5 +1,5 @@
 shader_type spatial;
-render_mode unshaded;
+render_mode unshaded, depth_prepass_alpha;
 
 uniform sampler2D screen_texture : source_color, hint_screen_texture, filter_nearest;
 uniform sampler2D depth_texture : source_color, hint_depth_texture, filter_nearest;
@@ -20,10 +20,6 @@ float get_depth(vec2 screen_uv, mat4 inv_projection_matrix) {
 	vec4 view = inv_projection_matrix * vec4(ndc, 1.0);
 	view.xyz /= view.w;
 	return -view.z;
-}
-
-void vertex() {
-	POSITION = vec4(VERTEX.xy, 1.0, 1.0);
 }
 
 void fragment() {
@@ -72,7 +68,7 @@ void fragment() {
 	float normal_edge = step(normal_threshold, indicator - reverse_depth_edge);
 
 	vec3 original = texture(screen_texture, SCREEN_UV).rgb;
-	vec3 nearest = texture(screen_texture, nearest_uv).rgb;
+	vec3 nearest = original;
 
 	mat3 view_to_world_normal_mat = mat3(
             INV_VIEW_MATRIX[0].xyz,
@@ -84,6 +80,7 @@ void fragment() {
 	vec3 normal_col = original * lighten_amount;
 	vec3 edge_mix = mix(normal_col, depth_col, depth_edge);
 
+	//ALBEDO = vec3(normal);
 	ALBEDO = mix(original, edge_mix, (depth_edge > 0.0 ? depth_edge : normal_edge));
-
+	
 }
