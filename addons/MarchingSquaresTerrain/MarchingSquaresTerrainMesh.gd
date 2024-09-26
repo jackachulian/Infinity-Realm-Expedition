@@ -691,3 +691,6 @@ func load_height_map():
 				height = round(height / height_banding) * height_banding
 			
 			height_map[z][x] = height
+			
+func simple_grass():
+	var grass_mesh = SurfaceTool.new();
