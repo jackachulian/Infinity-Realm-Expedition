@@ -2,8 +2,8 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bcrhw155chb47"
-path.s3tc="res://.godot/imported/test-square-yippee.png-fba192e552d2005bce9762a31ac7f35b.s3tc.ctex"
+uid="uid://dog8wwndh5l5l"
+path.s3tc="res://.godot/imported/test-iso-grid.png-36d16fb0463f9014cd593d5939785608.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
 "vram_texture": true
@@ -11,8 +11,8 @@ metadata={
 
 [deps]
 
-source_file="res://Assets/Sprites/test-square-yippee.png"
-dest_files=["res://.godot/imported/test-square-yippee.png-fba192e552d2005bce9762a31ac7f35b.s3tc.ctex"]
+source_file="res://Assets/Sprites/misc/test-iso-grid.png"
+dest_files=["res://.godot/imported/test-iso-grid.png-36d16fb0463f9014cd593d5939785608.s3tc.ctex"]
 
 [params]
 

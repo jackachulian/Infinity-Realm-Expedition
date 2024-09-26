@@ -18,7 +18,7 @@
 [ext_resource type="Texture2D" uid="uid://crk6pkb7e5rwc" path="res://Packages/GPUTrail-main/defaults/texture.tres" id="17_pvvl0"]
 [ext_resource type="Texture2D" uid="uid://ct31fhxvcragr" path="res://Packages/GPUTrail-main/defaults/curve.tres" id="18_7jk02"]
 [ext_resource type="Script" path="res://Packages/GPUTrail-main/GPUTrail3D.gd" id="19_0mkq7"]
-[ext_resource type="Texture2D" uid="uid://d0aqx8k5y48w8" path="res://Assets/Sprites/slash-effect.png" id="19_2vl7e"]
+[ext_resource type="Texture2D" uid="uid://d0aqx8k5y48w8" path="res://Assets/Sprites/misc/slash-effect.png" id="19_2vl7e"]
 [ext_resource type="Script" path="res://Assets/Scripts/Hitbox.gd" id="20_rq6bb"]
 [ext_resource type="Material" uid="uid://damvbnurwgl56" path="res://Assets/Materials/Characters/infinity.tres" id="21_yqi7e"]
 [ext_resource type="Script" path="res://Assets/Scripts/Hurtbox.gd" id="31_pkqhk"]

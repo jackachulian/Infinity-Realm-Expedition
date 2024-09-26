@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bg0ta4d5jc7gf"
-path="res://.godot/imported/grass1.png-9c1b86e05d081fb4c12be992226829c3.ctex"
+uid="uid://dxgv0xftcn42q"
+path="res://.godot/imported/test-iso-halftile.png-1eef8a02fb5eb63bcbcb842a7a539f2f.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Sprites/grass1.png"
-dest_files=["res://.godot/imported/grass1.png-9c1b86e05d081fb4c12be992226829c3.ctex"]
+source_file="res://Assets/Sprites/misc/test-iso-halftile.png"
+dest_files=["res://.godot/imported/test-iso-halftile.png-1eef8a02fb5eb63bcbcb842a7a539f2f.ctex"]
 
 [params]
 

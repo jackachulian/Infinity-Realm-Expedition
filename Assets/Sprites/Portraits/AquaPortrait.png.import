@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://b6pq234r01h7i"
-path="res://.godot/imported/TX Props.png-a9ede86d23323f6eb512214291b72589.ctex"
+uid="uid://qcx76725vcx3"
+path="res://.godot/imported/AquaPortrait.png-29258f6620d2e0ab77d6fcd8a380e2cd.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Sprites/TX Props.png"
-dest_files=["res://.godot/imported/TX Props.png-a9ede86d23323f6eb512214291b72589.ctex"]
+source_file="res://Assets/Sprites/Portraits/AquaPortrait.png"
+dest_files=["res://.godot/imported/AquaPortrait.png-29258f6620d2e0ab77d6fcd8a380e2cd.ctex"]
 
 [params]
 
