@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=4 uid="uid://cnn0jerhkfw2f"]
+[gd_scene load_steps=16 format=4 uid="uid://cnn0jerhkfw2f"]
 
 [ext_resource type="Script" path="res://Assets/Scripts/Follow.gd" id="1_3mcvw"]
 [ext_resource type="PackedScene" uid="uid://c7vlx700fgtqs" path="res://Assets/Scenes/Characters/infinity.tscn" id="1_ayth2"]
@@ -7,6 +7,7 @@
 [ext_resource type="Environment" uid="uid://bc4nmkhxncgkx" path="res://Assets/Environments/planet-01.tres" id="3_tep02"]
 [ext_resource type="Script" path="res://addons/MarchingSquaresTerrain/MarchingSquaresTerrainMesh.gd" id="5_k6asf"]
 [ext_resource type="Material" uid="uid://bvwc8nc2j5k2e" path="res://Assets/Materials/screen.tres" id="5_o1ap8"]
+[ext_resource type="Material" uid="uid://bgpwt7ae08owk" path="res://Assets/Materials/Terrain/wind.tres" id="9_5anht"]
 [ext_resource type="Texture2D" uid="uid://c2n2qm5kod2m3" path="res://Assets/Textures/Heightmaps/test_noise.tres" id="9_8g5ko"]
 [ext_resource type="Material" uid="uid://cw068lng8rddd" path="res://Assets/Materials/Terrain/terrain.tres" id="9_qimcu"]
 
@@ -110,6 +111,10 @@ random_noise = 0.0
 visible = false
 shape = SubResource("ConcavePolygonShape3D_0j468")
 
+[node name="CSGBox3D2" type="CSGBox3D" parent="SubViewport"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.17303, 1.5551, 2.28561)
+material = ExtResource("9_5anht")
+
 [node name="Control" type="Control" parent="."]
 layout_mode = 3
 anchors_preset = 15
@@ -143,7 +148,7 @@ light_cull_mask = 14
 shadow_enabled = true
 
 [node name="TerrainDirectionalLight3D" type="DirectionalLight3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 8.20936, 0)
+transform = Transform3D(0.916481, 1.74879e-08, -0.400077, 0.400077, -4.00607e-08, 0.916481, 0, -1, -4.37114e-08, 0, 8.20936, 0)
 layers = 2147483647
 light_cull_mask = 17
 shadow_enabled = true
