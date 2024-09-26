@@ -12,6 +12,8 @@ uniform float normal_threshold : hint_range(0, 1) = 0.6;
 uniform float darken_amount : hint_range(0, 1, 0.01) = 0.3;
 uniform float lighten_amount : hint_range(0, 10, 0.01) = 1.5;
 
+uniform bool debug = false;
+
 uniform vec3 normal_edge_bias = vec3(1, 1, 1);
 
 float get_depth(vec2 screen_uv, mat4 inv_projection_matrix) {
@@ -42,7 +44,7 @@ void fragment() {
 	for (int i = 0; i < 4; i++) {
 		float d = get_depth(uvs[i], INV_PROJECTION_MATRIX);
 		depth_diff += -depth + d;
-		depth_diff_reversed -= d + depth;
+		depth_diff_reversed += depth - d;
 
 		if (d < nearest_depth) {
 			nearest_depth = d;
@@ -50,7 +52,7 @@ void fragment() {
 		}
 
 		vec3 n = texture(normal_texture, uvs[i]).xyz * 2.0 - 1.0;
-		vec3 normal_diff = -normal + n;
+		vec3 normal_diff = normal - n;
 
 		// Edge pixels should yield to the normal closest to the bias direction
 		float normal_bias_diff = dot(normal_diff, normal_edge_bias);
@@ -64,8 +66,13 @@ void fragment() {
 	// Instead, we can use this value to mask the normal edge along the outside of the object
 	float reverse_depth_edge = step(reverse_depth_threshold, depth_diff_reversed);
 
-	float indicator = sqrt(normal_sum);
-	float normal_edge = step(normal_threshold, indicator - reverse_depth_edge);
+	float indicator;
+	if (reverse_depth_edge > 0.0) {
+		indicator = 0.0;
+	} else {
+		indicator = sqrt(normal_sum);
+	}
+	float normal_edge = step(normal_threshold, indicator);
 
 	vec3 original = texture(screen_texture, SCREEN_UV).rgb;
 	vec3 nearest = original;
@@ -81,6 +88,16 @@ void fragment() {
 	vec3 edge_mix = mix(normal_col, depth_col, depth_edge);
 
 	//ALBEDO = vec3(normal);
-	ALBEDO = mix(original, edge_mix, (depth_edge > 0.0 ? depth_edge : normal_edge));
-	
+	if (debug) {
+		ALBEDO = vec3(0,0,0);
+		if (depth_edge > 0.0) {
+			ALBEDO.b = 1.0;
+		} else if (reverse_depth_edge > 0.0) {
+			ALBEDO.g = 1.0;
+		} else if (normal_edge > 0.0) {
+			ALBEDO.r = 1.0;
+		}
+	} else {
+		ALBEDO = mix(original, edge_mix, (depth_edge > 0.0 ? depth_edge : normal_edge));
+	}
 }

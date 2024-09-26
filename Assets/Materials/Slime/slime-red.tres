@@ -9,7 +9,7 @@ shader = ExtResource("1_gxhx3")
 shader_parameter/depth_threshold = 0.297
 shader_parameter/reverse_depth_threshold = 0.25
 shader_parameter/normal_threshold = 0.6
-shader_parameter/darken_amount = 0.25
+shader_parameter/darken_amount = 0.05
 shader_parameter/lighten_amount = 0.26
 shader_parameter/normal_edge_bias = Vector3(1, 1, 1)
 
