@@ -1,4 +1,4 @@
-[gd_scene load_steps=32 format=3 uid="uid://c7vlx700fgtqs"]
+[gd_scene load_steps=34 format=3 uid="uid://c7vlx700fgtqs"]
 
 [ext_resource type="PackedScene" uid="uid://bfdvxynauwmtj" path="res://Assets/Models/infinity.glb" id="1_rm5qk"]
 [ext_resource type="Script" path="res://Assets/Scripts/Entity.gd" id="2_pd53c"]
@@ -13,14 +13,16 @@
 [ext_resource type="Script" path="res://Assets/Scripts/States/Generic/AttackState.gd" id="8_73dwl"]
 [ext_resource type="Script" path="res://Assets/Scripts/States/Generic/StandardState.gd" id="9_blb1u"]
 [ext_resource type="Script" path="res://Assets/Scripts/States/Generic/ShieldState.gd" id="10_jxd4a"]
+[ext_resource type="Material" uid="uid://bmn3ijtlgkqiw" path="res://Assets/Materials/Characters/sword-cutout.tres" id="15_ba15w"]
 [ext_resource type="Shader" path="res://Packages/GPUTrail-main/shaders/trail.gdshader" id="15_rhd6w"]
+[ext_resource type="Material" uid="uid://hjdlx4warlfb" path="res://Assets/Materials/Characters/sword-handle-cutout.tres" id="16_5l1c5"]
 [ext_resource type="Shader" path="res://Packages/GPUTrail-main/shaders/trail_draw_pass.gdshader" id="16_qm1pa"]
 [ext_resource type="Texture2D" uid="uid://crk6pkb7e5rwc" path="res://Packages/GPUTrail-main/defaults/texture.tres" id="17_pvvl0"]
 [ext_resource type="Texture2D" uid="uid://ct31fhxvcragr" path="res://Packages/GPUTrail-main/defaults/curve.tres" id="18_7jk02"]
 [ext_resource type="Script" path="res://Packages/GPUTrail-main/GPUTrail3D.gd" id="19_0mkq7"]
 [ext_resource type="Texture2D" uid="uid://d0aqx8k5y48w8" path="res://Assets/Sprites/misc/slash-effect.png" id="19_2vl7e"]
 [ext_resource type="Script" path="res://Assets/Scripts/Hitbox.gd" id="20_rq6bb"]
-[ext_resource type="Material" uid="uid://damvbnurwgl56" path="res://Assets/Materials/Characters/infinity.tres" id="21_yqi7e"]
+[ext_resource type="Material" uid="uid://cfe0foe1wlito" path="res://Assets/Materials/Characters/infinity-with-cutout.tres" id="21_uqxah"]
 [ext_resource type="Script" path="res://Assets/Scripts/Hurtbox.gd" id="31_pkqhk"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_osbq5"]
@@ -67,7 +69,7 @@ axis_lock_angular_x = true
 axis_lock_angular_y = true
 axis_lock_angular_z = true
 floor_constant_speed = true
-floor_max_angle = 0.872665
+floor_max_angle = 1.0472
 floor_snap_length = 0.4
 platform_floor_layers = 1
 script = ExtResource("2_pd53c")
@@ -130,7 +132,8 @@ animation_name = "JumpRise"
 falling_state = "JumpFall"
 instant_velocity_on_enter = Vector3(0, 11, 0)
 rotate_mode = 1
-movement_mode = 2
+movement_mode = 3
+movement_speed = 5.75
 prevent_wall_slide = true
 can_use_actions = true
 can_move = false
@@ -140,7 +143,8 @@ prevent_self_action_request = true
 script = ExtResource("9_blb1u")
 animation_name = "JumpFall"
 grounded_state = "Idle"
-movement_mode = 1
+movement_mode = 3
+movement_speed = 6.25
 prevent_wall_slide = true
 can_use_actions = true
 can_move = false
@@ -323,6 +327,10 @@ transform = Transform3D(0.499857, 0.00847296, 0.00847094, 0.00847216, -7.81145e-
 
 [node name="Blade" parent="Armature/Skeleton3D/Blade" index="0"]
 layers = 8
+surface_material_override/0 = ExtResource("15_ba15w")
+surface_material_override/1 = ExtResource("16_5l1c5")
+surface_material_override/2 = ExtResource("16_5l1c5")
+surface_material_override/3 = ExtResource("16_5l1c5")
 
 [node name="GPUTrail3D" type="GPUParticles3D" parent="Armature/Skeleton3D/Blade" index="1"]
 transform = Transform3D(1, -1.86265e-09, 7.68341e-09, 0, 1, -7.45058e-09, 4.51691e-08, 2.23517e-08, 1, -0.0157964, 0.703541, -0.0883509)
@@ -342,31 +350,31 @@ _defaults_have_been_set = true
 
 [node name="Arm" parent="Armature/Skeleton3D" index="1"]
 layers = 4
-material_override = ExtResource("21_yqi7e")
+material_override = ExtResource("21_uqxah")
 
 [node name="Body" parent="Armature/Skeleton3D" index="2"]
 layers = 4
-material_override = ExtResource("21_yqi7e")
+material_override = ExtResource("21_uqxah")
 
 [node name="Cape" parent="Armature/Skeleton3D" index="3"]
 layers = 4
-material_override = ExtResource("21_yqi7e")
+material_override = ExtResource("21_uqxah")
 
 [node name="Hair" parent="Armature/Skeleton3D" index="4"]
 layers = 4
-material_override = ExtResource("21_yqi7e")
+material_override = ExtResource("21_uqxah")
 
 [node name="Hand" parent="Armature/Skeleton3D" index="5"]
 layers = 4
-material_override = ExtResource("21_yqi7e")
+material_override = ExtResource("21_uqxah")
 
 [node name="Head" parent="Armature/Skeleton3D" index="6"]
 layers = 4
-material_override = ExtResource("21_yqi7e")
+material_override = ExtResource("21_uqxah")
 
 [node name="Jacket" parent="Armature/Skeleton3D" index="7"]
 layers = 4
-material_override = ExtResource("21_yqi7e")
+material_override = ExtResource("21_uqxah")
 cast_shadow = 0
 
 [node name="ShadowMesh" type="CSGMesh3D" parent="." index="5"]

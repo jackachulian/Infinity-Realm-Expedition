@@ -1,0 +1,9 @@
+[gd_resource type="ShaderMaterial" load_steps=3 format=3 uid="uid://fma3ewss44b3"]
+
+[ext_resource type="Material" uid="uid://damvbnurwgl56" path="res://Assets/Materials/Characters/infinity.tres" id="1_8iidr"]
+[ext_resource type="Shader" path="res://Assets/Shaders/cutout.gdshader" id="1_nqxmv"]
+
+[resource]
+render_priority = -1
+next_pass = ExtResource("1_8iidr")
+shader = ExtResource("1_nqxmv")

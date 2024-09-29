@@ -23,9 +23,11 @@ uniform sampler2D grassNoise : source_color;
 uniform sampler3D rockWallNoise : source_color;
 uniform sampler3D rockLedgeNoise : source_color;
 
+uniform bool debug = false;
+
 void fragment() {
 	bool isWall = UV.x > 0.99 && UV.y > 0.99;
-	
+
 	float thicknessMult = texture(rockLedgeNoise, COLOR.xyz * rockLedgeNoiseTiling).r;
 
 	// ==== Ledge detection
@@ -36,8 +38,12 @@ void fragment() {
 
 	float rockBrightness = texture(rockWallNoise, COLOR.xyz * rockWallNoiseTiling).r;
 	
+	if (debug) {
+		ALBEDO = vec3(UV.x, UV.y, 0);
+	}
+
 	// ==== Walls
-	if (isWall) {
+	else if (isWall) {
 		ALBEDO = texture(rockGradient, vec2(rockBrightness, 0)).rgb;
 	}
 	// ==== Ledges

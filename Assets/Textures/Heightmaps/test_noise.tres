@@ -2,7 +2,7 @@
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_uc1u3"]
 seed = 1
-frequency = 0.015
+frequency = 0.0162
 
 [resource]
 width = 64

@@ -1,22 +1,11 @@
-[gd_resource type="ShaderMaterial" load_steps=10 format=3 uid="uid://cw068lng8rddd"]
+[gd_resource type="ShaderMaterial" load_steps=9 format=3 uid="uid://cw068lng8rddd"]
 
 [ext_resource type="Shader" path="res://Assets/Shaders/terrain.gdshader" id="1_21hti"]
-[ext_resource type="Shader" path="res://Assets/Shaders/outline_spatial_shader.gdshader" id="1_kegqe"]
+[ext_resource type="Material" uid="uid://c8dr0ruajbreb" path="res://Assets/Materials/Terrain/terrain_outline.tres" id="1_ry4uo"]
 [ext_resource type="Texture2D" uid="uid://bo2x45ptkmbky" path="res://Assets/Textures/grass_gradient_texture.tres" id="2_p8pex"]
 [ext_resource type="Texture2D" uid="uid://bj4dkjgl0shna" path="res://Assets/Textures/grass_noise.tres" id="3_88bw5"]
 [ext_resource type="Texture2D" uid="uid://b6j1ifkybyob6" path="res://Assets/Textures/rock_gradient.tres" id="3_sbgp3"]
 [ext_resource type="NoiseTexture3D" uid="uid://3jnauc3rxtsh" path="res://Assets/Textures/wall_3d_noise.tres" id="5_dkbif"]
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_ulafs"]
-render_priority = 0
-shader = ExtResource("1_kegqe")
-shader_parameter/depth_threshold = 0.129
-shader_parameter/reverse_depth_threshold = 0.274
-shader_parameter/normal_threshold = 0.693
-shader_parameter/darken_amount = 0.3
-shader_parameter/lighten_amount = 1.5
-shader_parameter/debug = false
-shader_parameter/normal_edge_bias = Vector3(0, 1, 0)
 
 [sub_resource type="Gradient" id="Gradient_aftyc"]
 offsets = PackedFloat32Array(0.00911854, 1)
@@ -27,7 +16,7 @@ gradient = SubResource("Gradient_aftyc")
 
 [resource]
 render_priority = 0
-next_pass = SubResource("ShaderMaterial_ulafs")
+next_pass = ExtResource("1_ry4uo")
 shader = ExtResource("1_21hti")
 shader_parameter/ledgeTopThickness = 0.75
 shader_parameter/ledgeBottomThickness = 0.0
@@ -35,6 +24,7 @@ shader_parameter/ledgeBrightMin = 0.5
 shader_parameter/grassNoiseTiling = 1.0
 shader_parameter/rockWallNoiseTiling = 8.0
 shader_parameter/rockLedgeNoiseTiling = 2.0
+shader_parameter/debug = false
 shader_parameter/ledgeBrightnessGradient = SubResource("GradientTexture1D_rbvyj")
 shader_parameter/grassGradient = ExtResource("2_p8pex")
 shader_parameter/rockGradient = ExtResource("3_sbgp3")
