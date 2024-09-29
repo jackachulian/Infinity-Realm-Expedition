@@ -4,7 +4,11 @@ extends MeshInstance3D
 
 @export var terrain_material: Material
 
-@export var dimensions: Vector3i = Vector3i(10, 1, 10)
+# Size of the 2 dimensional cell array (xz value) and y scale (y value)
+@export var dimensions: Vector3i = Vector3i(32, 1, 32)
+
+# Unit XZ size of a single cell
+@export var cell_size: Vector2 = Vector2(2, 2)
 
 @export var height_map_image: Texture2D
 
@@ -43,19 +47,26 @@ var ac: bool
 var bd: bool
 var cd: bool
 
-# Stores the heights from the heightmap (red channel of image)
+# Stores the heights from the heightmap (from red channel of image)
 var height_map: Array
 
-# Stores the average delta height of heightmap coordinate to surrounding tiles.
-var surrounding_delta_height_map: Array
+# Stores the list of start positions for every cell
+# Two dimension array of [col / x position][row / z position].
+var row_start_positions: Array[int]
 		
 func _enter_tree():
 	if Engine.is_editor_hint():
 		load_height_map()
-		generate_mesh()
+		regenerate_mesh()
 
-func generate_mesh():
+func _ready() -> void:
+	if not Engine.is_editor_hint():
+		create_trimesh_collision()
+
+func regenerate_mesh():
 	st = SurfaceTool.new()
+	if mesh:
+		st.create_from(mesh, 0)
 	st.begin(Mesh.PRIMITIVE_TRIANGLES)
 	
 	var start_time: int = Time.get_ticks_msec()
@@ -65,22 +76,12 @@ func generate_mesh():
 	st.generate_normals()
 	#st.index()
 	
-	
 	# Create a new mesh out of floor, and add the wall surface to it
 	mesh = st.commit()
 	mesh.surface_set_material(0, terrain_material)
 	
 	var elapsed_time: int = Time.get_ticks_msec() - start_time
 	print("generated terrain in "+str(elapsed_time)+"ms")
-	
-	# Generate collision
-	var collision_node = $Terrain_col
-	if collision_node:
-		collision_node.free()
-
-	create_trimesh_collision()
-	collision_node = $Terrain_col
-	collision_node.visible = false
 	
 	#var vert_total = len(mesh.surface_get_arrays(0)[Mesh.ARRAY_VERTEX])
 	#print("total tris: "+str(vert_total/3))
@@ -101,8 +102,8 @@ func generate_terrain_cells():
 			dy = height_map[z+1][x+1] # bottom-right
 			
 			# If all four corners are 0, omit this cell entirely and don't put anything here
-			if ay == 0 and by == 0 and dy == 0 and cy == 0:
-				continue
+			#if ay == 0 and by == 0 and dy == 0 and cy == 0:
+				#continue
 			
 			# Track which edges shold be connected and not have a wall bewteen them.
 			ab = abs(ay-by) < merge_threshold # top edge
@@ -122,21 +123,16 @@ func generate_terrain_cells():
 			point_heights = [ay, by, dy, cy]
 			
 			# Sort the points by ascending height, storing the point indexes in height here
-			var point_heights_relative = [0, 1, 2, 3]
-			var sort = func(p1, p2):
-				return point_heights[p1] < point_heights[p2]
-			point_heights_relative.sort_custom(sort)
-			
-			# Keeps track of which points on the midpoint od edges
-			# already have walls against them.
-			# [ ab, bd, cd, ac ]
-			var edge_walls = [ false, false, false, false ]
+			#var point_heights_relative = [0, 1, 3, 2]
+			#var sort = func(p1, p2):
+				#return point_heights[p1] < point_heights[p2]
+			#point_heights_relative.sort_custom(sort)
 			
 			# Starting from the lowest corner, build the tile up
 			var case_found: bool
 			for i in range(4):
 				# Use the rotation of the corner - the amount of counter-clockwise rotations for it to become the top-left corner, which is just its index in the point lists.
-				r = point_heights_relative[i]
+				r = i
 
 				ab = cell_edges[r]
 				bd = cell_edges[(r+1)%4]
@@ -464,18 +460,20 @@ func add_point(x: float, y: float, z: float, uv_x: float = 0, uv_y: float = 0, u
 	
 	# Color = terrain space coordinates. 
 	# for XZ, 0,0,0 = top left of heightmap at lowest height, 1,1,1 = bottom right of heightmap at highest height
-	st.set_color(Color((cell_x+x) / dimensions.x, y / dimensions.y, (cell_z+z) / dimensions.z))
+	#st.set_color(Color((cell_x+x) / dimensions.x, y / dimensions.x, (cell_z+z) / dimensions.z))
 		
-	st.add_vertex(Vector3(cell_x+x, y, cell_z+z))
+	st.add_vertex(Vector3((cell_x+x) * cell_size.x, y, (cell_z+z) * cell_size.y))
 	
 # if true, currently making floor geometry. if false, currently making wall geometry.
 var floor_mode: bool = true
 	
 func start_floor():
 	floor_mode = true
+	st.set_smooth_group(0)
 
 func start_wall():
 	floor_mode = false
+	st.set_smooth_group(-1)
 
 func add_full_floor():
 	start_floor()
@@ -667,8 +665,8 @@ func load_height_map():
 	rng.seed = seed
 	rng.state = 0
 	
-	for z in range(min(dimensions.z, image.get_height()+1)):
-		for x in range(min(dimensions.x, image.get_width()+1)):
+	for z in range(min(dimensions.z, image.get_height())):
+		for x in range(min(dimensions.x, image.get_width())):
 			var height = image.get_pixel(x, z).r * dimensions.y
 			
 			if height_banding > 0:
