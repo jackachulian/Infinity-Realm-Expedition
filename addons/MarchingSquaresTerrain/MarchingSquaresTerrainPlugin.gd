@@ -66,7 +66,7 @@ func _input(event):
 			if result:
 				var intersection_pos = result.position
 				var body: PhysicsBody3D = result.collider;
-				print("Intersected with ", body.get_parent().name, " at:", intersection_pos)
+				print("Intersected with ", body.name, " at:", intersection_pos)
 			else:
 				print("No intersection detected.")
 

@@ -59,10 +59,6 @@ func _enter_tree():
 		load_height_map()
 		regenerate_mesh()
 
-func _ready() -> void:
-	if not Engine.is_editor_hint():
-		create_trimesh_collision()
-
 func regenerate_mesh():
 	st = SurfaceTool.new()
 	if mesh:
@@ -82,6 +78,10 @@ func regenerate_mesh():
 	
 	var elapsed_time: int = Time.get_ticks_msec() - start_time
 	print("generated terrain in "+str(elapsed_time)+"ms")
+	
+	if get_node_or_null("Terrain_col"):
+		$Terrain_col.free()
+	create_trimesh_collision()
 	
 	#var vert_total = len(mesh.surface_get_arrays(0)[Mesh.ARRAY_VERTEX])
 	#print("total tris: "+str(vert_total/3))
