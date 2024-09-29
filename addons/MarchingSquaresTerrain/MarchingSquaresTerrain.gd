@@ -2,8 +2,7 @@
 class_name MarchingSquaresTerrain
 extends MeshInstance3D
 
-@export var floor_material: Material
-@export var wall_material: Material
+@export var terrain_material: Material
 
 @export var dimensions: Vector3i = Vector3i(10, 1, 10)
 
@@ -18,15 +17,11 @@ extends MeshInstance3D
 # If above 0, round height values to this nearest interval.
 @export var height_banding: float = 0.1
 
-@export var random_noise: float = 0.1
-
 @export var seed: int = 1
 
 var rng := RandomNumberGenerator.new()
 
-var floor: SurfaceTool
-
-var wall: SurfaceTool
+var st: SurfaceTool
 	
 # cell coordinates currently being evaluated
 var cell_x: int
@@ -58,45 +53,39 @@ func _enter_tree():
 	if Engine.is_editor_hint():
 		load_height_map()
 		generate_mesh()
-		
+
 func generate_mesh():
-	floor = SurfaceTool.new()
-	floor.begin(Mesh.PRIMITIVE_TRIANGLES)
-	#floor.set_smooth_group(-1)
-	
-	wall = SurfaceTool.new()
-	wall.begin(Mesh.PRIMITIVE_TRIANGLES)
-	wall.set_smooth_group(-1)
+	st = SurfaceTool.new()
+	st.begin(Mesh.PRIMITIVE_TRIANGLES)
 	
 	var start_time: int = Time.get_ticks_msec()
 	
 	generate_terrain_cells()
 				
-	floor.generate_normals()
-	wall.generate_normals()
+	st.generate_normals()
+	#st.index()
 	
-	floor.index()
-	wall.index()
+	
+	# Create a new mesh out of floor, and add the wall surface to it
+	mesh = st.commit()
+	mesh.surface_set_material(0, terrain_material)
 	
 	var elapsed_time: int = Time.get_ticks_msec() - start_time
 	print("generated terrain in "+str(elapsed_time)+"ms")
 	
+	# Generate collision
+	var collision_node = $Terrain_col
+	if collision_node:
+		collision_node.free()
+
+	create_trimesh_collision()
+	collision_node = $Terrain_col
+	collision_node.visible = false
 	
-	
-	# Create a new mesh out of floor, and add the wall surface to it
-	var terrain_mesh = floor.commit()
-	wall.commit(terrain_mesh)
-	
-	terrain_mesh.surface_set_material(0, floor_material)
-	terrain_mesh.surface_set_material(1, wall_material)
-	
-	var floor_verts = len(terrain_mesh.surface_get_arrays(0)[Mesh.ARRAY_VERTEX])
-	var wall_verts = len(terrain_mesh.surface_get_arrays(1)[Mesh.ARRAY_VERTEX])
-	print("total tris: "+str((floor_verts + wall_verts)/3))
-	
-	ResourceSaver.save(terrain_mesh, "res://terrain/"+name+".tres", ResourceSaver.FLAG_COMPRESS)
-	
-	mesh = terrain_mesh
+	#var vert_total = len(mesh.surface_get_arrays(0)[Mesh.ARRAY_VERTEX])
+	#print("total tris: "+str(vert_total/3))
+	#
+	ResourceSaver.save(mesh, "res://terrain/"+name+".tres", ResourceSaver.FLAG_COMPRESS)
 
 func generate_terrain_cells():
 	for z in range(dimensions.z - 1):
@@ -111,15 +100,15 @@ func generate_terrain_cells():
 			cy = height_map[z+1][x] # bottom-left
 			dy = height_map[z+1][x+1] # bottom-right
 			
+			# If all four corners are 0, omit this cell entirely and don't put anything here
+			if ay == 0 and by == 0 and dy == 0 and cy == 0:
+				continue
+			
 			# Track which edges shold be connected and not have a wall bewteen them.
 			ab = abs(ay-by) < merge_threshold # top edge
 			ac = abs(ay-cy) < merge_threshold # bottom edge
 			bd = abs(by-dy) < merge_threshold # right edge
 			cd = abs(cy-dy) < merge_threshold # bottom edge
-			
-			# If all four corners are 0, omit this cell entirely and don't put anything here
-			if ay == 0 and by == 0 and dy == 0 and cy == 0:
-				continue
 			
 			# Case 0
 			# If all edges are connected, put a full floor here.
@@ -463,10 +452,7 @@ func add_point(x: float, y: float, z: float, uv_x: float = 0, uv_y: float = 0, u
 	for i in range(r):
 		var temp = x
 		x = 1 - z
-		z = temp
-		
-	var st = floor if floor_mode else wall
-	
+		z = temp	
 	
 	if floor_mode:
 		st.set_uv(Vector2(uv_x, uv_y))
@@ -684,8 +670,6 @@ func load_height_map():
 	for z in range(min(dimensions.z, image.get_height()+1)):
 		for x in range(min(dimensions.x, image.get_width()+1)):
 			var height = image.get_pixel(x, z).r * dimensions.y
-			if random_noise != 0:
-				height += rng.randf_range(-random_noise, random_noise)
 			
 			if height_banding > 0:
 				height = round(height / height_banding) * height_banding
