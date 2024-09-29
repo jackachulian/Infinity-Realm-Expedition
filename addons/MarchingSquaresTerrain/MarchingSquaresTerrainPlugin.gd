@@ -2,6 +2,8 @@
 class_name MarchingSquaresTerrainPlugin
 extends EditorPlugin
 
+var gizmo_plugin = MarchingSquaresTerrainGizmo.new()
+
 # This function gets called when the plugin is activated.
 func _enter_tree():
 	print("terrain tool entered tree")
@@ -9,11 +11,17 @@ func _enter_tree():
 	add_tool_menu_item("Ray Click Tool", _on_ray_click_tool_pressed)
 	
 	add_custom_type("MarchingSquaresTerrain", "MeshInstance3D", preload("MarchingSquaresTerrain.gd"), preload("res://icon.svg"))
+	
+	add_node_3d_gizmo_plugin(gizmo_plugin)
 
 # This function gets called when the plugin is deactivated.
 func _exit_tree():
 	# Remove the button from the editor's toolbar
 	remove_tool_menu_item("Ray Click Tool")
+	
+	remove_custom_type("MarchingSquaresTerrain")
+	
+	remove_node_3d_gizmo_plugin(gizmo_plugin)
 
 # This function is called when the button is clicked in the toolbar
 func _on_ray_click_tool_pressed():
