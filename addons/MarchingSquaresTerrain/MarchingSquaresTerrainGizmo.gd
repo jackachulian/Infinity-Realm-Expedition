@@ -16,10 +16,14 @@ func _init():
 func _redraw(gizmo):
 	gizmo.clear()
 
-	var node3d = gizmo.get_node_3d()
+	var node: Node3D = gizmo.get_node_3d()
 	
-	print("drawing gizmo for ", node3d)
-
+	# Only draw the gizmo if this is the only selected node
+	if len(EditorInterface.get_selection().get_selected_nodes()) != 1:
+		return
+	if EditorInterface.get_selection().get_selected_nodes()[0] != node:
+		return
+		
 	var lines = PackedVector3Array()
 
 	lines.push_back(Vector3(0, 1, 0))

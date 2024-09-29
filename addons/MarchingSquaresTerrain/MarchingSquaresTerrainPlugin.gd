@@ -30,10 +30,17 @@ func _on_ray_click_tool_pressed():
 # This function handles the mouse click in the 3D viewport
 func _input(event):
 	if event is InputEventMouseButton and event.pressed and event.button_index == MouseButton.MOUSE_BUTTON_LEFT:
+		# Check that the 3d tab is active
 		if get_main_screen() != "3D":
 			return
+			
+		# Check that a terrain node is selected
+		if len(EditorInterface.get_selection().get_selected_nodes()) != 1:
+			return
+		var node = EditorInterface.get_selection().get_selected_nodes()[0] 
+		if node is not MarchingSquaresTerrain:
+			return
 		
-		# Check that the 3d tab is active
 		var editor_viewport = EditorInterface.get_editor_viewport_3d()
 		
 		# Get the mouse position in the viewport
