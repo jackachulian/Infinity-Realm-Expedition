@@ -1,0 +1,33 @@
+[gd_resource type="ShaderMaterial" load_steps=5 format=3 uid="uid://hjdlx4warlfb"]
+
+[ext_resource type="Material" uid="uid://b78rdg6wuxier" path="res://Assets/Materials/player-outline.tres" id="1_5if8x"]
+[ext_resource type="Shader" path="res://Assets/Shaders/botw-toon-shader.gdshader" id="2_33hxn"]
+[ext_resource type="Shader" path="res://Assets/Shaders/cutout.gdshader" id="3_bx4m0"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_jlf6u"]
+render_priority = 0
+next_pass = ExtResource("1_5if8x")
+shader = ExtResource("2_33hxn")
+shader_parameter/tint = Color(0.0818379, 0.466115, 0.759048, 1)
+shader_parameter/metallic = 0.0
+shader_parameter/shadow_size = 0.045
+shader_parameter/shadow_blend = 0.001
+shader_parameter/shadow_extra_intensity = 0.0
+shader_parameter/shadow_color = Color(0.935693, 0.531241, 0.658314, 1)
+shader_parameter/light_tint = Color(0.78277, 0.97167, 0.987062, 1)
+shader_parameter/rimlight_size = 0.921
+shader_parameter/rimlight_blend = 0.01
+shader_parameter/rimlight_color = Color(0.162066, 0.162066, 0.162066, 1)
+shader_parameter/use_normalmap = false
+shader_parameter/animated = false
+shader_parameter/time_scale = 0.02
+shader_parameter/normal_bias = Vector3(0, 0, 0)
+shader_parameter/light_bias = Vector3(0, 0, 0)
+shader_parameter/use_view = false
+shader_parameter/view_bias = Color(1, 0, 1, 1)
+shader_parameter/view_multiplier = -1.0
+
+[resource]
+render_priority = -1
+next_pass = SubResource("ShaderMaterial_jlf6u")
+shader = ExtResource("3_bx4m0")

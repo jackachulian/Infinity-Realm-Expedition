@@ -1,9 +1,11 @@
 shader_type spatial;
-render_mode unshaded, depth_test_disabled;
+render_mode unshaded, depth_test_disabled, depth_prepass_alpha;
 
 void fragment() {
 	if (fract((floor(FRAGCOORD.x) + floor(FRAGCOORD.y)) / 2.0) < 0.5) {
-		discard;
+		ALPHA = 0.0;
+	} else {
+		ALPHA = 1.0;
 	}
 	
 	ALBEDO = vec3(1, 0.5, 0.5);

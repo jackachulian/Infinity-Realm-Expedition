@@ -8,6 +8,6 @@ frequency = 0.0078
 fractal_octaves = 1
 
 [resource]
-normalize = false
+seamless = true
 color_ramp = SubResource("Gradient_7nq7o")
 noise = SubResource("FastNoiseLite_ooknt")

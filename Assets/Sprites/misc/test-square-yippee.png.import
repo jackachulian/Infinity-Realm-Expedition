@@ -3,20 +3,19 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://bcrhw155chb47"
-path.s3tc="res://.godot/imported/test-square-yippee.png-d9c392d0f5d5c8205bdc63b2c45c3405.s3tc.ctex"
+path="res://.godot/imported/test-square-yippee.png-d9c392d0f5d5c8205bdc63b2c45c3405.ctex"
 metadata={
-"imported_formats": ["s3tc_bptc"],
-"vram_texture": true
+"vram_texture": false
 }
 
 [deps]
 
 source_file="res://Assets/Sprites/misc/test-square-yippee.png"
-dest_files=["res://.godot/imported/test-square-yippee.png-d9c392d0f5d5c8205bdc63b2c45c3405.s3tc.ctex"]
+dest_files=["res://.godot/imported/test-square-yippee.png-d9c392d0f5d5c8205bdc63b2c45c3405.ctex"]
 
 [params]
 
-compress/mode=2
+compress/mode=0
 compress/high_quality=false
 compress/lossy_quality=0.7
 compress/hdr_compression=1
