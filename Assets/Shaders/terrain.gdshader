@@ -42,7 +42,7 @@ void fragment() {
 	bool bottomLedge = bottomLedgeValue > 0.0;
 
 	float rockBrightness = texture(rockWallNoise, COLOR.rgb / rockWallNoiseScale).r;
-	
+
 	if (debug) {
 		ALBEDO = vec3(UV.x, UV.y, 0);
 		//ALBEDO = NORMAL;

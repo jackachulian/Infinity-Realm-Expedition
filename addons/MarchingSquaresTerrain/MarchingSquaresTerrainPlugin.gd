@@ -2,10 +2,13 @@
 class_name MarchingSquaresTerrainPlugin
 extends EditorPlugin
 
-var gizmo_plugin = MarchingSquaresTerrainGizmo.new()
+static var instance: MarchingSquaresTerrainPlugin
+
+var gizmo_plugin = MarchingSquaresTerrainGizmoPlugin.new()
 
 # This function gets called when the plugin is activated.
 func _enter_tree():
+	instance = self
 	print("terrain tool entered tree")
 	# Add a button to the editor's toolbar
 	add_tool_menu_item("Ray Click Tool", _on_ray_click_tool_pressed)
