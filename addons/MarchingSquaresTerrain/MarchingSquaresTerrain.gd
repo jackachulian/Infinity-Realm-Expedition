@@ -661,9 +661,8 @@ func load_height_map():
 		return
 	
 	var image = height_map_image.get_image()
-	
-	rng.seed = seed
-	rng.state = 0
+	if not image:
+		return
 	
 	for z in range(min(dimensions.z, image.get_height())):
 		for x in range(min(dimensions.x, image.get_width())):

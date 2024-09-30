@@ -19,7 +19,7 @@ func _ready():
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
 	# face/move towards target
-	if target:
+	if target and entity.state_machine.current_state and entity.state_machine.current_state.name in ["Idle", "Jump-Start"]:
 		direction = (target.global_position - global_position)
 		direction.y = 0
 		direction = direction.normalized()

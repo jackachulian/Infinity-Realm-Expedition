@@ -7,6 +7,7 @@ class_name Movement
 var speed := 5.0
 
 @export var move_accel: float = 60.0
+@export var air_accel: float = 30.0
 @export var stop_decel: float = 45.0
 @export var air_decel: float = 30.0
 @export var stun_decel: float = 10.0
@@ -63,7 +64,8 @@ func _physics_process(delta):
 	
 	# Accelerate into in input direction if non-zero input and not stunned
 	if direction != Vector3.ZERO and not entity.is_hit_stunned():
-		entity.velocity = entity.velocity.move_toward(direction * speed, move_accel * delta)
+		var accel = move_accel if entity.is_on_floor() else air_accel
+		entity.velocity = entity.velocity.move_toward(direction * speed, accel * delta)
 	# Otherwise, decelerate towards zero if not in midair (simulates friction with ground)
 	elif entity.is_on_floor():
 		var decel;

@@ -60,17 +60,18 @@ grounded_state = "Idle"
 falling_state = "Jump-Down"
 instant_velocity_on_enter = Vector3(0, 10, -4.5)
 rotate_mode = 1
-movement_mode = 2
+movement_mode = 1
 movement_speed = 4.5
 
 [node name="Jump-Down" type="Node" parent="StateMachine" index="4"]
 script = ExtResource("6_sthgl")
 animation_name = "Jump-Down"
 grounded_state = "Idle"
-movement_mode = 2
+movement_mode = 1
 
 [node name="Movement" type="Node" parent="." index="2"]
 script = ExtResource("7_w7v2a")
+air_decel = 3.0
 
 [node name="Armature" parent="." index="3"]
 transform = Transform3D(-0.5, 0, 4.37114e-08, 0, 0.5, 0, -4.37114e-08, 0, -0.5, 0, 0, 0)
