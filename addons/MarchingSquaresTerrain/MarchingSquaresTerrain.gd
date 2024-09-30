@@ -21,12 +21,11 @@ extends MeshInstance3D
 # If above 0, round height values to this nearest interval.
 @export var height_banding: float = 0.1
 
-# ArrayMesh arrays
-var surface_array: Array
-var verts: PackedVector3Array = PackedVector3Array()
-var uvs: PackedVector2Array = PackedVector2Array()
-var normals: PackedVector3Array = PackedVector3Array()
-var indices: PackedInt32Array = PackedInt32Array()
+@export var seed: int = 1
+
+var rng := RandomNumberGenerator.new()
+
+var st: SurfaceTool
 	
 # cell coordinates currently being evaluated
 var cell_x: int
@@ -49,137 +48,52 @@ var bd: bool
 var cd: bool
 
 # Stores the heights from the heightmap (from red channel of image)
-var height_map: Array[Array]
+var height_map: Array
 
-# Stores which cells need their geometry updated after a change in terrain height
-var needs_update: Array[Array]
-
-# Stores the start position of vertexes designated for each cell.
-# Two dimension array of [col / z position][row / x position].
-# Contains dimensions.z - 1 rows
-# Length of each row is dimensions.x - 1
-var index_lengths: Array[Array]
-
-# Current last indexed point
-var index: int
-
+# Stores the list of start positions for every cell
+# Two dimension array of [col / x position][row / z position].
+var row_start_positions: Array[int]
 		
 func _enter_tree():
 	if Engine.is_editor_hint():
 		load_height_map()
-		initialize_arrays()
 		regenerate_mesh()
-		
-func initialize_arrays():
-	surface_array = []
-	surface_array.resize(Mesh.ARRAY_MAX)
-	
-	var corners_size: int = dimensions.x * dimensions.z;
-	
-	verts.resize(corners_size);
-	uvs.resize(corners_size);
-	normals.resize(corners_size);
-	indices.clear()
-	
-	# For each point
-	for z in range(dimensions.z):
-		for x in range(dimensions.x):
-			# The first (X * Z) points are on the corners that directly line up with the heightmap.
-			# These points are used at least once by all 4 cells sharing that corner and will never be unused.
-			# For that reason, these verts will always be at the start of the list.
-			# Use height from heightmap to create these vertices at the correct height.
-			index = z*dimensions.x + x
-			
-			var y = height_map[z][x];
-			
-			var vert = Vector3(x * cell_size.x, y, z * cell_size.y)
-			verts[index] = vert
-			
-			# corner verts will always not be on an edge or corner that divides the cells
-			uvs[index] = Vector2(0, 0) 
-			
-			# for now, floors will always face straight up
-			normals[index] = Vector3.UP
-#
-	needs_update = []
-	needs_update.resize(dimensions.z - 1)
-	
-	index_lengths = []
-	index_lengths.resize(dimensions.z - 1)
-	
-	 #For each cell
-	for z in range(dimensions.z - 1):
-		needs_update[z] = []
-		needs_update[z].resize(dimensions.x - 1)
-
-		index_lengths[z] = []
-		index_lengths[z].resize(dimensions.x - 1)
-		for x in range(dimensions.x - 1):
-			pass
-			# Each cell will initially need to be updated
-			needs_update[z][x] = true
-			# all cells will initially have an index length of 0
-			# once actual geometry is added, these numbers will go up
-			index_lengths[z][x] = 0
-			
 
 func regenerate_mesh():
-	print("regenerating terrain...")
+	st = SurfaceTool.new()
+	if mesh:
+		st.create_from(mesh, 0)
+	st.begin(Mesh.PRIMITIVE_TRIANGLES)
+	
 	var start_time: int = Time.get_ticks_msec()
 	
-	# Generate cells - will update the verts and UV arrays
 	generate_terrain_cells()
+				
+	st.generate_normals()
+	#st.index()
 	
-	# Commit the mesh
-	surface_array[Mesh.ARRAY_VERTEX] = verts
-	surface_array[Mesh.ARRAY_TEX_UV] = uvs
-	surface_array[Mesh.ARRAY_NORMAL] = normals
-	surface_array[Mesh.ARRAY_INDEX] = indices
-	
-	mesh = ArrayMesh.new()
-	mesh.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, surface_array)
+	# Create a new mesh out of floor, and add the wall surface to it
+	mesh = st.commit()
 	mesh.surface_set_material(0, terrain_material)
-	
-	#if get_node_or_null("Terrain_col"):
-		#$Terrain_col.free()
-	#create_trimesh_collision()
 	
 	var elapsed_time: int = Time.get_ticks_msec() - start_time
 	print("generated terrain in "+str(elapsed_time)+"ms")
 	
+	if get_node_or_null("Terrain_col"):
+		$Terrain_col.free()
+	create_trimesh_collision()
+	
 	#var vert_total = len(mesh.surface_get_arrays(0)[Mesh.ARRAY_VERTEX])
-	#print("total verts: "+str(vert_total))
-	#var index_total = len(mesh.surface_get_arrays(0)[Mesh.ARRAY_INDEX])
-	#print("total indices: "+str(index_total))
+	#print("total tris: "+str(vert_total/3))
 	#
-	#ResourceSaver.save(mesh, "res://terrain/"+name+".tres", ResourceSaver.FLAG_COMPRESS)
+	ResourceSaver.save(mesh, "res://terrain/"+name+".tres", ResourceSaver.FLAG_COMPRESS)
 
 func generate_terrain_cells():
-	# Start at first non-corner index
-	index = 0;
-	
-	# Iterate over all cells
 	for z in range(dimensions.z - 1):
 		cell_z = z
-		
 		for x in range(dimensions.x - 1):
-			var index_length = index_lengths[z][x]
-			
-			# If cell does not need an update, skip this cell
-			if not needs_update[z][x]:
-				index += index_length
-				continue
-				
-			# Cell is now being updated, set its needs_update state to false
-			print("drawing cell ", x, ", ", z)
-			needs_update[z][x] = false
 			cell_x = x
 			r = 0
-			
-			if index_length > 0:
-				
-				for j in range(index_length):
-					indices.remove_at(index)
 			
 			# Get heights of 4 surrounding corners
 			ay = height_map[z][x] # top-left
@@ -197,26 +111,26 @@ func generate_terrain_cells():
 			bd = abs(by-dy) < merge_threshold # right edge
 			cd = abs(cy-dy) < merge_threshold # bottom edge
 			
-			var case_found := false
-			
-			
 			# Case 0
-			# If all edges are connected, put a full floor here. (Will not use cell_verts, cell_uvs, etc)
+			# If all edges are connected, put a full floor here.
 			if ab and bd and cd and ac:
 				add_full_floor()
-				case_found = true
-			else:
-				# edges going clockwise around the cell
-				cell_edges = [ab, bd, cd, ac]
-				# point heights going clockwise around the cell
-				point_heights = [ay, by, dy, cy]
-		
-
+				continue
+			
+			# edges going clockwise around the cell
+			cell_edges = [ab, bd, cd, ac]
+			# point heights going clockwise around the cell
+			point_heights = [ay, by, dy, cy]
+			
+			# Sort the points by ascending height, storing the point indexes in height here
+			#var point_heights_relative = [0, 1, 3, 2]
+			#var sort = func(p1, p2):
+				#return point_heights[p1] < point_heights[p2]
+			#point_heights_relative.sort_custom(sort)
+			
+			# Starting from the lowest corner, build the tile up
+			var case_found: bool
 			for i in range(4):
-				# stop searching of a case was found during the last iteration (or if full floor was already added before first iter)
-				if case_found:
-					break
-				
 				# Use the rotation of the corner - the amount of counter-clockwise rotations for it to become the top-left corner, which is just its index in the point lists.
 				r = i
 
@@ -230,13 +144,278 @@ func generate_terrain_cells():
 				dy = point_heights[(r+2)%4]
 				cy = point_heights[(r+3)%4]
 				
-				# iterates through all cases for all rotations and adds the first one found
-				case_found = check_cases()
+				# if none of the branches are hit, this will be set to false at the last else statement.
+				# opted for this instead of putting a break in every branch, that would take up space
+				case_found = true
 				
-			#if not case_found:
-				##invalid / unknown cell type. put a full floor here and hope it looks fine
-				##add_full_floor()
-				#pass
+				# Case 1
+				# If A is higher than adjacent and opposite corner is connected to adjacent,
+				# add an outer corner here with upper and lower floor covering whole tile.
+				if is_higher(ay, by) and is_higher(ay, cy) and bd and cd:
+					add_outer_corner(true, true)
+					
+				# Case 2
+				# If A is higher than C and B is higher than D,
+				# add an edge here covering whole tile.
+				# (May want to prevent this if B and C are not within merge distance)
+				elif is_higher(ay, cy) and is_higher(by, dy) and ab and cd:
+					add_edge(true, true)
+					
+				# Case 3: AB edge with A outer corner above
+				elif is_higher(ay, by) and is_higher(ay, cy) and is_higher(by, dy) and cd:
+					add_edge(true, true, 0.5, 1)
+					add_outer_corner(false, true, true, by)
+					
+				# Case 4: AB edge with B outer corner above
+				elif is_higher(by, ay) and is_higher(ay, cy) and is_higher(by, dy) and cd:
+					add_edge(true, true, 0, 0.5)
+					rotate_cell(1)
+					add_outer_corner(false, true, true, cy)
+					
+				# Case 5: B and C are higher than A and D.
+				# Diagonal raised floor between B and C.
+				# B and C must be within merge distance.
+				elif is_lower(ay, by) and is_lower(ay, cy) and is_lower(dy, by) and is_lower(dy, cy) and is_merged(by, cy):
+					add_inner_corner(true, false)
+					add_diagonal_floor(by, cy, true, true)
+					rotate_cell(2)
+					add_inner_corner(true, false)
+					
+				# Case 5.5: B and C are higher than A and D, and B is higher than C.
+				# Place a raised diagonal floor between, and an outer corner around B.
+				elif is_lower(ay, by) and is_lower(ay, cy) and is_lower(dy, by) and is_lower(dy, cy) and is_higher(by, cy):
+					add_inner_corner(true, false, true)
+					add_diagonal_floor(cy, cy, true, true)
+					
+					# opposite lower floor
+					rotate_cell(2)
+					add_inner_corner(true, false, true)
+					
+					# higher corner B
+					rotate_cell(-1)
+					add_outer_corner(false, true)
+					
+				# Case 6: inner corner, where A is lower than B and C, and D is connected to B and C.
+				elif is_lower(ay, by) and is_lower(ay, cy) and bd and cd:
+					add_inner_corner(true, true)
+					
+				# Case 7: A is lower than B and C, B and C are merged, and D is higher than B and C.
+				# Outer corner around A, and on top of that an inner corner around D
+				elif is_lower(ay, by) and is_lower(ay, cy) and is_higher(dy, by) and is_higher(dy, cy) and is_merged(by, cy):
+					add_inner_corner(true, false)
+					add_diagonal_floor(by, cy, true, false)
+					rotate_cell(2)
+					add_outer_corner(false, true)
+					
+				# Case 8: Inner corner surrounding A, with an outer corner sitting atop C.
+				elif is_lower(ay, by) and is_lower(ay, cy) and is_lower(dy, cy) and bd:
+					add_inner_corner(true, false, true)
+					start_floor()
+					
+					# D corner. B edge is connected, so use halfway point bewteen B and D
+					add_point(1, dy, 1)
+					add_point(0.5, dy, 1, 1, 0)
+					add_point(1, (by+dy)/2, 0.5)
+					
+					# B corner
+					add_point(1, by, 0)
+					add_point(1, (by+dy)/2, 0.5)
+					add_point(0.5, by, 0, 0, 1)
+					
+					# Center floors
+					add_point(0.5, by, 0, 0, 1)
+					add_point(1, (by+dy)/2, 0.5)
+					add_point(0, by, 0.5, 1, 1)
+					
+					add_point(0.5, dy, 1, 1, 0)
+					add_point(0, by, 0.5, 1, 1)
+					add_point(1, (by+dy)/2, 0.5)
+					#
+					# Walls to upper corner
+					start_wall()
+					add_point(0, by, 0.5)
+					add_point(0.5, dy, 1)
+					add_point(0, cy, 0.5)
+					
+					add_point(0.5, cy, 1)
+					add_point(0, cy, 0.5)
+					add_point(0.5, dy, 1)
+					
+					# C upper floor
+					start_floor()
+					add_point(0, cy, 1)
+					add_point(0, cy, 0.5, 0, 1)
+					add_point(0.5, cy, 1, 0, 1)
+					#
+				# Case 9: Inner corner surrounding A, with an outer corner sitting atop B.
+				elif is_lower(ay, by) and is_lower(ay, cy) and is_lower(dy, by) and cd:
+					add_inner_corner(true, false, true)
+					
+					# D corner. C edge is connected, so use halfway point bewteen C and D
+					start_floor()
+					add_point(1, dy, 1)
+					add_point(0.5, (dy+cy)/2, 1)
+					add_point(1, dy, 0.5)
+					
+					# C corner
+					add_point(0, cy, 1)
+					add_point(0, cy, 0.5)
+					add_point(0.5, (dy+cy)/2, 1)
+					
+					# Center floors
+					add_point(0, cy, 0.5)
+					add_point(0.5, cy, 0)
+					add_point(0.5, (dy+cy)/2, 1)
+					
+					add_point(1, dy, 0.5)
+					add_point(0.5, (dy+cy)/2, 1)
+					add_point(0.5, cy, 0)
+					
+					# Walls to upper corner
+					start_wall()
+					add_point(0.5, cy, 0)
+					add_point(0.5, by, 0)
+					add_point(1, dy, 0.5)
+					
+					add_point(1, by, 0.5)
+					add_point(1, dy, 0.5)
+					add_point(0.5, by, 0)
+					
+					# B upper floor
+					start_floor()
+					add_point(1, by, 0)
+					add_point(1, by, 0.5)
+					add_point(0.5, by, 0)
+					
+				# Case 10: Inner corner surrounding A, with an edge sitting atop BD.
+				elif is_lower(ay, by) and is_lower(ay, cy) and is_higher(dy, cy) and bd:
+					add_inner_corner(true, false, true, true, false)
+					
+					rotate_cell(1)
+					add_edge(false, true)
+					
+				# Case 11: Inner corner surrounding A, with an edge sitting atop CD.
+				elif is_lower(ay, by) and is_lower(ay, cy) and is_higher(dy, by) and cd:
+					add_inner_corner(true, false, true, false, true)
+					
+					rotate_cell(2)
+					add_edge(false, true)
+					
+				# Case 12: Clockwise upwards spiral with A as the highest lowest point and C as the highest. A is lower than B, B is lower than D, D is lower than C, and C is higher than A.
+				elif is_lower(ay, by) and is_lower(by, dy) and is_lower(dy, cy) and is_higher(cy, ay):
+					add_inner_corner(true, false, true, false, true)
+					
+					rotate_cell(2)
+					add_edge(false, true, 0, 0.5)
+					
+					rotate_cell(1)
+					add_outer_corner(false, true, true, cy)
+				
+				# Case 13: Clockwise upwards spiral, A lowest and B highest
+				elif is_lower(ay, cy) and is_lower(cy, dy) and is_lower(dy, by) and is_higher(by, ay):
+					add_inner_corner(true, false, true, true, false)
+					
+					rotate_cell(1)
+					add_edge(false, true, 0.5, 1)
+					
+					add_outer_corner(false, true, true, by)
+					
+				# Case 14: A<B, B<C, C<D. outer corner atop edge atop inner corner
+				elif is_lower(ay, by) and is_lower(by, cy) and is_lower(cy, dy):
+					add_inner_corner(true, false, true, false, true)
+					
+					rotate_cell(2)
+					add_edge(false, true, 0.5, 1)
+					
+					add_outer_corner(false, true, true, by)
+					
+				# Case 15: A<C, C<B, B<D
+				elif is_lower(ay, cy) and is_lower(cy, by) and is_lower(by, dy):
+					add_inner_corner(true, false, true, true, false)
+					
+					rotate_cell(1)
+					add_edge(false, true, 0, 0.5)
+					
+					rotate_cell(1)
+					add_outer_corner(false, true, true, cy)
+					
+				# Case 16: All edges are connected, except AC, and A is higher than C.
+				# Make an edge here, but merge one side of the edge together
+				elif ab and bd and cd and is_higher(ay, cy):
+					var edge_by = (by+dy)/2
+					var edge_dy = (by+dy)/2
+					
+					# Upper floor - use A and B edge for heights
+					start_floor()
+					add_point(0, ay, 0) #A
+					add_point(1, by, 0) # B
+					add_point(1, edge_by, 0.5) #D
+					
+					add_point(1, edge_by, 0.5, 0, 1) #D
+					add_point(0, ay, 0.5, 0, 1) #C
+					add_point(0, ay, 0) #A
+					
+					# Wall from left to right edge
+					start_wall()
+					add_point(0, cy, 0.5, 0, 0)
+					add_point(0, ay, 0.5, 0, 1)
+					add_point(1, edge_dy, 0.5, 1, 0)
+					
+					# Lower floor - use C and D edge
+					start_floor()
+					add_point(0, cy, 0.5, 1, 0)
+					add_point(1, edge_dy, 0.5, 1, 0)
+					add_point(0, cy, 1)
+					
+					add_point(1, dy, 1)
+					add_point(0, cy, 1)
+					add_point(1, edge_dy, 0.5)
+
+
+				# Case 17: All edges are connected, except BD, and B is higher than D.
+				# Make an edge here, but merge one side of the edge together
+				elif ab and ac and cd and is_higher(by, dy):
+					# Only merge the ay/cy edge if AC edge is connected
+					var edge_ay = (ay+cy)/2
+					var edge_cy = (ay+cy)/2
+					
+					# Upper floor - use A and B edge for heights
+					start_floor()
+					add_point(0, ay, 0)
+					add_point(1, by, 0)
+					add_point(0, edge_ay, 0.5)
+					
+					add_point(1, by, 0.5, 0, 1)
+					add_point(0, edge_ay, 0.5, 0, 1)
+					add_point(1, by, 0)
+					
+					# Wall from left to right edge
+					start_wall()
+					add_point(1, by, 0.5, 1, 1)
+					add_point(1, dy, 0.5, 1, 0)
+					add_point(0, edge_ay, 0.5, 0, 0)
+					
+					# Lower floor - use C and D edge
+					start_floor()
+					add_point(0, edge_cy, 0.5, 1, 0)
+					add_point(1, dy, 0.5, 1, 0)
+					add_point(1, dy, 1)
+					
+					add_point(0, cy, 1)
+					add_point(0, edge_cy, 0.5)
+					add_point(1, dy, 1)
+				
+					
+				else:
+					case_found = false
+					
+				if case_found:
+					break
+					
+			if not case_found:
+				#invalid / unknown cell type. put a full floor here and hope it looks fine
+				#add_full_floor()
+				pass
 
 # True if A is higher than B and outside of merge distance
 func is_higher(a: float, b: float):
@@ -263,96 +442,49 @@ func rotate_cell(rotations: int):
 	dy = point_heights[(r+2)%4]
 	cy = point_heights[(r+3)%4]
 
-enum Corner{A=0,B=1,C=2,D=3}
-
-# Add the indexed point that is right on a corner. a=0, b=1, c=2, d=3.
-func add_corner_point(corner: int):
-	corner = (corner+r)%4;
-	
-	var x: int = cell_x
-	if (corner == Corner.B or corner == Corner.D): x += 1
-	var z: int = cell_z
-	if (corner == Corner.C or corner == Corner.D): z += 1
-	
-	var corner_index = z * dimensions.x + x
-	
-	#print(cell_x, ", ", cell_z, " index: ", index)
-	indices.insert(index, corner_index)
-	index += 1
-
-# Adds an arbirary point. Coordinates are relative to the top-left corner (not mesh origin relative).
+# Adds a point. Coordinates are relative to the top-left corner (not mesh origin relative).
 # UV.x is closeness to the bottom of an edge. and UV.Y is closeness to the edge of a cliff.
 func add_point(x: float, y: float, z: float, uv_x: float = 0, uv_y: float = 0, uv2_x: float = 0, uv2_y: float = 0):
-	for j in range(r):
+	for i in range(r):
 		var temp = x
 		x = 1 - z
 		z = temp	
-		
-	var vert = Vector3((cell_x+x) * cell_size.x, y, (cell_z+z) * cell_size.y)
-	verts.append(vert)
 	
 	if floor_mode:
-		uvs.append(Vector2(uv_x, uv_y))
+		st.set_uv(Vector2(uv_x, uv_y))
 		# use this for completely flat looking floors
 		#st.set_normal(Vector3(0, 1, 0))
 	else:
 		# walls will always have UV of 1, 1
-		uvs.append(Vector2(1, 1))
+		st.set_uv(Vector2(1, 1))
 	
 	# Color = terrain space coordinates. 
 	# for XZ, 0,0,0 = top left of heightmap at lowest height, 1,1,1 = bottom right of heightmap at highest height
 	#st.set_color(Color((cell_x+x) / dimensions.x, y / dimensions.x, (cell_z+z) / dimensions.z))
-	
-	# for now, floors face straight up,
-	# and walls are flat shaded 
-	# will allow normal-based outlines beween wall/floor segments
-
-	indices.insert(index, len(verts)-1)
-	index += 1;
-	
-	# Non-corner floors face straight up
-	if floor_mode:
-		normals.insert(index, Vector3.UP)
 		
-	# Walls are flat shaded
-	else:
-		var cell_ind = len(indices)
-		if cell_ind % 3 == 0:
-			var edge1 = verts[cell_ind-2] - verts[cell_ind-3]
-			var edge2 = verts[cell_ind-1] - verts[cell_ind-3]
-			var normal = -edge1.cross(edge2).normalized()
-	
-			normals.append(normal); normals.append(normal); normals.append(normal); 
+	st.add_vertex(Vector3((cell_x+x) * cell_size.x, y, (cell_z+z) * cell_size.y))
 	
 # if true, currently making floor geometry. if false, currently making wall geometry.
 var floor_mode: bool = true
 	
 func start_floor():
 	floor_mode = true
+	st.set_smooth_group(0)
 
 func start_wall():
 	floor_mode = false
+	st.set_smooth_group(-1)
 
 func add_full_floor():
 	start_floor()
-	
-	add_corner_point(Corner.A)
-	add_corner_point(Corner.B)
-	add_corner_point(Corner.C)
-	
-	add_corner_point(Corner.D)
-	add_corner_point(Corner.C)
-	add_corner_point(Corner.B)
-	
-	
 	# ABC tri
-	#add_point(0, ay, 0)
-	#add_point(1, by, 0)
-	#add_point(0, cy, 1)
-	## DCB tri
-	#add_point(1, dy, 1)
-	#add_point(0, cy, 1)
-	#add_point(1, by, 0)
+	add_point(0, ay, 0)
+	add_point(1, by, 0)
+	add_point(0, cy, 1)
+	# DCB tri
+	add_point(1, dy, 1)
+	add_point(0, cy, 1)
+	add_point(1, by, 0)
 
 # Add an outer corner, where A is the raised corner.
 # if flatten_bottom is true, then bottom_height is used for the lower height of the wall
@@ -514,273 +646,6 @@ func add_diagonal_floor(b_y: float, c_y: float, a_cliff: bool, d_cliff: bool):
 	add_point(0, c_y, 1)
 	add_point(1, b_y, 0.5, 0 if d_cliff else 1, 1 if d_cliff else 0)
 	add_point(0.5, c_y, 1, 0 if d_cliff else 1, 1 if d_cliff else 0)
-
-# Checks all cases (other than the full floor case). 
-# Checks only for the current rotation, so this is run one for each rotation, per cell.
-# Adds the corresponding geometry to cell_verts, cell_uvs, cell_normals and cell_indices.
-# Returns false if no case is found, though, I'm pretty sure that isn't possible.
-func check_cases() -> bool:
-	# Case 1
-	# If A is higher than adjacent and opposite corner is connected to adjacent,
-	# add an outer corner here with upper and lower floor covering whole tile.
-	if is_higher(ay, by) and is_higher(ay, cy) and bd and cd:
-		add_outer_corner(true, true)
-		
-	# Case 2
-	# If A is higher than C and B is higher than D,
-	# add an edge here covering whole tile.
-	# (May want to prevent this if B and C are not within merge distance)
-	elif is_higher(ay, cy) and is_higher(by, dy) and ab and cd:
-		add_edge(true, true)
-		
-	# Case 3: AB edge with A outer corner above
-	elif is_higher(ay, by) and is_higher(ay, cy) and is_higher(by, dy) and cd:
-		add_edge(true, true, 0.5, 1)
-		add_outer_corner(false, true, true, by)
-		
-	# Case 4: AB edge with B outer corner above
-	elif is_higher(by, ay) and is_higher(ay, cy) and is_higher(by, dy) and cd:
-		add_edge(true, true, 0, 0.5)
-		rotate_cell(1)
-		add_outer_corner(false, true, true, cy)
-		
-	# Case 5: B and C are higher than A and D.
-	# Diagonal raised floor between B and C.
-	# B and C must be within merge distance.
-	elif is_lower(ay, by) and is_lower(ay, cy) and is_lower(dy, by) and is_lower(dy, cy) and is_merged(by, cy):
-		add_inner_corner(true, false)
-		add_diagonal_floor(by, cy, true, true)
-		rotate_cell(2)
-		add_inner_corner(true, false)
-		
-	# Case 5.5: B and C are higher than A and D, and B is higher than C.
-	# Place a raised diagonal floor between, and an outer corner around B.
-	elif is_lower(ay, by) and is_lower(ay, cy) and is_lower(dy, by) and is_lower(dy, cy) and is_higher(by, cy):
-		add_inner_corner(true, false, true)
-		add_diagonal_floor(cy, cy, true, true)
-		
-		# opposite lower floor
-		rotate_cell(2)
-		add_inner_corner(true, false, true)
-		
-		# higher corner B
-		rotate_cell(-1)
-		add_outer_corner(false, true)
-		
-	# Case 6: inner corner, where A is lower than B and C, and D is connected to B and C.
-	elif is_lower(ay, by) and is_lower(ay, cy) and bd and cd:
-		add_inner_corner(true, true)
-		
-	# Case 7: A is lower than B and C, B and C are merged, and D is higher than B and C.
-	# Outer corner around A, and on top of that an inner corner around D
-	elif is_lower(ay, by) and is_lower(ay, cy) and is_higher(dy, by) and is_higher(dy, cy) and is_merged(by, cy):
-		add_inner_corner(true, false)
-		add_diagonal_floor(by, cy, true, false)
-		rotate_cell(2)
-		add_outer_corner(false, true)
-		
-	# Case 8: Inner corner surrounding A, with an outer corner sitting atop C.
-	elif is_lower(ay, by) and is_lower(ay, cy) and is_lower(dy, cy) and bd:
-		add_inner_corner(true, false, true)
-		start_floor()
-		
-		# D corner. B edge is connected, so use halfway point bewteen B and D
-		add_point(1, dy, 1)
-		add_point(0.5, dy, 1, 1, 0)
-		add_point(1, (by+dy)/2, 0.5)
-		
-		# B corner
-		add_point(1, by, 0)
-		add_point(1, (by+dy)/2, 0.5)
-		add_point(0.5, by, 0, 0, 1)
-		
-		# Center floors
-		add_point(0.5, by, 0, 0, 1)
-		add_point(1, (by+dy)/2, 0.5)
-		add_point(0, by, 0.5, 1, 1)
-		
-		add_point(0.5, dy, 1, 1, 0)
-		add_point(0, by, 0.5, 1, 1)
-		add_point(1, (by+dy)/2, 0.5)
-		#
-		# Walls to upper corner
-		start_wall()
-		add_point(0, by, 0.5)
-		add_point(0.5, dy, 1)
-		add_point(0, cy, 0.5)
-		
-		add_point(0.5, cy, 1)
-		add_point(0, cy, 0.5)
-		add_point(0.5, dy, 1)
-		
-		# C upper floor
-		start_floor()
-		add_point(0, cy, 1)
-		add_point(0, cy, 0.5, 0, 1)
-		add_point(0.5, cy, 1, 0, 1)
-		#
-	# Case 9: Inner corner surrounding A, with an outer corner sitting atop B.
-	elif is_lower(ay, by) and is_lower(ay, cy) and is_lower(dy, by) and cd:
-		add_inner_corner(true, false, true)
-		
-		# D corner. C edge is connected, so use halfway point bewteen C and D
-		start_floor()
-		add_point(1, dy, 1)
-		add_point(0.5, (dy+cy)/2, 1)
-		add_point(1, dy, 0.5)
-		
-		# C corner
-		add_point(0, cy, 1)
-		add_point(0, cy, 0.5)
-		add_point(0.5, (dy+cy)/2, 1)
-		
-		# Center floors
-		add_point(0, cy, 0.5)
-		add_point(0.5, cy, 0)
-		add_point(0.5, (dy+cy)/2, 1)
-		
-		add_point(1, dy, 0.5)
-		add_point(0.5, (dy+cy)/2, 1)
-		add_point(0.5, cy, 0)
-		
-		# Walls to upper corner
-		start_wall()
-		add_point(0.5, cy, 0)
-		add_point(0.5, by, 0)
-		add_point(1, dy, 0.5)
-		
-		add_point(1, by, 0.5)
-		add_point(1, dy, 0.5)
-		add_point(0.5, by, 0)
-		
-		# B upper floor
-		start_floor()
-		add_point(1, by, 0)
-		add_point(1, by, 0.5)
-		add_point(0.5, by, 0)
-		
-	# Case 10: Inner corner surrounding A, with an edge sitting atop BD.
-	elif is_lower(ay, by) and is_lower(ay, cy) and is_higher(dy, cy) and bd:
-		add_inner_corner(true, false, true, true, false)
-		
-		rotate_cell(1)
-		add_edge(false, true)
-		
-	# Case 11: Inner corner surrounding A, with an edge sitting atop CD.
-	elif is_lower(ay, by) and is_lower(ay, cy) and is_higher(dy, by) and cd:
-		add_inner_corner(true, false, true, false, true)
-		
-		rotate_cell(2)
-		add_edge(false, true)
-		
-	# Case 12: Clockwise upwards spiral with A as the highest lowest point and C as the highest. A is lower than B, B is lower than D, D is lower than C, and C is higher than A.
-	elif is_lower(ay, by) and is_lower(by, dy) and is_lower(dy, cy) and is_higher(cy, ay):
-		add_inner_corner(true, false, true, false, true)
-		
-		rotate_cell(2)
-		add_edge(false, true, 0, 0.5)
-		
-		rotate_cell(1)
-		add_outer_corner(false, true, true, cy)
-	
-	# Case 13: Clockwise upwards spiral, A lowest and B highest
-	elif is_lower(ay, cy) and is_lower(cy, dy) and is_lower(dy, by) and is_higher(by, ay):
-		add_inner_corner(true, false, true, true, false)
-		
-		rotate_cell(1)
-		add_edge(false, true, 0.5, 1)
-		
-		add_outer_corner(false, true, true, by)
-		
-	# Case 14: A<B, B<C, C<D. outer corner atop edge atop inner corner
-	elif is_lower(ay, by) and is_lower(by, cy) and is_lower(cy, dy):
-		add_inner_corner(true, false, true, false, true)
-		
-		rotate_cell(2)
-		add_edge(false, true, 0.5, 1)
-		
-		add_outer_corner(false, true, true, by)
-		
-	# Case 15: A<C, C<B, B<D
-	elif is_lower(ay, cy) and is_lower(cy, by) and is_lower(by, dy):
-		add_inner_corner(true, false, true, true, false)
-		
-		rotate_cell(1)
-		add_edge(false, true, 0, 0.5)
-		
-		rotate_cell(1)
-		add_outer_corner(false, true, true, cy)
-		
-	# Case 16: All edges are connected, except AC, and A is higher than C.
-	# Make an edge here, but merge one side of the edge together
-	elif ab and bd and cd and is_higher(ay, cy):
-		var edge_by = (by+dy)/2
-		var edge_dy = (by+dy)/2
-		
-		# Upper floor - use A and B edge for heights
-		start_floor()
-		add_point(0, ay, 0) #A
-		add_point(1, by, 0) # B
-		add_point(1, edge_by, 0.5) #D
-		
-		add_point(1, edge_by, 0.5, 0, 1) #D
-		add_point(0, ay, 0.5, 0, 1) #C
-		add_point(0, ay, 0) #A
-		
-		# Wall from left to right edge
-		start_wall()
-		add_point(0, cy, 0.5, 0, 0)
-		add_point(0, ay, 0.5, 0, 1)
-		add_point(1, edge_dy, 0.5, 1, 0)
-		
-		# Lower floor - use C and D edge
-		start_floor()
-		add_point(0, cy, 0.5, 1, 0)
-		add_point(1, edge_dy, 0.5, 1, 0)
-		add_point(0, cy, 1)
-		
-		add_point(1, dy, 1)
-		add_point(0, cy, 1)
-		add_point(1, edge_dy, 0.5)
-
-
-	# Case 17: All edges are connected, except BD, and B is higher than D.
-	# Make an edge here, but merge one side of the edge together
-	elif ab and ac and cd and is_higher(by, dy):
-		# Only merge the ay/cy edge if AC edge is connected
-		var edge_ay = (ay+cy)/2
-		var edge_cy = (ay+cy)/2
-		
-		# Upper floor - use A and B edge for heights
-		start_floor()
-		add_point(0, ay, 0)
-		add_point(1, by, 0)
-		add_point(0, edge_ay, 0.5)
-		
-		add_point(1, by, 0.5, 0, 1)
-		add_point(0, edge_ay, 0.5, 0, 1)
-		add_point(1, by, 0)
-		
-		# Wall from left to right edge
-		start_wall()
-		add_point(1, by, 0.5, 1, 1)
-		add_point(1, dy, 0.5, 1, 0)
-		add_point(0, edge_ay, 0.5, 0, 0)
-		
-		# Lower floor - use C and D edge
-		start_floor()
-		add_point(0, edge_cy, 0.5, 1, 0)
-		add_point(1, dy, 0.5, 1, 0)
-		add_point(1, dy, 1)
-		
-		add_point(0, cy, 1)
-		add_point(0, edge_cy, 0.5)
-		add_point(1, dy, 1)
-	
-	else:
-		return false
-		
-	return true
 
 func load_height_map():	
 	height_map = []
