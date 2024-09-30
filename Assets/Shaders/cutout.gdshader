@@ -7,7 +7,7 @@ void fragment() {
 	} else {
 		ALPHA = 1.0;
 	}
-	
+
 	ALBEDO = vec3(1, 0.5, 0.5);
 }
 

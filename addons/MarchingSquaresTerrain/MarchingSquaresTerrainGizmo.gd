@@ -42,6 +42,7 @@ func move_terrain_point(terrain: MarchingSquaresTerrain, handle_id: int, value: 
 	terrain.verts[handle_id] = value
 	var z = handle_id / terrain.dimensions.z
 	var x = handle_id % terrain.dimensions.z
+	terrain.height_map[z][x] = value.y
 	
 	notify_needs_update(terrain, z, x)
 	notify_needs_update(terrain, z, x-1)
