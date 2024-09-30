@@ -45,6 +45,7 @@ void fragment() {
 	
 	if (debug) {
 		ALBEDO = vec3(UV.x, UV.y, 0);
+		//ALBEDO = NORMAL;
 	}
 
 	// ==== Walls

@@ -21,11 +21,18 @@ extends MeshInstance3D
 # If above 0, round height values to this nearest interval.
 @export var height_banding: float = 0.1
 
-@export var seed: int = 1
+# ArrayMesh arrays
+var surface_array: Array
+var verts: PackedVector3Array = PackedVector3Array()
+var uvs: PackedVector2Array = PackedVector2Array()
+var normals: PackedVector3Array = PackedVector3Array()
+var indices: PackedInt32Array = PackedInt32Array()
 
-var rng := RandomNumberGenerator.new()
-
-var st: SurfaceTool
+# Arrays for current cell. add_point adds to these. Copied to ArrayMesh arrays after cell is finished generating
+var cell_verts: PackedVector3Array = PackedVector3Array()
+var cell_uvs: PackedVector2Array = PackedVector2Array()
+var cell_normals: PackedVector3Array = PackedVector3Array()
+var cell_indices: PackedInt32Array = PackedInt32Array()
 	
 # cell coordinates currently being evaluated
 var cell_x: int
@@ -48,50 +55,201 @@ var bd: bool
 var cd: bool
 
 # Stores the heights from the heightmap (from red channel of image)
-var height_map: Array
+var height_map: Array[Array]
 
-# Stores the list of start positions for every cell
-# Two dimension array of [col / x position][row / z position].
+# Stores which cells need their geometry updated after a change in terrain height
+var needs_update: Array[Array]
+
+# Current last indexed point
+var index: int
+
+# Stores the list of vertex/UV list start positions for each row (Z coordinate).
+# Length is dimensions.z - 1
 var row_start_positions: Array[int]
+
+# Stores the start position of vertexes designated for each cell relative to its row's start position.
+# Two dimension array of [col / z position][row / x position].
+# Add row and column start positions to get the position in the ArrayMesh arrays.
+# Contains dimensions.z - 1 rows
+# Length of each row is dimensions.x - 1
+var column_start_position_arrays: Array[Array]
 		
 func _enter_tree():
 	if Engine.is_editor_hint():
 		load_height_map()
+		initialize_arrays()
 		regenerate_mesh()
+		
+func initialize_arrays():
+	surface_array = []
+	surface_array.resize(Mesh.ARRAY_MAX)
+	
+	var corners_size: int = dimensions.x * dimensions.z;
+	
+	verts.resize(corners_size);
+	uvs.resize(corners_size);
+	normals.resize(corners_size);
+	indices.clear()
+	
+	# For each point
+	for z in range(dimensions.z):
+		for x in range(dimensions.x):
+			# The first (X * Z) points are on the corners that directly line up with the heightmap.
+			# These points are used at least once by all 4 cells sharing that corner and will never be unused.
+			# For that reason, these verts will always be at the start of the list.
+			# Use height from heightmap to create these vertices at the correct height.
+			index = z*dimensions.x + x
+			
+			var y = height_map[z][x];
+			
+			var vert = Vector3(x * cell_size.x, y, z * cell_size.y)
+			verts[index] = vert
+			
+			# corner verts will always not be on an edge or corner that divides the cells
+			uvs[index] = Vector2(0, 0) 
+			
+			# for now, floors will always face straight up
+			normals[index] = Vector3.UP
+	
+	# set index tot he end of the list. newly added indices will add after the end of the list
+	index = dimensions.z * dimensions.x;
+			
+	row_start_positions = []
+	
+	needs_update = []
+	needs_update.resize(dimensions.z - 1)
+	
+	# For each cell
+	for z in range(dimensions.z - 1):
+		needs_update[z] = []
+		needs_update[z].resize(dimensions.x - 1)
+		
+		# all rows will initially start right after the last corner index
+		row_start_positions.append(index)
+		column_start_position_arrays.append([])
+		for x in range(dimensions.x - 1):
+			# Each cell will initially need to be updated
+			needs_update[z][x] = true
+			# all cells will initially have a index length of 0 relative to the row start index 
+			# since there are no non-corner cell points yet
+			column_start_position_arrays[z].append(0)
+			
 
 func regenerate_mesh():
-	st = SurfaceTool.new()
-	if mesh:
-		st.create_from(mesh, 0)
-	st.begin(Mesh.PRIMITIVE_TRIANGLES)
-	
+	print("regenerating terrain...")
 	var start_time: int = Time.get_ticks_msec()
 	
+	# Generate cells - will update the verts and UV arrays
 	generate_terrain_cells()
-				
-	st.generate_normals()
-	#st.index()
 	
-	# Create a new mesh out of floor, and add the wall surface to it
-	mesh = st.commit()
+	# Commit the mesh
+	surface_array[Mesh.ARRAY_VERTEX] = verts
+	surface_array[Mesh.ARRAY_TEX_UV] = uvs
+	surface_array[Mesh.ARRAY_NORMAL] = normals
+	surface_array[Mesh.ARRAY_INDEX] = indices
+	
+	mesh = ArrayMesh.new()
+	mesh.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, surface_array)
 	mesh.surface_set_material(0, terrain_material)
-	
-	var elapsed_time: int = Time.get_ticks_msec() - start_time
-	print("generated terrain in "+str(elapsed_time)+"ms")
 	
 	if get_node_or_null("Terrain_col"):
 		$Terrain_col.free()
 	create_trimesh_collision()
 	
-	#var vert_total = len(mesh.surface_get_arrays(0)[Mesh.ARRAY_VERTEX])
-	#print("total tris: "+str(vert_total/3))
+	var elapsed_time: int = Time.get_ticks_msec() - start_time
+	print("generated terrain in "+str(elapsed_time)+"ms")
+	
+	var vert_total = len(mesh.surface_get_arrays(0)[Mesh.ARRAY_VERTEX])
+	print("total verts: "+str(vert_total))
+	var index_total = len(mesh.surface_get_arrays(0)[Mesh.ARRAY_INDEX])
+	print("total indices: "+str(index_total))
 	#
-	ResourceSaver.save(mesh, "res://terrain/"+name+".tres", ResourceSaver.FLAG_COMPRESS)
+	#ResourceSaver.save(mesh, "res://terrain/"+name+".tres", ResourceSaver.FLAG_COMPRESS)
+
+enum Corner{A=0,B=1,C=2,D=3}
+
+# Add the indexed point that is right on a corner. a=0, b=1, c=2, d=3.
+func add_corner_point(corner: int):
+	corner = (corner+r)%4;
+	
+	var x: int = cell_x
+	if (corner == Corner.B or corner == Corner.D): x += 1
+	var z: int = cell_z
+	if (corner == Corner.C or corner == Corner.D): z += 1
+	
+	var corner_index = z*dimensions.x + x
+	
+	cell_indices.append(corner_index)
+
+# Adds an arbirary point. Coordinates are relative to the top-left corner (not mesh origin relative).
+# UV.x is closeness to the bottom of an edge. and UV.Y is closeness to the edge of a cliff.
+func add_point(x: float, y: float, z: float, uv_x: float = 0, uv_y: float = 0, uv2_x: float = 0, uv2_y: float = 0):
+	for i in range(r):
+		var temp = x
+		x = 1 - z
+		z = temp	
+		
+	var vert = Vector3((cell_x+x) * cell_size.x, y, (cell_z+z) * cell_size.y)
+	cell_verts.append(vert)
+	
+	if floor_mode:
+		cell_uvs.append(Vector2(uv_x, uv_y))
+		# use this for completely flat looking floors
+		#st.set_normal(Vector3(0, 1, 0))
+	else:
+		# walls will always have UV of 1, 1
+		cell_uvs.append(Vector2(1, 1))
+	
+	# Color = terrain space coordinates. 
+	# for XZ, 0,0,0 = top left of heightmap at lowest height, 1,1,1 = bottom right of heightmap at highest height
+	#st.set_color(Color((cell_x+x) / dimensions.x, y / dimensions.x, (cell_z+z) / dimensions.z))
+	
+	# for now, floors face straight up,
+	# and walls are flat shaded 
+	# will allow normal-based outlines beween wall/floor segments
+	
+	cell_indices.append(index)
+	index += 1;
+	
+	# Non-corner floors face straight up
+	if floor_mode:
+		cell_normals.append(Vector3.UP)
+		
+	# Walls are flat shaded
+	else:
+		var cell_ind = len(cell_indices)
+		if cell_ind % 3 == 0:
+			var edge1 = cell_verts[cell_ind-2] - cell_verts[cell_ind-3]
+			var edge2 = cell_verts[cell_ind-1] - cell_verts[cell_ind-3]
+			var normal = edge1.cross(edge2).normalized()
+	
+			cell_normals.append(-normal); cell_normals.append(-normal); cell_normals.append(-normal); 
+	
+# if true, currently making floor geometry. if false, currently making wall geometry.
+var floor_mode: bool = true
+	
+func start_floor():
+	floor_mode = true
+
+func start_wall():
+	floor_mode = false
 
 func generate_terrain_cells():
+	# Keeps track of the current index in the vertex and UV arrays
+	var current_index := 0
+	
 	for z in range(dimensions.z - 1):
 		cell_z = z
+		var row_start_position: int = row_start_positions[z]
+		var column_start_positions: Array = column_start_position_arrays[z]
+		var row_updated := false
+		
 		for x in range(dimensions.x - 1):
+			# If cell does not need an update, skip it
+			if not needs_update[z][x]:
+				continue
+				
+			row_updated = true
 			cell_x = x
 			r = 0
 			
@@ -111,26 +269,24 @@ func generate_terrain_cells():
 			bd = abs(by-dy) < merge_threshold # right edge
 			cd = abs(cy-dy) < merge_threshold # bottom edge
 			
+			var case_found: bool = false
+			
 			# Case 0
-			# If all edges are connected, put a full floor here.
+			# If all edges are connected, put a full floor here. (Will not use cell_verts, cell_uvs, etc)
 			if ab and bd and cd and ac:
 				add_full_floor()
-				continue
-			
-			# edges going clockwise around the cell
-			cell_edges = [ab, bd, cd, ac]
-			# point heights going clockwise around the cell
-			point_heights = [ay, by, dy, cy]
-			
-			# Sort the points by ascending height, storing the point indexes in height here
-			#var point_heights_relative = [0, 1, 3, 2]
-			#var sort = func(p1, p2):
-				#return point_heights[p1] < point_heights[p2]
-			#point_heights_relative.sort_custom(sort)
-			
-			# Starting from the lowest corner, build the tile up
-			var case_found: bool
+				case_found = true
+			else:
+				# edges going clockwise around the cell
+				cell_edges = [ab, bd, cd, ac]
+				# point heights going clockwise around the cell
+				point_heights = [ay, by, dy, cy]
+
 			for i in range(4):
+				# stop searching of a case was found during the last iteration (or if full floor was already added before first iter)
+				if case_found:
+					break
+				
 				# Use the rotation of the corner - the amount of counter-clockwise rotations for it to become the top-left corner, which is just its index in the point lists.
 				r = i
 
@@ -409,13 +565,26 @@ func generate_terrain_cells():
 				else:
 					case_found = false
 					
-				if case_found:
-					break
-					
-			if not case_found:
-				#invalid / unknown cell type. put a full floor here and hope it looks fine
-				#add_full_floor()
-				pass
+			#if not case_found:
+				##invalid / unknown cell type. put a full floor here and hope it looks fine
+				##add_full_floor()
+				#pass
+				
+			# Append cell arrays to main array
+			for vert in cell_verts:
+				verts.append(vert)
+			for uv in cell_uvs:
+				uvs.append(uv)
+			for normal in cell_normals:
+				normals.append(normal)
+			for ind in cell_indices:
+				indices.append(ind)
+			
+			# Clear the cell lists to prepare for nextt cell	
+			cell_verts.clear()
+			cell_uvs.clear()
+			cell_normals.clear()
+			cell_indices.clear()
 
 # True if A is higher than B and outside of merge distance
 func is_higher(a: float, b: float):
@@ -442,49 +611,26 @@ func rotate_cell(rotations: int):
 	dy = point_heights[(r+2)%4]
 	cy = point_heights[(r+3)%4]
 
-# Adds a point. Coordinates are relative to the top-left corner (not mesh origin relative).
-# UV.x is closeness to the bottom of an edge. and UV.Y is closeness to the edge of a cliff.
-func add_point(x: float, y: float, z: float, uv_x: float = 0, uv_y: float = 0, uv2_x: float = 0, uv2_y: float = 0):
-	for i in range(r):
-		var temp = x
-		x = 1 - z
-		z = temp	
-	
-	if floor_mode:
-		st.set_uv(Vector2(uv_x, uv_y))
-		# use this for completely flat looking floors
-		#st.set_normal(Vector3(0, 1, 0))
-	else:
-		# walls will always have UV of 1, 1
-		st.set_uv(Vector2(1, 1))
-	
-	# Color = terrain space coordinates. 
-	# for XZ, 0,0,0 = top left of heightmap at lowest height, 1,1,1 = bottom right of heightmap at highest height
-	#st.set_color(Color((cell_x+x) / dimensions.x, y / dimensions.x, (cell_z+z) / dimensions.z))
-		
-	st.add_vertex(Vector3((cell_x+x) * cell_size.x, y, (cell_z+z) * cell_size.y))
-	
-# if true, currently making floor geometry. if false, currently making wall geometry.
-var floor_mode: bool = true
-	
-func start_floor():
-	floor_mode = true
-	st.set_smooth_group(0)
-
-func start_wall():
-	floor_mode = false
-	st.set_smooth_group(-1)
-
 func add_full_floor():
 	start_floor()
+	
+	add_corner_point(Corner.A)
+	add_corner_point(Corner.B)
+	add_corner_point(Corner.C)
+	
+	add_corner_point(Corner.D)
+	add_corner_point(Corner.C)
+	add_corner_point(Corner.B)
+	
+	
 	# ABC tri
-	add_point(0, ay, 0)
-	add_point(1, by, 0)
-	add_point(0, cy, 1)
-	# DCB tri
-	add_point(1, dy, 1)
-	add_point(0, cy, 1)
-	add_point(1, by, 0)
+	#add_point(0, ay, 0)
+	#add_point(1, by, 0)
+	#add_point(0, cy, 1)
+	## DCB tri
+	#add_point(1, dy, 1)
+	#add_point(0, cy, 1)
+	#add_point(1, by, 0)
 
 # Add an outer corner, where A is the raised corner.
 # if flatten_bottom is true, then bottom_height is used for the lower height of the wall

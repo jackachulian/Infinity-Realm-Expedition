@@ -8,8 +8,8 @@
 render_priority = 0
 next_pass = ExtResource("1_jbw1t")
 shader = ExtResource("2_klvkj")
-shader_parameter/tint = Color(0.758192, 0.758192, 0.758192, 1)
-shader_parameter/metallic = 0.0
+shader_parameter/tint = Color(0.778638, 0.714472, 0.731061, 1)
+shader_parameter/metallic = 0.53
 shader_parameter/shadow_size = 0.045
 shader_parameter/shadow_blend = 0.001
 shader_parameter/shadow_extra_intensity = 0.0
