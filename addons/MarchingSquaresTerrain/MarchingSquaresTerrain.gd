@@ -63,7 +63,6 @@ var index_lengths: Array[Array]
 # Current last indexed point
 var index: int
 
-
 		
 func _enter_tree():
 	if Engine.is_editor_hint():
@@ -141,9 +140,9 @@ func regenerate_mesh():
 	mesh.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, surface_array)
 	mesh.surface_set_material(0, terrain_material)
 	
-	if get_node_or_null("Terrain_col"):
-		$Terrain_col.free()
-	create_trimesh_collision()
+	#if get_node_or_null("Terrain_col"):
+		#$Terrain_col.free()
+	#create_trimesh_collision()
 	
 	var elapsed_time: int = Time.get_ticks_msec() - start_time
 	print("generated terrain in "+str(elapsed_time)+"ms")
@@ -157,7 +156,7 @@ func regenerate_mesh():
 
 func generate_terrain_cells():
 	# Start at first non-corner index
-	index = dimensions.z * dimensions.x;
+	index = 0;
 	
 	# Iterate over all cells
 	for z in range(dimensions.z - 1):
@@ -165,7 +164,6 @@ func generate_terrain_cells():
 		
 		for x in range(dimensions.x - 1):
 			var index_length = index_lengths[z][x]
-			print("index length of ", x, ", ", z, ": ", index_length)
 			
 			# If cell does not need an update, skip this cell
 			if not needs_update[z][x]:
@@ -173,6 +171,7 @@ func generate_terrain_cells():
 				continue
 				
 			# Cell is now being updated, set its needs_update state to false
+			print("drawing cell ", x, ", ", z)
 			needs_update[z][x] = false
 			cell_x = x
 			r = 0
@@ -200,7 +199,6 @@ func generate_terrain_cells():
 			
 			var case_found := false
 			
-			break
 			
 			# Case 0
 			# If all edges are connected, put a full floor here. (Will not use cell_verts, cell_uvs, etc)
@@ -212,6 +210,7 @@ func generate_terrain_cells():
 				cell_edges = [ab, bd, cd, ac]
 				# point heights going clockwise around the cell
 				point_heights = [ay, by, dy, cy]
+		
 
 			for i in range(4):
 				# stop searching of a case was found during the last iteration (or if full floor was already added before first iter)
@@ -230,7 +229,7 @@ func generate_terrain_cells():
 				by = point_heights[(r+1)%4]
 				dy = point_heights[(r+2)%4]
 				cy = point_heights[(r+3)%4]
-			
+				
 				# iterates through all cases for all rotations and adds the first one found
 				case_found = check_cases()
 				
@@ -275,8 +274,9 @@ func add_corner_point(corner: int):
 	var z: int = cell_z
 	if (corner == Corner.C or corner == Corner.D): z += 1
 	
-	var corner_index = z*dimensions.x + x
+	var corner_index = z * dimensions.x + x
 	
+	#print(cell_x, ", ", cell_z, " index: ", index)
 	indices.insert(index, corner_index)
 	index += 1
 
