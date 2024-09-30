@@ -6,22 +6,69 @@ func _redraw():
 	clear()
 
 	var terrain: MarchingSquaresTerrain = get_node_3d()
+	var dx = (terrain.dimensions.x - 1) * terrain.cell_size.x
+	var dz = (terrain.dimensions.z - 1) * terrain.cell_size.y
 	
 	# Only draw the gizmo if this is the only selected node
 	if len(EditorInterface.get_selection().get_selected_nodes()) != 1:
 		return
 	if EditorInterface.get_selection().get_selected_nodes()[0] != terrain:
 		return
+		
+	# Lines for adding more chunks
+	var lines = PackedVector3Array()
+	
+	lines.append(Vector3(0,0,0))
+	lines.append(Vector3(dx,0,0))
+	lines.append(Vector3(dx,0,0))
+	lines.append(Vector3(dx,0,dz))
+	lines.append(Vector3(dx,0,dz))
+	lines.append(Vector3(0,0,dz))
+	lines.append(Vector3(0,0,dz))
+	lines.append(Vector3(0,0,0))
+	
+	add_lines(lines, get_plugin().get_material("thischunk", self), false)
+	
+	lines.clear()
+	
+	lines.append(Vector3(0,0,0))
+	lines.append(Vector3(-dx,0,0))
+	lines.append(Vector3(-dx,0,0))
+	lines.append(Vector3(-dx,0,dz))
+	lines.append(Vector3(-dx,0,dz))
+	lines.append(Vector3(0,0,dz))
+	
+	lines.append(Vector3(0,0,0))
+	lines.append(Vector3(0,0,-dz))
+	lines.append(Vector3(0,0,-dz))
+	lines.append(Vector3(dx,0,-dz))
+	lines.append(Vector3(dx,0,-dz))
+	lines.append(Vector3(dx,0,0))
+	
+	lines.append(Vector3(dx, 0, 0))
+	lines.append(Vector3(2*dx, 0, 0))
+	lines.append(Vector3(2*dx, 0, 0))
+	lines.append(Vector3(2*dx, 0, dz))
+	lines.append(Vector3(2*dx, 0, dz))
+	lines.append(Vector3(dx, 0, dz))
+	
+	lines.append(Vector3(0,0,dz))
+	lines.append(Vector3(0,0,2*dz))
+	lines.append(Vector3(0,0,2*dz))
+	lines.append(Vector3(dx,0,2*dz))
+	lines.append(Vector3(dx,0,2*dz))
+	lines.append(Vector3(dx,0,dz))
+	
+	add_lines(lines, get_plugin().get_material("newchunk", self), false)
 
+	# Handles for raising/lowering terrain (will probably be removed later in favor of brush)
 	var corners = PackedVector3Array()
 	var ids = PackedInt32Array()
-	
 	for z in range(terrain.dimensions.z):
 		for x in range(terrain.dimensions.x):
 			var y = terrain.height_map[z][x]
 			corners.append(Vector3(x * terrain.cell_size.x, y, z * terrain.cell_size.y))
 			ids.append(z*terrain.dimensions.x + x)
-			
 	add_handles(corners, get_plugin().get_material("handles", self), ids)
 
 func _get_handle_name(handle_id: int, secondary: bool) -> String:
