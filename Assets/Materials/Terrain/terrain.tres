@@ -1,7 +1,7 @@
 [gd_resource type="ShaderMaterial" load_steps=9 format=3 uid="uid://cw068lng8rddd"]
 
 [ext_resource type="Shader" path="res://Assets/Shaders/terrain.gdshader" id="1_21hti"]
-[ext_resource type="Material" path="res://Assets/Materials/Terrain/terrain_outline.tres" id="1_ry4uo"]
+[ext_resource type="Material" uid="uid://c8dr0ruajbreb" path="res://Assets/Materials/Terrain/terrain_outline.tres" id="1_ry4uo"]
 [ext_resource type="Texture2D" uid="uid://bo2x45ptkmbky" path="res://Assets/Textures/grass_gradient_texture.tres" id="2_p8pex"]
 [ext_resource type="Texture2D" uid="uid://bj4dkjgl0shna" path="res://Assets/Textures/grass_noise.tres" id="3_88bw5"]
 [ext_resource type="Texture2D" uid="uid://b6j1ifkybyob6" path="res://Assets/Textures/rock_gradient.tres" id="3_sbgp3"]
