@@ -104,7 +104,9 @@ func generate_terrain_cells():
 			if not needs_update[z][x]:
 				var verts = cell_geometry[cell_coords]["verts"]
 				var uvs = cell_geometry[cell_coords]["uvs"]
+				var is_floor =  cell_geometry[cell_coords]["is_floor"]
 				for i in range(len(verts)):
+					st.set_smooth_group(0 if is_floor[i] == true else -1)
 					st.set_uv(uvs[i])
 					st.add_vertex(verts[i])
 				continue	
@@ -117,6 +119,7 @@ func generate_terrain_cells():
 			cell_geometry[cell_coords] = {
 				"verts": PackedVector3Array(),
 				"uvs": PackedVector2Array(),
+				"is_floor": [],
 				#"normals": PackedVector3Array()
 			}
 			
@@ -489,6 +492,7 @@ func add_point(x: float, y: float, z: float, uv_x: float = 0, uv_y: float = 0, u
 	
 	cell_geometry[cell_coords]["verts"].append(vert)
 	cell_geometry[cell_coords]["uvs"].append(uv)
+	cell_geometry[cell_coords]["is_floor"].append(floor_mode)
 	
 # if true, currently making floor geometry. if false, currently making wall geometry.
 var floor_mode: bool = true

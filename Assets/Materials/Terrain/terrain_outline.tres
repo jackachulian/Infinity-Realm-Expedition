@@ -1,4 +1,4 @@
-[gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://c8dr0ruajbreb"]
+[gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://bq12e5723wc0o"]
 
 [ext_resource type="Shader" path="res://Assets/Shaders/outline_spatial_shader.gdshader" id="1_spl43"]
 
@@ -7,7 +7,7 @@ render_priority = -2
 shader = ExtResource("1_spl43")
 shader_parameter/depth_threshold = 0.41
 shader_parameter/reverse_depth_threshold = 0.25
-shader_parameter/normal_threshold = 0.693
+shader_parameter/normal_threshold = 0.701
 shader_parameter/darken_amount = 0.25
 shader_parameter/lighten_amount = 1.5
 shader_parameter/debug = false
