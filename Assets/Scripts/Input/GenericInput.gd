@@ -23,7 +23,14 @@ class_name GenericInput
 @onready var entity: Entity = $".."
 
 # movement-related states read from this to decide behaviour for move state, dash state, etc.
-var direction: Vector3
+var direction: Vector3 :
+	set(value):
+		direction = value
+		if direction != Vector3.ZERO:
+			facing = direction
+
+# same as direction, but is not updated when input direction is zero (not moving).
+var facing: Vector3 = Vector3.FORWARD
 
 # current amount of times player can dash while on cooldown.
 # reset to dash_count after dash cooldown
@@ -58,7 +65,7 @@ func _process(delta):
 		dashes_left = dash_count
 
 func uniform_input_angle(snap: bool = true):
-	var uniform_input = entity.movement.screen_uniform_vector(Vector3(-direction.x, 0, -direction.z))
+	var uniform_input = entity.movement.screen_uniform_vector(Vector3(-facing.x, 0, -facing.z))
 	var angle = atan2(uniform_input.x, uniform_input.z)
 	if snap:
 		var snap_rad = deg_to_rad(45)
@@ -71,12 +78,16 @@ func uniform_input_angle(snap: bool = true):
 # only within states
 func request_action() -> String:
 	# Dash
-	if is_dash_requested() and dash_state:
+	# Can only dash when on the ground... sorry no air dash
+	if is_dash_requested() and dash_state and entity.is_on_floor():
 		# dash if not on cooldown or can still dash multiple times in a row
 		if dashes_left > 0:
-			dash_cooldown_remaining = dash_cooldown
-			dashes_left -= 1
-			return dash_state.name
+			# Must either not be touching a wall or not facing straight into it
+			var moving_towards_wall = entity.is_on_wall() and entity.get_wall_normal().angle_to(-entity.movement.direction) < deg_to_rad(15)
+			if not moving_towards_wall:
+				dash_cooldown_remaining = dash_cooldown
+				dashes_left -= 1
+				return dash_state.name
 	
 	# Main Attack
 	if is_main_attack_requested():

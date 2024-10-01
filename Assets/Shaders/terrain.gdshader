@@ -26,14 +26,16 @@ uniform sampler3D rockLedgeNoise : source_color;
 
 uniform bool debug = false;
 
+varying vec3 position;
+
 void vertex() {
-	COLOR.rgb = VERTEX;
+	position = VERTEX;
 }
 
 void fragment() {
 	bool isWall = UV.x > 0.99 && UV.y > 0.99;
 
-	float thicknessMult = texture(rockLedgeNoise, COLOR.rgb / rockLedgeNoiseScale).r;
+	float thicknessMult = texture(rockLedgeNoise, position / rockLedgeNoiseScale).r;
 
 	// ==== Ledge detection
 	float topLedgeValue = UV.y - 1.0 + ledgeTopThickness * thicknessMult;
@@ -41,7 +43,7 @@ void fragment() {
 	float bottomLedgeValue = UV.x - 1.0 + ledgeBottomThickness * thicknessMult;
 	bool bottomLedge = bottomLedgeValue > 0.0;
 
-	float rockBrightness = texture(rockWallNoise, COLOR.rgb / rockWallNoiseScale).r;
+	float rockBrightness = texture(rockWallNoise, position / rockWallNoiseScale).r;
 
 	if (debug) {
 		ALBEDO = vec3(UV.x, UV.y, 0);
@@ -59,8 +61,8 @@ void fragment() {
 	}
 	// ==== Floors
 	else {
-		float colorHeightNoise = texture(grassNoise, vec2(COLOR.x, COLOR.z) / grassNoiseScale).r;
-		float colorHeight = clamp(COLOR.y * ledgeBrightGain + colorHeightNoise - ledgeBrightLower, 0.01, 0.99);
+		float colorHeightNoise = texture(grassNoise, vec2(position.x, position.z) / grassNoiseScale).r;
+		float colorHeight = clamp(position.y * ledgeBrightGain + colorHeightNoise - ledgeBrightLower, 0.01, 0.99);
 		// Use the height in heightmap space (stored in vertex color) to get the grass color
 		vec3 grassAlbedo = texture(grassGradient, vec2(colorHeight, 0)).rgb;
 		ALBEDO = grassAlbedo;

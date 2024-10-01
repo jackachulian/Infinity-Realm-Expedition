@@ -6,18 +6,24 @@ extends GenericInput
 # Amount of input buffer for the attack button (seconds)
 @export var attack_buffer: float = 0.25
 
-# Amount of input buffer for the move buttons for cancelling actions (seconds
+# Amount of input buffer for the move buttons for cancelling actions (seconds)
 @export var move_buffer: float = 0.25
+
+# Amount of input buffer for dashing when move is just now inputted out of not moving (i.e. out of shield)
+@export var dash_buffer: float = 0.1
+
+# Amount of extra leeway time given to dash inputs to allow player to get both directional keys pushed down
+@export var dash_input_direction_buffer: float = 0.08
 
 # When attack inputs are pressed, this statemachine's state will be changed if it is not in delay
 @onready var state_machine: StateMachine = $"../StateMachine"
 
 
-# counts down seconds for attack buffer
-var attack_buffer_remaining: float = 0
 
-# counts down seconds for move buffer
+# counts down seconds for buffers
+var attack_buffer_remaining: float = 0
 var move_buffer_remaining: float = 0
+var dash_buffer_remaining: float = 0
 
 # total amt. of seconds that inputted direction has been non-zero
 var move_input_hold_elapsed: float = 0
@@ -45,6 +51,11 @@ func _process(delta):
 		move_buffer_remaining = move_buffer
 	elif move_buffer_remaining > 0:
 		move_buffer_remaining = move_toward(move_buffer_remaining, 0, delta)
+		
+	if Input.is_action_pressed("shield"):
+		dash_buffer_remaining = dash_buffer
+	elif dash_buffer_remaining > 0:
+		dash_buffer_remaining = move_toward(dash_buffer_remaining, 0, delta)
 	
 func is_move_key_just_pressed():
 	return Input.is_action_just_pressed("forward") or Input.is_action_just_pressed("back") or Input.is_action_just_pressed("left") or Input.is_action_just_pressed("right")
@@ -53,9 +64,9 @@ func is_dash_requested():
 	# Dash while moving and shield just pressed 
 	
 	# move must be held for just a tiny bit longer than 0, allows leeway for diagonal dash input
-	var move_to_dash = Input.is_action_just_pressed("shield") and direction != Vector3.ZERO and move_input_hold_elapsed > 0.05
+	var move_to_dash = dash_buffer_remaining > 0 and direction != Vector3.ZERO and move_input_hold_elapsed >= dash_input_direction_buffer
 	# Likewise, dash while shielding and move just pressed
-	var shield_to_dash = Input.is_action_pressed("shield") and is_move_requested()
+	var shield_to_dash = dash_buffer_remaining > 0 and is_move_requested()
 	
 	return move_to_dash or shield_to_dash
 	
@@ -65,13 +76,18 @@ func is_main_attack_requested():
 	return attack_buffer_remaining > 0
 
 func is_move_requested():
+	# Don't go to move state while shield button is held and dash is recharging; player should dash instead of shielding once their dash is replenished
+	if Input.is_action_pressed("shield") and dashes_left == 0:
+		return false
+		
 	# When move is registered OR an attack is registered, will be set to 0. prevents move inputs from messing up attacks before they start.
 	return move_buffer_remaining > 0
 	
 func is_shield_requested():
 	# Shield while holding shield button and not moving
 	# Dash is checked before shield in GenericInput. Otherwise, shield would always be inputted
-	return Input.is_action_pressed("shield")
+	# Maintain shield when attempting to move while there is no dash, as the player was probably trying to dash but is on cooldown so keep shielding
+	return Input.is_action_pressed("shield") and (direction == Vector3.ZERO or dashes_left == 0)
 
 # Called when an attack is registered by the state machine. 
 # ensures one attack input doesn't trigger multiple attacks.

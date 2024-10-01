@@ -47,6 +47,8 @@ enum MovementMode {
 
 @export var movement_speed: float
 
+@export var gravity_multiplier: float = 1.0
+
 @export var prevent_wall_slide: bool = false
 
 # if above 0, overrides movement deceleration during this state
@@ -118,11 +120,17 @@ func physics_update(delta: float):
 	if movement_mode == MovementMode.FROM_INPUT:
 		entity.movement.direction = entity.input.direction
 
+
 var stored_wall_slide
+var stored_rise_gravity: float
+var stored_fall_gravity: float
+
 func on_enter_state():
 	if movement_mode == MovementMode.SET_SPEED_ON_ENTER:
 		entity.movement.speed = movement_speed
-		
+
+	entity.movement.gravity_multiplier = gravity_multiplier
+
 	if prevent_wall_slide:
 		stored_wall_slide = entity.wall_min_slide_angle
 		entity.wall_min_slide_angle = deg_to_rad(85)
@@ -141,6 +149,7 @@ func on_exit_state():
 	if prevent_wall_slide:
 		entity.wall_min_slide_angle = stored_wall_slide
 		
+	entity.movement.gravity_multiplier = 1.0
 
 func get_decel_override():
 	return decel_override

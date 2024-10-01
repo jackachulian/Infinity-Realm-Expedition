@@ -22,6 +22,9 @@ var speed := 5.0
 # ex. infinity's run state copies inputted direction to this move direction during run
 var direction: Vector3 = Vector3.ZERO
 
+# Current gravity multiplier. May be modified by states
+var gravity_multiplier: float = 1.0
+
 # The matrix that stretches out movements so that characters move at a uniform speed on the screen.
 const scale_matrix = Transform3D()
 
@@ -87,6 +90,6 @@ func _physics_process(delta):
 	entity.velocity.y = stored_yvel
 	
 	if not entity.is_on_floor():
-		entity.velocity.y -= (rise_gravity if entity.velocity.y > 0 else fall_gravity) * delta
+		entity.velocity.y -= (rise_gravity if entity.velocity.y > 0 else fall_gravity) * gravity_multiplier * delta
 		
 	entity.move_and_slide()

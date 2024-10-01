@@ -79,11 +79,12 @@ editor_description = "Once weapons/spells are added, if loadout is added to the 
 
 [node name="Input" type="Node3D" parent="." index="1" node_paths=PackedStringArray("move_state", "main_attack_state", "dash_state", "shield_state")]
 script = ExtResource("4_1mgmj")
+dash_input_direction_buffer = 0.5
 move_state = NodePath("../StateMachine/Move")
 main_attack_state = NodePath("../StateMachine/Sword-Attack1")
 dash_state = NodePath("../StateMachine/Dash")
 shield_state = NodePath("../StateMachine/Shield")
-dash_cooldown = 0.5
+dash_cooldown = 0.75
 dash_count = 1
 
 [node name="StateMachine" type="Node3D" parent="." index="2"]
@@ -112,8 +113,9 @@ script = ExtResource("9_blb1u")
 animation_name = "Dash"
 action_on_anim_finish = true
 state_on_anim_finish = "Dash-Stop"
-instant_velocity_on_enter = Vector3(0, 0, -12)
+instant_velocity_on_enter = Vector3(0, 0, -15)
 rotate_mode = 1
+gravity_multiplier = 0.0
 decel_override = 0.0
 
 [node name="Dash-Stop" type="Node" parent="StateMachine" index="4"]

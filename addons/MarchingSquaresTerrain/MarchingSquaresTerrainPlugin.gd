@@ -12,7 +12,6 @@ var terrain_brush_dock_active: bool
 # This function gets called when the plugin is activated.
 func _enter_tree():
 	instance = self
-	terrain_brush_dock = preload("terrain-brush-dock.tscn").instantiate()
 	add_custom_type("MarchingSquaresTerrain", "Node3D", preload("MarchingSquaresTerrain.gd"), preload("res://icon.svg"))
 	add_custom_type("MarchingSquaresTerrainChunk", "MeshInstance3D", preload("MarchingSquaresTerrainChunk.gd"), preload("res://icon.svg"))
 	add_node_3d_gizmo_plugin(gizmo_plugin)
@@ -26,6 +25,7 @@ func _exit_tree():
 	
 func activate_terrain_brush_dock():
 	if not terrain_brush_dock_active:
+		terrain_brush_dock = preload("terrain-brush-dock.tscn").instantiate()
 		add_control_to_container(CONTAINER_SPATIAL_EDITOR_MENU, terrain_brush_dock)
 		terrain_brush_dock_active = true
 		
@@ -34,20 +34,25 @@ func deactivate_terrain_brush_dock():
 		remove_control_from_container(CONTAINER_SPATIAL_EDITOR_MENU, terrain_brush_dock)
 		terrain_brush_dock_active = false
 
+func _edit(object: Object) -> void:
+	if object is MarchingSquaresTerrain:
+		activate_terrain_brush_dock()
+	else:
+		deactivate_terrain_brush_dock()
+
 func _handles(object: Object) -> bool:
 	return object is MarchingSquaresTerrain
 
 #This function handles the mouse click in the 3D viewport
 func _forward_3d_gui_input(camera: Camera3D, event: InputEvent) -> int:
+	var selected = EditorInterface.get_selection().get_selected_nodes()
+	if not selected:
+		return EditorPlugin.AFTER_GUI_INPUT_PASS
+	
 	if event is InputEventMouseButton and event.pressed and event.button_index == MouseButton.MOUSE_BUTTON_LEFT:
 		# Check that the 3d tab is active
 		if get_main_screen() != "3D":
 			return EditorPlugin.AFTER_GUI_INPUT_PASS
-			
-		# Don't do terrain handling if user is selecting multiple nodes
-		if len(EditorInterface.get_selection().get_selected_nodes()) != 1:
-			return EditorPlugin.AFTER_GUI_INPUT_PASS
-		var node = EditorInterface.get_selection().get_selected_nodes()[0]
 		
 		var editor_viewport = EditorInterface.get_editor_viewport_3d()
 		
