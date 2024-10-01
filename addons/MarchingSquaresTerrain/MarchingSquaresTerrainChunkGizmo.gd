@@ -52,23 +52,25 @@ func _commit_handle(handle_id: int, secondary: bool, restore: Variant, cancel: b
 		undo_redo.add_undo_method(self, "move_terrain_point", terrain, handle_id, restore)
 		undo_redo.commit_action()
 		
+	terrain.update_gizmos()
+		
 func move_terrain_point(terrain: MarchingSquaresTerrainChunk, handle_id: int, height: float):
 	var z = handle_id / terrain.dimensions.z
 	var x = handle_id % terrain.dimensions.z
 	terrain.height_map[z][x] = height
 	
-	#notify_needs_update(terrain, z, x)
-	#notify_needs_update(terrain, z, x-1)
-	#notify_needs_update(terrain, z-1, x)
-	#notify_needs_update(terrain, z-1, x-1)
+	notify_needs_update(terrain, z, x)
+	notify_needs_update(terrain, z, x-1)
+	notify_needs_update(terrain, z-1, x)
+	notify_needs_update(terrain, z-1, x-1)
 	
 	terrain.regenerate_mesh()
 	
-#func notify_needs_update(terrain: MarchingSquaresTerrain, z: int, x: int):
-	#if z < 0 or z >= terrain.dimensions.z or x < 0 or x > terrain.dimensions.x:
-		#return
-		#
-	#terrain.needs_update[z][x] = true
+func notify_needs_update(terrain: MarchingSquaresTerrainChunk, z: int, x: int):
+	if z < 0 or z >= terrain.dimensions.z or x < 0 or x > terrain.dimensions.x:
+		return
+		
+	terrain.needs_update[z][x] = true
 
 func _set_handle(handle_id: int, secondary: bool, camera: Camera3D, screen_pos: Vector2) -> void:
 	var terrain: MarchingSquaresTerrainChunk = get_node_3d()
@@ -92,4 +94,4 @@ func _set_handle(handle_id: int, secondary: bool, camera: Camera3D, screen_pos: 
 	if intersection:
 		intersection = terrain.to_local(intersection)
 		terrain.height_map[z][x] = intersection.y
-		get_node_3d().update_gizmos()
+		terrain.update_gizmos()

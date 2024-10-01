@@ -29,11 +29,13 @@ extends MeshInstance3D
 
 var rng := RandomNumberGenerator.new()
 
+# The surfacetool used to construct the current terrain
 var st: SurfaceTool
+# All geometry from the last generation. used to copy over when editing terrain
+var prev_arrays: Array
 	
 # cell coordinates currently being evaluated
-var cell_x: int
-var cell_z: int
+var cell_coords: Vector2i
 	
 # current amount of counter-clockwise rotations performed on original heightmap to reach current state
 var r: int
@@ -54,9 +56,11 @@ var cd: bool
 # Stores the heights from the heightmap (from red channel of image)
 var height_map: Array
 
-# Stores the list of start positions for every cell
-# Two dimension array of [col / x position][row / z position].
-var row_start_positions: Array[int]
+# Stores all generated tiles so that their geometry can quickly be reused
+var cell_geometry: Dictionary = {}
+
+# Stores which tiles need to be updated because one of their corners' heights was changed.
+var needs_update: Array[Array]
 		
 func _enter_tree():
 	if Engine.is_editor_hint():
@@ -64,6 +68,9 @@ func _enter_tree():
 		regenerate_mesh()
 
 func regenerate_mesh():
+	if st:
+		prev_arrays = st.commit_to_arrays()
+	
 	st = SurfaceTool.new()
 	if mesh:
 		st.create_from(mesh, 0)
@@ -94,9 +101,31 @@ func regenerate_mesh():
 
 func generate_terrain_cells():
 	for z in range(dimensions.z - 1):
-		cell_z = z
 		for x in range(dimensions.x - 1):
-			cell_x = x
+			cell_coords = Vector2i(x, z)
+			
+			# If geometry did not change, copy already generated geometry and skip this cell
+			if not needs_update[z][x]:
+				print("using indexed ", cell_coords)
+				var verts = cell_geometry[cell_coords]["verts"]
+				var uvs = cell_geometry[cell_coords]["uvs"]
+				for i in range(len(verts)):
+					st.set_uv(uvs[i])
+					st.add_vertex(verts[i])
+				continue	
+				
+			# cell is now being updated, set needs update to false
+			needs_update[z][x] = false
+				
+			# If geometry did change or none exists yet, 
+			# create an entry for this cell (will also override any existing one)
+			print("generating ", cell_coords)
+			cell_geometry[cell_coords] = {
+				"verts": PackedVector3Array(),
+				"uvs": PackedVector2Array(),
+				#"normals": PackedVector3Array()
+			}
+			
 			r = 0
 			
 			# Get heights of 4 surrounding corners
@@ -454,19 +483,18 @@ func add_point(x: float, y: float, z: float, uv_x: float = 0, uv_y: float = 0, u
 		x = 1 - z
 		z = temp	
 	
-	if floor_mode:
-		st.set_uv(Vector2(uv_x, uv_y))
-		# use this for completely flat looking floors
-		#st.set_normal(Vector3(0, 1, 0))
-	else:
-		# walls will always have UV of 1, 1
-		st.set_uv(Vector2(1, 1))
+	# walls will always have UV of 1, 1
+	var uv = Vector2(uv_x, uv_y) if floor_mode else Vector2(1, 1)
+	st.set_uv(uv)
 	
 	# Color = terrain space coordinates. 
 	# for XZ, 0,0,0 = top left of heightmap at lowest height, 1,1,1 = bottom right of heightmap at highest height
 	#st.set_color(Color((cell_x+x) / dimensions.x, y / dimensions.x, (cell_z+z) / dimensions.z))
-		
-	st.add_vertex(Vector3((cell_x+x) * cell_size.x, y, (cell_z+z) * cell_size.y))
+	var vert = Vector3((cell_coords.x+x) * cell_size.x, y, (cell_coords.y+z) * cell_size.y)
+	st.add_vertex(vert)
+	
+	cell_geometry[cell_coords]["verts"].append(vert)
+	cell_geometry[cell_coords]["uvs"].append(uv)
 	
 # if true, currently making floor geometry. if false, currently making wall geometry.
 var floor_mode: bool = true
@@ -660,6 +688,13 @@ func load_height_map():
 		height_map[z].resize(dimensions.x)
 		for x in range(dimensions.x):
 			height_map[z][x] = 0.0
+			
+	needs_update = []
+	# initally all cells will need to be updated to show the newly loaded height
+	for z in range(dimensions.z - 1):
+		needs_update.append([])
+		for x in range(dimensions.x - 1):
+			needs_update[z].append(true)
 		
 	if not height_map_image:
 		return
@@ -676,6 +711,9 @@ func load_height_map():
 				height = round(height / height_banding) * height_banding
 			
 			height_map[z][x] = height
+	
+	
+	
 			
 func simple_grass():
 	var grass_mesh = SurfaceTool.new();
