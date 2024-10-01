@@ -64,11 +64,6 @@ func _enter_tree():
 	if Engine.is_editor_hint():
 		load_height_map()
 		regenerate_mesh()
-	else:
-		if get_node_or_null("Terrain_col"):
-			$Terrain_col.free()
-		create_trimesh_collision()
-	
 
 func regenerate_mesh():	
 	st = SurfaceTool.new()
@@ -87,13 +82,12 @@ func regenerate_mesh():
 	mesh = st.commit()
 	mesh.surface_set_material(0, terrain_material)
 	
+	if get_node_or_null("Terrain_col"):
+		$Terrain_col.free()
+	create_trimesh_collision()
+	
 	var elapsed_time: int = Time.get_ticks_msec() - start_time
 	print("generated terrain in "+str(elapsed_time)+"ms")
-	
-	#var vert_total = len(mesh.surface_get_arrays(0)[Mesh.ARRAY_VERTEX])
-	#print("total tris: "+str(vert_total/3))
-	#
-	ResourceSaver.save(mesh, "res://terrain/"+name+".tres", ResourceSaver.FLAG_COMPRESS)
 
 func generate_terrain_cells():
 	for z in range(dimensions.z - 1):
