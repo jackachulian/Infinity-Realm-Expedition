@@ -31,8 +31,6 @@ var rng := RandomNumberGenerator.new()
 
 # The surfacetool used to construct the current terrain
 var st: SurfaceTool
-# All geometry from the last generation. used to copy over when editing terrain
-var prev_arrays: Array
 	
 # cell coordinates currently being evaluated
 var cell_coords: Vector2i
@@ -66,11 +64,13 @@ func _enter_tree():
 	if Engine.is_editor_hint():
 		load_height_map()
 		regenerate_mesh()
-
-func regenerate_mesh():
-	if st:
-		prev_arrays = st.commit_to_arrays()
+	else:
+		if get_node_or_null("Terrain_col"):
+			$Terrain_col.free()
+		create_trimesh_collision()
 	
+
+func regenerate_mesh():	
 	st = SurfaceTool.new()
 	if mesh:
 		st.create_from(mesh, 0)
@@ -90,10 +90,6 @@ func regenerate_mesh():
 	var elapsed_time: int = Time.get_ticks_msec() - start_time
 	print("generated terrain in "+str(elapsed_time)+"ms")
 	
-	if get_node_or_null("Terrain_col"):
-		$Terrain_col.free()
-	create_trimesh_collision()
-	
 	#var vert_total = len(mesh.surface_get_arrays(0)[Mesh.ARRAY_VERTEX])
 	#print("total tris: "+str(vert_total/3))
 	#
@@ -106,7 +102,6 @@ func generate_terrain_cells():
 			
 			# If geometry did not change, copy already generated geometry and skip this cell
 			if not needs_update[z][x]:
-				print("using indexed ", cell_coords)
 				var verts = cell_geometry[cell_coords]["verts"]
 				var uvs = cell_geometry[cell_coords]["uvs"]
 				for i in range(len(verts)):
@@ -119,7 +114,6 @@ func generate_terrain_cells():
 				
 			# If geometry did change or none exists yet, 
 			# create an entry for this cell (will also override any existing one)
-			print("generating ", cell_coords)
 			cell_geometry[cell_coords] = {
 				"verts": PackedVector3Array(),
 				"uvs": PackedVector2Array(),

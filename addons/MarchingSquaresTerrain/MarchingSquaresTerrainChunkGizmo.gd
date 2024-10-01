@@ -65,6 +65,7 @@ func move_terrain_point(terrain: MarchingSquaresTerrainChunk, handle_id: int, he
 	notify_needs_update(terrain, z-1, x-1)
 	
 	terrain.regenerate_mesh()
+	terrain.update_gizmos()
 	
 func notify_needs_update(terrain: MarchingSquaresTerrainChunk, z: int, x: int):
 	if z < 0 or z >= terrain.dimensions.z or x < 0 or x > terrain.dimensions.x:
