@@ -30,7 +30,7 @@ var camera_axis: Vector3
 # amont to scale the camera forward axis movement by. set to 1 for no change
 @onready var scale_factor: float = 1.25
 
-func camera_screen_uniform_setup():
+func update_camera_screen_uniform():
 	camera_axis = -camera.global_transform.basis.z
 	camera_axis.y = 0
 	camera_axis = camera_axis.normalized()
@@ -46,11 +46,10 @@ func inverse_screen_uniform_vector(v: Vector3) -> Vector3:
 	var v_perpendicular = v - v_parallel
 	var v_stretched = v_perpendicular + v_parallel / scale_factor
 	return v_stretched
-
-func _ready():
-	camera_screen_uniform_setup()
-
+	
 func _physics_process(delta):
+	update_camera_screen_uniform()
+	
 	# Apply root motion (subtract instead of add because model is flipped 180 degrees)
 	var root_motion_delta = entity.anim.get_root_motion_position()
 	entity.position -= screen_uniform_vector(entity.get_quaternion() * root_motion_delta);

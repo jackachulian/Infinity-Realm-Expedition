@@ -58,3 +58,5 @@ func chunk_lines(terrain_system: MarchingSquaresTerrain, coords: Vector2i, newch
 	lines.append(Vector3(x,0,z))
 	
 	add_lines(lines, get_plugin().get_material("newchunk" if newchunk else "filledchunk", self), false)
+	
+	add_mesh()

@@ -92,3 +92,4 @@ func _set_handle(handle_id: int, secondary: bool, camera: Camera3D, screen_pos: 
 	if intersection:
 		intersection = terrain.to_local(intersection)
 		terrain.height_map[z][x] = intersection.y
+		get_node_3d().update_gizmos()
