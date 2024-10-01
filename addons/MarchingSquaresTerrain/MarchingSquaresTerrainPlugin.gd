@@ -13,7 +13,8 @@ func _enter_tree():
 	# Add a button to the editor's toolbar
 	add_tool_menu_item("Ray Click Tool", _on_ray_click_tool_pressed)
 	
-	add_custom_type("MarchingSquaresTerrain", "MeshInstance3D", preload("MarchingSquaresTerrain.gd"), preload("res://icon.svg"))
+	add_custom_type("MarchingSquaresTerrain", "Node3D", preload("MarchingSquaresTerrain.gd"), preload("res://icon.svg"))
+	add_custom_type("MarchingSquaresTerrainChunk", "MeshInstance3D", preload("MarchingSquaresTerrainChunk.gd"), preload("res://icon.svg"))
 	
 	add_node_3d_gizmo_plugin(gizmo_plugin)
 

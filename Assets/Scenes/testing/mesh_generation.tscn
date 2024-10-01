@@ -1,7 +1,7 @@
 [gd_scene load_steps=8 format=4 uid="uid://xex0wmxv1o4i"]
 
 [ext_resource type="Shader" path="res://Assets/Shaders/simple-terrain.gdshader" id="1_jwihy"]
-[ext_resource type="Script" path="res://addons/MarchingSquaresTerrain/MarchingSquaresTerrain.gd" id="2_k61cm"]
+[ext_resource type="Script" path="res://addons/MarchingSquaresTerrain/MarchingSquaresTerrainChunk.gd" id="2_k61cm"]
 
 [sub_resource type="ArrayMesh" id="ArrayMesh_osyd2"]
 _surfaces = [{

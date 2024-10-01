@@ -2,139 +2,59 @@
 class_name MarchingSquaresTerrainGizmo
 extends EditorNode3DGizmo
 
+var lines: PackedVector3Array = PackedVector3Array()
+var chunks_and_empty: Dictionary
+
 func _redraw():
 	clear()
 
-	var terrain: MarchingSquaresTerrain = get_node_3d()
-	var dx = (terrain.dimensions.x - 1) * terrain.cell_size.x
-	var dz = (terrain.dimensions.z - 1) * terrain.cell_size.y
+	var terrain_system: MarchingSquaresTerrain = get_node_3d()
 	
 	# Only draw the gizmo if this is the only selected node
 	if len(EditorInterface.get_selection().get_selected_nodes()) != 1:
 		return
-	if EditorInterface.get_selection().get_selected_nodes()[0] != terrain:
+	if EditorInterface.get_selection().get_selected_nodes()[0] != terrain_system:
 		return
 		
 	# Lines for adding more chunks
-	var lines = PackedVector3Array()
+	lines.clear()
 	
-	lines.append(Vector3(0,0,0))
-	lines.append(Vector3(dx,0,0))
-	lines.append(Vector3(dx,0,0))
-	lines.append(Vector3(dx,0,dz))
-	lines.append(Vector3(dx,0,dz))
-	lines.append(Vector3(0,0,dz))
-	lines.append(Vector3(0,0,dz))
-	lines.append(Vector3(0,0,0))
+	# Dictionary holding all chunks and neighbouring empty chunk slots (null)
+	chunks_and_empty = terrain_system.chunks.duplicate()
+	for chunk_coords: Vector2i in chunks_and_empty.keys():
+		try_add_empty_chunk(Vector2i(chunk_coords.x-1, chunk_coords.y))
+		try_add_empty_chunk(Vector2i(chunk_coords.x+1, chunk_coords.y))
+		try_add_empty_chunk(Vector2i(chunk_coords.x, chunk_coords.y-1))
+		try_add_empty_chunk(Vector2i(chunk_coords.x, chunk_coords.y+1))
+		
+	for chunk_coords: Vector2i in chunks_and_empty.keys():
+		if chunks_and_empty[chunk_coords] == null:
+			chunk_lines(terrain_system, chunk_coords, true)
 	
 	add_lines(lines, get_plugin().get_material("thischunk", self), false)
 	
-	lines.clear()
 	
-	lines.append(Vector3(0,0,0))
-	lines.append(Vector3(-dx,0,0))
-	lines.append(Vector3(-dx,0,0))
-	lines.append(Vector3(-dx,0,dz))
-	lines.append(Vector3(-dx,0,dz))
-	lines.append(Vector3(0,0,dz))
+
+func try_add_empty_chunk(coords: Vector2i):
+	if not chunks_and_empty.has(coords):
+		chunks_and_empty[coords] = null
+
+# Draw chunk lines around a chunk
+func chunk_lines(terrain_system: MarchingSquaresTerrain, coords: Vector2i, newchunk: bool):
+	var dx = (terrain_system.dimensions.x - 1) * terrain_system.cell_size.x
+	var dz = (terrain_system.dimensions.z - 1) * terrain_system.cell_size.y
+	var x = coords.x * dx
+	var z = coords.y * dz
+	dx += x
+	dz += z
 	
-	lines.append(Vector3(0,0,0))
-	lines.append(Vector3(0,0,-dz))
-	lines.append(Vector3(0,0,-dz))
-	lines.append(Vector3(dx,0,-dz))
-	lines.append(Vector3(dx,0,-dz))
-	lines.append(Vector3(dx,0,0))
-	
-	lines.append(Vector3(dx, 0, 0))
-	lines.append(Vector3(2*dx, 0, 0))
-	lines.append(Vector3(2*dx, 0, 0))
-	lines.append(Vector3(2*dx, 0, dz))
-	lines.append(Vector3(2*dx, 0, dz))
-	lines.append(Vector3(dx, 0, dz))
-	
-	lines.append(Vector3(0,0,dz))
-	lines.append(Vector3(0,0,2*dz))
-	lines.append(Vector3(0,0,2*dz))
-	lines.append(Vector3(dx,0,2*dz))
-	lines.append(Vector3(dx,0,2*dz))
+	lines.append(Vector3(x,0,z))
+	lines.append(Vector3(dx,0,z))
+	lines.append(Vector3(dx,0,z))
 	lines.append(Vector3(dx,0,dz))
+	lines.append(Vector3(dx,0,dz))
+	lines.append(Vector3(x,0,dz))
+	lines.append(Vector3(x,0,dz))
+	lines.append(Vector3(x,0,z))
 	
-	add_lines(lines, get_plugin().get_material("newchunk", self), false)
-
-	# Handles for raising/lowering terrain (will probably be removed later in favor of brush)
-	var corners = PackedVector3Array()
-	var ids = PackedInt32Array()
-	for z in range(terrain.dimensions.z):
-		for x in range(terrain.dimensions.x):
-			var y = terrain.height_map[z][x]
-			corners.append(Vector3(x * terrain.cell_size.x, y, z * terrain.cell_size.y))
-			ids.append(z*terrain.dimensions.x + x)
-	add_handles(corners, get_plugin().get_material("handles", self), ids)
-
-func _get_handle_name(handle_id: int, secondary: bool) -> String:
-	return str(handle_id);
-	
-func _get_handle_value(handle_id: int, secondary: bool) -> Variant:
-	var terrain: MarchingSquaresTerrain = get_node_3d()
-	var z = handle_id / terrain.dimensions.z
-	var x = handle_id % terrain.dimensions.z
-	return terrain.height_map[z][x];
-	
-func _commit_handle(handle_id: int, secondary: bool, restore: Variant, cancel: bool) -> void:
-	var terrain: MarchingSquaresTerrain = get_node_3d()
-	var z = handle_id / terrain.dimensions.z
-	var x = handle_id % terrain.dimensions.z
-	
-	if cancel:
-		terrain.height_map[z][x] = restore
-		print("cancelled move point")
-	else:
-		var undo_redo := MarchingSquaresTerrainPlugin.instance.get_undo_redo()
-		
-		var do_value = terrain.height_map[z][x]
-	
-		undo_redo.create_action("move terrain point")
-		undo_redo.add_do_method(self, "move_terrain_point", terrain, handle_id, do_value)
-		undo_redo.add_undo_method(self, "move_terrain_point", terrain, handle_id, restore)
-		undo_redo.commit_action()
-		
-func move_terrain_point(terrain: MarchingSquaresTerrain, handle_id: int, height: float):
-	var z = handle_id / terrain.dimensions.z
-	var x = handle_id % terrain.dimensions.z
-	terrain.height_map[z][x] = height
-	
-	#notify_needs_update(terrain, z, x)
-	#notify_needs_update(terrain, z, x-1)
-	#notify_needs_update(terrain, z-1, x)
-	#notify_needs_update(terrain, z-1, x-1)
-	
-	terrain.regenerate_mesh()
-	
-#func notify_needs_update(terrain: MarchingSquaresTerrain, z: int, x: int):
-	#if z < 0 or z >= terrain.dimensions.z or x < 0 or x > terrain.dimensions.x:
-		#return
-		#
-	#terrain.needs_update[z][x] = true
-
-func _set_handle(handle_id: int, secondary: bool, camera: Camera3D, screen_pos: Vector2) -> void:
-	var terrain: MarchingSquaresTerrain = get_node_3d()
-	var z = handle_id / terrain.dimensions.z
-	var x = handle_id % terrain.dimensions.z
-	var y = terrain.height_map[z][x]
-	# Get handle position
-	var handle_position = terrain.to_global(Vector3(x * terrain.cell_size.x, y, z * terrain.cell_size.y))
-	
-	# Convert mouse movement to 3D world coordinates using raycasting
-	var ray_origin = camera.project_ray_origin(screen_pos)
-	var ray_dir = camera.project_ray_normal(screen_pos)
-	
-	# We want the movement restricted to the Y-axis.
-	# Create a plane that is parallel to the XZ plane (normal pointing along Y-axis)
-	var plane = Plane(ray_dir, handle_position)
-	var intersection = plane.intersects_ray(ray_origin, ray_dir)
-	#
-	#print("handle_position ", handle_position, "ray_origin ", ray_origin, "ray_dir ", ray_dir, "plane ", plane)
-	#
-	if intersection:
-		intersection = terrain.to_local(intersection)
-		terrain.height_map[z][x] = intersection.y
+	add_lines(lines, get_plugin().get_material("newchunk" if newchunk else "filledchunk", self), false)
