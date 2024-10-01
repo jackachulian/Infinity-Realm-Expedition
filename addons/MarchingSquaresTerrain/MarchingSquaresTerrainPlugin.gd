@@ -13,14 +13,13 @@ var terrain_brush_dock_active: bool
 func _enter_tree():
 	instance = self
 	terrain_brush_dock = preload("terrain-brush-dock.tscn").instantiate()
-	
 	add_custom_type("MarchingSquaresTerrain", "Node3D", preload("MarchingSquaresTerrain.gd"), preload("res://icon.svg"))
 	add_custom_type("MarchingSquaresTerrainChunk", "MeshInstance3D", preload("MarchingSquaresTerrainChunk.gd"), preload("res://icon.svg"))
-	
 	add_node_3d_gizmo_plugin(gizmo_plugin)
 
 # This function gets called when the plugin is deactivated.
 func _exit_tree():
+	deactivate_terrain_brush_dock()
 	terrain_brush_dock.free()
 	remove_custom_type("MarchingSquaresTerrain")
 	remove_node_3d_gizmo_plugin(gizmo_plugin)
