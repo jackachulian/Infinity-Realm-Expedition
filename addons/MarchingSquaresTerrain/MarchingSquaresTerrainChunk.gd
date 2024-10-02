@@ -6,28 +6,21 @@ extends MeshInstance3D
 
 @export var chunk_coords: Vector2i = Vector2i.ZERO
 
-@export var terrain_material: Material
+# Used to set heights per pixel (overrides noisemap)
+@export var height_map_image: Texture2D
 
 # Size of the 2 dimensional cell array (xz value) and y scale (y value)
-@export var dimensions: Vector3i = Vector3i(32, 1, 32)
+var dimensions: Vector3i:
+	get:
+		return terrain_system.dimensions
 
 # Unit XZ size of a single cell
-@export var cell_size: Vector2 = Vector2(2, 2)
-
-@export var height_map_image: Texture2D
+var cell_size: Vector2:
+	get:
+		return terrain_system.cell_size
 
 # possible change: have  aflat lciffs variable. if false, cliffs points will be from the heightmap.
 # would probably need some kind of system to note the amount of adjacent points for each lower point. idk how i would even implement that
-
-# The max height distance between points before a wall is created between them
-@export var merge_threshold: float = 0.06
-
-# If above 0, round height values to this nearest interval.
-@export var height_banding: float = 0.1
-
-@export var seed: int = 1
-
-var rng := RandomNumberGenerator.new()
 
 # The surfacetool used to construct the current terrain
 var st: SurfaceTool
@@ -59,11 +52,14 @@ var cell_geometry: Dictionary = {}
 
 # Stores which tiles need to be updated because one of their corners' heights was changed.
 var needs_update: Array[Array]
-		
-func _enter_tree():
+
+# called by TerrainSystem parent
+func initialize_terrain():
 	if Engine.is_editor_hint():
 		load_height_map()
 		regenerate_mesh()
+	else:
+		print("trying to generate terrain during runtime; not supported")
 
 func regenerate_mesh():	
 	st = SurfaceTool.new()
@@ -80,7 +76,7 @@ func regenerate_mesh():
 	
 	# Create a new mesh out of floor, and add the wall surface to it
 	mesh = st.commit()
-	mesh.surface_set_material(0, terrain_material)
+	mesh.surface_set_material(0, terrain_system.terrain_material)
 	
 	if get_node_or_null("Terrain_col"):
 		$Terrain_col.free()
@@ -130,10 +126,10 @@ func generate_terrain_cells():
 				#continue
 			
 			# Track which edges shold be connected and not have a wall bewteen them.
-			ab = abs(ay-by) < merge_threshold # top edge
-			ac = abs(ay-cy) < merge_threshold # bottom edge
-			bd = abs(by-dy) < merge_threshold # right edge
-			cd = abs(cy-dy) < merge_threshold # bottom edge
+			ab = abs(ay-by) < terrain_system.merge_threshold # top edge
+			ac = abs(ay-cy) < terrain_system.merge_threshold # bottom edge
+			bd = abs(by-dy) < terrain_system.merge_threshold # right edge
+			cd = abs(cy-dy) < terrain_system.merge_threshold # bottom edge
 			
 			# Case 0
 			# If all edges are connected, put a full floor here.
@@ -443,14 +439,14 @@ func generate_terrain_cells():
 
 # True if A is higher than B and outside of merge distance
 func is_higher(a: float, b: float):
-	return a - b > merge_threshold
+	return a - b > terrain_system.merge_threshold
 	
 # True if A is lower than B and outside of merge distance
 func is_lower(a: float, b: float):
-	return a - b < -merge_threshold
+	return a - b < -terrain_system.merge_threshold
 	
 func is_merged(a: float, b: float):
-	return abs(a - b) < merge_threshold
+	return abs(a - b) < terrain_system.merge_threshold
 	
 # Rotate r times clockwise. if negative, rotate clockwise -r times.
 func rotate_cell(rotations: int):
@@ -674,7 +670,6 @@ func add_diagonal_floor(b_y: float, c_y: float, a_cliff: bool, d_cliff: bool):
 func load_height_map():	
 	height_map = []
 	height_map.resize(dimensions.z)
-	
 	for z in range(dimensions.z):
 		height_map[z] = []
 		height_map[z].resize(dimensions.x)
@@ -688,23 +683,29 @@ func load_height_map():
 		for x in range(dimensions.x - 1):
 			needs_update[z].append(true)
 		
-	if not height_map_image:
-		return
-	
-	var image = height_map_image.get_image()
-	if not image:
-		return
-	
-	for z in range(min(dimensions.z, image.get_height())):
-		for x in range(min(dimensions.x, image.get_width())):
-			var height = image.get_pixel(x, z).r * dimensions.y
-			
-			if height_banding > 0:
-				height = round(height / height_banding) * height_banding
-			
-			height_map[z][x] = height
-	
-	
+	if height_map_image:
+		var image = height_map_image.get_image()
+		if image:
+			for z in range(min(dimensions.z, image.get_height())):
+				for x in range(min(dimensions.x, image.get_width())):
+					var height = (image.get_pixel(x, z).r - 0.5) * dimensions.y
+					
+					if terrain_system.height_banding > 0:
+						height = round(height / terrain_system.height_banding) * terrain_system.height_banding
+					
+					height_map[z][x] = height
+			return
+		
+	var noise = terrain_system.noise
+	if noise:
+		for z in range(dimensions.z):
+			for x in range(dimensions.x):
+				var noise_x = (chunk_coords.x * dimensions.x) + x
+				var noise_z = (chunk_coords.y * dimensions.z) + z
+				var noise_sample = noise.get_noise_2d(noise_x, noise_z)
+				height_map[z][x] = (noise_sample - 0.5) * dimensions.y
+	else:
+		print("no noise")
 	
 			
 func simple_grass():

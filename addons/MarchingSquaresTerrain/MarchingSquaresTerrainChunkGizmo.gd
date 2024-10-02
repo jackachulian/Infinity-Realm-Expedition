@@ -1,6 +1,10 @@
-# my_custom_gizmo_plugin.gd
+# This gizmo will have a handle for every single height value.
+# Mostly for debugging might remove later.
+# When the overarching terrain system is selected that is where all the brushes will be.
+
 class_name MarchingSquaresTerrainChunkGizmo
 extends EditorNode3DGizmo
+
 
 func _redraw():
 	clear()

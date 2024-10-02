@@ -31,7 +31,7 @@ func _redraw():
 		if chunks_and_empty[chunk_coords] == null:
 			chunk_lines(terrain_system, chunk_coords, true)
 	
-	add_lines(lines, get_plugin().get_material("thischunk", self), false)
+	#add_lines(lines, get_plugin().get_material("thischunk", self), false)
 	
 	
 

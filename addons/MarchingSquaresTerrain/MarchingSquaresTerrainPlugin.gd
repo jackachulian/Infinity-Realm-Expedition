@@ -46,8 +46,10 @@ func _handles(object: Object) -> bool:
 #This function handles the mouse click in the 3D viewport
 func _forward_3d_gui_input(camera: Camera3D, event: InputEvent) -> int:
 	var selected = EditorInterface.get_selection().get_selected_nodes()
-	if not selected:
+	# only proceed if exactly 1 terrain system is selected
+	if not selected or len(selected) > 1:
 		return EditorPlugin.AFTER_GUI_INPUT_PASS
+	var terrain: MarchingSquaresTerrain = selected[0]
 	
 	if event is InputEventMouseButton and event.pressed and event.button_index == MouseButton.MOUSE_BUTTON_LEFT:
 		# Check that the 3d tab is active
@@ -63,14 +65,14 @@ func _forward_3d_gui_input(camera: Camera3D, event: InputEvent) -> int:
 		if not viewport_rect.has_point(mouse_pos):
 			return EditorPlugin.AFTER_GUI_INPUT_PASS
 
-		var origin := camera.project_ray_origin(mouse_pos)
-		var direction := camera.project_ray_normal(mouse_pos)
+		var ray_origin := camera.project_ray_origin(mouse_pos)
+		var ray_dir := camera.project_ray_normal(mouse_pos)
 
 		# Perform the raycast to check for intersection with a physics body
 		var space_state = camera.get_world_3d().direct_space_state
 		var ray_length := 10000.0  # Adjust ray length as needed
-		var end := origin + direction * ray_length
-		var query := PhysicsRayQueryParameters3D.create(origin, end)
+		var end := ray_origin + ray_dir * ray_length
+		var query := PhysicsRayQueryParameters3D.create(ray_origin, end)
 		var result = space_state.intersect_ray(query)
 
 		if result:
@@ -79,9 +81,34 @@ func _forward_3d_gui_input(camera: Camera3D, event: InputEvent) -> int:
 			print("Intersected with ", body.name, " at:", intersection_pos)
 			return EditorPlugin.AFTER_GUI_INPUT_STOP
 		else:
-			print("No intersection detected.")
+			# Check for hovering over/ckicking new chunk
+			var chunk_plane = Plane(Vector3.UP, Vector3.ZERO)
+			var intersection = chunk_plane.intersects_ray(ray_origin, ray_dir)
+			if intersection:
+				print("chunk plane intersection: ", intersection)
+				var chunk_x: int = floor(intersection.x / (terrain.dimensions.x * terrain.cell_size.x))
+				var chunk_z: int = floor(intersection.z / (terrain.dimensions.z * terrain.cell_size.y))
+				var chunk_coords = Vector2i(chunk_x, chunk_z)
+				var chunk = terrain.chunks.get(chunk_coords)
+				if chunk:
+					# there is a chunk here, but click raycast didn't hit any terrain, so just ignore it but still consume the input
+					print("clicked existing chunk ", chunk_coords)
+					return EditorPlugin.AFTER_GUI_INPUT_STOP
+				else:
+					print("no chunk at ", chunk_coords)
+					
+					# Can add a new chunk here if there is a neighbouring non-empty chunk
+					var can_add_empty: bool = terrain.has_chunk(chunk_x-1, chunk_z) or terrain.has_chunk(chunk_x+1, chunk_z) or terrain.has_chunk(chunk_x, chunk_z-1) or terrain.has_chunk(chunk_x, chunk_z+1)
+					if can_add_empty:
+						print("adding new empty chunk")
+						terrain.add_new_chunk(chunk_x, chunk_z)
+						return EditorPlugin.AFTER_GUI_INPUT_STOP
+					
+			else:
+				print("No intersection")
+			
 	return EditorPlugin.AFTER_GUI_INPUT_PASS
-
+	
 func get_main_screen()->String:
 	var screen="null"
 	var base:Panel = get_editor_interface().get_base_control()
