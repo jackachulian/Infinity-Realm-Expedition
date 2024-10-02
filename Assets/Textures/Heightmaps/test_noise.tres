@@ -7,5 +7,4 @@ frequency = 0.018
 [resource]
 width = 64
 height = 64
-normalize = false
 noise = SubResource("FastNoiseLite_uc1u3")
