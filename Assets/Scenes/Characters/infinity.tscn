@@ -22,7 +22,7 @@
 [ext_resource type="Script" path="res://Packages/GPUTrail-main/GPUTrail3D.gd" id="19_0mkq7"]
 [ext_resource type="Texture2D" uid="uid://d0aqx8k5y48w8" path="res://Assets/Sprites/misc/slash-effect.png" id="19_2vl7e"]
 [ext_resource type="Script" path="res://Assets/Scripts/Hitbox.gd" id="20_rq6bb"]
-[ext_resource type="Material" uid="uid://cfe0foe1wlito" path="res://Assets/Materials/Characters/infinity-with-cutout.tres" id="21_uqxah"]
+[ext_resource type="Material" path="res://Assets/Materials/Characters/infinity-with-cutout.tres" id="21_uqxah"]
 [ext_resource type="Script" path="res://Assets/Scripts/Hurtbox.gd" id="31_pkqhk"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_osbq5"]
@@ -79,7 +79,8 @@ editor_description = "Once weapons/spells are added, if loadout is added to the 
 
 [node name="Input" type="Node3D" parent="." index="1" node_paths=PackedStringArray("move_state", "main_attack_state", "dash_state", "shield_state")]
 script = ExtResource("4_1mgmj")
-dash_input_direction_buffer = 0.5
+dash_buffer = 0.2
+dash_input_direction_buffer = 0.05
 move_state = NodePath("../StateMachine/Move")
 main_attack_state = NodePath("../StateMachine/Sword-Attack1")
 dash_state = NodePath("../StateMachine/Dash")

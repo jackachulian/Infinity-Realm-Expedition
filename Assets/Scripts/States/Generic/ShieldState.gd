@@ -9,8 +9,8 @@ func check_transition(delta: float) -> String:
 	if requested_action != "" and requested_action != name:
 		return requested_action
 		
-	# once shield is no longer inputted, transition back to idle
-	if not entity.input.is_shield_requested():
+	# once shield and move is no longer inputted, transition back to idle
+	if not entity.input.is_shield_requested() and not entity.input.is_move_requested():
 		return "Idle"
 		
 	return ""
