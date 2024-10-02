@@ -22,25 +22,21 @@ func _redraw():
 	# Dictionary holding all chunks and neighbouring empty chunk slots (null)
 	chunks_and_empty = terrain_system.chunks.duplicate()
 	for chunk_coords: Vector2i in chunks_and_empty.keys():
-		try_add_empty_chunk(Vector2i(chunk_coords.x-1, chunk_coords.y))
-		try_add_empty_chunk(Vector2i(chunk_coords.x+1, chunk_coords.y))
-		try_add_empty_chunk(Vector2i(chunk_coords.x, chunk_coords.y-1))
-		try_add_empty_chunk(Vector2i(chunk_coords.x, chunk_coords.y+1))
-		
-	for chunk_coords: Vector2i in chunks_and_empty.keys():
-		if chunks_and_empty[chunk_coords] == null:
-			chunk_lines(terrain_system, chunk_coords, true)
-	
+		try_add_empty_chunk(terrain_system, Vector2i(chunk_coords.x-1, chunk_coords.y))
+		try_add_empty_chunk(terrain_system, Vector2i(chunk_coords.x+1, chunk_coords.y))
+		try_add_empty_chunk(terrain_system, Vector2i(chunk_coords.x, chunk_coords.y-1))
+		try_add_empty_chunk(terrain_system, Vector2i(chunk_coords.x, chunk_coords.y+1))
 	#add_lines(lines, get_plugin().get_material("thischunk", self), false)
 	
 	
 
-func try_add_empty_chunk(coords: Vector2i):
+func try_add_empty_chunk(terrain_system, coords: Vector2i):
 	if not chunks_and_empty.has(coords):
 		chunks_and_empty[coords] = null
+		add_new_chunk_lines(terrain_system, coords)
 
 # Draw chunk lines around a chunk
-func chunk_lines(terrain_system: MarchingSquaresTerrain, coords: Vector2i, newchunk: bool):
+func add_new_chunk_lines(terrain_system: MarchingSquaresTerrain, coords: Vector2i):
 	var dx = (terrain_system.dimensions.x - 1) * terrain_system.cell_size.x
 	var dz = (terrain_system.dimensions.z - 1) * terrain_system.cell_size.y
 	var x = coords.x * dx
@@ -57,4 +53,4 @@ func chunk_lines(terrain_system: MarchingSquaresTerrain, coords: Vector2i, newch
 	lines.append(Vector3(x,0,dz))
 	lines.append(Vector3(x,0,z))
 	
-	add_lines(lines, get_plugin().get_material("newchunk" if newchunk else "filledchunk", self), false)
+	add_lines(lines, get_plugin().get_material("newchunk", self), false)

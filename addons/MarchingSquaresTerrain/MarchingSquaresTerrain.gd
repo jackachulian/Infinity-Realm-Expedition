@@ -4,7 +4,7 @@ class_name MarchingSquaresTerrain
 extends Node3D
 
 # Total amount of height values in X and Z direction, and total height range
-@export var dimensions: Vector3i = Vector3i(32, 32, 32)
+@export var dimensions: Vector3i = Vector3i(33, 32, 33)
 # XZ Unit size of each cell
 @export var cell_size: Vector2 = Vector2(2, 2)
 
@@ -37,9 +37,19 @@ func has_chunk(x: int, z: int) -> bool:
 func add_new_chunk(x: int, z: int):
 	var chunk_coords := Vector2i(x, z)
 	var new_chunk := MarchingSquaresTerrainChunk.new()
-	new_chunk.name = "Chunk "+str(chunk_coords)
-	new_chunk.chunk_coords = chunk_coords
 	chunks[chunk_coords] = new_chunk
+	new_chunk.terrain_system = self
+	new_chunk.chunk_coords = chunk_coords
+	new_chunk.global_position = Vector3(
+		x * ((dimensions.x - 1) * cell_size.x),
+		0,
+		z * ((dimensions.z - 1) * cell_size.y)
+	)
+	new_chunk.name = "Chunk "+str(chunk_coords)
 	add_child(new_chunk)
+	new_chunk.owner = EditorInterface.get_edited_scene_root()
+	print("this is ", self)
+	print("new chunk's parent: ", new_chunk.get_parent())
+	print("new chunk's owner: ", new_chunk.owner)
 	new_chunk.initialize_terrain()
 	print("added new chunk to terrain system at ", chunk_coords)

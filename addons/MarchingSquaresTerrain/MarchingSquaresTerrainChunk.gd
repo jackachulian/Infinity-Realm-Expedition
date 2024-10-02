@@ -60,6 +60,12 @@ func initialize_terrain():
 		regenerate_mesh()
 	else:
 		print("trying to generate terrain during runtime; not supported")
+		
+func _exit_tree() -> void:
+	terrain_system.chunks.erase(chunk_coords)
+	
+	var scene_name = get_tree().current_scene.name
+	ResourceSaver.save(mesh, "res://"+scene_name+"/"+name+".tres", ResourceSaver.FLAG_COMPRESS)
 
 func regenerate_mesh():	
 	st = SurfaceTool.new()
@@ -700,8 +706,8 @@ func load_height_map():
 	if noise:
 		for z in range(dimensions.z):
 			for x in range(dimensions.x):
-				var noise_x = (chunk_coords.x * dimensions.x) + x
-				var noise_z = (chunk_coords.y * dimensions.z) + z
+				var noise_x = (chunk_coords.x * (dimensions.x - 1)) + x
+				var noise_z = (chunk_coords.y * (dimensions.z -1)) + z
 				var noise_sample = noise.get_noise_2d(noise_x, noise_z)
 				height_map[z][x] = (noise_sample - 0.5) * dimensions.y
 	else:

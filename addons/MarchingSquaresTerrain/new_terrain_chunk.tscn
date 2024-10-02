@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://lkoyvbi3y6qu"]
+
+[ext_resource type="Script" path="res://addons/MarchingSquaresTerrain/MarchingSquaresTerrainChunk.gd" id="1_wa51w"]
+
+[node name="NewTerrainChunk" type="MeshInstance3D"]
+script = ExtResource("1_wa51w")
