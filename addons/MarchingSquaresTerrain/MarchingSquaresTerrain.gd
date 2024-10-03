@@ -53,6 +53,14 @@ func remove_chunk(x: int, z: int):
 	chunks.erase(chunk)
 	chunk.free()
 	
+# remove a chunk but still keep it in memory (so that undo can restore it)
+func remove_chunk_from_tree(x: int, z: int):
+	var chunk_coords := Vector2i(x, z)
+	var chunk: MarchingSquaresTerrainChunk = chunks[chunk_coords]
+	chunks.erase(chunk)
+	remove_child(chunk)
+	chunk.owner = null
+	
 func add_chunk(coords: Vector2i, chunk: MarchingSquaresTerrainChunk):
 	chunks[coords] = chunk
 	chunk.terrain_system = self

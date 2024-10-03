@@ -119,9 +119,10 @@ func handle_mouse(camera: Camera3D, event: InputEvent) -> int:
 			if chunk:
 				# If in remove chunk mode, remove the chunk
 				if mode == TerrainToolMode.REMOVE_CHUNK:
+					var removed_chunk = terrain.chunks[chunk_coords]
 					get_undo_redo().create_action("remove chunk")
-					get_undo_redo().add_do_method(terrain, "remove_chunk", chunk_x, chunk_z)
-					get_undo_redo().add_undo_method(terrain, "add_chunk", chunk_coords, terrain.chunks[chunk_coords])
+					get_undo_redo().add_do_method(terrain, "remove_chunk_from_tree", chunk_x, chunk_z)
+					get_undo_redo().add_undo_method(terrain, "add_chunk", chunk_coords, removed_chunk)
 					get_undo_redo().commit_action()
 					return EditorPlugin.AFTER_GUI_INPUT_STOP
 			else:
