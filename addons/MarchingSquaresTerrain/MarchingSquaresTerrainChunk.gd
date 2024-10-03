@@ -64,8 +64,9 @@ func initialize_terrain():
 func _exit_tree() -> void:
 	terrain_system.chunks.erase(chunk_coords)
 	
-	var scene_name = get_tree().current_scene.name
-	ResourceSaver.save(mesh, "res://"+scene_name+"/"+name+".tres", ResourceSaver.FLAG_COMPRESS)
+	var scene = get_tree().current_scene
+	if scene:
+		ResourceSaver.save(mesh, "res://"+scene.name+"/"+name+".tres", ResourceSaver.FLAG_COMPRESS)
 
 func regenerate_mesh():	
 	st = SurfaceTool.new()

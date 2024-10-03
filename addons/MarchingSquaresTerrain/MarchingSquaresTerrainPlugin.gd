@@ -15,6 +15,9 @@ enum TerrainToolMode {
 }
 var mode: TerrainToolMode = TerrainToolMode.BRUSH
 
+var is_chunk_hovered: bool
+var current_hovered_chunk: Vector2i
+
 # This function gets called when the plugin is activated.
 func _enter_tree():
 	instance = self
@@ -85,17 +88,23 @@ func handle_mouse(camera: Camera3D, event: InputEvent) -> int:
 		var result = space_state.intersect_ray(query)
 
 		if result:
-			# Tell plugin no chunk is selected (TODO: send actual chunk maybe)
-			gizmo_plugin.terrain_gizmo.current_hovered_chunk = null
+			var chunk_x: int = floor(result.position.x / (terrain.dimensions.x * terrain.cell_size.x))
+			var chunk_z: int = floor(result.position.z / (terrain.dimensions.z * terrain.cell_size.y))
+			var chunk_coords = Vector2i(chunk_x, chunk_z)
+
+			is_chunk_hovered = true
+			current_hovered_chunk = chunk_coords
 			
 			var intersection_pos = result.position
 			var body: PhysicsBody3D = result.collider;
-			print("Intersected with ", body.name, " at:", intersection_pos)
-			return EditorPlugin.AFTER_GUI_INPUT_STOP
+			
+			if event is InputEventMouseButton and event.is_pressed() and event.button_index == MouseButton.MOUSE_BUTTON_LEFT:
+				print("Clicked ", body.name, " at: ", intersection_pos)
 		
 	# Check for hovering over/ckicking new chunk
 	var chunk_plane = Plane(Vector3.UP, Vector3.ZERO)
 	var intersection = chunk_plane.intersects_ray(ray_origin, ray_dir)
+	
 	if intersection:
 		var chunk_x: int = floor(intersection.x / (terrain.dimensions.x * terrain.cell_size.x))
 		var chunk_z: int = floor(intersection.z / (terrain.dimensions.z * terrain.cell_size.y))
@@ -103,10 +112,11 @@ func handle_mouse(camera: Camera3D, event: InputEvent) -> int:
 		var chunk = terrain.chunks.get(chunk_coords)
 		
 		if chunk:
-			gizmo_plugin.terrain_gizmo.current_hovered_chunk = chunk_coords
-		elif gizmo_plugin.terrain_gizmo:
-			gizmo_plugin.terrain_gizmo.current_hovered_chunk = null
-		
+			is_chunk_hovered = true
+			current_hovered_chunk = chunk_coords
+		else:
+			is_chunk_hovered = false
+			
 		# On click, add chunk if in brush mode, or remove if in remove chunk mode
 		if event is InputEventMouseButton and event.is_pressed() and event.button_index == MouseButton.MOUSE_BUTTON_LEFT:
 			if chunk:
@@ -123,10 +133,17 @@ func handle_mouse(camera: Camera3D, event: InputEvent) -> int:
 					if can_add_empty:
 						print("adding new empty chunk")
 						terrain.add_new_chunk(chunk_x, chunk_z)
-						gizmo_plugin.terrain_gizmo._redraw()
-						return EditorPlugin.AFTER_GUI_INPUT_STOP
-			
+		
+		gizmo_plugin.terrain_gizmo._redraw()
+	else:
+		is_chunk_hovered = false
+		
+	# Consume clicks but allow other click / mouse motion types to reach the gui, for camera movement, etc	
+	if event is InputEventMouseButton and event.is_pressed() and event.button_index == MouseButton.MOUSE_BUTTON_LEFT:
+		return EditorPlugin.AFTER_GUI_INPUT_STOP
+		
 	return EditorPlugin.AFTER_GUI_INPUT_PASS
 
 func on_terrain_tool_changed(index: int):
+	print("set mode to ", index)
 	mode = index

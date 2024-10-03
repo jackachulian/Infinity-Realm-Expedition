@@ -3,8 +3,9 @@ class_name MarchingSquaresTerrainGizmoPlugin
 extends EditorNode3DGizmoPlugin
 	
 func _init():
-	create_material("filledchunk", Color(0,1,1))
-	create_material("newchunk", Color(1,0,1))
+	#create_material("filledchunk", Color(0,1,1))
+	create_material("newchunk", Color(1,0,1), false, true)
+	create_material("removechunk", Color(1,0,0), false, true)
 	create_material("newchunkhover", Color(0,1,0))
 	create_material("brush", Color(1,1,1))
 	create_handle_material("handles")
