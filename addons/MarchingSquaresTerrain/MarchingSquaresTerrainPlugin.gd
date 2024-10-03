@@ -18,6 +18,22 @@ var mode: TerrainToolMode = TerrainToolMode.BRUSH
 var is_chunk_plane_hovered: bool
 var current_hovered_chunk: Vector2i
 
+var brush_position: Vector3
+
+# current drawing radius
+var brush_radius: float
+
+# A dictionary with keys for each tile that is currently being drawn to with the brush (value is not used)
+# would use a Set but there is none in gdscript
+var current_draw_pattern: Dictionary
+
+var terrain_hovered: bool
+
+# True if the mouse is currently held down to draw
+var is_drawing: bool
+
+const BRUSH_VISUAL: Mesh = preload("brush_visual.tres")
+
 # This function gets called when the plugin is activated.
 func _enter_tree():
 	instance = self
@@ -69,6 +85,7 @@ func _forward_3d_gui_input(camera: Camera3D, event: InputEvent) -> int:
 	return EditorPlugin.AFTER_GUI_INPUT_PASS
 	
 func handle_mouse(camera: Camera3D, event: InputEvent) -> int:
+	terrain_hovered = false
 	var terrain: MarchingSquaresTerrain = EditorInterface.get_selection().get_selected_nodes()[0]
 	
 	# Get the mouse position in the viewport
@@ -87,7 +104,9 @@ func handle_mouse(camera: Camera3D, event: InputEvent) -> int:
 		var query := PhysicsRayQueryParameters3D.create(ray_origin, end)
 		var result = space_state.intersect_ray(query)
 
+		# Check for terrain collision
 		if result:
+			terrain_hovered = true
 			var chunk_x: int = floor(result.position.x / (terrain.dimensions.x * terrain.cell_size.x))
 			var chunk_z: int = floor(result.position.z / (terrain.dimensions.z * terrain.cell_size.y))
 			var chunk_coords = Vector2i(chunk_x, chunk_z)
@@ -98,8 +117,17 @@ func handle_mouse(camera: Camera3D, event: InputEvent) -> int:
 			var intersection_pos = result.position
 			var body: PhysicsBody3D = result.collider;
 			
-			if event is InputEventMouseButton and event.is_pressed() and event.button_index == MouseButton.MOUSE_BUTTON_LEFT:
-				print("Clicked ", body.name, " at: ", intersection_pos)
+			if event is InputEventMouseButton and event.button_index == MouseButton.MOUSE_BUTTON_LEFT:
+				if event.is_pressed():
+					print("Clicked ", body.name, " at: ", intersection_pos)
+					is_drawing = true
+				elif event.is_released():
+					is_drawing = false
+					pass
+				return EditorPlugin.AFTER_GUI_INPUT_STOP
+				
+			if event is InputEventMouseMotion:
+				brush_position = result.position
 		
 	# Check for hovering over/ckicking new chunk
 	var chunk_plane = Plane(Vector3.UP, Vector3.ZERO)

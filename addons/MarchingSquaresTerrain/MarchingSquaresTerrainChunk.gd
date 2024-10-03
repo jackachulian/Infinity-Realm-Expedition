@@ -56,8 +56,8 @@ var needs_update: Array[Array]
 # called by TerrainSystem parent
 func initialize_terrain():
 	if Engine.is_editor_hint():
+		load_height_map()
 		if not mesh:
-			load_height_map()
 			regenerate_mesh()
 	else:
 		print("trying to generate terrain during runtime; not supported")
@@ -696,7 +696,7 @@ func load_height_map():
 		if image:
 			for z in range(min(dimensions.z, image.get_height())):
 				for x in range(min(dimensions.x, image.get_width())):
-					var height = (image.get_pixel(x, z).r - 0.5) * dimensions.y
+					var height = image.get_pixel(x, z).r * dimensions.y
 					
 					if terrain_system.height_banding > 0:
 						height = round(height / terrain_system.height_banding) * terrain_system.height_banding
@@ -711,7 +711,7 @@ func load_height_map():
 				var noise_x = (chunk_coords.x * (dimensions.x - 1)) + x
 				var noise_z = (chunk_coords.y * (dimensions.z -1)) + z
 				var noise_sample = noise.get_noise_2d(noise_x, noise_z)
-				height_map[z][x] = (noise_sample - 0.5) * dimensions.y
+				height_map[z][x] = noise_sample * dimensions.y
 	else:
 		print("no noise")
 	

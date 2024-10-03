@@ -6,6 +6,9 @@ var lines: PackedVector3Array = PackedVector3Array()
 
 var addchunk_material: Material
 var removechunk_material: Material
+var brush_material: Material
+
+var terrain_plugin: MarchingSquaresTerrainPlugin
 
 func _redraw():
 	lines.clear()
@@ -13,8 +16,10 @@ func _redraw():
 	
 	addchunk_material = get_plugin().get_material("addchunk", self)
 	removechunk_material = get_plugin().get_material("removechunk", self)
+	brush_material = get_plugin().get_material("brush", self)
 
 	var terrain_system: MarchingSquaresTerrain = get_node_3d()
+	terrain_plugin = MarchingSquaresTerrainPlugin.instance
 	
 	# Only draw the gizmo if this is the only selected node
 	if len(EditorInterface.get_selection().get_selected_nodes()) != 1:
@@ -33,6 +38,14 @@ func _redraw():
 				try_add_chunk(terrain_system, Vector2i(chunk_coords.x, chunk_coords.y-1))
 				try_add_chunk(terrain_system, Vector2i(chunk_coords.x, chunk_coords.y+1))
 			try_add_chunk(terrain_system, chunk_coords)
+			
+	if terrain_plugin.terrain_hovered:
+		#print("adding ", terrain_plugin.BRUSH_VISUAL, " at ", terrain_plugin.brush_position, " with material ", brush_material)
+		var chunk: MarchingSquaresTerrainChunk = terrain_system.chunks[terrain_plugin.current_hovered_chunk]
+		var pos = terrain_plugin.brush_position
+		var rounded_position = Vector3(round(pos.x / terrain_system.cell_size.x) * terrain_system.cell_size.x, pos.y, round(pos.z / terrain_system.cell_size.y) * terrain_system.cell_size.y)
+		var draw_transform = Transform3D(Vector3.RIGHT, Vector3.UP, Vector3.BACK, rounded_position)
+		add_mesh(terrain_plugin.BRUSH_VISUAL, brush_material, draw_transform)
 		
 func try_add_chunk(terrain_system: MarchingSquaresTerrain, coords: Vector2i):
 	var terrain_plugin = MarchingSquaresTerrainPlugin.instance
