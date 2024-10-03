@@ -56,8 +56,9 @@ var needs_update: Array[Array]
 # called by TerrainSystem parent
 func initialize_terrain():
 	if Engine.is_editor_hint():
-		load_height_map()
-		regenerate_mesh()
+		if not mesh:
+			load_height_map()
+			regenerate_mesh()
 	else:
 		print("trying to generate terrain during runtime; not supported")
 		

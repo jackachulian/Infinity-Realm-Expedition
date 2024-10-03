@@ -6,5 +6,5 @@ offset_bottom = 31.0
 selected = 0
 item_count = 2
 popup/item_0/text = "Brush"
-popup/item_1/text = "Remove Chunk"
+popup/item_1/text = "Remove Chunks"
 popup/item_1/id = 1

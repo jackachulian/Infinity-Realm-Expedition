@@ -3,10 +3,15 @@ class_name MarchingSquaresTerrainGizmo
 extends EditorNode3DGizmo
 
 var lines: PackedVector3Array = PackedVector3Array()
-var chunks_and_empty: Dictionary = {}
+
+var addchunk_material: Material
+var removechunk_material: Material
 
 func _redraw():
 	clear()
+	
+	addchunk_material = get_plugin().get_material("addchunk", self)
+	removechunk_material = get_plugin().get_material("removechunk", self)
 
 	var terrain_system: MarchingSquaresTerrain = get_node_3d()
 	
@@ -16,31 +21,27 @@ func _redraw():
 	if EditorInterface.get_selection().get_selected_nodes()[0] != terrain_system:
 		return
 
-	lines.clear()
-	chunks_and_empty.clear()
 	for chunk_coords: Vector2i in terrain_system.chunks:
+		if MarchingSquaresTerrainPlugin.instance.mode == MarchingSquaresTerrainPlugin.TerrainToolMode.BRUSH:
+			try_add_chunk(terrain_system, Vector2i(chunk_coords.x-1, chunk_coords.y))
+			try_add_chunk(terrain_system, Vector2i(chunk_coords.x+1, chunk_coords.y))
+			try_add_chunk(terrain_system, Vector2i(chunk_coords.x, chunk_coords.y-1))
+			try_add_chunk(terrain_system, Vector2i(chunk_coords.x, chunk_coords.y+1))
 		try_add_chunk(terrain_system, chunk_coords)
-		try_add_chunk(terrain_system, Vector2i(chunk_coords.x-1, chunk_coords.y))
-		try_add_chunk(terrain_system, Vector2i(chunk_coords.x+1, chunk_coords.y))
-		try_add_chunk(terrain_system, Vector2i(chunk_coords.x, chunk_coords.y-1))
-		try_add_chunk(terrain_system, Vector2i(chunk_coords.x, chunk_coords.y+1))
 		
-
-func try_add_chunk(terrain_system, coords: Vector2i):
-	# Empty chunks
-	if not chunks_and_empty.has(coords):
-		chunks_and_empty[coords] = null
-		add_chunk_lines(terrain_system, coords, "newchunk")
-		return
-		
-	# Chunk that is hovered over while in remove chunk move (shows in red)
+func try_add_chunk(terrain_system: MarchingSquaresTerrain, coords: Vector2i):
 	var terrain_plugin = MarchingSquaresTerrainPlugin.instance
-	if terrain_plugin.mode == terrain_plugin.TerrainToolMode.REMOVE_CHUNK and terrain_plugin.is_chunk_hovered and terrain_plugin.current_hovered_chunk == coords:
-		print("DRAW REMOVE CHUBNKL ", coords)
-		add_chunk_lines(terrain_system, coords, "removechunk") 
+	
+	# Add chunk
+	if not terrain_system.chunks.has(coords) and terrain_plugin.mode == terrain_plugin.TerrainToolMode.BRUSH and terrain_plugin.is_chunk_plane_hovered and terrain_plugin.current_hovered_chunk == coords:
+		add_chunk_lines(terrain_system, coords, addchunk_material)
+		
+	# Remove chunk
+	elif terrain_plugin.mode == terrain_plugin.TerrainToolMode.REMOVE_CHUNK and terrain_plugin.is_chunk_plane_hovered and terrain_plugin.current_hovered_chunk == coords:
+		add_chunk_lines(terrain_system, coords, removechunk_material) 
 
 # Draw chunk lines around a chunk
-func add_chunk_lines(terrain_system: MarchingSquaresTerrain, coords: Vector2i, material_name: String):
+func add_chunk_lines(terrain_system: MarchingSquaresTerrain, coords: Vector2i, material: Material):
 	var dx = (terrain_system.dimensions.x - 1) * terrain_system.cell_size.x
 	var dz = (terrain_system.dimensions.z - 1) * terrain_system.cell_size.y
 	var x = coords.x * dx
@@ -48,6 +49,7 @@ func add_chunk_lines(terrain_system: MarchingSquaresTerrain, coords: Vector2i, m
 	dx += x
 	dz += z
 	
+	lines.clear()
 	if not terrain_system.chunks.has(Vector2i(coords.x, coords.y-1)):
 		lines.append(Vector3(x,0,z))
 		lines.append(Vector3(dx,0,z))
@@ -61,10 +63,18 @@ func add_chunk_lines(terrain_system: MarchingSquaresTerrain, coords: Vector2i, m
 		lines.append(Vector3(x,0,dz))
 		lines.append(Vector3(x,0,z))
 	
-	if material_name == "removechunk":
+	if material == removechunk_material:
 		lines.append(Vector3(x,0,z))
 		lines.append(Vector3(dx,0,dz))
 		lines.append(Vector3(dx,0,z))
 		lines.append(Vector3(x,0,dz))
+		
+	if material == addchunk_material:
+		lines.append(Vector3(lerp(x, dx, 0.25), 0, lerp(z, dz, 0.5)))
+		lines.append(Vector3(lerp(x, dx, 0.75), 0, lerp(z, dz, 0.5)))
+		lines.append(Vector3(lerp(x, dx, 0.5), 0, lerp(z, dz, 0.25)))
+		lines.append(Vector3(lerp(x, dx, 0.5), 0, lerp(z, dz, 0.75)))
+		
 	
-	add_lines(lines, get_plugin().get_material(material_name, self), false)
+	add_lines(lines, material, false)
+	
