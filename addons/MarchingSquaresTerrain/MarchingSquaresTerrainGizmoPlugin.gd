@@ -4,7 +4,7 @@ extends EditorNode3DGizmoPlugin
 	
 func _init():
 	#create_material("filledchunk", Color(0,1,1))
-	create_material("brush", Color(1,1,1))
+	create_material("brush", Color(1,1,1), false, true)
 	create_material("removechunk", Color(1,0,0), false, true)
 	create_material("addchunk", Color(0,1,0), false, true)
 	create_handle_material("handles")
