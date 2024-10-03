@@ -128,6 +128,9 @@ func handle_mouse(camera: Camera3D, event: InputEvent) -> int:
 				
 			if event is InputEventMouseMotion:
 				brush_position = result.position
+				
+			gizmo_plugin.terrain_gizmo._redraw()
+			return EditorPlugin.AFTER_GUI_INPUT_PASS
 		
 	# Check for hovering over/ckicking new chunk
 	var chunk_plane = Plane(Vector3.UP, Vector3.ZERO)

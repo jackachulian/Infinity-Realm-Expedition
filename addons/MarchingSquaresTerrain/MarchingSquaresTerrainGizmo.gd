@@ -39,11 +39,12 @@ func _redraw():
 				try_add_chunk(terrain_system, Vector2i(chunk_coords.x, chunk_coords.y+1))
 			try_add_chunk(terrain_system, chunk_coords)
 			
-	if terrain_plugin.terrain_hovered:
+	if terrain_plugin.terrain_hovered and terrain_system.chunks.has(terrain_plugin.current_hovered_chunk):
 		#print("adding ", terrain_plugin.BRUSH_VISUAL, " at ", terrain_plugin.brush_position, " with material ", brush_material)
 		var chunk: MarchingSquaresTerrainChunk = terrain_system.chunks[terrain_plugin.current_hovered_chunk]
 		var pos = terrain_plugin.brush_position
-		var rounded_position = Vector3(round(pos.x / terrain_system.cell_size.x) * terrain_system.cell_size.x, pos.y, round(pos.z / terrain_system.cell_size.y) * terrain_system.cell_size.y)
+		var preview_height = round(pos.y / terrain_system.height_banding) * terrain_system.height_banding if terrain_system.height_banding > 0 else pos.y
+		var rounded_position = Vector3(round(pos.x / terrain_system.cell_size.x) * terrain_system.cell_size.x, preview_height, round(pos.z / terrain_system.cell_size.y) * terrain_system.cell_size.y)
 		var draw_transform = Transform3D(Vector3.RIGHT, Vector3.UP, Vector3.BACK, rounded_position)
 		add_mesh(terrain_plugin.BRUSH_VISUAL, brush_material, draw_transform)
 		
