@@ -5,6 +5,9 @@ extends EditorNode3DGizmo
 var lines: PackedVector3Array = PackedVector3Array()
 var chunks_and_empty: Dictionary
 
+# sent from Plugin to GizmoPlugin to this gizmo
+var current_hovered_chunk: Vector2i
+
 func _redraw():
 	clear()
 

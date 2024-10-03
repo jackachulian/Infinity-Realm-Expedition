@@ -1,19 +1,10 @@
 [gd_scene format=3 uid="uid://h1yig2twfhgv"]
 
-[node name="Terrain-brush-button" type="Control"]
-layout_mode = 3
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="OptionButton" type="OptionButton" parent="."]
-layout_mode = 0
-offset_right = 32.0
-offset_bottom = 20.0
+[node name="Terrain-brush-button" type="OptionButton"]
+offset_right = 117.0
+offset_bottom = 31.0
 selected = 0
 item_count = 2
 popup/item_0/text = "Brush"
-popup/item_1/text = "Set Height"
+popup/item_1/text = "Remove Chunk"
 popup/item_1/id = 1

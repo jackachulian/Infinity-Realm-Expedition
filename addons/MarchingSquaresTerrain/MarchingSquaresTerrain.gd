@@ -53,3 +53,9 @@ func add_new_chunk(x: int, z: int):
 	print("new chunk's owner: ", new_chunk.owner)
 	new_chunk.initialize_terrain()
 	print("added new chunk to terrain system at ", chunk_coords)
+
+func remove_chunk(x: int, z: int):
+	var chunk_coords := Vector2i(x, z)
+	var chunk: MarchingSquaresTerrainChunk = chunks[chunk_coords]
+	chunks.erase(chunk)
+	chunk.free()

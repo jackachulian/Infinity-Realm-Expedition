@@ -9,10 +9,15 @@ func _init():
 	create_material("brush", Color(1,1,1))
 	create_handle_material("handles")
 	
+var chunk_gizmo: MarchingSquaresTerrainChunkGizmo
+var terrain_gizmo: MarchingSquaresTerrainGizmo
+	
 func _create_gizmo(node):
 	if node is MarchingSquaresTerrainChunk:
-		return MarchingSquaresTerrainChunkGizmo.new()
+		chunk_gizmo = MarchingSquaresTerrainChunkGizmo.new()
+		return chunk_gizmo
 	elif node is MarchingSquaresTerrain:
-		return MarchingSquaresTerrainGizmo.new()
+		terrain_gizmo = MarchingSquaresTerrainGizmo.new()
+		return terrain_gizmo
 	else:
 		return null
