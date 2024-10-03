@@ -22,10 +22,16 @@ extends Node3D
 
 var chunks: Dictionary = {}
 
+func _enter_tree() -> void:
+	for chunk in get_children():
+		if chunk is MarchingSquaresTerrainChunk:
+			chunks[chunk.chunk_coords] = chunk
+
 func _ready() -> void:
 	if not Engine.is_editor_hint():
 		return
 		
+	chunks.clear()
 	for chunk in get_children():
 		if chunk is MarchingSquaresTerrainChunk:
 			chunks[chunk.chunk_coords] = chunk
@@ -37,25 +43,27 @@ func has_chunk(x: int, z: int) -> bool:
 func add_new_chunk(x: int, z: int):
 	var chunk_coords := Vector2i(x, z)
 	var new_chunk := MarchingSquaresTerrainChunk.new()
-	chunks[chunk_coords] = new_chunk
-	new_chunk.terrain_system = self
-	new_chunk.chunk_coords = chunk_coords
-	new_chunk.global_position = Vector3(
-		x * ((dimensions.x - 1) * cell_size.x),
-		0,
-		z * ((dimensions.z - 1) * cell_size.y)
-	)
 	new_chunk.name = "Chunk "+str(chunk_coords)
-	add_child(new_chunk)
-	new_chunk.owner = EditorInterface.get_edited_scene_root()
-	print("this is ", self)
-	print("new chunk's parent: ", new_chunk.get_parent())
-	print("new chunk's owner: ", new_chunk.owner)
-	new_chunk.initialize_terrain()
-	print("added new chunk to terrain system at ", chunk_coords)
+	add_chunk(chunk_coords, new_chunk)
+	
 
 func remove_chunk(x: int, z: int):
 	var chunk_coords := Vector2i(x, z)
 	var chunk: MarchingSquaresTerrainChunk = chunks[chunk_coords]
 	chunks.erase(chunk)
 	chunk.free()
+	
+func add_chunk(coords: Vector2i, chunk: MarchingSquaresTerrainChunk):
+	chunks[coords] = chunk
+	chunk.terrain_system = self
+	chunk.chunk_coords = coords
+	chunk.global_position = Vector3(
+		coords.x * ((dimensions.x - 1) * cell_size.x),
+		0,
+		coords.y * ((dimensions.z - 1) * cell_size.y)
+	)
+	
+	add_child(chunk)
+	chunk.owner = EditorInterface.get_edited_scene_root()
+	chunk.initialize_terrain()
+	print("added new chunk to terrain system at ", chunk)

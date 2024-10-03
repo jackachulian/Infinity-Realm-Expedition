@@ -8,6 +8,7 @@ var addchunk_material: Material
 var removechunk_material: Material
 
 func _redraw():
+	lines.clear()
 	clear()
 	
 	addchunk_material = get_plugin().get_material("addchunk", self)
@@ -21,13 +22,17 @@ func _redraw():
 	if EditorInterface.get_selection().get_selected_nodes()[0] != terrain_system:
 		return
 
-	for chunk_coords: Vector2i in terrain_system.chunks:
-		if MarchingSquaresTerrainPlugin.instance.mode == MarchingSquaresTerrainPlugin.TerrainToolMode.BRUSH:
-			try_add_chunk(terrain_system, Vector2i(chunk_coords.x-1, chunk_coords.y))
-			try_add_chunk(terrain_system, Vector2i(chunk_coords.x+1, chunk_coords.y))
-			try_add_chunk(terrain_system, Vector2i(chunk_coords.x, chunk_coords.y-1))
-			try_add_chunk(terrain_system, Vector2i(chunk_coords.x, chunk_coords.y+1))
-		try_add_chunk(terrain_system, chunk_coords)
+	if terrain_system.chunks.is_empty():
+		if MarchingSquaresTerrainPlugin.instance.is_chunk_plane_hovered:
+			add_chunk_lines(terrain_system, MarchingSquaresTerrainPlugin.instance.current_hovered_chunk, addchunk_material)
+	else:
+		for chunk_coords: Vector2i in terrain_system.chunks:
+			if MarchingSquaresTerrainPlugin.instance.mode == MarchingSquaresTerrainPlugin.TerrainToolMode.BRUSH:
+				try_add_chunk(terrain_system, Vector2i(chunk_coords.x-1, chunk_coords.y))
+				try_add_chunk(terrain_system, Vector2i(chunk_coords.x+1, chunk_coords.y))
+				try_add_chunk(terrain_system, Vector2i(chunk_coords.x, chunk_coords.y-1))
+				try_add_chunk(terrain_system, Vector2i(chunk_coords.x, chunk_coords.y+1))
+			try_add_chunk(terrain_system, chunk_coords)
 		
 func try_add_chunk(terrain_system: MarchingSquaresTerrain, coords: Vector2i):
 	var terrain_plugin = MarchingSquaresTerrainPlugin.instance

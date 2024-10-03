@@ -36,7 +36,7 @@ func activate_terrain_brush_dock():
 	if not terrain_brush_dock_active:
 		terrain_brush_dock = preload("terrain-brush-dock.tscn").instantiate()
 		terrain_brush_dock_active = true
-		terrain_brush_dock.select(mode)
+		terrain_brush_dock.selected = mode
 		terrain_brush_dock.item_selected.connect(on_terrain_tool_changed)
 		add_control_to_container(CONTAINER_SPATIAL_EDITOR_MENU, terrain_brush_dock)
 		
@@ -119,17 +119,22 @@ func handle_mouse(camera: Camera3D, event: InputEvent) -> int:
 			if chunk:
 				# If in remove chunk mode, remove the chunk
 				if mode == TerrainToolMode.REMOVE_CHUNK:
-					terrain.remove_chunk(chunk_x, chunk_z)
-					gizmo_plugin.terrain_gizmo._redraw()
+					get_undo_redo().create_action("remove chunk")
+					get_undo_redo().add_do_method(terrain, "remove_chunk", chunk_x, chunk_z)
+					get_undo_redo().add_undo_method(terrain, "add_chunk", chunk_coords, terrain.chunks[chunk_coords])
+					get_undo_redo().commit_action()
 					return EditorPlugin.AFTER_GUI_INPUT_STOP
 			else:
 				if mode == TerrainToolMode.BRUSH:
 					# Can add a new chunk here if there is a neighbouring non-empty chunk
 					# also add if there are no chunks
 					var can_add_empty: bool = terrain.chunks.is_empty() or terrain.has_chunk(chunk_x-1, chunk_z) or terrain.has_chunk(chunk_x+1, chunk_z) or terrain.has_chunk(chunk_x, chunk_z-1) or terrain.has_chunk(chunk_x, chunk_z+1)
-					if can_add_empty:
-						print("adding new empty chunk")
-						terrain.add_new_chunk(chunk_x, chunk_z)
+					if can_add_empty:				
+						get_undo_redo().create_action("add chunk")
+						get_undo_redo().add_do_method(terrain, "add_new_chunk", chunk_x, chunk_z)
+						get_undo_redo().add_undo_method(terrain, "remove_chunk", chunk_x, chunk_z)
+						get_undo_redo().commit_action()
+						return EditorPlugin.AFTER_GUI_INPUT_STOP
 		
 		gizmo_plugin.terrain_gizmo._redraw()
 	else:
