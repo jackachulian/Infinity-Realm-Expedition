@@ -91,7 +91,7 @@ func _set_handle(handle_id: int, secondary: bool, camera: Camera3D, screen_pos: 
 	
 	# We want the movement restricted to the Y-axis.
 	# Create a plane that is parallel to the XZ plane (normal pointing along Y-axis)
-	var plane = Plane(ray_dir, handle_position)
+	var plane = Plane(Vector3(ray_dir.x, 0, ray_dir.z), handle_position)
 	var intersection = plane.intersects_ray(ray_origin, ray_dir)
 	#
 	#print("handle_position ", handle_position, "ray_origin ", ray_origin, "ray_dir ", ray_dir, "plane ", plane)

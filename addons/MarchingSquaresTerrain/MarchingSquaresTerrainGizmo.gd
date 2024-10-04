@@ -44,8 +44,9 @@ func _redraw():
 	var terrain_chunk_hovered: bool = terrain_plugin.terrain_hovered and terrain_system.chunks.has(terrain_plugin.current_hovered_chunk)
 	var cursor_chunk_coords: Vector2i
 	var cursor_cell_coords: Vector2i
+	var pos: Vector3
 	if terrain_chunk_hovered:
-		var pos = terrain_plugin.brush_position
+		pos = terrain_plugin.brush_position
 		
 		var chunk_space_coords = Vector2(pos.x / terrain_system.cell_size.x, pos.z / terrain_system.cell_size.y)
 		
@@ -60,7 +61,7 @@ func _redraw():
 		var z = int(floor(((pos.z + terrain_system.cell_size.y/2) / terrain_system.cell_size.y) - chunk_z * (terrain_system.dimensions.z - 1)))
 		var y
 		
-		if not terrain_plugin.current_draw_pattern.is_empty():
+		if not terrain_plugin.current_draw_pattern.is_empty() and terrain_plugin.flatten:
 			y = terrain_plugin.draw_height
 		else:
 			y = chunk.height_map[z][x]
@@ -80,19 +81,32 @@ func _redraw():
 			print("drawing")
 			terrain_plugin.draw_height_set = true
 			terrain_plugin.draw_height = pos.y
-				
-		# if not height setting and still drawing, draw to the pattern. clear the pattern beforehand if shift is not held
-		if terrain_plugin.is_setting and not terrain_plugin.draw_height_set:
-			print("setting")
-			terrain_plugin.draw_height_set = true
-			terrain_plugin.base_position = pos
 		
 	# Draw to current pattern
 	if terrain_chunk_hovered and terrain_plugin.is_drawing:
-		if not terrain_plugin.current_draw_pattern.has(cursor_chunk_coords):
-			terrain_plugin.current_draw_pattern[cursor_chunk_coords] = {}
-		terrain_plugin.current_draw_pattern[cursor_chunk_coords][cursor_cell_coords] = true
-	
+			if not terrain_plugin.current_draw_pattern.has(cursor_chunk_coords):
+				terrain_plugin.current_draw_pattern[cursor_chunk_coords] = {}
+			terrain_plugin.current_draw_pattern[cursor_chunk_coords][cursor_cell_coords] = true
+		
+	elif terrain_plugin.is_setting and not terrain_plugin.draw_height_set:
+		print("setting")
+		terrain_plugin.draw_height_set = true
+		
+		# when setting, if the clicked tile is part of the pattern, drag that pattern's height
+		if terrain_plugin.current_draw_pattern.has(cursor_chunk_coords) and terrain_plugin.current_draw_pattern[cursor_chunk_coords].has(cursor_cell_coords):
+			terrain_plugin.base_position = pos
+		
+		# if clicking otuside the pattern, just clear the current pattern and switch to drawing mode
+		else:
+			terrain_plugin.current_draw_pattern.clear()
+			terrain_plugin.is_setting = false
+			terrain_plugin.is_drawing = true
+			terrain_plugin.draw_height = pos.y
+			
+	var height_diff: float
+	if terrain_plugin.is_setting and terrain_plugin.draw_height_set:
+		height_diff = terrain_plugin.brush_position.y - terrain_plugin.draw_height
+			
 	if not terrain_plugin.current_draw_pattern.is_empty():
 		for draw_chunk_coords: Vector2i in terrain_plugin.current_draw_pattern:
 			var chunk = terrain_system.chunks[draw_chunk_coords]
@@ -103,11 +117,17 @@ func _redraw():
 				
 				var draw_x = (draw_chunk_coords.x * (terrain_system.dimensions.x - 1) + draw_coords.x) * terrain_system.cell_size.x
 				var draw_z = (draw_chunk_coords.y * (terrain_system.dimensions.z - 1) + draw_coords.y) * terrain_system.cell_size.y
-				#var draw_y = chunk.height_map[draw_coords.y][draw_coords.x]
+				var draw_y = terrain_plugin.draw_height if terrain_plugin.flatten else chunk.height_map[draw_coords.y][draw_coords.x]
 				
-				var draw_position = Vector3(draw_x, terrain_plugin.draw_height, draw_z)
+				var draw_position = Vector3(draw_x, draw_y, draw_z)
 				var draw_transform = Transform3D(Vector3.RIGHT, Vector3.UP, Vector3.BACK, draw_position)
 				add_mesh(terrain_plugin.BRUSH_VISUAL, brush_pattern_material, draw_transform)
+				
+				# If setting, also show a square at the height to set to
+				if terrain_plugin.is_setting and terrain_plugin.draw_height_set:
+					draw_position = Vector3(draw_x, draw_y + height_diff, draw_z)
+					draw_transform = Transform3D(Vector3.RIGHT, Vector3.UP, Vector3.BACK, draw_position)
+					add_mesh(terrain_plugin.BRUSH_VISUAL, brush_pattern_material, draw_transform)
 		
 func try_add_chunk(terrain_system: MarchingSquaresTerrain, coords: Vector2i):
 	var terrain_plugin = MarchingSquaresTerrainPlugin.instance

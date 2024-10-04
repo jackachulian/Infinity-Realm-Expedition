@@ -715,6 +715,49 @@ func load_height_map():
 	else:
 		print("no noise")
 	
+func get_height(cc: Vector2i) -> float:
+	return height_map[cc.y][cc.x]
+	
+# Draw to height.
+# Returns the coordinates of all additional chunks affected by this height change.
+# Empty for inner points, neightoring edge for non-corner edges, and 3 other corners for corner points.
+func draw_height(x: int, z: int, y: float) -> Dictionary:
+	# Contains chunks that were updated
+	var updated_chunks: Dictionary
+	
+	height_map[z][x] = y
+	
+	for cx in range(-1, 2):
+		for cz in range(-1, 2):
+			if not (cx == 0 and cz == 0):
+				var chunk_delta := Vector2i(cx, cz)
+				if try_draw_neighbouring_height(x, z, y, chunk_delta):
+					updated_chunks[chunk_coords + chunk_delta] = true
+	
+	return updated_chunks
+	
+func try_draw_neighbouring_height(x: int, z: int, y: float, chunk_delta: Vector2i) -> bool:
+	if not terrain_system.chunks.has(chunk_coords + chunk_delta):
+		return false
+	
+	if chunk_delta.x == 1 and x == terrain_system.dimensions.x-1:
+		x = 0
+	elif chunk_delta.x == -1 and x == 0:
+		x = terrain_system.dimensions.x-1
+	else:
+		return false
+		
+	if chunk_delta.y == 1 and z == terrain_system.dimensions.z-1:
+		z = 0
+	elif chunk_delta.y == -1 and z == 0:
+		z = terrain_system.dimensions.z-1
+	else:
+		return false
+		
+	var chunk: MarchingSquaresTerrainChunk = terrain_system.chunks[chunk_coords + chunk_delta]
+	chunk.height_map[z][x] = y
+	return true
+	
 			
 func simple_grass():
 	var grass_mesh = SurfaceTool.new();

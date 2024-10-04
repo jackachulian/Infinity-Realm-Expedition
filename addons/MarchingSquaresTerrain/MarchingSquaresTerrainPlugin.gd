@@ -132,8 +132,14 @@ func handle_mouse(camera: Camera3D, event: InputEvent) -> int:
 		var draw_position
 		var on_draw_area: bool = false
 		
-		# if there is any pattern, draw along that height plane instead of terrain intersection
-		if not current_draw_pattern.is_empty() and draw_height_set:
+		if is_setting and draw_height_set:
+			var set_plane = Plane(Vector3(ray_dir.x, 0, ray_dir.z), base_position)
+			var set_position = set_plane.intersects_ray(ray_origin, ray_dir)
+			if set_position:
+				brush_position = set_position
+		
+		# if there is any pattern and flatten is enabled, draw along that height plane instead of terrain intersection
+		elif is_drawing and not current_draw_pattern.is_empty() and draw_height_set and flatten:
 			var chunk_plane = Plane(Vector3.UP, Vector3(0, draw_height, 0))
 			draw_position = chunk_plane.intersects_ray(ray_origin, ray_dir)
 			if draw_position:
@@ -161,27 +167,30 @@ func handle_mouse(camera: Camera3D, event: InputEvent) -> int:
 			is_chunk_plane_hovered = true
 			current_hovered_chunk = chunk_coords
 
-			if event is InputEventMouseButton and event.button_index == MouseButton.MOUSE_BUTTON_LEFT:
-				if event.is_pressed():
-					draw_height_set = false
-					if Input.is_key_pressed(KEY_SHIFT):
-						is_drawing = true
-					else:
-						is_setting = true
-				elif event.is_released():
-					if is_drawing:
-						is_drawing = false
-					if is_setting:
-						is_setting = false
-						current_draw_pattern.clear()
-				gizmo_plugin.terrain_gizmo._redraw()
-				return EditorPlugin.AFTER_GUI_INPUT_STOP
-				
-			if event is InputEventMouseMotion:
-				brush_position = draw_position
-				
+		if event is InputEventMouseButton and event.button_index == MouseButton.MOUSE_BUTTON_LEFT:
+			if event.is_pressed() and on_draw_area:
+				draw_height_set = false
+				if Input.is_key_pressed(KEY_SHIFT):
+					is_drawing = true
+				else:
+					is_setting = true
+					if not flatten:
+						draw_height = draw_position.y
+			elif event.is_released():
+				if is_drawing:
+					is_drawing = false
+				if is_setting:
+					is_setting = false
+					draw_pattern(terrain)	
+					current_draw_pattern.clear()
 			gizmo_plugin.terrain_gizmo._redraw()
-			return EditorPlugin.AFTER_GUI_INPUT_PASS
+			return EditorPlugin.AFTER_GUI_INPUT_STOP
+				
+		if on_draw_area and event is InputEventMouseMotion:
+			brush_position = draw_position
+			
+		gizmo_plugin.terrain_gizmo._redraw()
+		return EditorPlugin.AFTER_GUI_INPUT_PASS
 		
 	# Check for hovering over/ckicking new chunk
 	var chunk_plane = Plane(Vector3.UP, Vector3.ZERO)
@@ -199,7 +208,7 @@ func handle_mouse(camera: Camera3D, event: InputEvent) -> int:
 		# On click, add chunk if in brush mode, or remove if in remove chunk mode
 		if mode == TerrainToolMode.MANAGE_CHUNKS and event is InputEventMouseButton and event.is_pressed() and event.button_index == MouseButton.MOUSE_BUTTON_LEFT:
 			# Remove chunk
-			if chunk and shift_held:
+			if chunk:
 				var removed_chunk = terrain.chunks[chunk_coords]
 				get_undo_redo().create_action("remove chunk")
 				get_undo_redo().add_do_method(terrain, "remove_chunk_from_tree", chunk_x, chunk_z)
@@ -208,7 +217,7 @@ func handle_mouse(camera: Camera3D, event: InputEvent) -> int:
 				return EditorPlugin.AFTER_GUI_INPUT_STOP
 				
 			# Add new chunk
-			elif not chunk and not shift_held:
+			elif not chunk:
 				# Can add a new chunk here if there is a neighbouring non-empty chunk
 				# also add if there are no chunks at all in the current terrain system
 				var can_add_empty: bool = terrain.chunks.is_empty() or terrain.has_chunk(chunk_x-1, chunk_z) or terrain.has_chunk(chunk_x+1, chunk_z) or terrain.has_chunk(chunk_x, chunk_z-1) or terrain.has_chunk(chunk_x, chunk_z+1)
@@ -228,6 +237,36 @@ func handle_mouse(camera: Camera3D, event: InputEvent) -> int:
 		return EditorPlugin.AFTER_GUI_INPUT_STOP
 		
 	return EditorPlugin.AFTER_GUI_INPUT_PASS
+
+func draw_pattern(terrain: MarchingSquaresTerrain):
+	var undo_redo := MarchingSquaresTerrainPlugin.instance.get_undo_redo()
+
+	var pattern = current_draw_pattern.duplicate(true)
+	var y_delta = brush_position.y - draw_height
+
+	undo_redo.create_action("draw to terrain")
+	undo_redo.add_do_method(self, "do_draw_pattern", terrain, pattern, y_delta)
+	undo_redo.add_undo_method(self, "do_draw_pattern", terrain, pattern, y_delta)
+	undo_redo.commit_action()
+	
+func do_draw_pattern(terrain: MarchingSquaresTerrain, pattern: Dictionary, y_delta: float):
+	# stores keys of extra chunks that need an update that arent within the pattern
+	var extra_chunks_updated: Dictionary
+	
+	for draw_chunk_coords: Vector2i in pattern:
+		var draw_chunk_dict = pattern[draw_chunk_coords]
+		var chunk: MarchingSquaresTerrainChunk = terrain.chunks[draw_chunk_coords]
+		for draw_cell_coords: Vector2i in draw_chunk_dict:
+			var y = chunk.get_height(draw_cell_coords)
+			var updated_chunk_coords: Dictionary = chunk.draw_height(draw_cell_coords.x, draw_cell_coords.y, y + y_delta)
+			for updated_coord in updated_chunk_coords:
+				if not (updated_coord in pattern):
+					extra_chunks_updated[updated_coord] = true
+				
+		chunk.regenerate_mesh()
+		
+	for updated_coords: Vector2i in extra_chunks_updated:
+		terrain.chunks[updated_coords].regenerate_mesh()
 
 func on_tool_mode_changed(index: int):
 	print("set mode to ", index)
