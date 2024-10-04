@@ -245,10 +245,44 @@ func draw_pattern(terrain: MarchingSquaresTerrain):
 	var pattern = current_draw_pattern.duplicate(true)
 	
 	# Ensure points on both sides of chunk borders are updated
+	for draw_chunk_coords: Vector2i in pattern.keys():
+		var draw_chunk_dict = pattern[draw_chunk_coords]
+		for draw_cell_coords: Vector2i in draw_chunk_dict:
+			
+			for cx in range(-1, 2):
+				for cz in range(-1, 2):
+					if (cx == 0 and cz == 0):
+						continue
+					
+					var adjacent_chunk_coords = Vector2i(draw_chunk_coords.x + cx, draw_chunk_coords.y + cz)
+					if not terrain.chunks.has(adjacent_chunk_coords):
+						continue
+						
+					var x = draw_cell_coords.x
+					var z = draw_cell_coords.y
+						
+					if cx == -1:
+						if x == 0: x = terrain.dimensions.x-1
+						else: continue
+					elif cx == 1:
+						if x == terrain.dimensions.x-1: x = 0
+						else: continue
+							
+					if cz == -1:
+						if z == 0: z = terrain.dimensions.z-1
+						else: continue
+					elif cz == 1:
+						if z == terrain.dimensions.z-1: z = 0
+						else: continue
+						
+					if not pattern.has(adjacent_chunk_coords):
+						pattern[adjacent_chunk_coords] = {}
+					print(draw_chunk_coords, " @ ", draw_cell_coords, " adjacency: ", adjacent_chunk_coords, " @ ", Vector2i(x, z))
+					pattern[adjacent_chunk_coords][Vector2i(x, z)] = true
 
 	undo_redo.create_action("draw to terrain")
 	undo_redo.add_do_method(self, "do_draw_pattern", terrain, pattern, y_delta)
-	undo_redo.add_undo_method(self, "do_draw_pattern", terrain, pattern, y_delta)
+	undo_redo.add_undo_method(self, "do_draw_pattern", terrain, pattern, -y_delta)
 	undo_redo.commit_action()
 	
 func do_draw_pattern(terrain: MarchingSquaresTerrain, pattern: Dictionary, y_delta: float):
@@ -264,6 +298,8 @@ func do_draw_pattern(terrain: MarchingSquaresTerrain, pattern: Dictionary, y_del
 func on_tool_mode_changed(index: int):
 	print("set mode to ", index)
 	mode = index
+	
+	current_draw_pattern.clear()
 	
 	var tool_checkbox: CheckBox = terrain_brush_dock.get_node("FlattenCheckBox")
 	if mode == TerrainToolMode.BRUSH:

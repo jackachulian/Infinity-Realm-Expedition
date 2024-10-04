@@ -57,8 +57,8 @@ var needs_update: Array[Array]
 func initialize_terrain():
 	if Engine.is_editor_hint():
 		load_height_map()
-		if not mesh:
-			regenerate_mesh()
+		#if not mesh:
+		regenerate_mesh()
 	else:
 		print("trying to generate terrain during runtime; not supported")
 		
@@ -726,30 +726,11 @@ func draw_height(x: int, z: int, y: float):
 	#var updated_chunks: Dictionary
 	
 	height_map[z][x] = y
-	
 	notify_needs_update(z, x)
 	notify_needs_update(z, x-1)
 	notify_needs_update(z-1, x)
 	notify_needs_update(z-1, x-1)
 	
-	#for cx in range(-1, 2):
-		#for cz in range(-1, 2):
-			#if not (cx == 0 and cz == 0):
-				#var chunk_delta := Vector2i(cx, cz)
-				#if try_draw_neighbouring_height(x, z, y, chunk_delta):
-					#updated_chunks[chunk_coords + chunk_delta] = true
-	#
-	#return updated_chunks
-	
-		
-	var chunk: MarchingSquaresTerrainChunk = terrain_system.chunks[chunk_coords + chunk_delta]
-
-	chunk.height_map[z][x] = y
-	chunk.notify_needs_update(z, x)
-	chunk.notify_needs_update(z, x-1)
-	chunk.notify_needs_update(z-1, x)
-	chunk.notify_needs_update(z-1, x-1)
-	return true
 	
 func notify_needs_update(z: int, x: int):
 	if z < 0 or z >= terrain_system.dimensions.z-1 or x < 0 or x >= terrain_system.dimensions.x-1:

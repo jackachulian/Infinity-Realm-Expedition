@@ -59,12 +59,10 @@ func _redraw():
 		
 		var x = int(floor(((pos.x + terrain_system.cell_size.x/2) / terrain_system.cell_size.x) - chunk_x * (terrain_system.dimensions.x - 1)))
 		var z = int(floor(((pos.z + terrain_system.cell_size.y/2) / terrain_system.cell_size.y) - chunk_z * (terrain_system.dimensions.z - 1)))
-		var y
-		
-		if not terrain_plugin.current_draw_pattern.is_empty() and terrain_plugin.flatten:
-			y = terrain_plugin.draw_height
-		else:
-			y = chunk.height_map[z][x]
+		var y = chunk.height_map[z][x]
+		#if not terrain_plugin.current_draw_pattern.is_empty() and terrain_plugin.flatten:
+			#y = terrain_plugin.draw_height
+			
 		
 		cursor_cell_coords = Vector2i(x, z)
 		
@@ -96,12 +94,20 @@ func _redraw():
 		if terrain_plugin.current_draw_pattern.has(cursor_chunk_coords) and terrain_plugin.current_draw_pattern[cursor_chunk_coords].has(cursor_cell_coords):
 			terrain_plugin.base_position = pos
 		
-		# if clicking otuside the pattern, just clear the current pattern and switch to drawing mode
-		else:
+		# if clicking otuside the pattern, pattern will only be the hovered tile
+		elif terrain_chunk_hovered:
 			terrain_plugin.current_draw_pattern.clear()
 			terrain_plugin.is_setting = false
 			terrain_plugin.is_drawing = true
 			terrain_plugin.draw_height = pos.y
+			#
+		#elif terrain_chunk_hovered and terrain_plugin.is_setting:
+			#terrain_plugin.current_draw_pattern.clear()
+			#terrain_plugin.current_draw_pattern[cursor_chunk_coords] = {}
+			#terrain_plugin.current_draw_pattern[cursor_chunk_coords][cursor_cell_coords] = true
+			#terrain_plugin.draw_height = pos.y
+			#terrain_plugin.draw_height_set = true
+			#terrain_plugin.base_position = pos
 			
 	var height_diff: float
 	if terrain_plugin.is_setting and terrain_plugin.draw_height_set:
