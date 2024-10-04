@@ -41,11 +41,31 @@ func _redraw():
 			
 	if terrain_plugin.terrain_hovered and terrain_system.chunks.has(terrain_plugin.current_hovered_chunk):
 		#print("adding ", terrain_plugin.BRUSH_VISUAL, " at ", terrain_plugin.brush_position, " with material ", brush_material)
-		var chunk: MarchingSquaresTerrainChunk = terrain_system.chunks[terrain_plugin.current_hovered_chunk]
 		var pos = terrain_plugin.brush_position
-		var preview_height = round(pos.y / terrain_system.height_banding) * terrain_system.height_banding if terrain_system.height_banding > 0 else pos.y
-		var rounded_position = Vector3(round(pos.x / terrain_system.cell_size.x) * terrain_system.cell_size.x, preview_height, round(pos.z / terrain_system.cell_size.y) * terrain_system.cell_size.y)
-		var draw_transform = Transform3D(Vector3.RIGHT, Vector3.UP, Vector3.BACK, rounded_position)
+		
+		
+		#var x = round(pos.x / terrain_system.cell_size.x - chunk_x * terrain_system.dimensions.x * terrain_system.cell_size.x)
+		#var z = round(pos.z / terrain_system.cell_size.y - chunk_z * terrain_system.dimensions.z * terrain_system.cell_size.y)
+		#var terrain_height = chunk.height_map[z][x]
+		#var draw_position = Vector3(rounded_coords.x, terrain_height, rounded_coords.y)
+		
+		var chunk_space_coords = Vector2(pos.x / terrain_system.cell_size.x, pos.z / terrain_system.cell_size.y)
+		
+		var chunk_x = floor(pos.x / ((terrain_system.dimensions.x - 1) * terrain_system.cell_size.x))
+		var chunk_z = floor(pos.z / ((terrain_system.dimensions.z - 1) * terrain_system.cell_size.y))
+		var chunk: MarchingSquaresTerrainChunk = terrain_system.chunks[Vector2i(chunk_x, chunk_z)]
+		
+		var x = int(floor((pos.x / terrain_system.cell_size.x) - chunk_x * (terrain_system.dimensions.x - 1)))
+		var z = int(floor((pos.z / terrain_system.cell_size.y) - chunk_z * (terrain_system.dimensions.z - 1)))
+		var y = chunk.height_map[z][x]
+		
+		print(pos, Vector2(chunk_x, chunk_z), Vector2(x, z))
+		
+		var world_x = floor(pos.x / terrain_system.cell_size.x) * terrain_system.cell_size.x
+		var world_z = floor(pos.z / terrain_system.cell_size.y) * terrain_system.cell_size.y
+		
+		var draw_position = Vector3(world_x, y, world_z)
+		var draw_transform = Transform3D(Vector3.RIGHT, Vector3.UP, Vector3.BACK, draw_position)
 		add_mesh(terrain_plugin.BRUSH_VISUAL, brush_material, draw_transform)
 		
 func try_add_chunk(terrain_system: MarchingSquaresTerrain, coords: Vector2i):
