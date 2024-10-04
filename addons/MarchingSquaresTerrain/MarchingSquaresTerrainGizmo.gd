@@ -42,6 +42,11 @@ func _redraw():
 			try_add_chunk(terrain_system, chunk_coords)
 			
 	var terrain_chunk_hovered: bool = terrain_plugin.terrain_hovered and terrain_system.chunks.has(terrain_plugin.current_hovered_chunk)
+	
+	# When set starts, if hovering terrain, set base height to its height
+	if terrain_chunk_hovered and terrain_plugin.is_setting and not terrain_plugin.is_height_set_started:
+		terrain_plugin.is_height_set_started = true
+	
 	var cursor_chunk_coords: Vector2i
 	var cursor_cell_coords: Vector2i
 	if terrain_chunk_hovered:
@@ -77,9 +82,28 @@ func _redraw():
 		if terrain_plugin.is_drawing and not terrain_plugin.draw_height_set:
 			terrain_plugin.draw_height_set = true
 			terrain_plugin.draw_height = y
-		
+			
+		if terrain_plugin.is_setting and not terrain_plugin.is_height_set_started:
+			if not cursor_chunk_coords in terrain_plugin.current_draw_pattern:
+				terrain_plugin.is_setting = false
+				terrain_plugin.is_drawing = false
+				terrain_plugin.current_draw_pattern.clear()
+				terrain_plugin.draw_height_set = false
+				print("not in chunk!")
+			else:
+				var chunk_dict = terrain_plugin.current_draw_pattern[cursor_chunk_coords]
+				if not cursor_cell_coords in chunk_dict:
+					terrain_plugin.is_setting = false
+					terrain_plugin.is_drawing = false
+					terrain_plugin.current_draw_pattern.clear()
+					terrain_plugin.draw_height_set = false
+					print("no coords!")
+				else:
+					terrain_plugin.is_height_set_started = true
+					terrain_plugin.height_base_pos = pos
+					print("starting height drag")
+
 	if terrain_chunk_hovered and terrain_plugin.is_drawing:
-		
 		if not terrain_plugin.current_draw_pattern.has(cursor_chunk_coords):
 			terrain_plugin.current_draw_pattern[cursor_chunk_coords] = {}
 		terrain_plugin.current_draw_pattern[cursor_chunk_coords][cursor_cell_coords] = true
