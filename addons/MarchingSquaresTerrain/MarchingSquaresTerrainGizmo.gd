@@ -69,7 +69,6 @@ func _redraw():
 		var y = chunk.height_map[z][x]
 		
 		var cell_coords = Vector2i(x, z)
-		print(pos, Vector2(chunk_x, chunk_z), )
 		
 		var world_x = floor((pos.x + terrain_system.cell_size.x/2) / terrain_system.cell_size.x) * terrain_system.cell_size.x
 		var world_z = floor((pos.z + terrain_system.cell_size.y/2) / terrain_system.cell_size.y) * terrain_system.cell_size.y
@@ -83,6 +82,7 @@ func _redraw():
 				terrain_plugin.current_draw_pattern[chunk_coords] = {}
 			terrain_plugin.current_draw_pattern[chunk_coords][cell_coords] = true
 			
+		if not terrain_plugin.current_draw_pattern.is_empty():
 			for draw_chunk_coords: Vector2i in terrain_plugin.current_draw_pattern:
 				chunk = terrain_system.chunks[draw_chunk_coords]
 				var draw_chunk_dict: Dictionary = terrain_plugin.current_draw_pattern[draw_chunk_coords]

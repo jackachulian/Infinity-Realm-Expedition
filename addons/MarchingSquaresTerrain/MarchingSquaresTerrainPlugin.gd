@@ -67,6 +67,9 @@ func _edit(object: Object) -> void:
 		activate_terrain_brush_dock()
 	else:
 		deactivate_terrain_brush_dock()
+		current_draw_pattern.clear()
+		if gizmo_plugin.terrain_gizmo:
+			gizmo_plugin.terrain_gizmo.clear()
 
 func _handles(object: Object) -> bool:
 	return object is MarchingSquaresTerrain
@@ -122,10 +125,11 @@ func handle_mouse(camera: Camera3D, event: InputEvent) -> int:
 			if event is InputEventMouseButton and event.button_index == MouseButton.MOUSE_BUTTON_LEFT:
 				if event.is_pressed():
 					print("Clicked ", body.name, " at: ", intersection_pos)
+					if not shift_held:
+						current_draw_pattern.clear()
 					is_drawing = true
 				elif event.is_released():
 					is_drawing = false
-					current_draw_pattern.clear()
 					pass
 				return EditorPlugin.AFTER_GUI_INPUT_STOP
 				
