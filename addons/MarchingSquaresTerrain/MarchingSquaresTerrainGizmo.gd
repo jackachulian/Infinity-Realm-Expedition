@@ -27,21 +27,25 @@ func _redraw():
 	if EditorInterface.get_selection().get_selected_nodes()[0] != terrain_system:
 		return
 
+	# Chunk management gizmo lines
 	if terrain_system.chunks.is_empty():
 		if MarchingSquaresTerrainPlugin.instance.is_chunk_plane_hovered:
 			add_chunk_lines(terrain_system, MarchingSquaresTerrainPlugin.instance.current_hovered_chunk, addchunk_material)
 	else:
 		for chunk_coords: Vector2i in terrain_system.chunks:
-			if MarchingSquaresTerrainPlugin.instance.mode == MarchingSquaresTerrainPlugin.TerrainToolMode.BRUSH:
-				try_add_chunk(terrain_system, Vector2i(chunk_coords.x-1, chunk_coords.y))
-				try_add_chunk(terrain_system, Vector2i(chunk_coords.x+1, chunk_coords.y))
-				try_add_chunk(terrain_system, Vector2i(chunk_coords.x, chunk_coords.y-1))
-				try_add_chunk(terrain_system, Vector2i(chunk_coords.x, chunk_coords.y+1))
+			try_add_chunk(terrain_system, Vector2i(chunk_coords.x-1, chunk_coords.y))
+			try_add_chunk(terrain_system, Vector2i(chunk_coords.x+1, chunk_coords.y))
+			try_add_chunk(terrain_system, Vector2i(chunk_coords.x, chunk_coords.y-1))
+			try_add_chunk(terrain_system, Vector2i(chunk_coords.x, chunk_coords.y+1))
 			try_add_chunk(terrain_system, chunk_coords)
 			
 	if terrain_plugin.terrain_hovered and terrain_system.chunks.has(terrain_plugin.current_hovered_chunk):
 		#print("adding ", terrain_plugin.BRUSH_VISUAL, " at ", terrain_plugin.brush_position, " with material ", brush_material)
 		var pos = terrain_plugin.brush_position
+		
+		# this should line up the actual draw position over the cursor most closely
+		pos.x += terrain_system.cell_size.x/2
+		pos.z += terrain_system.cell_size.x/2
 		
 		
 		#var x = round(pos.x / terrain_system.cell_size.x - chunk_x * terrain_system.dimensions.x * terrain_system.cell_size.x)
@@ -53,7 +57,10 @@ func _redraw():
 		
 		var chunk_x = floor(pos.x / ((terrain_system.dimensions.x - 1) * terrain_system.cell_size.x))
 		var chunk_z = floor(pos.z / ((terrain_system.dimensions.z - 1) * terrain_system.cell_size.y))
-		var chunk: MarchingSquaresTerrainChunk = terrain_system.chunks[Vector2i(chunk_x, chunk_z)]
+		var chunk_coords = Vector2i(chunk_x, chunk_z)
+		if not terrain_system.chunks.has(chunk_coords):
+			return
+		var chunk: MarchingSquaresTerrainChunk = terrain_system.chunks[chunk_coords]
 		
 		var x = int(floor((pos.x / terrain_system.cell_size.x) - chunk_x * (terrain_system.dimensions.x - 1)))
 		var z = int(floor((pos.z / terrain_system.cell_size.y) - chunk_z * (terrain_system.dimensions.z - 1)))
@@ -72,11 +79,11 @@ func try_add_chunk(terrain_system: MarchingSquaresTerrain, coords: Vector2i):
 	var terrain_plugin = MarchingSquaresTerrainPlugin.instance
 	
 	# Add chunk
-	if not terrain_system.chunks.has(coords) and terrain_plugin.mode == terrain_plugin.TerrainToolMode.BRUSH and terrain_plugin.is_chunk_plane_hovered and terrain_plugin.current_hovered_chunk == coords:
+	if (terrain_plugin.mode == terrain_plugin.TerrainToolMode.MANAGE_CHUNKS or Input.is_key_pressed(KEY_SHIFT)) and not terrain_system.chunks.has(coords) and terrain_plugin.is_chunk_plane_hovered and terrain_plugin.current_hovered_chunk == coords:
 		add_chunk_lines(terrain_system, coords, addchunk_material)
 		
-	# Remove chunk
-	elif terrain_plugin.mode == terrain_plugin.TerrainToolMode.REMOVE_CHUNK and terrain_plugin.is_chunk_plane_hovered and terrain_plugin.current_hovered_chunk == coords:
+	# Remove chunk (Manage Chunk tool only)
+	elif terrain_plugin.mode == terrain_plugin.TerrainToolMode.MANAGE_CHUNKS and terrain_plugin.is_chunk_plane_hovered and terrain_plugin.current_hovered_chunk == coords:
 		add_chunk_lines(terrain_system, coords, removechunk_material) 
 
 # Draw chunk lines around a chunk
@@ -89,18 +96,18 @@ func add_chunk_lines(terrain_system: MarchingSquaresTerrain, coords: Vector2i, m
 	dz += z
 	
 	lines.clear()
-	if not terrain_system.chunks.has(Vector2i(coords.x, coords.y-1)):
-		lines.append(Vector3(x,0,z))
-		lines.append(Vector3(dx,0,z))
-	if not terrain_system.chunks.has(Vector2i(coords.x+1, coords.y)):
-		lines.append(Vector3(dx,0,z))
-		lines.append(Vector3(dx,0,dz))
-	if not terrain_system.chunks.has(Vector2i(coords.x, coords.y+1)):
-		lines.append(Vector3(dx,0,dz))
-		lines.append(Vector3(x,0,dz))
-	if not terrain_system.chunks.has(Vector2i(coords.x-1, coords.y)):
-		lines.append(Vector3(x,0,dz))
-		lines.append(Vector3(x,0,z))
+	#if not terrain_system.chunks.has(Vector2i(coords.x, coords.y-1)):
+	lines.append(Vector3(x,0,z))
+	lines.append(Vector3(dx,0,z))
+	#if not terrain_system.chunks.has(Vector2i(coords.x+1, coords.y)):
+	lines.append(Vector3(dx,0,z))
+	lines.append(Vector3(dx,0,dz))
+	#if not terrain_system.chunks.has(Vector2i(coords.x, coords.y+1)):
+	lines.append(Vector3(dx,0,dz))
+	lines.append(Vector3(x,0,dz))
+	#if not terrain_system.chunks.has(Vector2i(coords.x-1, coords.y)):
+	lines.append(Vector3(x,0,dz))
+	lines.append(Vector3(x,0,z))
 	
 	if material == removechunk_material:
 		lines.append(Vector3(x,0,z))

@@ -11,7 +11,7 @@ var terrain_brush_dock_active: bool
 
 enum TerrainToolMode {
 	BRUSH = 0,
-	REMOVE_CHUNK = 1
+	MANAGE_CHUNKS = 1
 }
 var mode: TerrainToolMode = TerrainToolMode.BRUSH
 
@@ -95,6 +95,8 @@ func handle_mouse(camera: Camera3D, event: InputEvent) -> int:
 	var ray_origin := camera.project_ray_origin(mouse_pos)
 	var ray_dir := camera.project_ray_normal(mouse_pos)
 	
+	var shift_held = Input.is_key_pressed(KEY_SHIFT)
+	
 	# If in brush mode, perform terrain raycast
 	if mode == TerrainToolMode.BRUSH:
 		# Perform the raycast to check for intersection with a physics body
@@ -146,27 +148,27 @@ func handle_mouse(camera: Camera3D, event: InputEvent) -> int:
 		is_chunk_plane_hovered = true
 	
 		# On click, add chunk if in brush mode, or remove if in remove chunk mode
-		if event is InputEventMouseButton and event.is_pressed() and event.button_index == MouseButton.MOUSE_BUTTON_LEFT:
-			if chunk:
-				# If in remove chunk mode, remove the chunk
-				if mode == TerrainToolMode.REMOVE_CHUNK:
-					var removed_chunk = terrain.chunks[chunk_coords]
-					get_undo_redo().create_action("remove chunk")
-					get_undo_redo().add_do_method(terrain, "remove_chunk_from_tree", chunk_x, chunk_z)
-					get_undo_redo().add_undo_method(terrain, "add_chunk", chunk_coords, removed_chunk)
+		if mode == TerrainToolMode.MANAGE_CHUNKS and event is InputEventMouseButton and event.is_pressed() and event.button_index == MouseButton.MOUSE_BUTTON_LEFT:
+			# Remove chunk
+			if chunk and shift_held:
+				var removed_chunk = terrain.chunks[chunk_coords]
+				get_undo_redo().create_action("remove chunk")
+				get_undo_redo().add_do_method(terrain, "remove_chunk_from_tree", chunk_x, chunk_z)
+				get_undo_redo().add_undo_method(terrain, "add_chunk", chunk_coords, removed_chunk)
+				get_undo_redo().commit_action()
+				return EditorPlugin.AFTER_GUI_INPUT_STOP
+				
+			# Add new chunk
+			elif not chunk and not shift_held:
+				# Can add a new chunk here if there is a neighbouring non-empty chunk
+				# also add if there are no chunks at all in the current terrain system
+				var can_add_empty: bool = terrain.chunks.is_empty() or terrain.has_chunk(chunk_x-1, chunk_z) or terrain.has_chunk(chunk_x+1, chunk_z) or terrain.has_chunk(chunk_x, chunk_z-1) or terrain.has_chunk(chunk_x, chunk_z+1)
+				if can_add_empty:				
+					get_undo_redo().create_action("add chunk")
+					get_undo_redo().add_do_method(terrain, "add_new_chunk", chunk_x, chunk_z)
+					get_undo_redo().add_undo_method(terrain, "remove_chunk", chunk_x, chunk_z)
 					get_undo_redo().commit_action()
 					return EditorPlugin.AFTER_GUI_INPUT_STOP
-			else:
-				if mode == TerrainToolMode.BRUSH:
-					# Can add a new chunk here if there is a neighbouring non-empty chunk
-					# also add if there are no chunks
-					var can_add_empty: bool = terrain.chunks.is_empty() or terrain.has_chunk(chunk_x-1, chunk_z) or terrain.has_chunk(chunk_x+1, chunk_z) or terrain.has_chunk(chunk_x, chunk_z-1) or terrain.has_chunk(chunk_x, chunk_z+1)
-					if can_add_empty:				
-						get_undo_redo().create_action("add chunk")
-						get_undo_redo().add_do_method(terrain, "add_new_chunk", chunk_x, chunk_z)
-						get_undo_redo().add_undo_method(terrain, "remove_chunk", chunk_x, chunk_z)
-						get_undo_redo().commit_action()
-						return EditorPlugin.AFTER_GUI_INPUT_STOP
 		
 		gizmo_plugin.terrain_gizmo._redraw()
 	else:
