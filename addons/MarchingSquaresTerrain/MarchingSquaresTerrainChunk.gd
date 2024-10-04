@@ -86,8 +86,9 @@ func regenerate_mesh():
 	mesh = st.commit()
 	mesh.surface_set_material(0, terrain_system.terrain_material)
 	
-	if get_node_or_null("Terrain_col"):
-		$Terrain_col.free()
+	for child in get_children():
+		if child is StaticBody3D:
+			child.free()
 	create_trimesh_collision()
 	
 	var elapsed_time: int = Time.get_ticks_msec() - start_time
