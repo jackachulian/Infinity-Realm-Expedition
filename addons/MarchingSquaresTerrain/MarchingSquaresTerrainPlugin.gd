@@ -25,7 +25,7 @@ var current_hovered_chunk: Vector2i
 var brush_position: Vector3
 
 # current drawing radius
-var brush_radius: float
+var brush_radius: float = 3.0
 
 # A dictionary with keys for each tile that is currently being drawn to with the brush. Value is the height that preview was drawn to,
 # used for restoring when undoing
@@ -49,6 +49,7 @@ var is_setting: bool
 var base_position: Vector3
 
 const BRUSH_VISUAL: Mesh = preload("brush_visual.tres")
+const BRUSH_RADIUS_VISUAL: Mesh = preload("brush_visual.tres")
 
 # This function gets called when the plugin is activated.
 func _enter_tree():
@@ -130,7 +131,23 @@ func handle_mouse(camera: Camera3D, event: InputEvent) -> int:
 	# If in brush mode, perform terrain raycast
 	if mode == TerrainToolMode.BRUSH:
 		var draw_position
-		var on_draw_area: bool = false
+		var draw_area_hovered: bool = false
+		
+		# Adjust brush radius
+		if event is InputEventMouseButton and event.is_pressed() and Input.is_key_pressed(KEY_SHIFT):
+			var factor = event.factor if event.factor else 1
+			if event.button_index == MouseButton.MOUSE_BUTTON_WHEEL_UP:
+				brush_radius += 0.5 * factor
+				if brush_radius > 50:
+					brush_radius = 50
+				gizmo_plugin.terrain_gizmo._redraw()
+				return EditorPlugin.AFTER_GUI_INPUT_STOP
+			elif event.button_index == MouseButton.MOUSE_BUTTON_WHEEL_DOWN:
+				brush_radius -= 0.5 * factor
+				if brush_radius < 1:
+					brush_radius = 1
+				gizmo_plugin.terrain_gizmo._redraw()
+				return EditorPlugin.AFTER_GUI_INPUT_STOP
 		
 		if is_setting and draw_height_set:
 			var set_plane = Plane(Vector3(ray_dir.x, 0, ray_dir.z), base_position)
@@ -143,7 +160,7 @@ func handle_mouse(camera: Camera3D, event: InputEvent) -> int:
 			var chunk_plane = Plane(Vector3.UP, Vector3(0, draw_height, 0))
 			draw_position = chunk_plane.intersects_ray(ray_origin, ray_dir)
 			if draw_position:
-				on_draw_area = true
+				draw_area_hovered = true
 
 		else:
 			# Perform the raycast to check for intersection with a physics body (terrain)
@@ -155,10 +172,10 @@ func handle_mouse(camera: Camera3D, event: InputEvent) -> int:
 			var result = space_state.intersect_ray(query)
 			if result:
 				draw_position = result.position
-				on_draw_area = true
+				draw_area_hovered = true
 
 		# Check for terrain collision
-		if on_draw_area:
+		if draw_area_hovered:
 			terrain_hovered = true
 			var chunk_x: int = floor(draw_position.x / (terrain.dimensions.x * terrain.cell_size.x))
 			var chunk_z: int = floor(draw_position.z / (terrain.dimensions.z * terrain.cell_size.y))
@@ -168,7 +185,7 @@ func handle_mouse(camera: Camera3D, event: InputEvent) -> int:
 			current_hovered_chunk = chunk_coords
 
 		if event is InputEventMouseButton and event.button_index == MouseButton.MOUSE_BUTTON_LEFT:
-			if event.is_pressed() and on_draw_area:
+			if event.is_pressed() and draw_area_hovered:
 				draw_height_set = false
 				if Input.is_key_pressed(KEY_SHIFT):
 					is_drawing = true
@@ -186,7 +203,7 @@ func handle_mouse(camera: Camera3D, event: InputEvent) -> int:
 			gizmo_plugin.terrain_gizmo._redraw()
 			return EditorPlugin.AFTER_GUI_INPUT_STOP
 				
-		if on_draw_area and event is InputEventMouseMotion:
+		if draw_area_hovered and event is InputEventMouseMotion:
 			brush_position = draw_position
 			
 		gizmo_plugin.terrain_gizmo._redraw()

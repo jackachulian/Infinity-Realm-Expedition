@@ -63,7 +63,6 @@ func _redraw():
 		if not terrain_plugin.current_draw_pattern.is_empty() and terrain_plugin.flatten:
 			y = terrain_plugin.draw_height
 			
-		
 		cursor_cell_coords = Vector2i(x, z)
 		
 		var world_x = floor((pos.x + terrain_system.cell_size.x/2) / terrain_system.cell_size.x) * terrain_system.cell_size.x
@@ -73,12 +72,13 @@ func _redraw():
 		var draw_transform = Transform3D(Vector3.RIGHT, Vector3.UP, Vector3.BACK, draw_position)
 		add_mesh(terrain_plugin.BRUSH_VISUAL, brush_material, draw_transform)
 		
-		
-		
 		if terrain_plugin.is_drawing and not terrain_plugin.draw_height_set:
 			print("drawing")
 			terrain_plugin.draw_height_set = true
 			terrain_plugin.draw_height = pos.y
+			
+		var brush_transform = Transform3D(Vector3.RIGHT * terrain_plugin.brush_radius, Vector3.UP, Vector3.BACK * terrain_plugin.brush_radius, pos)
+		add_mesh(terrain_plugin.BRUSH_RADIUS_VISUAL, brush_material, draw_transform)
 		
 	# Draw to current pattern
 	if terrain_chunk_hovered and terrain_plugin.is_drawing:
