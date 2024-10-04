@@ -727,6 +727,11 @@ func draw_height(x: int, z: int, y: float) -> Dictionary:
 	
 	height_map[z][x] = y
 	
+	notify_needs_update(z, x)
+	notify_needs_update(z, x-1)
+	notify_needs_update(z-1, x)
+	notify_needs_update(z-1, x-1)
+	
 	for cx in range(-1, 2):
 		for cz in range(-1, 2):
 			if not (cx == 0 and cz == 0):
@@ -756,8 +761,17 @@ func try_draw_neighbouring_height(x: int, z: int, y: float, chunk_delta: Vector2
 		
 	var chunk: MarchingSquaresTerrainChunk = terrain_system.chunks[chunk_coords + chunk_delta]
 	chunk.height_map[z][x] = y
+	chunk.notify_needs_update(z, x)
+	chunk.notify_needs_update(z, x-1)
+	chunk.notify_needs_update(z-1, x)
+	chunk.notify_needs_update(z-1, x-1)
 	return true
 	
+func notify_needs_update(z: int, x: int):
+	if z < 0 or z >= terrain_system.dimensions.z-1 or x < 0 or x > terrain_system.dimensions.x-1:
+		return
+		
+	needs_update[z][x] = true
 			
 func simple_grass():
 	var grass_mesh = SurfaceTool.new();
