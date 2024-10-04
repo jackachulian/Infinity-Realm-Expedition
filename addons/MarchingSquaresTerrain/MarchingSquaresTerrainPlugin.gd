@@ -27,8 +27,8 @@ var brush_position: Vector3
 # current drawing radius
 var brush_radius: float
 
-# A dictionary with keys for each tile that is currently being drawn to with the brush (value is not used)
-# would use a Set but there is none in gdscript
+# A dictionary with keys for each tile that is currently being drawn to with the brush. Value is the height that preview was drawn to,
+# used for restoring when undoing
 var current_draw_pattern: Dictionary
 
 var terrain_hovered: bool
@@ -139,7 +139,7 @@ func handle_mouse(camera: Camera3D, event: InputEvent) -> int:
 				brush_position = set_position
 		
 		# if there is any pattern and flatten is enabled, draw along that height plane instead of terrain intersection
-		elif is_drawing and not current_draw_pattern.is_empty() and draw_height_set and flatten:
+		elif not current_draw_pattern.is_empty() and flatten:
 			var chunk_plane = Plane(Vector3.UP, Vector3(0, draw_height, 0))
 			draw_position = chunk_plane.intersects_ray(ray_origin, ray_dir)
 			if draw_position:
@@ -241,7 +241,6 @@ func handle_mouse(camera: Camera3D, event: InputEvent) -> int:
 func draw_pattern(terrain: MarchingSquaresTerrain):
 	var undo_redo := MarchingSquaresTerrainPlugin.instance.get_undo_redo()
 
-	var y_delta = brush_position.y - draw_height
 	var pattern = current_draw_pattern.duplicate(true)
 	
 	# Ensure points on both sides of chunk borders are updated
@@ -258,8 +257,9 @@ func draw_pattern(terrain: MarchingSquaresTerrain):
 					if not terrain.chunks.has(adjacent_chunk_coords):
 						continue
 						
-					var x = draw_cell_coords.x
-					var z = draw_cell_coords.y
+					var x: int = draw_cell_coords.x
+					var z: int = draw_cell_coords.y
+					var y: float = draw_chunk_dict[draw_cell_coords]
 						
 					if cx == -1:
 						if x == 0: x = terrain.dimensions.x-1
@@ -277,23 +277,43 @@ func draw_pattern(terrain: MarchingSquaresTerrain):
 						
 					if not pattern.has(adjacent_chunk_coords):
 						pattern[adjacent_chunk_coords] = {}
-					print(draw_chunk_coords, " @ ", draw_cell_coords, " adjacency: ", adjacent_chunk_coords, " @ ", Vector2i(x, z))
-					pattern[adjacent_chunk_coords][Vector2i(x, z)] = true
+					#print(draw_chunk_coords, " @ ", draw_cell_coords, " adjacency: ", adjacent_chunk_coords, " @ ", Vector2i(x, z))
+					pattern[adjacent_chunk_coords][Vector2i(x, z)] = y
 
-	undo_redo.create_action("draw to terrain")
-	undo_redo.add_do_method(self, "do_draw_pattern", terrain, pattern, y_delta)
-	undo_redo.add_undo_method(self, "do_draw_pattern", terrain, pattern, -y_delta)
-	undo_redo.commit_action()
+	if flatten:
+		undo_redo.create_action("terrain height draw flat")
+		undo_redo.add_do_method(self, "draw_pattern_action", terrain, pattern, DrawMode.SET_FLAT, brush_position.y)
+		undo_redo.add_undo_method(self, "draw_pattern_action", terrain, pattern, DrawMode.SET_FROM_PATTERN)
+		undo_redo.commit_action()
+	else:
+		var y_delta = brush_position.y - draw_height
+		undo_redo.create_action("terrain height draw")
+		undo_redo.add_do_method(self, "draw_pattern_action", terrain, pattern, DrawMode.RAISE_LOWER, y_delta)
+		undo_redo.add_undo_method(self, "draw_pattern_action", terrain, pattern, DrawMode.SET_FROM_PATTERN)
+		undo_redo.commit_action()
 	
-func do_draw_pattern(terrain: MarchingSquaresTerrain, pattern: Dictionary, y_delta: float):
+# For each cell in pattern, raise/lower by y delta.
+func draw_pattern_action(terrain: MarchingSquaresTerrain, pattern: Dictionary, draw_mode: DrawMode, y: float = 0):
 	for draw_chunk_coords: Vector2i in pattern:
 		var draw_chunk_dict = pattern[draw_chunk_coords]
 		var chunk: MarchingSquaresTerrainChunk = terrain.chunks[draw_chunk_coords]
 		for draw_cell_coords: Vector2i in draw_chunk_dict:
-			var y = chunk.get_height(draw_cell_coords)
-			chunk.draw_height(draw_cell_coords.x, draw_cell_coords.y, y + y_delta)
+			if draw_mode == DrawMode.RAISE_LOWER:
+				var cell_y = chunk.get_height(draw_cell_coords)
+				chunk.draw_height(draw_cell_coords.x, draw_cell_coords.y, cell_y + y)
+			elif draw_mode == DrawMode.SET_FLAT:
+				chunk.draw_height(draw_cell_coords.x, draw_cell_coords.y, y)
+			elif draw_mode == DrawMode.SET_FROM_PATTERN:
+				y = draw_chunk_dict[draw_cell_coords]
+				chunk.draw_height(draw_cell_coords.x, draw_cell_coords.y, y)
 				
 		chunk.regenerate_mesh()
+
+enum DrawMode {
+	RAISE_LOWER = 0,
+	SET_FLAT = 1,
+	SET_FROM_PATTERN = 2
+}
 
 func on_tool_mode_changed(index: int):
 	print("set mode to ", index)

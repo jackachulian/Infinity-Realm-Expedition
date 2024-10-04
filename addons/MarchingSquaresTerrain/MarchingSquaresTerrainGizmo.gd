@@ -60,8 +60,8 @@ func _redraw():
 		var x = int(floor(((pos.x + terrain_system.cell_size.x/2) / terrain_system.cell_size.x) - chunk_x * (terrain_system.dimensions.x - 1)))
 		var z = int(floor(((pos.z + terrain_system.cell_size.y/2) / terrain_system.cell_size.y) - chunk_z * (terrain_system.dimensions.z - 1)))
 		var y = chunk.height_map[z][x]
-		#if not terrain_plugin.current_draw_pattern.is_empty() and terrain_plugin.flatten:
-			#y = terrain_plugin.draw_height
+		if not terrain_plugin.current_draw_pattern.is_empty() and terrain_plugin.flatten:
+			y = terrain_plugin.draw_height
 			
 		
 		cursor_cell_coords = Vector2i(x, z)
@@ -82,9 +82,10 @@ func _redraw():
 		
 	# Draw to current pattern
 	if terrain_chunk_hovered and terrain_plugin.is_drawing:
-			if not terrain_plugin.current_draw_pattern.has(cursor_chunk_coords):
-				terrain_plugin.current_draw_pattern[cursor_chunk_coords] = {}
-			terrain_plugin.current_draw_pattern[cursor_chunk_coords][cursor_cell_coords] = true
+		if not terrain_plugin.current_draw_pattern.has(cursor_chunk_coords):
+			terrain_plugin.current_draw_pattern[cursor_chunk_coords] = {}
+		var hovered_chunk: MarchingSquaresTerrainChunk = terrain_system.chunks[cursor_chunk_coords]
+		terrain_plugin.current_draw_pattern[cursor_chunk_coords][cursor_cell_coords] = hovered_chunk.get_height(cursor_cell_coords)
 		
 	elif terrain_plugin.is_setting and not terrain_plugin.draw_height_set:
 		print("setting")
@@ -100,6 +101,7 @@ func _redraw():
 			terrain_plugin.is_setting = false
 			terrain_plugin.is_drawing = true
 			terrain_plugin.draw_height = pos.y
+			terrain_plugin.draw_height_set = true
 			#
 		#elif terrain_chunk_hovered and terrain_plugin.is_setting:
 			#terrain_plugin.current_draw_pattern.clear()
