@@ -1,10 +1,24 @@
 [gd_scene format=3 uid="uid://h1yig2twfhgv"]
 
-[node name="Terrain-brush-button" type="OptionButton"]
-offset_right = 117.0
+[node name="Terrain-brush-dock" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 259.0
+offset_bottom = 31.0
+
+[node name="BrushToolOptionsButton" type="OptionButton" parent="."]
+layout_mode = 0
+offset_right = 156.0
 offset_bottom = 31.0
 selected = 0
 item_count = 2
 popup/item_0/text = "Brush"
 popup/item_1/text = "Manage Chunks"
-popup/item_1/id = 2
+popup/item_1/id = 1
+
+[node name="FlattenCheckBox" type="CheckBox" parent="."]
+layout_mode = 1
+offset_left = 167.0
+offset_right = 250.0
+offset_bottom = 31.0
+text = "Flatten"

@@ -6,14 +6,18 @@ static var instance: MarchingSquaresTerrainPlugin
 
 var gizmo_plugin = MarchingSquaresTerrainGizmoPlugin.new()
 
-var terrain_brush_dock: OptionButton
 var terrain_brush_dock_active: bool
+var terrain_brush_dock: Control
+var tool_options_button: OptionButton
+var tool_checkbox: CheckBox
 
 enum TerrainToolMode {
 	BRUSH = 0,
 	MANAGE_CHUNKS = 1
 }
 var mode: TerrainToolMode = TerrainToolMode.BRUSH
+
+var flatten: bool = true
 
 var is_chunk_plane_hovered: bool
 var current_hovered_chunk: Vector2i
@@ -38,6 +42,12 @@ var draw_height_set: bool
 # Height the current pattern is being drawn at for the brush tool.
 var draw_height: float
 
+# Is set to true when player clicks on a tile that is part of the current draw pattern, will enter heightdrag setting mode
+var is_setting: bool
+
+# The point where the height drag started.
+var base_position: Vector3
+
 const BRUSH_VISUAL: Mesh = preload("brush_visual.tres")
 
 # This function gets called when the plugin is activated.
@@ -58,14 +68,23 @@ func activate_terrain_brush_dock():
 	if not terrain_brush_dock_active:
 		terrain_brush_dock = preload("terrain-brush-dock.tscn").instantiate()
 		terrain_brush_dock_active = true
-		terrain_brush_dock.selected = mode
-		terrain_brush_dock.item_selected.connect(on_terrain_tool_changed)
+		
+		tool_options_button = terrain_brush_dock.get_node("BrushToolOptionsButton")
+		tool_options_button.selected = mode
+		tool_options_button.item_selected.connect(on_tool_mode_changed)
+		
+		tool_checkbox = terrain_brush_dock.get_node("FlattenCheckBox")
+		tool_checkbox.toggled.connect(on_tool_checkbox_changed)
+		
+		on_tool_mode_changed(mode)
+		
 		add_control_to_container(CONTAINER_SPATIAL_EDITOR_MENU, terrain_brush_dock)
 		
 func deactivate_terrain_brush_dock():
 	if terrain_brush_dock_active:
 		terrain_brush_dock_active = false
-		terrain_brush_dock.item_selected.disconnect(on_terrain_tool_changed)
+		tool_options_button.item_selected.disconnect(on_tool_mode_changed)
+		tool_checkbox.toggled.disconnect(on_tool_checkbox_changed)
 		remove_control_from_container(CONTAINER_SPATIAL_EDITOR_MENU, terrain_brush_dock)
 
 func _edit(object: Object) -> void:
@@ -144,13 +163,18 @@ func handle_mouse(camera: Camera3D, event: InputEvent) -> int:
 
 			if event is InputEventMouseButton and event.button_index == MouseButton.MOUSE_BUTTON_LEFT:
 				if event.is_pressed():
-					if not shift_held:
-						draw_height_set = false
-						current_draw_pattern.clear()
-					is_drawing = true
+					draw_height_set = false
+					if Input.is_key_pressed(KEY_SHIFT):
+						is_drawing = true
+					else:
+						is_setting = true
 				elif event.is_released():
-					is_drawing = false
-					pass
+					if is_drawing:
+						is_drawing = false
+					if is_setting:
+						is_setting = false
+						current_draw_pattern.clear()
+				gizmo_plugin.terrain_gizmo._redraw()
 				return EditorPlugin.AFTER_GUI_INPUT_STOP
 				
 			if event is InputEventMouseMotion:
@@ -205,6 +229,17 @@ func handle_mouse(camera: Camera3D, event: InputEvent) -> int:
 		
 	return EditorPlugin.AFTER_GUI_INPUT_PASS
 
-func on_terrain_tool_changed(index: int):
+func on_tool_mode_changed(index: int):
 	print("set mode to ", index)
 	mode = index
+	
+	var tool_checkbox: CheckBox = terrain_brush_dock.get_node("FlattenCheckBox")
+	if mode == TerrainToolMode.BRUSH:
+		tool_checkbox.visible = true
+		tool_checkbox.set_pressed_no_signal(flatten)
+	else:
+		tool_checkbox.visible = false
+
+func on_tool_checkbox_changed(state: bool):
+	if mode == TerrainToolMode.BRUSH:
+		flatten = state

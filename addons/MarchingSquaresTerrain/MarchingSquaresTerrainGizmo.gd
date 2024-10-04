@@ -74,12 +74,21 @@ func _redraw():
 		var draw_transform = Transform3D(Vector3.RIGHT, Vector3.UP, Vector3.BACK, draw_position)
 		add_mesh(terrain_plugin.BRUSH_VISUAL, brush_material, draw_transform)
 		
+		
+		
 		if terrain_plugin.is_drawing and not terrain_plugin.draw_height_set:
+			print("drawing")
 			terrain_plugin.draw_height_set = true
-			terrain_plugin.draw_height = y
+			terrain_plugin.draw_height = pos.y
+				
+		# if not height setting and still drawing, draw to the pattern. clear the pattern beforehand if shift is not held
+		if terrain_plugin.is_setting and not terrain_plugin.draw_height_set:
+			print("setting")
+			terrain_plugin.draw_height_set = true
+			terrain_plugin.base_position = pos
 		
+	# Draw to current pattern
 	if terrain_chunk_hovered and terrain_plugin.is_drawing:
-		
 		if not terrain_plugin.current_draw_pattern.has(cursor_chunk_coords):
 			terrain_plugin.current_draw_pattern[cursor_chunk_coords] = {}
 		terrain_plugin.current_draw_pattern[cursor_chunk_coords][cursor_cell_coords] = true
