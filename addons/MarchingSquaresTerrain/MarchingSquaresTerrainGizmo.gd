@@ -45,18 +45,7 @@ func _redraw():
 	var cursor_chunk_coords: Vector2i
 	var cursor_cell_coords: Vector2i
 	if terrain_chunk_hovered:
-		#print("adding ", terrain_plugin.BRUSH_VISUAL, " at ", terrain_plugin.brush_position, " with material ", brush_material)
 		var pos = terrain_plugin.brush_position
-		
-		# this should line up the actual draw position over the cursor most closely
-		#pos.x += terrain_system.cell_size.x/2
-		#pos.z += terrain_system.cell_size.y/2
-		
-		
-		#var x = round(pos.x / terrain_system.cell_size.x - chunk_x * terrain_system.dimensions.x * terrain_system.cell_size.x)
-		#var z = round(pos.z / terrain_system.cell_size.y - chunk_z * terrain_system.dimensions.z * terrain_system.cell_size.y)
-		#var terrain_height = chunk.height_map[z][x]
-		#var draw_position = Vector3(rounded_coords.x, terrain_height, rounded_coords.y)
 		
 		var chunk_space_coords = Vector2(pos.x / terrain_system.cell_size.x, pos.z / terrain_system.cell_size.y)
 		
@@ -69,7 +58,12 @@ func _redraw():
 		
 		var x = int(floor(((pos.x + terrain_system.cell_size.x/2) / terrain_system.cell_size.x) - chunk_x * (terrain_system.dimensions.x - 1)))
 		var z = int(floor(((pos.z + terrain_system.cell_size.y/2) / terrain_system.cell_size.y) - chunk_z * (terrain_system.dimensions.z - 1)))
-		var y = chunk.height_map[z][x]
+		var y
+		
+		if not terrain_plugin.current_draw_pattern.is_empty():
+			y = terrain_plugin.draw_height
+		else:
+			y = chunk.height_map[z][x]
 		
 		cursor_cell_coords = Vector2i(x, z)
 		
@@ -80,11 +74,16 @@ func _redraw():
 		var draw_transform = Transform3D(Vector3.RIGHT, Vector3.UP, Vector3.BACK, draw_position)
 		add_mesh(terrain_plugin.BRUSH_VISUAL, brush_material, draw_transform)
 		
+		if terrain_plugin.is_drawing and not terrain_plugin.draw_height_set:
+			terrain_plugin.draw_height_set = true
+			terrain_plugin.draw_height = y
+		
 	if terrain_chunk_hovered and terrain_plugin.is_drawing:
+		
 		if not terrain_plugin.current_draw_pattern.has(cursor_chunk_coords):
 			terrain_plugin.current_draw_pattern[cursor_chunk_coords] = {}
 		terrain_plugin.current_draw_pattern[cursor_chunk_coords][cursor_cell_coords] = true
-			
+	
 	if not terrain_plugin.current_draw_pattern.is_empty():
 		for draw_chunk_coords: Vector2i in terrain_plugin.current_draw_pattern:
 			var chunk = terrain_system.chunks[draw_chunk_coords]
@@ -95,9 +94,9 @@ func _redraw():
 				
 				var draw_x = (draw_chunk_coords.x * (terrain_system.dimensions.x - 1) + draw_coords.x) * terrain_system.cell_size.x
 				var draw_z = (draw_chunk_coords.y * (terrain_system.dimensions.z - 1) + draw_coords.y) * terrain_system.cell_size.y
-				var draw_y = chunk.height_map[draw_coords.y][draw_coords.x]
+				#var draw_y = chunk.height_map[draw_coords.y][draw_coords.x]
 				
-				var draw_position = Vector3(draw_x, draw_y, draw_z)
+				var draw_position = Vector3(draw_x, terrain_plugin.draw_height, draw_z)
 				var draw_transform = Transform3D(Vector3.RIGHT, Vector3.UP, Vector3.BACK, draw_position)
 				add_mesh(terrain_plugin.BRUSH_VISUAL, brush_pattern_material, draw_transform)
 		

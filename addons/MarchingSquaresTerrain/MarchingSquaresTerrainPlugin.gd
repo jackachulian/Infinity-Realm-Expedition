@@ -32,6 +32,12 @@ var terrain_hovered: bool
 # True if the mouse is currently held down to draw
 var is_drawing: bool
 
+# when brush draws, if the gizmo sees draw height is not set, it will set the draw height
+var draw_height_set: bool
+
+# Height the current pattern is being drawn at for the brush tool.
+var draw_height: float
+
 const BRUSH_VISUAL: Mesh = preload("brush_visual.tres")
 
 # This function gets called when the plugin is activated.
@@ -68,6 +74,8 @@ func _edit(object: Object) -> void:
 	else:
 		deactivate_terrain_brush_dock()
 		current_draw_pattern.clear()
+		is_drawing = false
+		draw_height_set = false
 		if gizmo_plugin.terrain_gizmo:
 			gizmo_plugin.terrain_gizmo.clear()
 
@@ -102,30 +110,42 @@ func handle_mouse(camera: Camera3D, event: InputEvent) -> int:
 	
 	# If in brush mode, perform terrain raycast
 	if mode == TerrainToolMode.BRUSH:
-		# Perform the raycast to check for intersection with a physics body
-		var space_state = camera.get_world_3d().direct_space_state
-		var ray_length := 10000.0  # Adjust ray length as needed
-		var end := ray_origin + ray_dir * ray_length
-		var query := PhysicsRayQueryParameters3D.create(ray_origin, end)
-		var result = space_state.intersect_ray(query)
+		var draw_position
+		var on_draw_area: bool = false
+		
+		# if there is any pattern, draw along that height plane instead of terrain intersection
+		if not current_draw_pattern.is_empty() and draw_height_set:
+			var chunk_plane = Plane(Vector3.UP, Vector3(0, draw_height, 0))
+			draw_position = chunk_plane.intersects_ray(ray_origin, ray_dir)
+			if draw_position:
+				on_draw_area = true
+
+		else:
+			# Perform the raycast to check for intersection with a physics body (terrain)
+			var space_state = camera.get_world_3d().direct_space_state
+			var ray_length := 10000.0  # Adjust ray length as needed
+			var end := ray_origin + ray_dir * ray_length
+			var collision_mask = 1 # only terrain
+			var query := PhysicsRayQueryParameters3D.create(ray_origin, end, collision_mask)
+			var result = space_state.intersect_ray(query)
+			if result:
+				draw_position = result.position
+				on_draw_area = true
 
 		# Check for terrain collision
-		if result:
+		if on_draw_area:
 			terrain_hovered = true
-			var chunk_x: int = floor(result.position.x / (terrain.dimensions.x * terrain.cell_size.x))
-			var chunk_z: int = floor(result.position.z / (terrain.dimensions.z * terrain.cell_size.y))
+			var chunk_x: int = floor(draw_position.x / (terrain.dimensions.x * terrain.cell_size.x))
+			var chunk_z: int = floor(draw_position.z / (terrain.dimensions.z * terrain.cell_size.y))
 			var chunk_coords = Vector2i(chunk_x, chunk_z)
 
 			is_chunk_plane_hovered = true
 			current_hovered_chunk = chunk_coords
-			
-			var intersection_pos = result.position
-			var body: PhysicsBody3D = result.collider;
-			
+
 			if event is InputEventMouseButton and event.button_index == MouseButton.MOUSE_BUTTON_LEFT:
 				if event.is_pressed():
-					print("Clicked ", body.name, " at: ", intersection_pos)
 					if not shift_held:
+						draw_height_set = false
 						current_draw_pattern.clear()
 					is_drawing = true
 				elif event.is_released():
@@ -134,7 +154,7 @@ func handle_mouse(camera: Camera3D, event: InputEvent) -> int:
 				return EditorPlugin.AFTER_GUI_INPUT_STOP
 				
 			if event is InputEventMouseMotion:
-				brush_position = result.position
+				brush_position = draw_position
 				
 			gizmo_plugin.terrain_gizmo._redraw()
 			return EditorPlugin.AFTER_GUI_INPUT_PASS
