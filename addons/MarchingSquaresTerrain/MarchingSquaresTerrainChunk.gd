@@ -9,6 +9,9 @@ extends MeshInstance3D
 # Used to set heights per pixel (overrides noisemap)
 @export var height_map_image: Texture2D
 
+# Stores the heights from the heightmap.
+@export_storage var height_map: Array
+
 # Size of the 2 dimensional cell array (xz value) and y scale (y value)
 var dimensions: Vector3i:
 	get:
@@ -44,9 +47,6 @@ var ac: bool
 var bd: bool
 var cd: bool
 
-# Stores the heights from the heightmap (from red channel of image)
-var height_map: Array
-
 # Stores all generated tiles so that their geometry can quickly be reused
 var cell_geometry: Dictionary = {}
 
@@ -55,10 +55,18 @@ var needs_update: Array[Array]
 
 # called by TerrainSystem parent
 func initialize_terrain():
+	needs_update = []
+	# initally all cells will need to be updated to show the newly loaded height
+	for z in range(dimensions.z - 1):
+		needs_update.append([])
+		for x in range(dimensions.x - 1):
+			needs_update[z].append(true)
+			
 	if Engine.is_editor_hint():
-		load_height_map()
-		#if not mesh:
-		regenerate_mesh()
+		if not height_map:
+			generate_height_map()
+		if not mesh:
+			regenerate_mesh()
 	else:
 		print("trying to generate terrain during runtime; not supported")
 		
@@ -676,7 +684,7 @@ func add_diagonal_floor(b_y: float, c_y: float, a_cliff: bool, d_cliff: bool):
 	add_point(1, b_y, 0.5, 0 if d_cliff else 1, 1 if d_cliff else 0)
 	add_point(0.5, c_y, 1, 0 if d_cliff else 1, 1 if d_cliff else 0)
 
-func load_height_map():	
+func generate_height_map():	
 	height_map = []
 	height_map.resize(dimensions.z)
 	for z in range(dimensions.z):
@@ -684,13 +692,6 @@ func load_height_map():
 		height_map[z].resize(dimensions.x)
 		for x in range(dimensions.x):
 			height_map[z][x] = 0.0
-			
-	needs_update = []
-	# initally all cells will need to be updated to show the newly loaded height
-	for z in range(dimensions.z - 1):
-		needs_update.append([])
-		for x in range(dimensions.x - 1):
-			needs_update[z].append(true)
 		
 	if height_map_image:
 		var image = height_map_image.get_image()
