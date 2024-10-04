@@ -243,6 +243,8 @@ func draw_pattern(terrain: MarchingSquaresTerrain):
 
 	var y_delta = brush_position.y - draw_height
 	var pattern = current_draw_pattern.duplicate(true)
+	
+	# Ensure points on both sides of chunk borders are updated
 
 	undo_redo.create_action("draw to terrain")
 	undo_redo.add_do_method(self, "do_draw_pattern", terrain, pattern, y_delta)
@@ -250,23 +252,14 @@ func draw_pattern(terrain: MarchingSquaresTerrain):
 	undo_redo.commit_action()
 	
 func do_draw_pattern(terrain: MarchingSquaresTerrain, pattern: Dictionary, y_delta: float):
-	# stores keys of extra chunks that need an update that arent within the pattern
-	var extra_chunks_updated: Dictionary
-	
 	for draw_chunk_coords: Vector2i in pattern:
 		var draw_chunk_dict = pattern[draw_chunk_coords]
 		var chunk: MarchingSquaresTerrainChunk = terrain.chunks[draw_chunk_coords]
 		for draw_cell_coords: Vector2i in draw_chunk_dict:
 			var y = chunk.get_height(draw_cell_coords)
-			var updated_chunk_coords: Dictionary = chunk.draw_height(draw_cell_coords.x, draw_cell_coords.y, y + y_delta)
-			for updated_coord in updated_chunk_coords:
-				if not (updated_coord in pattern):
-					extra_chunks_updated[updated_coord] = true
+			chunk.draw_height(draw_cell_coords.x, draw_cell_coords.y, y + y_delta)
 				
 		chunk.regenerate_mesh()
-		
-	for updated_coords: Vector2i in extra_chunks_updated:
-		terrain.chunks[updated_coords].regenerate_mesh()
 
 func on_tool_mode_changed(index: int):
 	print("set mode to ", index)
