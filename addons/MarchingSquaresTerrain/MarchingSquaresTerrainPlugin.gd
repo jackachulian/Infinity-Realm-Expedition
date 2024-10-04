@@ -29,20 +29,11 @@ var current_draw_pattern: Dictionary
 
 var terrain_hovered: bool
 
-# True if currently drawing to pattern with left mouse + shift
+# True if the mouse is currently held down to draw
 var is_drawing: bool
-
-# True if currently setting height of terrain with left click
-var is_setting: bool
 
 # when brush draws, if the gizmo sees draw height is not set, it will set the draw height
 var draw_height_set: bool
-
-# If user has started to drag up/down the current terrain brush pattern drawn
-var is_height_set_started: bool
-
-# Point that height dragging is from
-var height_base_pos: Vector3
 
 # Height the current pattern is being drawn at for the brush tool.
 var draw_height: float
@@ -123,18 +114,12 @@ func handle_mouse(camera: Camera3D, event: InputEvent) -> int:
 		var on_draw_area: bool = false
 		
 		# if there is any pattern, draw along that height plane instead of terrain intersection
-		if not current_draw_pattern.is_empty() and draw_height_set and not is_setting:
+		if not current_draw_pattern.is_empty() and draw_height_set:
 			var chunk_plane = Plane(Vector3.UP, Vector3(0, draw_height, 0))
 			draw_position = chunk_plane.intersects_ray(ray_origin, ray_dir)
 			if draw_position:
 				on_draw_area = true
 
-		elif is_setting:
-			var height_raise_plane = Plane(ray_dir, height_base_pos)
-			var intersection = height_raise_plane.intersects_ray(ray_origin, ray_dir)
-			
-			if intersection:
-				draw_height = intersection.y
 		else:
 			# Perform the raycast to check for intersection with a physics body (terrain)
 			var space_state = camera.get_world_3d().direct_space_state
@@ -159,21 +144,12 @@ func handle_mouse(camera: Camera3D, event: InputEvent) -> int:
 
 			if event is InputEventMouseButton and event.button_index == MouseButton.MOUSE_BUTTON_LEFT:
 				if event.is_pressed():
-					if shift_held:
-						is_drawing = true
-					else:
-						is_drawing = false
-						is_setting = true
-						is_height_set_started = false
-					gizmo_plugin.terrain_gizmo._redraw()
+					if not shift_held:
+						draw_height_set = false
+						current_draw_pattern.clear()
+					is_drawing = true
 				elif event.is_released():
 					is_drawing = false
-					if is_setting:
-						# TODO: set height
-						is_setting = false
-						draw_height_set = false
-						is_height_set_started = false
-						current_draw_pattern.clear()
 					pass
 				return EditorPlugin.AFTER_GUI_INPUT_STOP
 				
