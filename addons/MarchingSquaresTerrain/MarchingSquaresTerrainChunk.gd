@@ -745,21 +745,31 @@ func try_draw_neighbouring_height(x: int, z: int, y: float, chunk_delta: Vector2
 	if not terrain_system.chunks.has(chunk_coords + chunk_delta):
 		return false
 	
-	if chunk_delta.x == 1 and x == terrain_system.dimensions.x-1:
-		x = 0
-	elif chunk_delta.x == -1 and x == 0:
-		x = terrain_system.dimensions.x-1
-	else:
-		return false
+	if chunk_delta.x == 1:
+		if x == terrain_system.dimensions.x-1:
+			x = 0
+		else:
+			return false
+	elif chunk_delta.x == -1:
+		if x == 0:
+			x = terrain_system.dimensions.x-1
+		else:
+			return false
 		
-	if chunk_delta.y == 1 and z == terrain_system.dimensions.z-1:
-		z = 0
-	elif chunk_delta.y == -1 and z == 0:
-		z = terrain_system.dimensions.z-1
-	else:
-		return false
+	if chunk_delta.y == 1:
+		if z == terrain_system.dimensions.z-1:
+			z = 0
+		else:
+			return false
+	elif chunk_delta.y == -1:
+		if z == 0:
+			z = terrain_system.dimensions.z-1
+		else:
+			return false
+	
 		
 	var chunk: MarchingSquaresTerrainChunk = terrain_system.chunks[chunk_coords + chunk_delta]
+
 	chunk.height_map[z][x] = y
 	chunk.notify_needs_update(z, x)
 	chunk.notify_needs_update(z, x-1)
@@ -768,7 +778,7 @@ func try_draw_neighbouring_height(x: int, z: int, y: float, chunk_delta: Vector2
 	return true
 	
 func notify_needs_update(z: int, x: int):
-	if z < 0 or z >= terrain_system.dimensions.z-1 or x < 0 or x > terrain_system.dimensions.x-1:
+	if z < 0 or z >= terrain_system.dimensions.z-1 or x < 0 or x >= terrain_system.dimensions.x-1:
 		return
 		
 	needs_update[z][x] = true

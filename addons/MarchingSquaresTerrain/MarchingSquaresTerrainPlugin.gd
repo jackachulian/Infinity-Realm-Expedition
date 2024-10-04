@@ -241,8 +241,8 @@ func handle_mouse(camera: Camera3D, event: InputEvent) -> int:
 func draw_pattern(terrain: MarchingSquaresTerrain):
 	var undo_redo := MarchingSquaresTerrainPlugin.instance.get_undo_redo()
 
-	var pattern = current_draw_pattern.duplicate(true)
 	var y_delta = brush_position.y - draw_height
+	var pattern = current_draw_pattern.duplicate(true)
 
 	undo_redo.create_action("draw to terrain")
 	undo_redo.add_do_method(self, "do_draw_pattern", terrain, pattern, y_delta)
