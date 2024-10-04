@@ -44,8 +44,8 @@ func _redraw():
 		var pos = terrain_plugin.brush_position
 		
 		# this should line up the actual draw position over the cursor most closely
-		pos.x += terrain_system.cell_size.x/2
-		pos.z += terrain_system.cell_size.x/2
+		#pos.x += terrain_system.cell_size.x/2
+		#pos.z += terrain_system.cell_size.y/2
 		
 		
 		#var x = round(pos.x / terrain_system.cell_size.x - chunk_x * terrain_system.dimensions.x * terrain_system.cell_size.x)
@@ -62,14 +62,14 @@ func _redraw():
 			return
 		var chunk: MarchingSquaresTerrainChunk = terrain_system.chunks[chunk_coords]
 		
-		var x = int(floor((pos.x / terrain_system.cell_size.x) - chunk_x * (terrain_system.dimensions.x - 1)))
-		var z = int(floor((pos.z / terrain_system.cell_size.y) - chunk_z * (terrain_system.dimensions.z - 1)))
+		var x = int(floor(((pos.x + terrain_system.cell_size.x/2) / terrain_system.cell_size.x) - chunk_x * (terrain_system.dimensions.x - 1)))
+		var z = int(floor(((pos.z + terrain_system.cell_size.y/2) / terrain_system.cell_size.y) - chunk_z * (terrain_system.dimensions.z - 1)))
 		var y = chunk.height_map[z][x]
 		
 		print(pos, Vector2(chunk_x, chunk_z), Vector2(x, z))
 		
-		var world_x = floor(pos.x / terrain_system.cell_size.x) * terrain_system.cell_size.x
-		var world_z = floor(pos.z / terrain_system.cell_size.y) * terrain_system.cell_size.y
+		var world_x = floor((pos.x + terrain_system.cell_size.x/2) / terrain_system.cell_size.x) * terrain_system.cell_size.x
+		var world_z = floor((pos.z + terrain_system.cell_size.y/2) / terrain_system.cell_size.y) * terrain_system.cell_size.y
 		
 		var draw_position = Vector3(world_x, y, world_z)
 		var draw_transform = Transform3D(Vector3.RIGHT, Vector3.UP, Vector3.BACK, draw_position)
