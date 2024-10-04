@@ -7,6 +7,7 @@ var lines: PackedVector3Array = PackedVector3Array()
 var addchunk_material: Material
 var removechunk_material: Material
 var brush_material: Material
+var brush_pattern_material: Material
 
 var terrain_plugin: MarchingSquaresTerrainPlugin
 
@@ -17,6 +18,7 @@ func _redraw():
 	addchunk_material = get_plugin().get_material("addchunk", self)
 	removechunk_material = get_plugin().get_material("removechunk", self)
 	brush_material = get_plugin().get_material("brush", self)
+	brush_pattern_material = get_plugin().get_material("brush_pattern", self)
 
 	var terrain_system: MarchingSquaresTerrain = get_node_3d()
 	terrain_plugin = MarchingSquaresTerrainPlugin.instance
@@ -57,7 +59,7 @@ func _redraw():
 		
 		var chunk_x = floor(pos.x / ((terrain_system.dimensions.x - 1) * terrain_system.cell_size.x))
 		var chunk_z = floor(pos.z / ((terrain_system.dimensions.z - 1) * terrain_system.cell_size.y))
-		var chunk_coords = Vector2i(chunk_x, chunk_z)
+		var chunk_coords := Vector2i(chunk_x, chunk_z)
 		if not terrain_system.chunks.has(chunk_coords):
 			return
 		var chunk: MarchingSquaresTerrainChunk = terrain_system.chunks[chunk_coords]
@@ -66,7 +68,8 @@ func _redraw():
 		var z = int(floor(((pos.z + terrain_system.cell_size.y/2) / terrain_system.cell_size.y) - chunk_z * (terrain_system.dimensions.z - 1)))
 		var y = chunk.height_map[z][x]
 		
-		print(pos, Vector2(chunk_x, chunk_z), Vector2(x, z))
+		var cell_coords = Vector2i(x, z)
+		print(pos, Vector2(chunk_x, chunk_z), )
 		
 		var world_x = floor((pos.x + terrain_system.cell_size.x/2) / terrain_system.cell_size.x) * terrain_system.cell_size.x
 		var world_z = floor((pos.z + terrain_system.cell_size.y/2) / terrain_system.cell_size.y) * terrain_system.cell_size.y
@@ -74,6 +77,26 @@ func _redraw():
 		var draw_position = Vector3(world_x, y, world_z)
 		var draw_transform = Transform3D(Vector3.RIGHT, Vector3.UP, Vector3.BACK, draw_position)
 		add_mesh(terrain_plugin.BRUSH_VISUAL, brush_material, draw_transform)
+		
+		if terrain_plugin.is_drawing:
+			if not terrain_plugin.current_draw_pattern.has(chunk_coords):
+				terrain_plugin.current_draw_pattern[chunk_coords] = {}
+			terrain_plugin.current_draw_pattern[chunk_coords][cell_coords] = true
+			
+			for draw_chunk_coords: Vector2i in terrain_plugin.current_draw_pattern:
+				chunk = terrain_system.chunks[draw_chunk_coords]
+				var draw_chunk_dict: Dictionary = terrain_plugin.current_draw_pattern[draw_chunk_coords]
+				for draw_coords: Vector2i in draw_chunk_dict:
+					if draw_chunk_coords == chunk_coords and draw_coords == cell_coords:
+						continue
+					
+					var draw_x = (draw_chunk_coords.x * (terrain_system.dimensions.x - 1) + draw_coords.x) * terrain_system.cell_size.x
+					var draw_z = (draw_chunk_coords.y * (terrain_system.dimensions.z - 1) + draw_coords.y) * terrain_system.cell_size.y
+					var draw_y = chunk.height_map[draw_coords.y][draw_coords.x]
+					
+					draw_position = Vector3(draw_x, draw_y, draw_z)
+					draw_transform = Transform3D(Vector3.RIGHT, Vector3.UP, Vector3.BACK, draw_position)
+					add_mesh(terrain_plugin.BRUSH_VISUAL, brush_pattern_material, draw_transform)
 		
 func try_add_chunk(terrain_system: MarchingSquaresTerrain, coords: Vector2i):
 	var terrain_plugin = MarchingSquaresTerrainPlugin.instance

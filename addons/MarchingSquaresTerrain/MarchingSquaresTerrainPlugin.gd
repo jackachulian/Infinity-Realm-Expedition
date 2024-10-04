@@ -125,6 +125,7 @@ func handle_mouse(camera: Camera3D, event: InputEvent) -> int:
 					is_drawing = true
 				elif event.is_released():
 					is_drawing = false
+					current_draw_pattern.clear()
 					pass
 				return EditorPlugin.AFTER_GUI_INPUT_STOP
 				
