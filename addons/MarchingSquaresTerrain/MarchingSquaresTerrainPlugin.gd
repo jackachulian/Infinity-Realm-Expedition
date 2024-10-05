@@ -159,6 +159,10 @@ func handle_mouse(camera: Camera3D, event: InputEvent) -> int:
 			if result:
 				draw_position = result.position
 				draw_area_hovered = true
+				
+		# ALT to clear the current draw pattern. don't clear while setting
+		if Input.is_key_pressed(KEY_ALT) and not is_setting:
+			current_draw_pattern.clear()
 
 		# Check for terrain collision
 		if draw_area_hovered:
@@ -175,6 +179,7 @@ func handle_mouse(camera: Camera3D, event: InputEvent) -> int:
 				draw_height_set = false
 				if Input.is_key_pressed(KEY_SHIFT):
 					is_drawing = true
+					brush_position = draw_position
 				else:
 					is_setting = true
 					if not flatten:

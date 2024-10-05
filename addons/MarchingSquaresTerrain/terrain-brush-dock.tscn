@@ -3,7 +3,7 @@
 [node name="Terrain-brush-dock" type="Control"]
 layout_mode = 3
 anchors_preset = 0
-offset_right = 259.0
+offset_right = 409.0
 offset_bottom = 31.0
 
 [node name="BrushToolOptionsButton" type="OptionButton" parent="."]

@@ -7,7 +7,6 @@ var lines: PackedVector3Array = PackedVector3Array()
 var addchunk_material: Material
 var removechunk_material: Material
 var brush_material: Material
-var brush_pattern_material: Material
 
 var terrain_plugin: MarchingSquaresTerrainPlugin
 
@@ -40,17 +39,53 @@ func _redraw():
 			try_add_chunk(terrain_system, Vector2i(chunk_coords.x, chunk_coords.y+1))
 			try_add_chunk(terrain_system, chunk_coords)
 			
-	var terrain_chunk_hovered: bool = terrain_plugin.terrain_hovered and terrain_system.chunks.has(terrain_plugin.current_hovered_chunk)
+	var pos: Vector3 = terrain_plugin.brush_position
 	var cursor_chunk_coords: Vector2i
 	var cursor_cell_coords: Vector2i
-	var pos: Vector3
+			
+	if terrain_plugin.is_setting and not terrain_plugin.draw_height_set:
+		terrain_plugin.draw_height_set = true
+		
+		var chunk_x = floor(pos.x / ((terrain_system.dimensions.x - 1) * terrain_system.cell_size.x))
+		var chunk_z = floor(pos.z / ((terrain_system.dimensions.z - 1) * terrain_system.cell_size.y))
+		cursor_chunk_coords = Vector2i(chunk_x, chunk_z)
+		
+		var x = int(floor(((pos.x + terrain_system.cell_size.x/2) / terrain_system.cell_size.x) - chunk_x * (terrain_system.dimensions.x - 1)))
+		var z = int(floor(((pos.z + terrain_system.cell_size.y/2) / terrain_system.cell_size.y) - chunk_z * (terrain_system.dimensions.z - 1)))
+		cursor_cell_coords = Vector2i(x, z)
+		
+		# when setting, if the clicked tile is not part of the pattern and alt not held, go to draw mode
+		var cursor_in_pattern: bool = terrain_plugin.current_draw_pattern.has(cursor_chunk_coords) and terrain_plugin.current_draw_pattern[cursor_chunk_coords].has(cursor_cell_coords)
+		if not cursor_in_pattern and not Input.is_key_pressed(KEY_ALT):
+			terrain_plugin.current_draw_pattern.clear()
+			terrain_plugin.is_setting = false
+			terrain_plugin.is_drawing = true
+			terrain_plugin.draw_height = pos.y
+		
+		# otherwise, drag that pattern's height
+		else:
+			print("setting")
+			# if alt held, ONLY drag the cursor cell
+			if Input.is_key_pressed(KEY_ALT):
+				terrain_plugin.current_draw_pattern.clear()
+				terrain_plugin.current_draw_pattern[cursor_chunk_coords] = {}
+				terrain_plugin.current_draw_pattern[cursor_chunk_coords][cursor_cell_coords] = terrain_system.chunks[cursor_chunk_coords].get_height(cursor_cell_coords)
+				terrain_plugin.draw_height = pos.y
+			terrain_plugin.base_position = pos
+			
+	if terrain_plugin.is_drawing and not terrain_plugin.draw_height_set:
+		print("drawing")
+		terrain_plugin.draw_height_set = true
+		terrain_plugin.draw_height = terrain_plugin.brush_position.y
+			
+	var terrain_chunk_hovered: bool = terrain_plugin.terrain_hovered and terrain_system.chunks.has(terrain_plugin.current_hovered_chunk)
 	if terrain_chunk_hovered:
 		pos = terrain_plugin.brush_position
 		
 		#var chunk_space_coords = Vector2(pos.x / terrain_system.cell_size.x, pos.z / terrain_system.cell_size.y)
 		
-		var pos_tl := Vector2(pos.x - terrain_plugin.brush_size/2, pos.z - terrain_plugin.brush_size/2)
-		var pos_br := Vector2(pos.x + terrain_plugin.brush_size/2, pos.z + terrain_plugin.brush_size/2)
+		var pos_tl := Vector2(pos.x + terrain_system.cell_size.x - terrain_plugin.brush_size/2, pos.z + terrain_system.cell_size.y - terrain_plugin.brush_size/2)
+		var pos_br := Vector2(pos.x + terrain_system.cell_size.x + terrain_plugin.brush_size/2, pos.z + terrain_system.cell_size.y + terrain_plugin.brush_size/2)
 		
 		#var chunk_space_topleft := Vector2(pos_tl.x / terrain_system.cell_size.x, pos_tl.y / terrain_system.cell_size.y)
 		#var chunk_space_bottomright := Vector2(pos_br.x / terrain_system.cell_size.x, pos_br.y / terrain_system.cell_size.y)
@@ -75,7 +110,7 @@ func _redraw():
 		#var world_x = floor((pos.x + terrain_system.cell_size.x/2) / terrain_system.cell_size.x) * terrain_system.cell_size.x
 		#var world_z = floor((pos.z + terrain_system.cell_size.y/2) / terrain_system.cell_size.y) * terrain_system.cell_size.y
 		
-		#cursor_cell_coords = Vector2i(x, z)
+		
 		for chunk_z in range(chunk_tl_z, chunk_br_z+1):
 			for chunk_x in range(chunk_tl_x, chunk_br_x+1):
 				cursor_chunk_coords = Vector2i(chunk_x, chunk_z)
@@ -92,7 +127,8 @@ func _redraw():
 				#print(cursor_chunk_coords, ": ", Vector2i(x_min, x_max), " ", Vector2i(z_min, z_max))
 				
 				for z in range(z_min, z_max):
-					for x in range(x_min, x_max):	
+					for x in range(x_min, x_max):
+						cursor_cell_coords = Vector2i(x, z)
 						var y: float
 						if not terrain_plugin.current_draw_pattern.is_empty() and terrain_plugin.flatten:
 							y = terrain_plugin.draw_height
@@ -105,45 +141,15 @@ func _redraw():
 						var draw_position = Vector3(world_x, y, world_z)
 						var draw_transform = Transform3D(Vector3.RIGHT, Vector3.UP, Vector3.BACK, draw_position)
 						add_mesh(terrain_plugin.BRUSH_VISUAL, brush_material, draw_transform)
-		
-		if terrain_plugin.is_drawing and not terrain_plugin.draw_height_set:
-			print("drawing")
-			terrain_plugin.draw_height_set = true
-			terrain_plugin.draw_height = pos.y
+						
+						# Draw to current pattern
+						if terrain_plugin.is_drawing:
+							if not terrain_plugin.current_draw_pattern.has(cursor_chunk_coords):
+								terrain_plugin.current_draw_pattern[cursor_chunk_coords] = {}
+							terrain_plugin.current_draw_pattern[cursor_chunk_coords][cursor_cell_coords] = chunk.height_map[z][x]
 			
 		var brush_transform = Transform3D(Vector3.RIGHT * terrain_plugin.brush_size, Vector3.UP, Vector3.BACK * terrain_plugin.brush_size, pos)
 		add_mesh(terrain_plugin.BRUSH_RADIUS_VISUAL, null, brush_transform)
-		
-	# Draw to current pattern
-	if terrain_chunk_hovered and terrain_plugin.is_drawing:
-		if not terrain_plugin.current_draw_pattern.has(cursor_chunk_coords):
-			terrain_plugin.current_draw_pattern[cursor_chunk_coords] = {}
-		var hovered_chunk: MarchingSquaresTerrainChunk = terrain_system.chunks[cursor_chunk_coords]
-		terrain_plugin.current_draw_pattern[cursor_chunk_coords][cursor_cell_coords] = hovered_chunk.get_height(cursor_cell_coords)
-		
-	elif terrain_plugin.is_setting and not terrain_plugin.draw_height_set:
-		print("setting")
-		terrain_plugin.draw_height_set = true
-		
-		# when setting, if the clicked tile is part of the pattern, drag that pattern's height
-		if terrain_plugin.current_draw_pattern.has(cursor_chunk_coords) and terrain_plugin.current_draw_pattern[cursor_chunk_coords].has(cursor_cell_coords):
-			terrain_plugin.base_position = pos
-		
-		# if clicking otuside the pattern, pattern will only be the hovered tile
-		elif terrain_chunk_hovered:
-			terrain_plugin.current_draw_pattern.clear()
-			terrain_plugin.is_setting = false
-			terrain_plugin.is_drawing = true
-			terrain_plugin.draw_height = pos.y
-			terrain_plugin.draw_height_set = true
-			#
-		#elif terrain_chunk_hovered and terrain_plugin.is_setting:
-			#terrain_plugin.current_draw_pattern.clear()
-			#terrain_plugin.current_draw_pattern[cursor_chunk_coords] = {}
-			#terrain_plugin.current_draw_pattern[cursor_chunk_coords][cursor_cell_coords] = true
-			#terrain_plugin.draw_height = pos.y
-			#terrain_plugin.draw_height_set = true
-			#terrain_plugin.base_position = pos
 			
 	var height_diff: float
 	if terrain_plugin.is_setting and terrain_plugin.draw_height_set:
@@ -163,13 +169,13 @@ func _redraw():
 				
 				var draw_position = Vector3(draw_x, draw_y, draw_z)
 				var draw_transform = Transform3D(Vector3.RIGHT, Vector3.UP, Vector3.BACK, draw_position)
-				add_mesh(terrain_plugin.BRUSH_VISUAL, brush_pattern_material, draw_transform)
+				add_mesh(terrain_plugin.BRUSH_VISUAL, null, draw_transform)
 				
 				# If setting, also show a square at the height to set to
 				if terrain_plugin.is_setting and terrain_plugin.draw_height_set:
 					draw_position = Vector3(draw_x, draw_y + height_diff, draw_z)
 					draw_transform = Transform3D(Vector3.RIGHT, Vector3.UP, Vector3.BACK, draw_position)
-					add_mesh(terrain_plugin.BRUSH_VISUAL, brush_pattern_material, draw_transform)
+					add_mesh(terrain_plugin.BRUSH_VISUAL, null, draw_transform)
 		
 func try_add_chunk(terrain_system: MarchingSquaresTerrain, coords: Vector2i):
 	var terrain_plugin = MarchingSquaresTerrainPlugin.instance
