@@ -3,8 +3,6 @@ shader_type spatial;
 // Ledge
 uniform float ledgeTopThickness : hint_range(0, 1) = 0.5;
 uniform float ledgeBottomThickness : hint_range(0, 1) = 0;
-uniform float ledgeBrightLower : hint_range(0, 1) = 0.5;
-uniform float ledgeBrightGain = 0.1;
 
 // Noise tiling
 uniform float grassNoiseScale = 8;
@@ -61,8 +59,8 @@ void fragment() {
 	}
 	// ==== Floors
 	else {
-		float colorHeightNoise = texture(grassNoise, vec2(position.x, position.z) / grassNoiseScale).r;
-		float colorHeight = clamp(position.y * ledgeBrightGain + colorHeightNoise - ledgeBrightLower, 0.01, 0.99);
+		float colorNoise = texture(grassNoise, vec2(position.x, position.z) / grassNoiseScale).r;
+		float colorHeight = clamp(colorNoise, 0.01, 0.99);
 		// Use the height in heightmap space (stored in vertex color) to get the grass color
 		vec3 grassAlbedo = texture(grassGradient, vec2(colorHeight, 0)).rgb;
 		ALBEDO = grassAlbedo;

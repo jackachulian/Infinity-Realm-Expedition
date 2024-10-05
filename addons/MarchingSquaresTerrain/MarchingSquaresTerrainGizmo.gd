@@ -110,6 +110,7 @@ func _redraw():
 		#var world_x = floor((pos.x + terrain_system.cell_size.x/2) / terrain_system.cell_size.x) * terrain_system.cell_size.x
 		#var world_z = floor((pos.z + terrain_system.cell_size.y/2) / terrain_system.cell_size.y) * terrain_system.cell_size.y
 		
+		var max_distance_squared = pow((terrain_plugin.brush_size/2), 2)
 		
 		for chunk_z in range(chunk_tl_z, chunk_br_z+1):
 			for chunk_x in range(chunk_tl_x, chunk_br_x+1):
@@ -129,14 +130,17 @@ func _redraw():
 				for z in range(z_min, z_max):
 					for x in range(x_min, x_max):
 						cursor_cell_coords = Vector2i(x, z)
+						var world_x: float = (chunk_x * (terrain_system.dimensions.x-1) + x) * terrain_system.cell_size.x
+						var world_z: float = (chunk_z * (terrain_system.dimensions.z-1) + z) * terrain_system.cell_size.y
+						
+						if Vector2(pos.x, pos.z).distance_squared_to(Vector2(world_x, world_z)) > max_distance_squared:
+							continue
+						
 						var y: float
 						if not terrain_plugin.current_draw_pattern.is_empty() and terrain_plugin.flatten:
 							y = terrain_plugin.draw_height
 						else:
 							y = chunk.height_map[z][x]
-						
-						var world_x: float = (chunk_x * (terrain_system.dimensions.x-1) + x) * terrain_system.cell_size.x
-						var world_z: float = (chunk_z * (terrain_system.dimensions.z-1) + z) * terrain_system.cell_size.y
 						
 						var draw_position = Vector3(world_x, y, world_z)
 						var draw_transform = Transform3D(Vector3.RIGHT, Vector3.UP, Vector3.BACK, draw_position)
@@ -160,9 +164,6 @@ func _redraw():
 			var chunk = terrain_system.chunks[draw_chunk_coords]
 			var draw_chunk_dict: Dictionary = terrain_plugin.current_draw_pattern[draw_chunk_coords]
 			for draw_coords: Vector2i in draw_chunk_dict:
-				if draw_chunk_coords == cursor_chunk_coords and draw_coords == cursor_cell_coords:
-					continue
-				
 				var draw_x = (draw_chunk_coords.x * (terrain_system.dimensions.x - 1) + draw_coords.x) * terrain_system.cell_size.x
 				var draw_z = (draw_chunk_coords.y * (terrain_system.dimensions.z - 1) + draw_coords.y) * terrain_system.cell_size.y
 				var draw_y = terrain_plugin.draw_height if terrain_plugin.flatten else chunk.height_map[draw_coords.y][draw_coords.x]

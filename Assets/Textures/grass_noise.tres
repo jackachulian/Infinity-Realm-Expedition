@@ -5,7 +5,7 @@
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_ooknt"]
 noise_type = 3
 frequency = 0.0078
-fractal_octaves = 1
+fractal_octaves = 3
 
 [resource]
 seamless = true
