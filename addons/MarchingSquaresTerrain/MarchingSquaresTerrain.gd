@@ -20,6 +20,13 @@ extends Node3D
 # used to generate smooth initial heights for more natrual looking terrain. if null, initial terrain will be flat
 @export var noise: Noise
 
+# Material assigned to the grass.
+@export var grass_material: Material
+
+@export var grass_per_cell := 4
+
+@export var grass_size := Vector2(0.5, 0.5)
+
 var chunks: Dictionary = {}
 
 func _enter_tree() -> void:
@@ -44,6 +51,7 @@ func add_new_chunk(chunk_x: int, chunk_z: int):
 	var chunk_coords := Vector2i(chunk_x, chunk_z)
 	var new_chunk := MarchingSquaresTerrainChunk.new()
 	new_chunk.name = "Chunk "+str(chunk_coords)
+	new_chunk.terrain_system = self
 	add_chunk(chunk_coords, new_chunk, false)
 	
 	var chunk_left: MarchingSquaresTerrainChunk = chunks.get(Vector2i(chunk_x-1, chunk_z))

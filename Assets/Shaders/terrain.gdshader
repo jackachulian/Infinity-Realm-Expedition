@@ -27,7 +27,7 @@ uniform bool debug = false;
 varying vec3 position;
 
 void vertex() {
-	position = VERTEX;
+	position = NODE_POSITION_WORLD + VERTEX;
 }
 
 void fragment() {

@@ -12,6 +12,8 @@ extends MeshInstance3D
 # Stores the heights from the heightmap.
 @export_storage var height_map: Array
 
+var grass_planter: GrassPlanter
+
 # Size of the 2 dimensional cell array (xz value) and y scale (y value)
 var dimensions: Vector3i:
 	get:
@@ -54,7 +56,7 @@ var cell_geometry: Dictionary = {}
 var needs_update: Array[Array]
 
 # called by TerrainSystem parent
-func initialize_terrain(regenerate_mesh: bool = true):
+func initialize_terrain(should_regenerate_mesh: bool = true):
 	needs_update = []
 	# initally all cells will need to be updated to show the newly loaded height
 	for z in range(dimensions.z - 1):
@@ -65,8 +67,9 @@ func initialize_terrain(regenerate_mesh: bool = true):
 	if Engine.is_editor_hint():
 		if not height_map:
 			generate_height_map()
-		if not mesh and regenerate_mesh:
+		if not mesh and should_regenerate_mesh:
 			regenerate_mesh()
+		
 	else:
 		print("trying to generate terrain during runtime; not supported")
 		
@@ -84,6 +87,15 @@ func regenerate_mesh():
 	st.begin(Mesh.PRIMITIVE_TRIANGLES)
 	
 	var start_time: int = Time.get_ticks_msec()
+	
+	if not grass_planter:
+		grass_planter = get_node_or_null("GrassPlanter")
+		if not grass_planter:
+			grass_planter = GrassPlanter.new()
+			grass_planter.name = "GrassPlanter"
+			add_child(grass_planter)
+			grass_planter.owner = EditorInterface.get_edited_scene_root()
+			grass_planter.setup(self)
 	
 	generate_terrain_cells()
 				
@@ -447,6 +459,7 @@ func generate_terrain_cells():
 					case_found = false
 					
 				if case_found:
+					grass_planter.generate_grass_on_cell(cell_geometry[cell_coords], cell_coords)
 					break
 					
 			if not case_found:

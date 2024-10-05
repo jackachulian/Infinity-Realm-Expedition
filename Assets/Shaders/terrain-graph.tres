@@ -394,7 +394,6 @@ void light() {
 
 }
 "
-graph_offset = Vector2(-581.112, -87.8232)
 flags/world_vertex_coords = true
 nodes/vertex/2/node = SubResource("VisualShaderNodeInput_rnivh")
 nodes/vertex/2/position = Vector2(-60, 220)

@@ -1,5 +1,9 @@
 shader_type spatial;
+render_mode depth_prepass_alpha;
+
 uniform float grassNoiseScale = 8;
+
+uniform sampler2D grassTexture : source_color, filter_nearest;
 
 // Color gradient textures
 uniform sampler2D grassGradient : source_color, filter_nearest;
@@ -11,7 +15,16 @@ uniform sampler2D grassNoise : source_color;
 varying vec3 position;
 
 void vertex() {
-	position = VERTEX;
+	MODELVIEW_MATRIX = VIEW_MATRIX * mat4(
+			MAIN_CAM_INV_VIEW_MATRIX[0],
+			MAIN_CAM_INV_VIEW_MATRIX[1],
+			MAIN_CAM_INV_VIEW_MATRIX[2],
+			MODEL_MATRIX[3]);
+	MODELVIEW_NORMAL_MATRIX = mat3(MODELVIEW_MATRIX);
+	
+	position = NODE_POSITION_WORLD;
+	
+	NORMAL = normalize((VIEW_MATRIX * vec4(0.0, 1.0, 0.0, 0.0)).xyz);
 }
 
 void fragment() {

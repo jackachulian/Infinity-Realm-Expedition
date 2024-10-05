@@ -4,10 +4,13 @@
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_ooknt"]
 noise_type = 3
-frequency = 0.0078
+seed = 1
+frequency = 0.004
 fractal_octaves = 3
 
 [resource]
+width = 1024
+height = 1024
 seamless = true
 color_ramp = SubResource("Gradient_7nq7o")
 noise = SubResource("FastNoiseLite_ooknt")

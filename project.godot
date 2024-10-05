@@ -97,7 +97,7 @@ rotate_right={
 3d_render/layer_4="Object"
 3d_render/layer_5="ShadowOnly"
 3d_render/layer_6="CloudDim"
-3d_physics/layer_1="Default"
+3d_physics/layer_1="Terrain"
 3d_physics/layer_2="Hitboxes"
 3d_physics/layer_3="Entity"
 

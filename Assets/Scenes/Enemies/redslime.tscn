@@ -109,5 +109,3 @@ script = ExtResource("6_hdqk2")
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Hurtbox" index="0"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.3, 0)
 shape = SubResource("CylinderShape3D_hp8ij")
-
-[connection signal="area_entered" from="Hurtbox" to="Hurtbox" method="_on_area_entered"]
