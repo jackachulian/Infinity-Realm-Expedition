@@ -123,7 +123,7 @@ func generate_terrain_cells():
 			if not needs_update[z][x]:
 				var verts = cell_geometry[cell_coords]["verts"]
 				var uvs = cell_geometry[cell_coords]["uvs"]
-				var is_floor =  cell_geometry[cell_coords]["is_floor"]
+				var is_floor = cell_geometry[cell_coords]["is_floor"]
 				for i in range(len(verts)):
 					st.set_smooth_group(0 if is_floor[i] == true else -1)
 					st.set_uv(uvs[i])

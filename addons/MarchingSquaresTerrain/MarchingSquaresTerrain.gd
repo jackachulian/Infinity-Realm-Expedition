@@ -20,6 +20,7 @@ extends Node3D
 # used to generate smooth initial heights for more natrual looking terrain. if null, initial terrain will be flat
 @export var noise: Noise
 
+@export_category("Grass")
 # Material assigned to the grass.
 @export var grass_material: Material
 
@@ -35,6 +36,18 @@ extends Node3D
 		grass_size = value
 		for chunk: MarchingSquaresTerrainChunk in chunks.values():
 			chunk.grass_planter.multimesh.mesh = GrassPlanter.simple_grass_mesh(grass_size)
+
+@export_range(0, 1) var ledge_top_thickness: float = 0.5:
+	set(value):
+		ledge_top_thickness = value
+		for chunk: MarchingSquaresTerrainChunk in chunks.values():
+			chunk.grass_planter.regenerate_all_cells()
+			
+@export_range(0, 1) var ledge_bottom_thickness: float = 0.25:
+	set(value):
+		ledge_bottom_thickness = value
+		for chunk: MarchingSquaresTerrainChunk in chunks.values():
+			chunk.grass_planter.regenerate_all_cells()
 
 var chunks: Dictionary = {}
 

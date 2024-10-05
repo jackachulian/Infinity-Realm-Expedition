@@ -39,7 +39,13 @@ func generate_grass_on_cell(cell_coords: Vector2i):
 	var index: int = (cell_coords.y * (chunk.dimensions.x-1) + cell_coords.x) * count
 	#print("generating grass on ", cell_coords, " index: ", index)
 	var verts: PackedVector3Array = cell_geometry["verts"]
+	var uvs: PackedVector2Array = cell_geometry["uvs"]
+	var is_floor: Array = cell_geometry["is_floor"]
 	for i in range(0, len(verts), 3):
+		# only place grass on floors
+		if not is_floor[i]:
+			continue
+		
 		var a := verts[i]
 		var b := verts[i+1]
 		var c := verts[i+2]
@@ -69,12 +75,18 @@ func generate_grass_on_cell(cell_coords: Vector2i):
 				continue
 				
 			if u + v <= 1:
-				# Point is inside triangle
-				var p = a*u + b*v + c*(1-u-v)
-				#print("placing grass at ", p)
-				multimesh.set_instance_transform(index, Transform3D(Basis.IDENTITY, p))
-				index += 1
+				# Point is inside triangle, won't be inside any other floor triangle
 				points.remove_at(point_index)
+				var p = a*u + b*v + c*(1-u-v)
+				
+				# Don't place grass on ledges
+				var uv = uvs[i]*u + uvs[i+1]*v + uvs[i+2]*(1-u-v)
+				if uv.x <= 1-chunk.terrain_system.ledge_bottom_thickness and uv.y <= 1-chunk.terrain_system.ledge_top_thickness:
+					#print("placing grass at ", p)
+					multimesh.set_instance_transform(index, Transform3D(Basis.IDENTITY, p))
+					index += 1
+				
+				
 			else:
 				point_index += 1
 		
