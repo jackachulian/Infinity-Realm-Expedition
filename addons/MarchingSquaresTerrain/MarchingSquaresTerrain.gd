@@ -40,12 +40,37 @@ func _ready() -> void:
 func has_chunk(x: int, z: int) -> bool:
 	return chunks.has(Vector2i(x, z))
 	
-func add_new_chunk(x: int, z: int):
-	var chunk_coords := Vector2i(x, z)
+func add_new_chunk(chunk_x: int, chunk_z: int):
+	var chunk_coords := Vector2i(chunk_x, chunk_z)
 	var new_chunk := MarchingSquaresTerrainChunk.new()
 	new_chunk.name = "Chunk "+str(chunk_coords)
-	add_chunk(chunk_coords, new_chunk)
+	add_chunk(chunk_coords, new_chunk, false)
 	
+	var chunk_left: MarchingSquaresTerrainChunk = chunks.get(Vector2i(chunk_x-1, chunk_z))
+	if chunk_left:
+		print("copying chunk left adjacent points")
+		for z in range(0, dimensions.z):
+			new_chunk.height_map[z][0] = chunk_left.height_map[z][dimensions.x - 1]
+			
+	var chunk_right: MarchingSquaresTerrainChunk = chunks.get(Vector2i(chunk_x+1, chunk_z))
+	if chunk_right:
+		print("copying chunk right adjacent points")
+		for z in range(0, dimensions.z):
+			chunk_right.height_map[z][dimensions.x - 1] = chunk_right.height_map[z][0]
+			
+	var chunk_up: MarchingSquaresTerrainChunk = chunks.get(Vector2i(chunk_x, chunk_z-1))
+	if chunk_up:
+		print("copying chunk up adjacent points")
+		for x in range(0, dimensions.x):
+			new_chunk.height_map[0][x] = chunk_up.height_map[dimensions.z - 1][x]
+			
+	var chunk_down: MarchingSquaresTerrainChunk = chunks.get(Vector2i(chunk_x, chunk_z+1))
+	if chunk_down:
+		print("copying chunk down adjacent points")
+		for x in range(0, dimensions.x):
+			new_chunk.height_map[dimensions.z - 1][x] = chunk_down.height_map[0][x]
+			
+	new_chunk.regenerate_mesh()
 
 func remove_chunk(x: int, z: int):
 	var chunk_coords := Vector2i(x, z)
@@ -61,7 +86,7 @@ func remove_chunk_from_tree(x: int, z: int):
 	remove_child(chunk)
 	chunk.owner = null
 	
-func add_chunk(coords: Vector2i, chunk: MarchingSquaresTerrainChunk):
+func add_chunk(coords: Vector2i, chunk: MarchingSquaresTerrainChunk, regenerate_mesh: bool = true):
 	chunks[coords] = chunk
 	chunk.terrain_system = self
 	chunk.chunk_coords = coords
@@ -73,5 +98,5 @@ func add_chunk(coords: Vector2i, chunk: MarchingSquaresTerrainChunk):
 	
 	add_child(chunk)
 	chunk.owner = EditorInterface.get_edited_scene_root()
-	chunk.initialize_terrain()
+	chunk.initialize_terrain(regenerate_mesh)
 	print("added new chunk to terrain system at ", chunk)

@@ -54,7 +54,7 @@ var cell_geometry: Dictionary = {}
 var needs_update: Array[Array]
 
 # called by TerrainSystem parent
-func initialize_terrain():
+func initialize_terrain(regenerate_mesh: bool = true):
 	needs_update = []
 	# initally all cells will need to be updated to show the newly loaded height
 	for z in range(dimensions.z - 1):
@@ -65,7 +65,7 @@ func initialize_terrain():
 	if Engine.is_editor_hint():
 		if not height_map:
 			generate_height_map()
-		if not mesh:
+		if not mesh and regenerate_mesh:
 			regenerate_mesh()
 	else:
 		print("trying to generate terrain during runtime; not supported")
