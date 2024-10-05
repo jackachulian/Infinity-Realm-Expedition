@@ -24,8 +24,8 @@ var current_hovered_chunk: Vector2i
 
 var brush_position: Vector3
 
-# current drawing radius
-var brush_radius: float = 3.0
+# current drawing brush size
+var brush_size: float = 3.0
 
 # A dictionary with keys for each tile that is currently being drawn to with the brush. Value is the height that preview was drawn to,
 # used for restoring when undoing
@@ -49,7 +49,7 @@ var is_setting: bool
 var base_position: Vector3
 
 const BRUSH_VISUAL: Mesh = preload("brush_visual.tres")
-const BRUSH_RADIUS_VISUAL: Mesh = preload("brush_visual.tres")
+var BRUSH_RADIUS_VISUAL: Mesh
 
 # This function gets called when the plugin is activated.
 func _enter_tree():
@@ -69,6 +69,8 @@ func activate_terrain_brush_dock():
 	if not terrain_brush_dock_active:
 		terrain_brush_dock = preload("terrain-brush-dock.tscn").instantiate()
 		terrain_brush_dock_active = true
+		
+		BRUSH_RADIUS_VISUAL = preload("brush_radius_visual.tres")
 		
 		tool_options_button = terrain_brush_dock.get_node("BrushToolOptionsButton")
 		tool_options_button.selected = mode
@@ -133,22 +135,6 @@ func handle_mouse(camera: Camera3D, event: InputEvent) -> int:
 		var draw_position
 		var draw_area_hovered: bool = false
 		
-		# Adjust brush radius
-		if event is InputEventMouseButton and event.is_pressed() and Input.is_key_pressed(KEY_SHIFT):
-			var factor = event.factor if event.factor else 1
-			if event.button_index == MouseButton.MOUSE_BUTTON_WHEEL_UP:
-				brush_radius += 0.5 * factor
-				if brush_radius > 50:
-					brush_radius = 50
-				gizmo_plugin.terrain_gizmo._redraw()
-				return EditorPlugin.AFTER_GUI_INPUT_STOP
-			elif event.button_index == MouseButton.MOUSE_BUTTON_WHEEL_DOWN:
-				brush_radius -= 0.5 * factor
-				if brush_radius < 1:
-					brush_radius = 1
-				gizmo_plugin.terrain_gizmo._redraw()
-				return EditorPlugin.AFTER_GUI_INPUT_STOP
-		
 		if is_setting and draw_height_set:
 			var set_plane = Plane(Vector3(ray_dir.x, 0, ray_dir.z), base_position)
 			var set_position = set_plane.intersects_ray(ray_origin, ray_dir)
@@ -202,6 +188,22 @@ func handle_mouse(camera: Camera3D, event: InputEvent) -> int:
 					current_draw_pattern.clear()
 			gizmo_plugin.terrain_gizmo._redraw()
 			return EditorPlugin.AFTER_GUI_INPUT_STOP
+			
+		# Adjust brush size
+		if event is InputEventMouseButton and Input.is_key_pressed(KEY_SHIFT):
+			var factor: float = event.factor if event.factor else 1
+			if event.button_index == MOUSE_BUTTON_WHEEL_UP:
+				brush_size += 0.5 * factor
+				if brush_size > 50:
+					brush_size = 50
+				gizmo_plugin.terrain_gizmo._redraw()
+				return EditorPlugin.AFTER_GUI_INPUT_STOP
+			elif event.button_index == MOUSE_BUTTON_WHEEL_DOWN:
+				brush_size -= 0.5 * factor
+				if brush_size < 1:
+					brush_size = 1
+				gizmo_plugin.terrain_gizmo._redraw()
+				return EditorPlugin.AFTER_GUI_INPUT_STOP
 				
 		if draw_area_hovered and event is InputEventMouseMotion:
 			brush_position = draw_position
