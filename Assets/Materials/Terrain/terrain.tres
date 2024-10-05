@@ -3,8 +3,8 @@
 [ext_resource type="Shader" path="res://Assets/Shaders/terrain.gdshader" id="1_21hti"]
 [ext_resource type="Material" uid="uid://bq12e5723wc0o" path="res://Assets/Materials/Terrain/terrain_outline.tres" id="1_ry4uo"]
 [ext_resource type="Texture2D" uid="uid://bo2x45ptkmbky" path="res://Assets/Textures/grass_gradient_texture.tres" id="2_p8pex"]
-[ext_resource type="Texture2D" uid="uid://bj4dkjgl0shna" path="res://Assets/Textures/grass_noise.tres" id="3_88bw5"]
 [ext_resource type="Texture2D" uid="uid://b6j1ifkybyob6" path="res://Assets/Textures/rock_gradient.tres" id="3_sbgp3"]
+[ext_resource type="Texture2D" uid="uid://cwyxva2x6eiwd" path="res://Assets/Textures/grass_terrain_noise.tres" id="4_3a0mk"]
 [ext_resource type="NoiseTexture3D" uid="uid://3jnauc3rxtsh" path="res://Assets/Textures/wall_3d_noise.tres" id="5_dkbif"]
 
 [sub_resource type="Gradient" id="Gradient_aftyc"]
@@ -27,6 +27,6 @@ shader_parameter/debug = false
 shader_parameter/ledgeBrightnessGradient = SubResource("GradientTexture1D_rbvyj")
 shader_parameter/grassGradient = ExtResource("2_p8pex")
 shader_parameter/rockGradient = ExtResource("3_sbgp3")
-shader_parameter/grassNoise = ExtResource("3_88bw5")
+shader_parameter/grassNoise = ExtResource("4_3a0mk")
 shader_parameter/rockWallNoise = ExtResource("5_dkbif")
 shader_parameter/rockLedgeNoise = ExtResource("5_dkbif")

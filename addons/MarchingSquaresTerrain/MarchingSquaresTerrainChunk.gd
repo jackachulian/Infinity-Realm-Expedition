@@ -459,7 +459,7 @@ func generate_terrain_cells():
 					case_found = false
 					
 				if case_found:
-					grass_planter.generate_grass_on_cell(cell_geometry[cell_coords], cell_coords)
+					grass_planter.generate_grass_on_cell(cell_coords)
 					break
 					
 			if not case_found:

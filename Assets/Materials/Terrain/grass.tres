@@ -7,6 +7,6 @@
 [resource]
 render_priority = 0
 shader = ExtResource("1_5lc43")
-shader_parameter/grassNoiseScale = 8.0
+shader_parameter/grassNoiseScale = 64.0
 shader_parameter/grassGradient = ExtResource("2_fkkbu")
 shader_parameter/grassNoise = ExtResource("3_clno0")

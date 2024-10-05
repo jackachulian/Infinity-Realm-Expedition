@@ -14,12 +14,21 @@ func setup(chunk: MarchingSquaresTerrainChunk):
 	multimesh.use_custom_data = false
 	multimesh.use_colors = false
 	multimesh.instance_count = (chunk.dimensions.x-1) * (chunk.dimensions.z-1) * chunk.terrain_system.grass_per_cell
-	multimesh.custom_aabb = AABB(Vector3.ZERO, Vector3(chunk.dimensions.x-1, chunk.dimensions.y, chunk.dimensions.z-1))
+	#multimesh.custom_aabb = AABB(Vector3.ZERO, Vector3(
+		#chunk.dimensions.x-1 * chunk.terrain_system.cell_size.x, 
+		#chunk.dimensions.y, 
+		#chunk.dimensions.z-1 * chunk.terrain_system.cell_size.y))
 	
 	material_override = chunk.terrain_system.grass_material
 	cast_shadow = SHADOW_CASTING_SETTING_OFF
 	
-func generate_grass_on_cell(cell_geometry: Dictionary, cell_coords: Vector2i):
+func regenerate_all_cells():
+	for z in range(chunk.terrain_system.dimensions.z-1):
+		for x in range(chunk.terrain_system.dimensions.x-1):
+			generate_grass_on_cell(Vector2i(x, z))
+	
+func generate_grass_on_cell(cell_coords: Vector2i):
+	var cell_geometry = chunk.cell_geometry[cell_coords]
 	
 	var points: PackedVector2Array = []
 	var count := chunk.terrain_system.grass_per_cell
@@ -93,5 +102,5 @@ static func simple_grass_mesh(size: Vector2) -> Mesh:
 	
 	var mesh = ArrayMesh.new()
 	mesh.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, arrays)
-	mesh.custom_aabb = AABB(Vector3(-0.5 * size.x, 0.0, -0.5 * size.x), Vector3(1.0 * size.x, 1.0 * size.y, 1.0 * size.x))
+	#mesh.custom_aabb = AABB(Vector3(-0.5 * size.x, 0.0, -0.5 * size.x), Vector3(1.0 * size.x, 1.0 * size.y, 1.0 * size.x))
 	return mesh

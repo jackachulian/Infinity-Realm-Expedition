@@ -23,9 +23,18 @@ extends Node3D
 # Material assigned to the grass.
 @export var grass_material: Material
 
-@export var grass_per_cell := 4
+@export var grass_per_cell := 4:
+	set(value):
+		grass_per_cell = value
+		for chunk: MarchingSquaresTerrainChunk in chunks.values():
+			chunk.grass_planter.multimesh.instance_count = (dimensions.x-1) * (dimensions.z-1) * grass_per_cell
+			chunk.grass_planter.regenerate_all_cells()
 
-@export var grass_size := Vector2(0.5, 0.5)
+@export var grass_size := Vector2(0.5, 0.5):
+	set(value):
+		grass_size = value
+		for chunk: MarchingSquaresTerrainChunk in chunks.values():
+			chunk.grass_planter.multimesh.mesh = GrassPlanter.simple_grass_mesh(grass_size)
 
 var chunks: Dictionary = {}
 
