@@ -27,6 +27,7 @@ func regenerate_all_cells():
 		for x in range(chunk.terrain_system.dimensions.x-1):
 			generate_grass_on_cell(Vector2i(x, z))
 	
+static var zero_basis: Basis = Basis.from_scale(Vector3.ZERO)
 func generate_grass_on_cell(cell_coords: Vector2i):
 	var cell_geometry = chunk.cell_geometry[cell_coords]
 	
@@ -89,6 +90,12 @@ func generate_grass_on_cell(cell_coords: Vector2i):
 				
 			else:
 				point_index += 1
+				
+		# Fill remaining points with zero-sacaled transforms (invisible)
+		while point_index < count:
+			multimesh.set_instance_transform(index, Transform3D(zero_basis, Vector3.ZERO))
+			point_index += 1
+			index += 1
 		
 		
 
