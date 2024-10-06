@@ -12,6 +12,8 @@ uniform sampler2D grassGradient : source_color, filter_nearest;
 // grass noise. will add brightness to grass if above grey and lower brightness if below gray.
 uniform sampler2D grassNoise : source_color;
 
+uniform sampler2D windNoise : source_color;
+
 //uniform sampler2D grassExtraNoise : source_color;
 
 //uniform float extraNoiseStrength = 0.1;
@@ -38,6 +40,8 @@ void fragment() {
 	// Use the height in heightmap space (stored in vertex color) to get the grass color
 	vec3 grassAlbedo = texture(grassGradient, vec2(noiseSum, 0)).rgb;
 	ALBEDO = grassAlbedo;
+	
+	ALPHA = texture(grassTexture, UV).a;
 }
 
 void light() {

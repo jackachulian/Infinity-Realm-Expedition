@@ -13,7 +13,7 @@ func setup(chunk: MarchingSquaresTerrainChunk):
 	multimesh.transform_format = MultiMesh.TRANSFORM_3D
 	multimesh.use_custom_data = false
 	multimesh.use_colors = false
-	multimesh.instance_count = (chunk.dimensions.x-1) * (chunk.dimensions.z-1) * chunk.terrain_system.grass_per_cell
+	multimesh.instance_count = (chunk.dimensions.x-1) * (chunk.dimensions.z-1) * chunk.terrain_system.grass_subdivisions * chunk.terrain_system.grass_subdivisions
 	#multimesh.custom_aabb = AABB(Vector3.ZERO, Vector3(
 		#chunk.dimensions.x-1 * chunk.terrain_system.cell_size.x, 
 		#chunk.dimensions.y, 
@@ -28,13 +28,18 @@ func regenerate_all_cells():
 			generate_grass_on_cell(Vector2i(x, z))
 
 func generate_grass_on_cell(cell_coords: Vector2i):
+	var terrain := chunk.terrain_system
 	var cell_geometry = chunk.cell_geometry[cell_coords]
 	
 	var points: PackedVector2Array = []
-	var count := chunk.terrain_system.grass_per_cell
+	var count = terrain.grass_subdivisions * terrain.grass_subdivisions
 	
-	for i in range(count):
-		points.append(Vector2(cell_coords.x + randf_range(0, 1), cell_coords.y + randf_range(0, 1)) * chunk.terrain_system.cell_size)
+	for z in range(terrain.grass_subdivisions):
+		for x in range(terrain.grass_subdivisions):
+			points.append(Vector2(
+				(cell_coords.x + (x + randf_range(0, 1)) / terrain.grass_subdivisions) * terrain.cell_size.x,
+				(cell_coords.y + (z + randf_range(0, 1)) / terrain.grass_subdivisions) * terrain.cell_size.y
+			))
 	
 	var index: int = (cell_coords.y * (chunk.dimensions.x-1) + cell_coords.x) * count
 	var end_index: int = index + count

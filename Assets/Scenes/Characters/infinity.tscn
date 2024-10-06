@@ -347,7 +347,6 @@ length = 20
 texture = ExtResource("19_2vl7e")
 color_ramp = ExtResource("17_pvvl0")
 curve = ExtResource("18_7jk02")
-_defaults_have_been_set = true
 
 [node name="Arm" parent="Armature/Skeleton3D" index="1"]
 layers = 4

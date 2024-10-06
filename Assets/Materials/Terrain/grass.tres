@@ -1,15 +1,25 @@
-[gd_resource type="ShaderMaterial" load_steps=5 format=3 uid="uid://ci5t4o0qrlo3d"]
+[gd_resource type="ShaderMaterial" load_steps=7 format=3 uid="uid://ci5t4o0qrlo3d"]
 
 [ext_resource type="Shader" path="res://Assets/Shaders/grass.gdshader" id="1_5lc43"]
-[ext_resource type="Texture2D" uid="uid://tkemf7fk5jxx" path="res://Assets/Textures/grass_extra_noise.tres" id="2_dfmt7"]
 [ext_resource type="Texture2D" uid="uid://bo2x45ptkmbky" path="res://Assets/Textures/grass_gradient_texture.tres" id="2_fkkbu"]
 [ext_resource type="Texture2D" uid="uid://bj4dkjgl0shna" path="res://Assets/Textures/grass_noise.tres" id="3_clno0"]
+[ext_resource type="Texture2D" uid="uid://4thapeiwc7h5" path="res://Assets/Sprites/misc/grass3.png" id="4_b8gvn"]
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_2yccj"]
+noise_type = 2
+fractal_octaves = 3
+fractal_gain = 0.93
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_ck28n"]
+width = 1024
+height = 1024
+noise = SubResource("FastNoiseLite_2yccj")
 
 [resource]
 render_priority = 0
 shader = ExtResource("1_5lc43")
 shader_parameter/grassNoiseScale = 64.0
-shader_parameter/extraNoiseStrength = 0.05
+shader_parameter/grassTexture = ExtResource("4_b8gvn")
 shader_parameter/grassGradient = ExtResource("2_fkkbu")
 shader_parameter/grassNoise = ExtResource("3_clno0")
-shader_parameter/grassExtraNoise = ExtResource("2_dfmt7")
+shader_parameter/windNoise = SubResource("NoiseTexture2D_ck28n")
