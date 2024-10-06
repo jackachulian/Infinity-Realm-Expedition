@@ -91,7 +91,7 @@ func generate_grass_on_cell(cell_coords: Vector2i):
 					#print("placing grass at ", p)
 					
 					# 50% chance to flip horizontally
-					var basis := Basis(Vector3.RIGHT if randf_range(0,1) < 0.5 else Vector3.LEFT, Vector3.UP, Vector3.BACK)
+					var basis := Basis.from_scale(Vector3.ONE)
 					multimesh.set_instance_transform(index, Transform3D(basis, p))
 				else:
 					multimesh.set_instance_transform(index, Transform3D(Basis.from_scale(Vector3.ZERO), Vector3.ZERO))

@@ -64,6 +64,11 @@ func initialize_terrain(should_regenerate_mesh: bool = true):
 		for x in range(dimensions.x - 1):
 			needs_update[z].append(true)
 			
+	if not grass_planter:
+		grass_planter = get_node_or_null("GrassPlanter")
+		if grass_planter:
+			grass_planter.chunk = self
+			
 	if Engine.is_editor_hint():
 		if not height_map:
 			generate_height_map()

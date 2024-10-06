@@ -20,6 +20,10 @@ uniform sampler2D windNoise : source_color;
 
 varying vec3 position;
 
+float random(vec2 uv) {
+    return fract(sin(dot(uv.xy, vec2(12.9898, 78.233))) * 43758.5453);
+}
+
 void vertex() {
 	MODELVIEW_MATRIX = VIEW_MATRIX * mat4(
 			MAIN_CAM_INV_VIEW_MATRIX[0],
@@ -41,7 +45,13 @@ void fragment() {
 	vec3 grassAlbedo = texture(grassGradient, vec2(noiseSum, 0)).rgb;
 	ALBEDO = grassAlbedo;
 	
-	ALPHA = texture(grassTexture, UV).a;
+	// Random chance to flip horizontally
+	if (random(vec2(position.x, position.z)) < 0.5) {
+		ALPHA = texture(grassTexture, UV).a;
+	} else {
+		ALPHA = texture(grassTexture, vec2(1.0-UV.x, UV.y)).a;
+	}
+	
 }
 
 void light() {

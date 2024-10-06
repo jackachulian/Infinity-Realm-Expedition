@@ -3,6 +3,8 @@ extends State
 
 @export var animation_name: String = "Sword-Standby"
 
+@export var limit_aerial_velocity: bool = true
+
 @export var state_on_anim_finished: String
 
 func check_transition(delta: float) -> String:
@@ -31,3 +33,7 @@ func physics_update(delta: float):
 func on_enter_state():
 	entity.anim.play(animation_name)
 	entity.movement.direction = Vector3.ZERO
+	
+	if limit_aerial_velocity:
+		if entity.velocity.length() > entity.movement.speed:
+			entity.velocity = entity.velocity.normalized() * entity.movement.speed

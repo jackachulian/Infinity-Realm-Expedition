@@ -16,7 +16,7 @@ height = 1024
 noise = SubResource("FastNoiseLite_2yccj")
 
 [resource]
-render_priority = 0
+render_priority = -3
 shader = ExtResource("1_5lc43")
 shader_parameter/grassNoiseScale = 64.0
 shader_parameter/grassTexture = ExtResource("4_b8gvn")

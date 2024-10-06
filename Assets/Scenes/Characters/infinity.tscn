@@ -37,10 +37,10 @@ height = 3.3702
 radius = 1.25265
 height = 3.01501
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_qfhi6"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_0tpbr"]
 shader = ExtResource("15_rhd6w")
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_nxuxb"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_8xy7t"]
 resource_local_to_scene = true
 render_priority = 0
 shader = ExtResource("16_qm1pa")
@@ -50,8 +50,8 @@ shader_parameter/tex = ExtResource("19_2vl7e")
 shader_parameter/color_ramp = ExtResource("17_pvvl0")
 shader_parameter/curve = ExtResource("18_7jk02")
 
-[sub_resource type="QuadMesh" id="QuadMesh_das2q"]
-material = SubResource("ShaderMaterial_nxuxb")
+[sub_resource type="QuadMesh" id="QuadMesh_0x15y"]
+material = SubResource("ShaderMaterial_8xy7t")
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_v8du6"]
 
@@ -116,8 +116,11 @@ action_on_anim_finish = true
 state_on_anim_finish = "Dash-Stop"
 instant_velocity_on_enter = Vector3(0, 0, -15)
 rotate_mode = 1
+movement_speed = 8.0
 gravity_multiplier = 0.0
 decel_override = 0.0
+movement_speed_on_exit = 8.0
+can_move = false
 
 [node name="Dash-Stop" type="Node" parent="StateMachine" index="4"]
 script = ExtResource("5_yhrb3")
@@ -340,13 +343,14 @@ amount = 20
 lifetime = 20.0
 explosiveness = 1.0
 fixed_fps = 0
-process_material = SubResource("ShaderMaterial_qfhi6")
-draw_pass_1 = SubResource("QuadMesh_das2q")
+process_material = SubResource("ShaderMaterial_0tpbr")
+draw_pass_1 = SubResource("QuadMesh_0x15y")
 script = ExtResource("19_0mkq7")
 length = 20
 texture = ExtResource("19_2vl7e")
 color_ramp = ExtResource("17_pvvl0")
 curve = ExtResource("18_7jk02")
+_defaults_have_been_set = true
 
 [node name="Arm" parent="Armature/Skeleton3D" index="1"]
 layers = 4

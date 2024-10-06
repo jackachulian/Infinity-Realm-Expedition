@@ -54,6 +54,9 @@ enum MovementMode {
 # if above 0, overrides movement deceleration during this state
 @export var decel_override: float = -1
 
+# if 0 or above, set this movement state when leaving this state
+@export var movement_speed_on_exit: float = -1
+
 # If true, can cancel into 
 @export var can_use_actions: bool
 
@@ -148,6 +151,9 @@ func on_enter_state():
 func on_exit_state():
 	if prevent_wall_slide:
 		entity.wall_min_slide_angle = stored_wall_slide
+		
+	if movement_speed_on_exit >= 0:
+		entity.movement.speed = movement_speed_on_exit
 		
 	entity.movement.gravity_multiplier = 1.0
 

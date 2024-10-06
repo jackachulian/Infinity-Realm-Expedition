@@ -25,3 +25,6 @@ func physics_update(delta: float):
 func on_enter_state():
 	entity.anim.play(animation_name)
 	entity.movement.direction = Vector3.ZERO
+
+	if entity.velocity.length() > entity.movement.speed:
+		entity.velocity = entity.velocity.normalized() * entity.movement.speed
