@@ -89,7 +89,10 @@ func generate_grass_on_cell(cell_coords: Vector2i):
 				var uv = uvs[i]*u + uvs[i+1]*v + uvs[i+2]*(1-u-v)
 				if uv.x <= 1-chunk.terrain_system.ledge_bottom_thickness and uv.y <= 1-chunk.terrain_system.ledge_top_thickness:
 					#print("placing grass at ", p)
-					multimesh.set_instance_transform(index, Transform3D(Basis.IDENTITY, p))
+					
+					# 50% chance to flip horizontally
+					var basis := Basis(Vector3.RIGHT if randf_range(0,1) < 0.5 else Vector3.LEFT, Vector3.UP, Vector3.BACK)
+					multimesh.set_instance_transform(index, Transform3D(basis, p))
 				else:
 					multimesh.set_instance_transform(index, Transform3D(Basis.from_scale(Vector3.ZERO), Vector3.ZERO))
 				index += 1

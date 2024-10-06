@@ -10,7 +10,8 @@ uniform float rockWallNoiseScale = 8;
 uniform float rockLedgeNoiseScale = 8;
 
 // Brightnesss gradient textures
-uniform sampler2D ledgeBrightnessGradient : source_color;
+uniform sampler2D ledgeRockBrightnessGradient : source_color;
+uniform sampler2D ledgeEdgeBrightnessGradient : source_color;
 
 // Color gradient textures
 uniform sampler2D grassGradient : source_color, filter_nearest;
@@ -54,8 +55,9 @@ void fragment() {
 	}
 	// ==== Ledges
 	else if (topLedge || bottomLedge) {
-		float ledgeBrightness = texture(ledgeBrightnessGradient, vec2(rockBrightness, 0)).r;
-		ALBEDO = texture(rockGradient, vec2(ledgeBrightness, 0)).rgb;
+		float ledgeRockBrightness = texture(ledgeRockBrightnessGradient, vec2(rockBrightness, 0)).r;
+		float ledgeEdgeBrightness = texture(ledgeEdgeBrightnessGradient, vec2(max(topLedgeValue / (ledgeTopThickness * thicknessMult), bottomLedgeValue / (ledgeBottomThickness * thicknessMult)), 0)).r;
+		ALBEDO = texture(rockGradient, vec2(ledgeRockBrightness * ledgeEdgeBrightness, 0)).rgb;
 	}
 	// ==== Floors
 	else {
