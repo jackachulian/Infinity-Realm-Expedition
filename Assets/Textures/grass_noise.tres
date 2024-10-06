@@ -7,7 +7,7 @@ noise_type = 3
 seed = 1
 frequency = 0.004
 fractal_octaves = 2
-fractal_lacunarity = 2.01
+fractal_lacunarity = 2.013
 
 [resource]
 width = 1024

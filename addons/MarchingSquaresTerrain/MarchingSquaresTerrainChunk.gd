@@ -164,6 +164,7 @@ func generate_terrain_cells():
 			# If all edges are connected, put a full floor here.
 			if ab and bd and cd and ac:
 				add_full_floor()
+				grass_planter.generate_grass_on_cell(cell_coords)
 				continue
 			
 			# edges going clockwise around the cell

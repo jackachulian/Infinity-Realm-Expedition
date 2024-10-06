@@ -1,7 +1,7 @@
 shader_type spatial;
 render_mode depth_prepass_alpha;
 
-uniform float grassNoiseScale = 8;
+uniform float grassNoiseScale = 64;
 
 uniform sampler2D grassTexture : source_color, filter_nearest;
 
@@ -11,6 +11,10 @@ uniform sampler2D grassGradient : source_color, filter_nearest;
 // -- Noise textures
 // grass noise. will add brightness to grass if above grey and lower brightness if below gray.
 uniform sampler2D grassNoise : source_color;
+
+uniform sampler2D grassExtraNoise : source_color;
+
+uniform float extraNoiseStrength = 0.1;
 
 varying vec3 position;
 
@@ -28,10 +32,11 @@ void vertex() {
 }
 
 void fragment() {
-	float colorNoise = texture(grassNoise, vec2(position.x, position.z) / grassNoiseScale).r;
-	float colorHeight = clamp(colorNoise, 0.01, 0.99);
+	float noise = texture(grassNoise, vec2(position.x, position.z) / grassNoiseScale).r;
+	float extraNoise = texture(grassExtraNoise, vec2(position.x, position.z) / grassNoiseScale).r * extraNoiseStrength;
+	float noiseSum = clamp(noise + extraNoise, 0.01, 0.99);
 	// Use the height in heightmap space (stored in vertex color) to get the grass color
-	vec3 grassAlbedo = texture(grassGradient, vec2(colorHeight, 0)).rgb;
+	vec3 grassAlbedo = texture(grassGradient, vec2(noiseSum, 0)).rgb;
 	ALBEDO = grassAlbedo;
 }
 

@@ -26,8 +26,7 @@ func regenerate_all_cells():
 	for z in range(chunk.terrain_system.dimensions.z-1):
 		for x in range(chunk.terrain_system.dimensions.x-1):
 			generate_grass_on_cell(Vector2i(x, z))
-	
-static var zero_basis: Basis = Basis.from_scale(Vector3.ZERO)
+
 func generate_grass_on_cell(cell_coords: Vector2i):
 	var cell_geometry = chunk.cell_geometry[cell_coords]
 	
@@ -38,7 +37,8 @@ func generate_grass_on_cell(cell_coords: Vector2i):
 		points.append(Vector2(cell_coords.x + randf_range(0, 1), cell_coords.y + randf_range(0, 1)) * chunk.terrain_system.cell_size)
 	
 	var index: int = (cell_coords.y * (chunk.dimensions.x-1) + cell_coords.x) * count
-	#print("generating grass on ", cell_coords, " index: ", index)
+	var end_index: int = index + count
+	print("generating grass on ", cell_coords, " index: ", index)
 	var verts: PackedVector3Array = cell_geometry["verts"]
 	var uvs: PackedVector2Array = cell_geometry["uvs"]
 	var is_floor: Array = cell_geometry["is_floor"]
@@ -85,17 +85,18 @@ func generate_grass_on_cell(cell_coords: Vector2i):
 				if uv.x <= 1-chunk.terrain_system.ledge_bottom_thickness and uv.y <= 1-chunk.terrain_system.ledge_top_thickness:
 					#print("placing grass at ", p)
 					multimesh.set_instance_transform(index, Transform3D(Basis.IDENTITY, p))
-					index += 1
-				
-				
+				else:
+					multimesh.set_instance_transform(index, Transform3D(Basis.from_scale(Vector3.ZERO), Vector3.ZERO))
+				index += 1
 			else:
 				point_index += 1
 				
-		# Fill remaining points with zero-sacaled transforms (invisible)
-		while point_index < count:
-			multimesh.set_instance_transform(index, Transform3D(zero_basis, Vector3.ZERO))
-			point_index += 1
-			index += 1
+	# Fill remaining points with zero-sacaled transforms (invisible)
+	while index < end_index:
+		if index >= multimesh.instance_count:
+			return
+		multimesh.set_instance_transform(index, Transform3D(Basis.from_scale(Vector3.ZERO), Vector3.ZERO))
+		index += 1
 		
 		
 
