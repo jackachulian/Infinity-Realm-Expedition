@@ -38,7 +38,7 @@ func generate_grass_on_cell(cell_coords: Vector2i):
 	
 	var index: int = (cell_coords.y * (chunk.dimensions.x-1) + cell_coords.x) * count
 	var end_index: int = index + count
-	print("generating grass on ", cell_coords, " index: ", index)
+	#print("generating grass on ", cell_coords, " index: ", index)
 	var verts: PackedVector3Array = cell_geometry["verts"]
 	var uvs: PackedVector2Array = cell_geometry["uvs"]
 	var is_floor: Array = cell_geometry["is_floor"]
