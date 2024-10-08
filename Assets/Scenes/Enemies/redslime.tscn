@@ -9,13 +9,13 @@
 [ext_resource type="Script" path="res://Assets/Scripts/StateMachine/StateMachine.gd" id="4_4psyd"]
 [ext_resource type="Material" uid="uid://dryb2rb71lolt" path="res://Assets/Materials/Slime/pupil.tres" id="4_pue12"]
 [ext_resource type="Script" path="res://Assets/Scripts/Hurtbox.gd" id="6_hdqk2"]
-[ext_resource type="Script" path="res://Assets/Scripts/States/Generic/StandardState.gd" id="6_sthgl"]
+[ext_resource type="Script" path="res://Assets/Scripts/StateMachine/States/Generic/StandardState.gd" id="6_sthgl"]
 [ext_resource type="Script" path="res://Assets/Scripts/Movement.gd" id="7_w7v2a"]
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_hp8ij"]
 height = 0.6
 
-[node name="redslime" node_paths=PackedStringArray("hurt_state") instance=ExtResource("1_f33ua")]
+[node name="redslime" instance=ExtResource("1_f33ua")]
 collision_layer = 4
 collision_mask = 5
 axis_lock_angular_x = true
@@ -25,48 +25,48 @@ platform_floor_layers = 1
 script = ExtResource("2_5lb7x")
 entity_type = 1
 damage_flash_mat = ExtResource("3_quer2")
-hurt_state = NodePath("StateMachine/Hurt")
 
 [node name="Input" type="Node3D" parent="." index="0" node_paths=PackedStringArray("main_attack_state")]
 script = ExtResource("3_ytsi7")
 main_attack_cooldown = 2.0
-main_attack_state = NodePath("../StateMachine/Jump-Start")
+main_attack_state = NodePath("../StateMachine/JumpPrepare")
 
 [node name="StateMachine" type="Node3D" parent="." index="1"]
 script = ExtResource("4_4psyd")
 
-[node name="Idle" type="Node" parent="StateMachine" index="0"]
+[node name="Idle" type="Node" parent="StateMachine" index="0" node_paths=PackedStringArray("falling_state")]
 script = ExtResource("6_sthgl")
+falling_state = NodePath("../JumpFall")
 rotate_mode = 2
 movement_speed = 4.0
 can_use_actions = true
 
-[node name="Hurt" type="Node" parent="StateMachine" index="1"]
+[node name="Hurt" type="Node" parent="StateMachine" index="1" node_paths=PackedStringArray("state_on_anim_finish")]
 script = ExtResource("6_sthgl")
 animation_name = "Hurt"
-state_on_anim_finish = "Idle"
+state_on_anim_finish = NodePath("../Idle")
 rotate_mode = 3
 
-[node name="Jump-Start" type="Node" parent="StateMachine" index="2"]
+[node name="JumpPrepare" type="Node" parent="StateMachine" index="2" node_paths=PackedStringArray("state_on_anim_finish")]
 script = ExtResource("6_sthgl")
 animation_name = "Jump-Start"
-state_on_anim_finish = "Jump-Up"
+state_on_anim_finish = NodePath("../JumpRise")
 rotate_mode = 2
 
-[node name="Jump-Up" type="Node" parent="StateMachine" index="3"]
+[node name="JumpRise" type="Node" parent="StateMachine" index="3" node_paths=PackedStringArray("grounded_state", "falling_state")]
 script = ExtResource("6_sthgl")
 animation_name = "Jump-Up"
-grounded_state = "Idle"
-falling_state = "Jump-Down"
+grounded_state = NodePath("../Idle")
+falling_state = NodePath("../JumpFall")
 instant_velocity_on_enter = Vector3(0, 10, -4.5)
 rotate_mode = 1
 movement_mode = 1
 movement_speed = 4.5
 
-[node name="Jump-Down" type="Node" parent="StateMachine" index="4"]
+[node name="JumpFall" type="Node" parent="StateMachine" index="4" node_paths=PackedStringArray("grounded_state")]
 script = ExtResource("6_sthgl")
 animation_name = "Jump-Down"
-grounded_state = "Idle"
+grounded_state = NodePath("../Idle")
 movement_mode = 1
 
 [node name="Movement" type="Node" parent="." index="2"]

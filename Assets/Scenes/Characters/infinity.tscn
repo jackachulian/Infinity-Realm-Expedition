@@ -1,18 +1,16 @@
-[gd_scene load_steps=34 format=3 uid="uid://c7vlx700fgtqs"]
+[gd_scene load_steps=29 format=3 uid="uid://c7vlx700fgtqs"]
 
 [ext_resource type="PackedScene" uid="uid://bfdvxynauwmtj" path="res://Assets/Models/infinity.glb" id="1_rm5qk"]
 [ext_resource type="Script" path="res://Assets/Scripts/Entity.gd" id="2_pd53c"]
 [ext_resource type="Script" path="res://Assets/Scripts/Model.gd" id="3_11b10"]
-[ext_resource type="Resource" uid="uid://h8l81rxv0iwl" path="res://Assets/Database/Weapons/infinity_blade.tres" id="3_b1uya"]
 [ext_resource type="Script" path="res://Assets/Scripts/Movement.gd" id="3_p5r50"]
 [ext_resource type="Script" path="res://Assets/Scripts/Input/PlayerInput.gd" id="4_1mgmj"]
 [ext_resource type="Material" uid="uid://bwwxf12w26ovn" path="res://Assets/Materials/damage-flash.tres" id="4_cyyo3"]
-[ext_resource type="Script" path="res://Assets/Scripts/States/Generic/MoveState.gd" id="4_fm0wv"]
+[ext_resource type="Script" path="res://Assets/Scripts/StateMachine/States/Generic/MoveState.gd" id="4_fm0wv"]
 [ext_resource type="Script" path="res://Assets/Scripts/StateMachine/StateMachine.gd" id="4_yke0m"]
-[ext_resource type="Script" path="res://Assets/Scripts/States/Generic/IdleState.gd" id="5_yhrb3"]
-[ext_resource type="Script" path="res://Assets/Scripts/States/Generic/AttackState.gd" id="8_73dwl"]
-[ext_resource type="Script" path="res://Assets/Scripts/States/Generic/StandardState.gd" id="9_blb1u"]
-[ext_resource type="Script" path="res://Assets/Scripts/States/Generic/ShieldState.gd" id="10_jxd4a"]
+[ext_resource type="Script" path="res://Assets/Scripts/StateMachine/States/Generic/IdleState.gd" id="5_yhrb3"]
+[ext_resource type="Script" path="res://Assets/Scripts/StateMachine/States/Generic/StandardState.gd" id="9_blb1u"]
+[ext_resource type="Script" path="res://Assets/Scripts/StateMachine/States/Generic/ShieldState.gd" id="10_jxd4a"]
 [ext_resource type="Material" uid="uid://dclrr382uupwn" path="res://Assets/Materials/Characters/sword-cutout.tres" id="15_ba15w"]
 [ext_resource type="Shader" path="res://Packages/GPUTrail-main/shaders/trail.gdshader" id="15_rhd6w"]
 [ext_resource type="Material" uid="uid://cy866e0nw8osb" path="res://Assets/Materials/Characters/sword-handle-cutout.tres" id="16_5l1c5"]
@@ -21,21 +19,9 @@
 [ext_resource type="Texture2D" uid="uid://ct31fhxvcragr" path="res://Packages/GPUTrail-main/defaults/curve.tres" id="18_7jk02"]
 [ext_resource type="Script" path="res://Packages/GPUTrail-main/GPUTrail3D.gd" id="19_0mkq7"]
 [ext_resource type="Texture2D" uid="uid://d0aqx8k5y48w8" path="res://Assets/Sprites/misc/slash-effect.png" id="19_2vl7e"]
-[ext_resource type="Script" path="res://Assets/Scripts/Hitbox.gd" id="20_rq6bb"]
 [ext_resource type="Material" uid="uid://cfe0foe1wlito" path="res://Assets/Materials/Characters/infinity-with-cutout.tres" id="21_uqxah"]
+[ext_resource type="PackedScene" uid="uid://1qj7f1tmhxpo" path="res://Assets/Scenes/Weapons/iron_sword.tscn" id="24_lvvpo"]
 [ext_resource type="Script" path="res://Assets/Scripts/Hurtbox.gd" id="31_pkqhk"]
-
-[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_osbq5"]
-radius = 1.07228
-height = 3.01618
-
-[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_84oai"]
-radius = 1.11187
-height = 3.3702
-
-[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_5b5ov"]
-radius = 1.25265
-height = 3.01501
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_0tpbr"]
 shader = ExtResource("15_rhd6w")
@@ -63,7 +49,7 @@ height = 1.8
 radius = 0.375
 height = 1.8
 
-[node name="infinity" instance=ExtResource("1_rm5qk")]
+[node name="infinity" node_paths=PackedStringArray("weapon", "weapon_parent_node") instance=ExtResource("1_rm5qk")]
 collision_layer = 4
 axis_lock_angular_x = true
 axis_lock_angular_y = true
@@ -71,18 +57,18 @@ axis_lock_angular_z = true
 floor_constant_speed = true
 platform_floor_layers = 1
 script = ExtResource("2_pd53c")
-weapon = ExtResource("3_b1uya")
+weapon = NodePath("IronSword")
 damage_flash_mat = ExtResource("4_cyyo3")
+weapon_parent_node = NodePath("Armature/Skeleton3D/Blade")
 
 [node name="Loadout" type="Node" parent="." index="0"]
 editor_description = "Once weapons/spells are added, if loadout is added to the player, it should be here, processed before input. This is because currently as of writing, main attack state is stored in input, which the state machine reads if it is requested to send to the main attack state."
 
-[node name="Input" type="Node3D" parent="." index="1" node_paths=PackedStringArray("move_state", "main_attack_state", "dash_state", "shield_state")]
+[node name="Input" type="Node3D" parent="." index="1" node_paths=PackedStringArray("move_state", "dash_state", "shield_state")]
 script = ExtResource("4_1mgmj")
 dash_buffer = 0.2
 dash_input_direction_buffer = 0.05
 move_state = NodePath("../StateMachine/Move")
-main_attack_state = NodePath("../StateMachine/Sword-Attack1")
 dash_state = NodePath("../StateMachine/Dash")
 shield_state = NodePath("../StateMachine/Shield")
 dash_cooldown = 0.75
@@ -94,9 +80,11 @@ script = ExtResource("4_yke0m")
 [node name="Idle" type="Node" parent="StateMachine" index="0"]
 script = ExtResource("5_yhrb3")
 
-[node name="Move" type="Node3D" parent="StateMachine" index="1" node_paths=PackedStringArray("move_stop_state")]
+[node name="Move" type="Node3D" parent="StateMachine" index="1" node_paths=PackedStringArray("move_stop_state", "jump_state", "fall_state")]
 script = ExtResource("4_fm0wv")
 move_stop_state = NodePath("../Run-Stop")
+jump_state = NodePath("../JumpRise")
+fall_state = NodePath("../JumpFall")
 speed = 8.0
 
 [node name="JumpCheckRayCast3D" type="RayCast3D" parent="StateMachine/Move" index="0"]
@@ -104,16 +92,16 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.55, -0.75)
 target_position = Vector3(0, -5, 0)
 hit_back_faces = false
 
-[node name="Run-Stop" type="Node" parent="StateMachine" index="2"]
+[node name="Run-Stop" type="Node" parent="StateMachine" index="2" node_paths=PackedStringArray("state_on_anim_finished")]
 script = ExtResource("5_yhrb3")
 animation_name = "Run-Stop"
-state_on_anim_finished = "Idle"
+state_on_anim_finished = NodePath("../Idle")
 
-[node name="Dash" type="Node" parent="StateMachine" index="3"]
+[node name="Dash" type="Node" parent="StateMachine" index="3" node_paths=PackedStringArray("state_on_anim_finish")]
 script = ExtResource("9_blb1u")
 animation_name = "Dash"
 action_on_anim_finish = true
-state_on_anim_finish = "Dash-Stop"
+state_on_anim_finish = NodePath("../Dash-Stop")
 instant_velocity_on_enter = Vector3(0, 0, -15)
 rotate_mode = 1
 movement_speed = 8.0
@@ -122,18 +110,20 @@ decel_override = 0.0
 movement_speed_on_exit = 8.0
 can_move = false
 
-[node name="Dash-Stop" type="Node" parent="StateMachine" index="4"]
+[node name="Dash-Stop" type="Node" parent="StateMachine" index="4" node_paths=PackedStringArray("state_on_anim_finished")]
 script = ExtResource("5_yhrb3")
 animation_name = "Dash-Stop"
-state_on_anim_finished = "Idle"
+state_on_anim_finished = NodePath("../Idle")
 
-[node name="Shield" type="Node" parent="StateMachine" index="5"]
+[node name="Shield" type="Node" parent="StateMachine" index="5" node_paths=PackedStringArray("idle_state")]
 script = ExtResource("10_jxd4a")
+idle_state = NodePath("../Idle")
 
-[node name="JumpRise" type="Node" parent="StateMachine" index="6"]
+[node name="JumpRise" type="Node" parent="StateMachine" index="6" node_paths=PackedStringArray("grounded_state", "falling_state")]
 script = ExtResource("9_blb1u")
 animation_name = "JumpRise"
-falling_state = "JumpFall"
+grounded_state = NodePath("../Idle")
+falling_state = NodePath("../JumpFall")
 instant_velocity_on_enter = Vector3(0, 12.5, 0)
 rotate_mode = 1
 movement_mode = 3
@@ -143,70 +133,16 @@ can_use_actions = true
 can_move = false
 prevent_self_action_request = true
 
-[node name="JumpFall" type="Node" parent="StateMachine" index="7"]
+[node name="JumpFall" type="Node" parent="StateMachine" index="7" node_paths=PackedStringArray("grounded_state")]
 script = ExtResource("9_blb1u")
 animation_name = "JumpFall"
-grounded_state = "Idle"
+grounded_state = NodePath("../Idle")
 movement_mode = 3
 movement_speed = 6.25
 prevent_wall_slide = true
 can_use_actions = true
 can_move = false
 prevent_self_action_request = true
-
-[node name="Sword-Attack1" type="Node3D" parent="StateMachine" index="8"]
-script = ExtResource("8_73dwl")
-attack_name = "Sword-Attack1"
-combos_into = "Sword-Attack2"
-cancel_delay = 0.3
-
-[node name="Hitbox" type="Area3D" parent="StateMachine/Sword-Attack1" index="0"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1.98525)
-collision_layer = 0
-collision_mask = 0
-script = ExtResource("20_rq6bb")
-knockback = 3.5
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="StateMachine/Sword-Attack1/Hitbox" index="0"]
-transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, -0.0165758, 0.834441, 0.666336)
-shape = SubResource("CapsuleShape3D_osbq5")
-
-[node name="Sword-Attack2" type="Node3D" parent="StateMachine" index="9"]
-script = ExtResource("8_73dwl")
-attack_name = "Sword-Attack2"
-combos_into = "Sword-Attack3"
-cancel_delay = 0.325
-attack_delay = 0.125
-
-[node name="Hitbox" type="Area3D" parent="StateMachine/Sword-Attack2" index="0"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1.98525)
-collision_layer = 0
-collision_mask = 0
-script = ExtResource("20_rq6bb")
-knockback = 4.25
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="StateMachine/Sword-Attack2/Hitbox" index="0"]
-transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, -0.0165758, 0.834441, 0.699474)
-shape = SubResource("CapsuleShape3D_84oai")
-
-[node name="Sword-Attack3" type="Node3D" parent="StateMachine" index="10"]
-script = ExtResource("8_73dwl")
-attack_name = "Sword-Attack3"
-cancel_delay = 0.65
-attack_delay = 0.225
-
-[node name="Hitbox" type="Area3D" parent="StateMachine/Sword-Attack3" index="0"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1.98525)
-collision_layer = 0
-collision_mask = 0
-script = ExtResource("20_rq6bb")
-damage = 8
-hit_stun = 0.35
-knockback = 6.0
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="StateMachine/Sword-Attack3/Hitbox" index="0"]
-transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, -0.0165758, 0.742375, 0.461387)
-shape = SubResource("CapsuleShape3D_5b5ov")
 
 [node name="Movement" type="Node" parent="." index="3"]
 script = ExtResource("3_p5r50")
@@ -330,6 +266,7 @@ bones/38/scale = Vector3(1, 1, 0.999999)
 transform = Transform3D(0.499857, 0.00847296, 0.00847094, 0.00847216, -7.81145e-07, -0.499928, -0.00847177, 0.499928, -0.000144363, -1.11426, 1.55299, 0.340715)
 
 [node name="Blade" parent="Armature/Skeleton3D/Blade" index="0"]
+visible = false
 layers = 8
 surface_material_override/0 = ExtResource("15_ba15w")
 surface_material_override/1 = ExtResource("16_5l1c5")
@@ -405,3 +342,5 @@ script = ExtResource("31_pkqhk")
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Hurtbox" index="0"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, 0)
 shape = SubResource("CapsuleShape3D_yofg8")
+
+[node name="IronSword" parent="." index="9" instance=ExtResource("24_lvvpo")]

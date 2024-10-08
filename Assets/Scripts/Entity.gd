@@ -10,17 +10,20 @@ enum EntityType {
 # True if this should take damage from enemy attacks and any hitbox that can damage players.
 @export var entity_type: EntityType
 
-# Currently equipped weapon if any.
+# Currently equipped weapon, if any. Null for no weapon
 @export var weapon: Weapon
 
+# All spells this entity has equipped. Should be located in the spells node that is a child of this entity
+@export var spells: Array[Spell]
+
 # Amount of damage this entity can take before it is defeated.
-@export var hit_points: int = 50
+@export var hit_points: int = 10
 
 # If a material is assigned, character will flash with that material when damaged.
 @export var damage_flash_mat: Material
 
-# State to enter when taking damage
-@export var hurt_state: State
+#Equipped weapons should be parented to this node (usually an exposed armature bone)
+@export var weapon_parent_node: Node3D
 
 # Nodes that may be used by states to get various info
 # idk how godot works but may want to make these get_node_or_null
@@ -28,7 +31,6 @@ enum EntityType {
 @onready var state_machine: StateMachine = $StateMachine
 @onready var movement: Movement = $Movement
 @onready var anim: AnimationPlayer = $AnimationPlayer
-
 
 # Amount of seconds this character will show damage_flash_mat for on all meshes
 var flash_timer: float = 0
@@ -45,6 +47,9 @@ func _ready():
 	if damage_flash_mat:
 		for mesh in $Armature.find_children("*", "MeshInstance3D", true):
 			flash_meshes.append(mesh)
+			
+	if weapon:
+		weapon.equip(self)
 
 func _process(delta: float):
 	if flash_timer > 0:
@@ -52,6 +57,9 @@ func _process(delta: float):
 
 func _physics_process(delta: float):
 	hit_stun_timer = move_toward(hit_stun_timer, 0, delta)
+
+func get_state(state_name: String):
+	return state_machine.get_node_or_null(state_name)
 
 # Face the given angle. Snap to the nearest increment if rotation_snap is above 0
 func face_angle(angle: float, rotation_snap: float = 45):
@@ -63,8 +71,7 @@ func face_angle(angle: float, rotation_snap: float = 45):
 func take_damage(damage: int):
 	hit_points -= damage
 	damage_flash()
-	if hurt_state:
-		state_machine.switch_to(hurt_state.name)
+	state_machine.switch_to_state_name("Hurt")
 	print(name+" took "+str(damage)+" damage - HP: "+str(hit_points))
 
 func damage_flash():

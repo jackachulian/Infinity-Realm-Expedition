@@ -15,6 +15,8 @@ func _ready():
 		print(name+" is targeting "+target.name)
 	else:
 		print(name+": could not find player to track")
+		
+	attack_cooldown_remaining = main_attack_cooldown
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
