@@ -1,7 +1,7 @@
-[gd_resource type="StandardMaterial3D" format=3 uid="uid://devbnkxqde8vp"]
+[gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://dwuyheouak115"]
+
+[ext_resource type="Shader" path="res://Assets/Shaders/slash.gdshader" id="1_ftgpf"]
 
 [resource]
-transparency = 1
-depth_draw_mode = 2
-shading_mode = 0
-disable_receive_shadows = true
+render_priority = 0
+shader = ExtResource("1_ftgpf")

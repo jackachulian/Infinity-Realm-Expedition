@@ -5,7 +5,7 @@
 [ext_resource type="Material" uid="uid://cy866e0nw8osb" path="res://Assets/Materials/Weapons/sword-handle-cutout.tres" id="3_vvcsl"]
 [ext_resource type="Script" path="res://Assets/Scripts/StateMachine/States/Generic/AttackState.gd" id="4_f70p5"]
 [ext_resource type="Script" path="res://Assets/Scripts/Hitbox.gd" id="5_ahw5s"]
-[ext_resource type="Material" uid="uid://devbnkxqde8vp" path="res://Assets/Materials/Weapons/slash-trail.tres" id="6_lkteu"]
+[ext_resource type="Material" uid="uid://dwuyheouak115" path="res://Assets/Materials/Weapons/slash-trail.tres" id="6_lkteu"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_cv2kt"]
 resource_name = "BladeOuter"
@@ -136,7 +136,7 @@ height = 3.01618
 
 [sub_resource type="Curve3D" id="Curve3D_7voc5"]
 _data = {
-"points": PackedVector3Array(0.00105429, 0.000736237, 0.000898659, -0.00105429, -0.000736237, -0.000898659, 0.624408, 1.01904, -0.575684, 0.723956, 0.036377, 0.00716794, -0.723956, -0.036377, -0.00716794, 0.0079696, 1.04663, -1.0416, 0, 0, 0, 0, 0, 0, -0.654212, 1.01487, -0.598999),
+"points": PackedVector3Array(0.00105429, 0.000736237, 0.000898659, -0.00105429, -0.000736237, -0.000898659, 0.624408, 1.01904, -0.575684, 0.723956, 0.036377, 0.00716794, -0.723956, -0.036377, -0.00716794, 0, 1, -1, 0, 0, 0, 0, 0, 0, -0.654212, 1.01487, -0.598999),
 "tilts": PackedFloat32Array(0, 0, 0)
 }
 point_count = 3
@@ -188,7 +188,7 @@ curve = SubResource("Curve3D_7voc5")
 
 [node name="CSGPolygon3D" type="CSGPolygon3D" parent="Sword-Attack1"]
 cast_shadow = 0
-polygon = PackedVector2Array(0, 0, 0, 0.02, 1, 0.01)
+polygon = PackedVector2Array(0, 0, 0, 0.01, 1, 0.01, 1, 0)
 mode = 2
 path_node = NodePath("../Path3D")
 path_interval_type = 0
@@ -197,7 +197,7 @@ path_simplify_angle = 0.0
 path_rotation = 1
 path_local = true
 path_continuous_u = true
-path_u_distance = 1.0
+path_u_distance = 0.0
 path_joined = false
 material = ExtResource("6_lkteu")
 
@@ -235,7 +235,7 @@ path_simplify_angle = 0.0
 path_rotation = 1
 path_local = true
 path_continuous_u = true
-path_u_distance = 1.0
+path_u_distance = 0.0
 path_joined = false
 material = ExtResource("6_lkteu")
 
@@ -275,6 +275,6 @@ path_simplify_angle = 0.0
 path_rotation = 1
 path_local = true
 path_continuous_u = true
-path_u_distance = 1.0
+path_u_distance = 0.0
 path_joined = false
 material = ExtResource("6_lkteu")
