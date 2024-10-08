@@ -51,7 +51,15 @@ func physics_update(delta: float):
 		if hitbox:
 			hitbox.deal_damage()
 		if slash_effect:
-			slash_effect.visible = true
+			slash_effect_animate()
+			
+func slash_effect_animate():
+	var slash: Node3D = slash_effect.duplicate()
+	slash.global_transform = entity.global_transform
+	entity.get_parent().add_child(slash, true)
+	slash.visible = true
+	await get_tree().create_timer(1.5).timeout
+	slash.visible = false
 
 func on_enter_state():
 	if hitbox:
@@ -71,5 +79,3 @@ func on_enter_state():
 func on_exit_state():
 	if hitbox:
 		hitbox.disable_shape()
-	if slash_effect:
-		slash_effect.visible = false
