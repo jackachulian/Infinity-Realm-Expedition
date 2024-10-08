@@ -1,6 +1,6 @@
 [gd_resource type="ShaderMaterial" load_steps=5 format=3 uid="uid://cy866e0nw8osb"]
 
-[ext_resource type="Material" uid="uid://b78rdg6wuxier" path="res://Assets/Materials/player-outline.tres" id="1_5if8x"]
+[ext_resource type="Material" path="res://Assets/Materials/player-outline.tres" id="1_5if8x"]
 [ext_resource type="Shader" path="res://Assets/Shaders/botw-toon-shader.gdshader" id="2_33hxn"]
 [ext_resource type="Shader" path="res://Assets/Shaders/cutout.gdshader" id="3_bx4m0"]
 

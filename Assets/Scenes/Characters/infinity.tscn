@@ -19,7 +19,7 @@
 [ext_resource type="Texture2D" uid="uid://ct31fhxvcragr" path="res://Packages/GPUTrail-main/defaults/curve.tres" id="18_7jk02"]
 [ext_resource type="Script" path="res://Packages/GPUTrail-main/GPUTrail3D.gd" id="19_0mkq7"]
 [ext_resource type="Texture2D" uid="uid://d0aqx8k5y48w8" path="res://Assets/Sprites/misc/slash-effect.png" id="19_2vl7e"]
-[ext_resource type="Material" uid="uid://cfe0foe1wlito" path="res://Assets/Materials/Characters/infinity-with-cutout.tres" id="21_uqxah"]
+[ext_resource type="Material" path="res://Assets/Materials/Characters/infinity-with-cutout.tres" id="21_uqxah"]
 [ext_resource type="PackedScene" uid="uid://1qj7f1tmhxpo" path="res://Assets/Scenes/Weapons/iron_sword.tscn" id="24_lvvpo"]
 [ext_resource type="Script" path="res://Assets/Scripts/Hurtbox.gd" id="31_pkqhk"]
 
