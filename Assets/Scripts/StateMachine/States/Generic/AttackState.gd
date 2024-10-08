@@ -15,7 +15,7 @@ class_name AttackState
 @export var attack_delay: float = 0.1
 
 # Object(s) that should be enabled/disabled when entering/exiting this state. (slash effect)
-@export var slash_effect: Node3D
+@export var slash_effect: SlashEffect
 
 
 @onready var hitbox: Hitbox = $Hitbox
@@ -51,15 +51,14 @@ func physics_update(delta: float):
 		if hitbox:
 			hitbox.deal_damage()
 		if slash_effect:
-			slash_effect_animate()
+			instantiate_slash_effect()
 			
-func slash_effect_animate():
-	var slash: Node3D = slash_effect.duplicate()
+func instantiate_slash_effect():
+	var slash: SlashEffect = slash_effect.duplicate()
 	slash.global_transform = entity.global_transform
 	entity.get_parent().add_child(slash, true)
-	slash.visible = true
-	await get_tree().create_timer(1.5).timeout
-	slash.visible = false
+	slash.animate()
+	
 
 func on_enter_state():
 	if hitbox:

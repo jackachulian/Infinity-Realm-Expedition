@@ -1,4 +1,4 @@
-[gd_scene load_steps=38 format=4 uid="uid://c7vlx700fgtqs"]
+[gd_scene load_steps=39 format=4 uid="uid://c7vlx700fgtqs"]
 
 [ext_resource type="PackedScene" uid="uid://bfdvxynauwmtj" path="res://Assets/Models/infinity.glb" id="1_rm5qk"]
 [ext_resource type="Script" path="res://Assets/Scripts/Entity.gd" id="2_pd53c"]
@@ -23,6 +23,7 @@
 [ext_resource type="Script" path="res://Assets/Scripts/Weapon.gd" id="22_sjgo7"]
 [ext_resource type="Script" path="res://Assets/Scripts/StateMachine/States/Generic/AttackState.gd" id="23_nohr2"]
 [ext_resource type="Script" path="res://Assets/Scripts/Hitbox.gd" id="24_bm5g8"]
+[ext_resource type="Script" path="res://Assets/Scripts/SlashEffect.gd" id="25_7yelw"]
 [ext_resource type="Material" uid="uid://dwuyheouak115" path="res://Assets/Materials/Weapons/slash-trail.tres" id="25_rcum7"]
 [ext_resource type="Script" path="res://Assets/Scripts/Hurtbox.gd" id="31_pkqhk"]
 
@@ -391,7 +392,7 @@ bones/38/rotation = Quaternion(0.241168, 0.124774, -0.0319406, 0.961899)
 bones/38/scale = Vector3(1, 1, 0.999999)
 
 [node name="Blade" parent="Armature/Skeleton3D" index="0"]
-transform = Transform3D(-0.0549128, 0.495423, -0.0392469, 0.0470163, 0.0444873, 0.495793, 0.494747, 0.0507603, -0.0514718, 0.969465, 1.0943, 0.785201)
+transform = Transform3D(-0.0549113, 0.495424, -0.0392469, 0.0470157, 0.0444871, 0.495793, 0.494747, 0.0507587, -0.0514711, 0.969466, 1.0943, 0.785199)
 
 [node name="Blade" parent="Armature/Skeleton3D/Blade" index="0"]
 visible = false
@@ -501,7 +502,10 @@ knockback = 3.5
 transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, -0.0165758, 0.834441, 0.666336)
 shape = SubResource("CapsuleShape3D_e7xoe")
 
-[node name="SlashEffect" type="Node3D" parent="IronSword/Sword-Attack1" index="1"]
+[node name="SlashEffect" type="Node3D" parent="IronSword/Sword-Attack1" index="1" node_paths=PackedStringArray("mesh")]
+script = ExtResource("25_7yelw")
+duration = 0.3
+mesh = NodePath("CSGPolygon3D")
 
 [node name="Path3D" type="Path3D" parent="IronSword/Sword-Attack1/SlashEffect" index="0"]
 curve = SubResource("Curve3D_7voc5")
