@@ -1,9 +1,0 @@
-[gd_resource type="StandardMaterial3D" format=3 uid="uid://b1lixdut4rmj2"]
-
-[resource]
-diffuse_mode = 3
-specular_mode = 1
-albedo_color = Color(0.231865, 0.755464, 0.803568, 1)
-roughness = 0.02
-backlight_enabled = true
-backlight = Color(0.205117, 0.205117, 0.205117, 1)

@@ -12,6 +12,8 @@ func equip(entity: Entity):
 	
 	entity.state_machine.setup_states(self)
 	
+	visible = true
+	
 	if weapon_model:
 		remove_child(weapon_model)
 		entity.weapon_parent_node.add_child(weapon_model)

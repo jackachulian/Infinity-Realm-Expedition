@@ -15,7 +15,7 @@ class_name AttackState
 @export var attack_delay: float = 0.1
 
 # Object(s) that should be enabled/disabled when entering/exiting this state. (slash effect)
-@export var slash_effect: SlashEffect
+@export var slash_effect: Node3D
 
 
 @onready var hitbox: Hitbox = $Hitbox
@@ -26,6 +26,8 @@ var hitbox_activated: bool = false
 func _ready():
 	if hitbox:
 		hitbox.visible = false
+	if slash_effect:
+		slash_effect.visible = false
 
 func check_transition(delta: float) -> State:
 	# go to idle after anim is completely finished
@@ -48,6 +50,8 @@ func physics_update(delta: float):
 		hitbox_activated = true
 		if hitbox:
 			hitbox.deal_damage()
+		if slash_effect:
+			slash_effect.visible = true
 
 func on_enter_state():
 	if hitbox:
@@ -59,9 +63,6 @@ func on_enter_state():
 		var input_angle = atan2(-entity.input.direction.x, -entity.input.direction.z)
 		entity.face_angle(input_angle)
 	
-	if slash_effect:
-		slash_effect.play()
-	
 	entity.movement.direction = Vector3.ZERO
 	
 	if entity.anim.has_animation(animation_name):
@@ -70,3 +71,5 @@ func on_enter_state():
 func on_exit_state():
 	if hitbox:
 		hitbox.disable_shape()
+	if slash_effect:
+		slash_effect.visible = false

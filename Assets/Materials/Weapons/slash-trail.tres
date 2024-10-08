@@ -3,3 +3,4 @@
 [resource]
 transparency = 1
 shading_mode = 0
+disable_receive_shadows = true

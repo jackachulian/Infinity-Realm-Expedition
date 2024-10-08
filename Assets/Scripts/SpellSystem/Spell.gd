@@ -1,5 +1,5 @@
 class_name Spell
-extends Node
+extends Node3D
 
 # Element shown in the spells menu for this spell
 @export var primary_type: Elements.Element
