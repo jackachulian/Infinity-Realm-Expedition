@@ -2,7 +2,7 @@ extends State
 class_name AttackState
 
 # Name of the animation to play for this attack
-@export var attack_name: String
+@export var animation_name: String
 
 # When attack button is pressed again, once cancel delay is over, this attack is used next in the combo. if empty, same attack is used again.
 @export var combos_into: State
@@ -63,7 +63,9 @@ func on_enter_state():
 		slash_effect.play()
 	
 	entity.movement.direction = Vector3.ZERO
-	entity.anim.play(attack_name)
+	
+	if entity.anim.has_animation(animation_name):
+		entity.anim.play(animation_name)
 	
 func on_exit_state():
 	if hitbox:

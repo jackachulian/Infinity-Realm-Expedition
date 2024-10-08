@@ -89,7 +89,7 @@ func check_transition(delta: float) -> State:
 		# If a state is requested, return that action
 		# Prevent same state if prevent_self_action_request bool is true, 
 		# but ignore that clause if requested action isn't this state
-		if requested_action and (can_move or requested_action.name != "Move") and (not prevent_self_action_request or requested_action != self):
+		if requested_action and (can_move or requested_action != entity.input.move_state) and (not prevent_self_action_request or requested_action != self):
 			return requested_action
 	
 	return null

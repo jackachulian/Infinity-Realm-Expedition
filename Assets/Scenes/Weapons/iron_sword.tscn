@@ -148,7 +148,6 @@ primary_type = 10
 entry_state = NodePath("Sword-Attack1")
 
 [node name="Blade" type="MeshInstance3D" parent="."]
-visible = false
 layers = 8
 mesh = SubResource("ArrayMesh_kumut")
 skeleton = NodePath("")
@@ -159,7 +158,7 @@ surface_material_override/3 = ExtResource("3_vvcsl")
 
 [node name="Sword-Attack1" type="Node3D" parent="." node_paths=PackedStringArray("combos_into")]
 script = ExtResource("4_f70p5")
-attack_name = "Sword-Attack1"
+animation_name = "Sword-Attack1"
 combos_into = NodePath("../Sword-Attack2")
 cancel_delay = 0.3
 
@@ -176,7 +175,7 @@ shape = SubResource("CapsuleShape3D_e7xoe")
 
 [node name="Sword-Attack2" type="Node3D" parent="." node_paths=PackedStringArray("combos_into")]
 script = ExtResource("4_f70p5")
-attack_name = "Sword-Attack2"
+animation_name = "Sword-Attack2"
 combos_into = NodePath("../Sword-Attack3")
 cancel_delay = 0.325
 attack_delay = 0.125
@@ -192,9 +191,10 @@ knockback = 4.25
 transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, -0.0165758, 0.834441, 0.699474)
 shape = SubResource("CapsuleShape3D_4jjti")
 
-[node name="Sword-Attack3" type="Node3D" parent="."]
+[node name="Sword-Attack3" type="Node3D" parent="." node_paths=PackedStringArray("combos_into")]
 script = ExtResource("4_f70p5")
-attack_name = "Sword-Attack3"
+animation_name = "Sword-Attack3"
+combos_into = NodePath("../Sword-Attack1")
 cancel_delay = 0.65
 attack_delay = 0.225
 
