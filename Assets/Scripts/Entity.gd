@@ -61,6 +61,9 @@ func _physics_process(delta: float):
 func get_state(state_name: String):
 	return state_machine.get_node_or_null(state_name)
 
+func is_in_state(state: State):
+	return state_machine.current_state == state
+
 # Face the given angle. Snap to the nearest increment if rotation_snap is above 0
 func face_angle(angle: float, rotation_snap: float = 45):
 	if rotation_snap > 0:

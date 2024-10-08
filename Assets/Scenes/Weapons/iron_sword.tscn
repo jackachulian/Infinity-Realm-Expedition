@@ -148,6 +148,7 @@ primary_type = 10
 entry_state = NodePath("Sword-Attack1")
 
 [node name="Blade" type="MeshInstance3D" parent="."]
+visible = false
 layers = 8
 mesh = SubResource("ArrayMesh_kumut")
 skeleton = NodePath("")

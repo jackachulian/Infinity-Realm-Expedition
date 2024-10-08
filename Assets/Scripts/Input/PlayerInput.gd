@@ -76,10 +76,10 @@ func is_main_attack_requested():
 	return attack_buffer_remaining > 0
 
 func is_move_requested():
-	return move_buffer_remaining > 0
+	return move_buffer_remaining > 0 and not is_shield_requested()
 	
 func is_shield_requested():
-	return Input.is_action_pressed("shield")
+	return Input.is_action_pressed("shield") and not entity.is_in_state(move_state)
 
 # Called when an attack is registered by the state machine. 
 # ensures one attack input doesn't trigger multiple attacks.
