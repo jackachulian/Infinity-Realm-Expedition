@@ -2,5 +2,6 @@
 
 [resource]
 transparency = 1
+depth_draw_mode = 2
 shading_mode = 0
 disable_receive_shadows = true

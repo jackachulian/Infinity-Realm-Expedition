@@ -197,10 +197,10 @@ bones/10/scale = Vector3(1, 1, 1)
 bones/11/position = Vector3(-1.67349e-08, 0.214222, -2.57508e-09)
 bones/11/rotation = Quaternion(-0.27632, 0.830688, -0.000201357, 0.483326)
 bones/12/position = Vector3(-3.04408e-08, 0.324053, 1.55839e-07)
-bones/12/rotation = Quaternion(-0.0210099, 0.00226245, -0.443999, 0.895778)
+bones/12/rotation = Quaternion(-0.0210099, 0.00226245, -0.444, 0.895778)
 bones/12/scale = Vector3(1, 1, 1)
 bones/13/position = Vector3(-7.51809e-09, 0.362667, 3.51468e-08)
-bones/13/rotation = Quaternion(0.247726, -0.719656, -0.114633, 0.638425)
+bones/13/rotation = Quaternion(0.247726, -0.719656, -0.114632, 0.638425)
 bones/14/position = Vector3(-5.88311e-10, 0.120048, 4.02597e-08)
 bones/14/rotation = Quaternion(-0.205608, 0.0044641, 0.0393156, 0.977834)
 bones/15/position = Vector3(0.0391013, 0.0297617, -0.00203167)
@@ -271,7 +271,7 @@ bones/38/rotation = Quaternion(0.241168, 0.124774, -0.0319406, 0.961899)
 bones/38/scale = Vector3(1, 1, 0.999999)
 
 [node name="Blade" parent="Armature/Skeleton3D" index="0"]
-transform = Transform3D(-0.0549113, 0.495424, -0.0392469, 0.0470157, 0.0444871, 0.495793, 0.494747, 0.0507587, -0.0514711, 0.969466, 1.0943, 0.785199)
+transform = Transform3D(-0.0549128, 0.495423, -0.0392469, 0.0470163, 0.0444873, 0.495793, 0.494747, 0.0507603, -0.0514718, 0.969465, 1.0943, 0.785201)
 
 [node name="Blade" parent="Armature/Skeleton3D/Blade" index="0"]
 layers = 8
@@ -351,5 +351,6 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, 0)
 shape = SubResource("CapsuleShape3D_yofg8")
 
 [node name="IronSword" parent="." index="9" instance=ExtResource("24_lvvpo")]
+visible = false
 
 [editable path="IronSword"]
