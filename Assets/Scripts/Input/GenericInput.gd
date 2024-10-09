@@ -4,15 +4,15 @@ class_name GenericInput
 # State switched to when the move button is pressed while not in delay
 @export var move_state : State
 
-# State switched to when attack is requested while not in delay (has buffer on player)
-@export var main_attack_state : State
+# Melee attack state that is used if there is no weapon equipped. only really used on enemies who don't use weapons. 
+# don't think im going to give playable characters weaponless melee attacks
+@export var main_attack_state: State
 
 # State switched to when dash is requested while not in delay
 @export var dash_state: State
 
 # State switched to when shield is requested while not in delay
 @export var shield_state: State
-
 
 # Cooldown between when dash inputs will be accepted
 @export var dash_cooldown: float = 1.0
@@ -76,7 +76,7 @@ func uniform_input_angle(snap: bool = true):
 # May interact with buffers and/or clear them in the process of generating the input
 # to be returned to state machine, meaning it should be called once per check_transition,
 # only within states
-func request_action() -> String:
+func request_action() -> State:
 	# Dash
 	# Can only dash when on the ground... sorry no air dash
 	if is_dash_requested() and dash_state and entity.is_on_floor():
@@ -87,7 +87,7 @@ func request_action() -> String:
 			if not moving_towards_wall:
 				dash_cooldown_remaining = dash_cooldown
 				dashes_left -= 1
-				return dash_state.name
+				return dash_state
 	
 	# Main Attack
 	if is_main_attack_requested():
@@ -97,19 +97,21 @@ func request_action() -> String:
 		# if current state combos into another attack, return that
 		# otherwise, return main attack
 		var state = entity.state_machine.current_state
-		if state is AttackState and state.combos_into != "":
+		if state is AttackState and state.combos_into:
 			return entity.state_machine.current_state.combos_into
-		elif main_attack_state:
-			return main_attack_state.name	
+		elif entity.weapon:
+			return entity.weapon.entry_state
+		else:
+			return main_attack_state
 			
 	# Shield
 	if is_shield_requested() and shield_state:
-		return shield_state.name
+		return shield_state
 			
 	# Move
 	if is_move_requested() and move_state:
 		clear_move_buffer()
 		
-		return move_state.name
+		return move_state
 		
-	return ""
+	return null

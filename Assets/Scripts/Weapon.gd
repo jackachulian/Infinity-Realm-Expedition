@@ -1,6 +1,20 @@
-extends Resource
 class_name Weapon
+extends Spell
 
-enum AnimationType { NONE, SWORD }
+# Node that is aprented to the user when equipped
+@export var weapon_model: Node3D
 
-@export var animation_type: AnimationType
+# Constant rate of mana drained per second while this weapon is equipped.
+@export var mana_drain: float = 0.0
+
+func equip(entity: Entity):
+	print("equipping weapon ", name)
+	
+	entity.state_machine.setup_states(self)
+	
+	visible = true
+	
+	if weapon_model:
+		remove_child(weapon_model)
+		entity.weapon_parent_node.add_child(weapon_model)
+		weapon_model.visible = true

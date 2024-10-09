@@ -11,9 +11,9 @@ var time_elapsed: float = 0.0
 var anim_finished: bool = false
 
 # check if a new state should be transitioned to
-# returns: the new state that should be transitioned to next, blank means no transition
-func check_transition(delta: float) -> String:
-	return ""
+# returns: the new state that should be transitioned to next, null means no transition
+func check_transition(delta: float) -> State:
+	return null
 	
 func update(delta: float):
 	pass
