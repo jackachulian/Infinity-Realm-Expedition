@@ -1,0 +1,20 @@
+[gd_resource type="ShaderMaterial" load_steps=4 format=3 uid="uid://dwuyheouak115"]
+
+[ext_resource type="Shader" path="res://Assets/Shaders/slash.gdshader" id="1_d8puh"]
+
+[sub_resource type="Gradient" id="Gradient_66u78"]
+interpolation_mode = 1
+offsets = PackedFloat32Array(0, 0.00348432, 0.25, 0.5, 0.75)
+colors = PackedColorArray(0.944956, 0.893247, 0.993946, 0, 0.958717, 0.919935, 0.995459, 0.25, 0.972478, 0.946623, 0.996973, 0.5, 0.986239, 0.973312, 0.998486, 0.75, 1, 1, 1, 1)
+metadata/_snap_count = 4
+metadata/_snap_enabled = true
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_vgaij"]
+gradient = SubResource("Gradient_66u78")
+
+[resource]
+render_priority = 0
+shader = ExtResource("1_d8puh")
+shader_parameter/t = 0.0
+shader_parameter/is_left_to_right = false
+shader_parameter/slash_gradient = SubResource("GradientTexture1D_vgaij")
