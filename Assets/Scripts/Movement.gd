@@ -14,6 +14,8 @@ var speed := 5.0
 @export var rise_gravity: float = 25.0
 @export var fall_gravity: float = 25.0
 
+@export var root_motion_multiplier: float = 0.7
+
 @onready var entity: Entity = $".."
 
 @onready var camera: Node3D = get_viewport().get_camera_3d()
@@ -55,7 +57,7 @@ func _physics_process(delta):
 	
 	# Apply root motion (subtract instead of add because model is flipped 180 degrees)
 	var root_motion_delta = entity.anim.get_root_motion_position()
-	entity.position -= screen_uniform_vector(entity.get_quaternion() * root_motion_delta);
+	entity.position -= screen_uniform_vector(entity.get_quaternion() * root_motion_delta * root_motion_multiplier);
 	
 	# store y velocity and set to 0, so that x/z calculations do not use yvel at all
 	var stored_yvel = entity.velocity.y;
