@@ -1,4 +1,4 @@
-[gd_scene load_steps=40 format=4 uid="uid://c7vlx700fgtqs"]
+[gd_scene load_steps=42 format=4 uid="uid://c7vlx700fgtqs"]
 
 [ext_resource type="PackedScene" uid="uid://bfdvxynauwmtj" path="res://Assets/Models/infinity.glb" id="1_rm5qk"]
 [ext_resource type="Script" path="res://Assets/Scripts/Entity.gd" id="2_pd53c"]
@@ -26,6 +26,7 @@
 [ext_resource type="Script" path="res://Assets/Scripts/SlashEffect.gd" id="25_7yelw"]
 [ext_resource type="Material" uid="uid://dwuyheouak115" path="res://Assets/Materials/Weapons/slash-trail-rtl.tres" id="25_rcum7"]
 [ext_resource type="Material" uid="uid://dl12ctyvpgcj1" path="res://Assets/Materials/Weapons/slash-trail-ltr.tres" id="27_q1lxb"]
+[ext_resource type="Material" uid="uid://bxve3kb0kgqe2" path="res://Assets/Materials/Weapons/slash-trail-center.tres" id="28_t753m"]
 [ext_resource type="Script" path="res://Assets/Scripts/Hurtbox.gd" id="31_pkqhk"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_0tpbr"]
@@ -153,8 +154,8 @@ blend_shape_mode = 0
 shadow_mesh = SubResource("ArrayMesh_y6xd2")
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_e7xoe"]
-radius = 1.07228
-height = 3.01618
+radius = 1.13549
+height = 4.0
 
 [sub_resource type="Curve3D" id="Curve3D_7voc5"]
 _data = {
@@ -170,6 +171,13 @@ height = 3.3702
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_3vbbo"]
 radius = 1.25265
 height = 3.01501
+
+[sub_resource type="Curve3D" id="Curve3D_edfe5"]
+_data = {
+"points": PackedVector3Array(0, 0.0229828, 0.429014, 0, -0.0229828, -0.429014, 0.00376952, 2.33807, -0.509521, 0, 0.390709, 0.0995927, 0, -0.390709, -0.0995927, -0.00744629, 1.41458, -1.69745, 0, 0.505623, -0.252812, 0, -0.505623, 0.252812, -0.00744629, 0.350311, -1.30328),
+"tilts": PackedFloat32Array(0, 0, 0)
+}
+point_count = 3
 
 [node name="infinity" node_paths=PackedStringArray("weapon", "weapon_parent_node") instance=ExtResource("1_rm5qk")]
 collision_layer = 4
@@ -393,7 +401,7 @@ bones/38/rotation = Quaternion(0.241168, 0.124774, -0.0319406, 0.961899)
 bones/38/scale = Vector3(1, 1, 0.999999)
 
 [node name="Blade" parent="Armature/Skeleton3D" index="0"]
-transform = Transform3D(-0.0549128, 0.495423, -0.0392469, 0.0470163, 0.0444873, 0.495793, 0.494747, 0.0507603, -0.0514718, 0.969465, 1.0943, 0.785201)
+transform = Transform3D(-0.0549113, 0.495424, -0.0392469, 0.0470157, 0.0444871, 0.495793, 0.494747, 0.0507587, -0.0514711, 0.969466, 1.0943, 0.785199)
 
 [node name="Blade" parent="Armature/Skeleton3D/Blade" index="0"]
 layers = 8
@@ -485,6 +493,7 @@ mesh = SubResource("ArrayMesh_kumut")
 skeleton = NodePath("")
 
 [node name="Sword-Attack1" type="Node3D" parent="IronSword" index="1" node_paths=PackedStringArray("combos_into", "slash_effect")]
+visible = false
 script = ExtResource("23_nohr2")
 animation_name = "Sword-Attack1"
 combos_into = NodePath("../Sword-Attack2")
@@ -493,18 +502,18 @@ slash_effect = NodePath("SlashEffect")
 
 [node name="Hitbox" type="Area3D" parent="IronSword/Sword-Attack1" index="0"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1.98525)
-visible = false
 collision_layer = 0
 collision_mask = 0
 script = ExtResource("24_bm5g8")
 knockback = 3.5
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="IronSword/Sword-Attack1/Hitbox" index="0"]
-transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, -0.0165758, 0.834441, 0.666336)
+transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, -0.0165758, 1.07877, 0.645491)
 shape = SubResource("CapsuleShape3D_e7xoe")
 
 [node name="SlashEffect" type="Node3D" parent="IronSword/Sword-Attack1" index="1" node_paths=PackedStringArray("mesh")]
 script = ExtResource("25_7yelw")
+duration = 0.125
 mesh = NodePath("CSGPolygon3D")
 
 [node name="Path3D" type="Path3D" parent="IronSword/Sword-Attack1/SlashEffect" index="0"]
@@ -542,11 +551,12 @@ script = ExtResource("24_bm5g8")
 knockback = 4.25
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="IronSword/Sword-Attack2/Hitbox" index="0"]
-transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, -0.0165758, 0.834441, 0.699474)
+transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, -0.0165758, 1.04289, 0.584825)
 shape = SubResource("CapsuleShape3D_4jjti")
 
 [node name="SlashEffect" type="Node3D" parent="IronSword/Sword-Attack2" index="1" node_paths=PackedStringArray("mesh")]
 script = ExtResource("25_7yelw")
+duration = 0.133
 mesh = NodePath("CSGPolygon3D")
 
 [node name="Path3D" type="Path3D" parent="IronSword/Sword-Attack2/SlashEffect" index="0"]
@@ -567,16 +577,17 @@ path_u_distance = 0.0
 path_joined = false
 material = ExtResource("27_q1lxb")
 
-[node name="Sword-Attack3" type="Node3D" parent="IronSword" index="3" node_paths=PackedStringArray("combos_into")]
+[node name="Sword-Attack3" type="Node3D" parent="IronSword" index="3" node_paths=PackedStringArray("combos_into", "slash_effect")]
+visible = false
 script = ExtResource("23_nohr2")
 animation_name = "Sword-Attack3"
 combos_into = NodePath("../Sword-Attack1")
 cancel_delay = 0.65
 attack_delay = 0.225
+slash_effect = NodePath("SlashEffect")
 
 [node name="Hitbox" type="Area3D" parent="IronSword/Sword-Attack3" index="0"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1.98525)
-visible = false
 collision_layer = 0
 collision_mask = 0
 script = ExtResource("24_bm5g8")
@@ -585,5 +596,28 @@ hit_stun = 0.35
 knockback = 6.0
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="IronSword/Sword-Attack3/Hitbox" index="0"]
-transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, -0.0165758, 0.742375, 0.461387)
+transform = Transform3D(1, 0, 0, 0, 0.999809, -0.019564, 0, 0.019564, 0.999809, -0.0165758, 1.18013, 0.430119)
 shape = SubResource("CapsuleShape3D_3vbbo")
+
+[node name="SlashEffect" type="Node3D" parent="IronSword/Sword-Attack3" index="1" node_paths=PackedStringArray("mesh")]
+script = ExtResource("25_7yelw")
+duration = 0.175
+mesh = NodePath("CSGPolygon3D")
+
+[node name="Path3D" type="Path3D" parent="IronSword/Sword-Attack3/SlashEffect" index="0"]
+curve = SubResource("Curve3D_edfe5")
+
+[node name="CSGPolygon3D" type="CSGPolygon3D" parent="IronSword/Sword-Attack3/SlashEffect" index="1"]
+cast_shadow = 0
+polygon = PackedVector2Array(0, -0.6, -0.2, 0, 0, 0.6, 0.2, 0)
+mode = 2
+path_node = NodePath("../Path3D")
+path_interval_type = 0
+path_interval = 0.2
+path_simplify_angle = 0.0
+path_rotation = 2
+path_local = true
+path_continuous_u = true
+path_u_distance = 0.0
+path_joined = false
+material = ExtResource("28_t753m")

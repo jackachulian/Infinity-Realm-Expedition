@@ -22,6 +22,9 @@ class_name StandardState
 # Immediate velocity force to apply to this entity upon entering this state (entity z forward).
 @export var instant_velocity_on_enter: Vector3
 
+# if true, limit the aerial velocity when EXITING this state.
+@export var limit_exit_linear_velocity: bool
+
 enum RotateMode {
 	NONE,
 	FACE_INPUT_AT_START, # player turns to face input direction when entering the state
@@ -154,6 +157,10 @@ func on_exit_state():
 		entity.movement.speed = movement_speed_on_exit
 		
 	entity.movement.gravity_multiplier = 1.0
+	
+	if limit_exit_linear_velocity:
+		if entity.velocity.length() > entity.movement.speed:
+			entity.velocity = entity.velocity.normalized() * entity.movement.speed
 
 func get_decel_override():
 	return decel_override

@@ -1,6 +1,6 @@
-[gd_resource type="ShaderMaterial" load_steps=4 format=3 uid="uid://dl12ctyvpgcj1"]
+[gd_resource type="ShaderMaterial" load_steps=4 format=3 uid="uid://bxve3kb0kgqe2"]
 
-[ext_resource type="Shader" path="res://Assets/Shaders/slash.gdshader" id="1_8it2e"]
+[ext_resource type="Shader" path="res://Assets/Shaders/slash.gdshader" id="1_c35d6"]
 
 [sub_resource type="Gradient" id="Gradient_66u78"]
 interpolation_mode = 1
@@ -14,8 +14,8 @@ gradient = SubResource("Gradient_66u78")
 
 [resource]
 render_priority = 0
-shader = ExtResource("1_8it2e")
+shader = ExtResource("1_c35d6")
 shader_parameter/t = 0.0
-shader_parameter/is_vertical = false
-shader_parameter/is_left_to_right = true
+shader_parameter/is_vertical = true
+shader_parameter/is_left_to_right = false
 shader_parameter/slash_gradient = SubResource("GradientTexture1D_vgaij")

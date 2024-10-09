@@ -16,5 +16,6 @@ gradient = SubResource("Gradient_66u78")
 render_priority = 0
 shader = ExtResource("1_d8puh")
 shader_parameter/t = 0.0
+shader_parameter/is_vertical = false
 shader_parameter/is_left_to_right = false
 shader_parameter/slash_gradient = SubResource("GradientTexture1D_vgaij")

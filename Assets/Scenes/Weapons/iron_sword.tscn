@@ -1,34 +1,14 @@
-[gd_scene load_steps=15 format=4 uid="uid://1qj7f1tmhxpo"]
+[gd_scene load_steps=17 format=4 uid="uid://1qj7f1tmhxpo"]
 
-[ext_resource type="Script" path="res://Assets/Scripts/Weapon.gd" id="1_62hel"]
-[ext_resource type="Script" path="res://Assets/Scripts/StateMachine/States/Generic/AttackState.gd" id="4_f70p5"]
-[ext_resource type="Script" path="res://Assets/Scripts/Hitbox.gd" id="5_ahw5s"]
-[ext_resource type="Material" uid="uid://dwuyheouak115" path="res://Assets/Materials/Weapons/slash-trail-rtl.tres" id="6_lkteu"]
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_cv2kt"]
-resource_name = "BladeOuter"
-cull_mode = 2
-albedo_color = Color(0.984313, 0.913725, 1, 1)
-metallic = 0.733446
-roughness = 0.0674104
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_gbvwr"]
-resource_name = "Handle"
-cull_mode = 2
-albedo_color = Color(0.0502126, 0.49008, 0.726659, 1)
-roughness = 0.4
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ve86u"]
-resource_name = "InfinitySymbol"
-cull_mode = 2
-albedo_color = Color(0, 0.245582, 0.68666, 1)
-roughness = 0.4
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_noyhr"]
-resource_name = "HandleHighlight"
-cull_mode = 2
-albedo_color = Color(0.0338172, 0.140835, 0.346658, 1)
-roughness = 0.4
+[ext_resource type="Script" path="res://Assets/Scripts/Weapon.gd" id="1_g6we3"]
+[ext_resource type="Material" uid="uid://dclrr382uupwn" path="res://Assets/Materials/Weapons/sword-cutout.tres" id="2_1lhru"]
+[ext_resource type="Material" uid="uid://cy866e0nw8osb" path="res://Assets/Materials/Weapons/sword-handle-cutout.tres" id="3_fjwcs"]
+[ext_resource type="Script" path="res://Assets/Scripts/StateMachine/States/Generic/AttackState.gd" id="4_l2ofj"]
+[ext_resource type="Script" path="res://Assets/Scripts/Hitbox.gd" id="5_kd63v"]
+[ext_resource type="Script" path="res://Assets/Scripts/SlashEffect.gd" id="6_ipoi0"]
+[ext_resource type="Material" uid="uid://dwuyheouak115" path="res://Assets/Materials/Weapons/slash-trail-rtl.tres" id="7_f68li"]
+[ext_resource type="Material" uid="uid://dl12ctyvpgcj1" path="res://Assets/Materials/Weapons/slash-trail-ltr.tres" id="8_3omrd"]
+[ext_resource type="Material" uid="uid://bxve3kb0kgqe2" path="res://Assets/Materials/Weapons/slash-trail-center.tres" id="9_374lx"]
 
 [sub_resource type="ArrayMesh" id="ArrayMesh_y6xd2"]
 _surfaces = [{
@@ -82,7 +62,7 @@ _surfaces = [{
 "format": 34359742487,
 "index_count": 183,
 "index_data": PackedByteArray("EwBOAD8ARwAUAEAARwAlABQAPgBGAC4ALgBGAAYANgADADIANgAhAAMAAQA7ADEAAQAdADsALAAeADQALAAEAB4ARAAmAEgARAAYACYAPQArAA8AKwAtADUAKwA9AC0AOgAKAC8ABQBJAB8ABQBFAEkADgBDADwADgAXAEMAIABCAAIAIABKAEIATwAAAEEATwAcAAAAKgAwAAsAKgAzADAADAAiABUAIgBLABAASwA3ABkANwAnAAcAJwAiAAwAIgA3AEsAIgAnADcAEgBsAE0AdAARACQAdABrABEAZgBbAG0AbQBbAFQAYgBQAFcAYgBeAFAAUgA4ABoAUgBfADgAXQBaAFYAXQBkAFoAbwAjABYAbwBzACMAKABnAA0AZwBjAFwAZwAoAGMAOQBhAAkAVQByAG4AVQBZAHIADgBwABcADgBoAHAAWABpAHEAWABRAGkATABTABsATABqAFMAKQBgAGUAKQAIAGAA"),
-"material": SubResource("StandardMaterial3D_cv2kt"),
+"material": ExtResource("2_1lhru"),
 "name": "BladeOuter",
 "primitive": 3,
 "uv_scale": Vector4(0, 0, 0, 0),
@@ -94,7 +74,7 @@ _surfaces = [{
 "format": 34359742487,
 "index_count": 177,
 "index_data": PackedByteArray("IAAIACUAIAADAAgAQQAkABsAQQBIACQAQwAjAEcAQwAeACMADAAZABAADAAUABkAJwAvAB0AJwAxAC8AGAA7ACIAGAA5ADsADgA4ABcADgA0ADgAIQA3AAQAIQA6ADcALAAaAC4ALAARABoACQAwACYACQAqADAAFQBEAEUAFQAfAEQAFgBCABwAFgBGAEIAKABAAD8AKAArAEAABQArACgABQAPACsAAAAPAAUAAAAKAA8APAA1AD4ANQAKAAAAMgA8AD0ANQAyAAoAMgA1ADwAVQAHAAIAVQBaAAcAZgBbAGsAZgBQAFsAaABcAFcAaABsAFwADQBSAE0ADQATAFIAWABdAF8AWABOAF0ASQBjAGEASQBTAGMACwBiADMACwBKAGIAVAA2AGQAVAABADYALQBRABIALQBeAFEABgBgACkABgBZAGAATABnAFYATABqAGcASwBlAGkASwBPAGUA"),
-"material": SubResource("StandardMaterial3D_gbvwr"),
+"material": ExtResource("3_fjwcs"),
 "name": "Handle",
 "primitive": 3,
 "uv_scale": Vector4(0, 0, 0, 0),
@@ -106,7 +86,7 @@ _surfaces = [{
 "format": 34359742487,
 "index_count": 498,
 "index_data": PackedByteArray("EQAWAAcAEQAeABYACgAgABIACgAkACAAAwAmAA4AAwAdACYADAAVACoAGwA9ACMAGwA3AD0AHwAsABgANABMADwANABEAEwAIgAwAC4AIgA6ADAAJQA4ACEAJQA+ADgAOwBCADIAOwBLAEIAPwBIADkAPwBOAEgAWAAXAF0AWAAIABcAUQBfAGMAUQBZAF8AAgBlABwAAgBVAGUAUwBpAFwAGgBwADYAGgBiAHAAXgAZAC0ANQB3AEUANQBvAHcAYQAxAG0AYQAvADEAZABrAHEAZABgAGsAbgBDAHYAbgAzAEMAcgBzAHkAcgBsAHMAEACHAI8AEAAFAIcAgQCRAJUAgQATAJEAfgCXAI4AfgCFAJcAgwApABQAjACpAKMAjACUAKkAkACJAJgAoABNAEYAoACoAE0AkwCcAKYAkwCaAJwAlgCkAKoAlgCSAKQApwBAAEoApwCeAEAAqwBJAE8AqwClAEkAVwCIAAYAVwCzAIgArQC1AFoArQC5ALUAfQC7ALEAfQCNALsArwBbAGgAiwDBALgAiwCiAMEAtACZAIoAoQB4AMAAoQBHAHgAtwCdAJsAtwC+AJ0AugC8ALYAugDCALwAvwBBAJ8AvwB1AEEAwwB0AL0AwwB6AHQADwBWAAQAagB/ALIADwBqAFYAfwArAIYAKwBqAA8AagArAH8AzQDQANoAzQDGANAADQDYAN0ADQDKANgAAQDbANMAAQAJANsACwAoAMkA1QDxAOgA1QDeAPEA2QDOAOEA6QABAfcA6QDyAAEB1gDlAOwA1gDfAOUA3ADuAPAA3ADXAO4A6wD1APwA6wDjAPUA7wD9AP8A7wDtAP0ACAHRAMcACAENAdEAVAALAQUBVAAQAQsBAAAOAVAAAADSAA4BUgAEAWcA1AAYAREB1ADnABgBDAHiAM8A6gAgARkB6gD4ACABCQHmAOAACQETAeYADwEVAQoBDwEXARUBEgH2AOQAEgEbAfYAFgEcARQBFgEeARwBzAAkAcQAzAAuASQBhAAsAcsAhAAxASwBfAAvAYAAfAAnAS8BggDIACcAKQFFATIBKQE8AUUBLQE1ASIBPQECAUYBPQH5AAIBKgE5ATMBKgFAATkBMAFCASsBMAFEAUIBPwHzADcBPwH7APMAQwH+AEEBQwEAAf4ABwElAUsBBwHFACUBsABJAU4BsAAGAUkBewBMASYBewCsAEwBrgBmAAMBKAFWATsBKAFPAVYBSgEjATYBPgEhAfoAPgFXASEBRwE6AVEBRwE0AToBTQFTAVUBTQFIAVMBUAH0ABoBUAE4AfQAVAEdAR8BVAFSAR0B"),
-"material": SubResource("StandardMaterial3D_ve86u"),
+"material": ExtResource("3_fjwcs"),
 "name": "InfinitySymbol",
 "primitive": 3,
 "uv_scale": Vector4(0, 0, 0, 0),
@@ -118,7 +98,7 @@ _surfaces = [{
 "format": 34359742487,
 "index_count": 186,
 "index_data": PackedByteArray("UAAMAEwAUAAIAAwABwA5AAMAUQABAAkAUQBPAAEAPQAWABEAFgBEAEoAFgA9AEQAFABBABMAQQBJAEcAQQAUAEkALAAkACYAMgAjADAAKAAlADQAHQA1AB8AHQApADUAHgAxABsAHgAzADEAGQAnABwAGQAtACcACwA4AA8AAgA3AAoARQA7AD8ARQBCADsARgBIAEMAFwBLABUADgA2AAYAAABSAAQAAABOAFIADQBTAE0ADQAFAFMAhwBjAF8AhwCDAGMAWABUAHQAhgBWAIQAhgBeAFYAZwA6ABAAOgB/AHgAOgBnAH8APgBlABIAZQB7AIAAZQA+AHsAKwBvACEAcwAvACIAbQBxACAAaABwAGwAaABqAHAAawAuAHIAawAaAC4AGABuACoAGABpAG4AXABgAHUAVQBdAHYAfQA8AHoAfQBAADwAfAB5AIEAZgBkAH4AYQBZAHcAVwCJAIUAVwBbAIkAYgCIAFoAYgCCAIgA"),
-"material": SubResource("StandardMaterial3D_noyhr"),
+"material": ExtResource("3_fjwcs"),
 "name": "HandleHighlight",
 "primitive": 3,
 "uv_scale": Vector4(0, 0, 0, 0),
@@ -129,13 +109,13 @@ blend_shape_mode = 0
 shadow_mesh = SubResource("ArrayMesh_y6xd2")
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_e7xoe"]
-radius = 1.07228
-height = 3.01618
+radius = 1.13549
+height = 4.0
 
 [sub_resource type="Curve3D" id="Curve3D_7voc5"]
 _data = {
-"points": PackedVector3Array(0.00105429, 0.000736237, 0.000898659, -0.00105429, -0.000736237, -0.000898659, 0.89764, 1.21799, -0.629393, 0.723956, 0.036377, 0.00716794, -0.723956, -0.036377, -0.00716794, -0.149785, 1.34324, -1.20182, 0, 0, 0, 0, 0, 0, -1.07181, 1.13321, -0.572225),
-"tilts": PackedFloat32Array(0, 0, 0)
+"points": PackedVector3Array(0.0319936, 0.000732899, 0.865659, -0.0319936, -0.000732899, -0.865659, -1.08087, 0.890322, -0.689702, -0.380274, -0.0172119, 0.0292519, 0.380274, 0.0172119, -0.0292519, 0.189787, 0.969727, -1.95052, 0.266138, 0.132892, -1.07853, -0.266138, -0.132892, 1.07853, 1.52275, 0.875897, -0.46247),
+"tilts": PackedFloat32Array(0.104595, -0.00116563, -0.26561)
 }
 point_count = 3
 
@@ -147,8 +127,15 @@ height = 3.3702
 radius = 1.25265
 height = 3.01501
 
+[sub_resource type="Curve3D" id="Curve3D_edfe5"]
+_data = {
+"points": PackedVector3Array(0, 0.0229828, 0.429014, 0, -0.0229828, -0.429014, 0.00376952, 2.33807, -0.509521, 0, 0.390709, 0.0995927, 0, -0.390709, -0.0995927, -0.00744629, 1.41458, -1.69745, 0, 0.505623, -0.252812, 0, -0.505623, 0.252812, -0.00744629, 0.350311, -1.30328),
+"tilts": PackedFloat32Array(0, 0, 0)
+}
+point_count = 3
+
 [node name="IronSword" type="Node3D" node_paths=PackedStringArray("weapon_model", "entry_state")]
-script = ExtResource("1_62hel")
+script = ExtResource("1_g6we3")
 weapon_model = NodePath("Blade")
 primary_type = 10
 entry_state = NodePath("Sword-Attack1")
@@ -160,75 +147,131 @@ mesh = SubResource("ArrayMesh_kumut")
 skeleton = NodePath("")
 
 [node name="Sword-Attack1" type="Node3D" parent="." node_paths=PackedStringArray("combos_into", "slash_effect")]
-script = ExtResource("4_f70p5")
+visible = false
+script = ExtResource("4_l2ofj")
 animation_name = "Sword-Attack1"
 combos_into = NodePath("../Sword-Attack2")
 cancel_delay = 0.3
-slash_effect = NodePath("CSGPolygon3D")
+slash_effect = NodePath("SlashEffect")
 
 [node name="Hitbox" type="Area3D" parent="Sword-Attack1"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1.98525)
 collision_layer = 0
 collision_mask = 0
-script = ExtResource("5_ahw5s")
+script = ExtResource("5_kd63v")
 knockback = 3.5
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Sword-Attack1/Hitbox"]
-transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, -0.0165758, 0.834441, 0.666336)
+transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, -0.0165758, 1.07877, 0.645491)
 shape = SubResource("CapsuleShape3D_e7xoe")
 
-[node name="Path3D" type="Path3D" parent="Sword-Attack1"]
+[node name="SlashEffect" type="Node3D" parent="Sword-Attack1" node_paths=PackedStringArray("mesh")]
+script = ExtResource("6_ipoi0")
+duration = 0.125
+mesh = NodePath("CSGPolygon3D")
+
+[node name="Path3D" type="Path3D" parent="Sword-Attack1/SlashEffect"]
 curve = SubResource("Curve3D_7voc5")
 
-[node name="CSGPolygon3D" type="CSGPolygon3D" parent="Sword-Attack1"]
+[node name="CSGPolygon3D" type="CSGPolygon3D" parent="Sword-Attack1/SlashEffect"]
 cast_shadow = 0
 polygon = PackedVector2Array(-0.5, 0, -0.5, 0.01, 0.5, 0.005)
 mode = 2
 path_node = NodePath("../Path3D")
 path_interval_type = 0
-path_interval = 0.25
+path_interval = 0.2
 path_simplify_angle = 0.0
 path_rotation = 2
 path_local = true
 path_continuous_u = true
 path_u_distance = 0.0
 path_joined = false
-material = ExtResource("6_lkteu")
+material = ExtResource("7_f68li")
 
-[node name="Sword-Attack2" type="Node3D" parent="." node_paths=PackedStringArray("combos_into")]
-script = ExtResource("4_f70p5")
+[node name="Sword-Attack2" type="Node3D" parent="." node_paths=PackedStringArray("combos_into", "slash_effect")]
+visible = false
+script = ExtResource("4_l2ofj")
 animation_name = "Sword-Attack2"
 combos_into = NodePath("../Sword-Attack3")
 cancel_delay = 0.325
 attack_delay = 0.125
+slash_effect = NodePath("SlashEffect")
 
 [node name="Hitbox" type="Area3D" parent="Sword-Attack2"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1.98525)
 collision_layer = 0
 collision_mask = 0
-script = ExtResource("5_ahw5s")
+script = ExtResource("5_kd63v")
 knockback = 4.25
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Sword-Attack2/Hitbox"]
-transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, -0.0165758, 0.834441, 0.699474)
+transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, -0.0165758, 1.04289, 0.584825)
 shape = SubResource("CapsuleShape3D_4jjti")
 
-[node name="Sword-Attack3" type="Node3D" parent="." node_paths=PackedStringArray("combos_into")]
-script = ExtResource("4_f70p5")
+[node name="SlashEffect" type="Node3D" parent="Sword-Attack2" node_paths=PackedStringArray("mesh")]
+script = ExtResource("6_ipoi0")
+duration = 0.133
+mesh = NodePath("CSGPolygon3D")
+
+[node name="Path3D" type="Path3D" parent="Sword-Attack2/SlashEffect"]
+curve = SubResource("Curve3D_7voc5")
+
+[node name="CSGPolygon3D" type="CSGPolygon3D" parent="Sword-Attack2/SlashEffect"]
+cast_shadow = 0
+polygon = PackedVector2Array(-0.5, 0, -0.5, 0.01, 0.5, 0.005)
+mode = 2
+path_node = NodePath("../Path3D")
+path_interval_type = 0
+path_interval = 0.2
+path_simplify_angle = 0.0
+path_rotation = 2
+path_local = true
+path_continuous_u = true
+path_u_distance = 0.0
+path_joined = false
+material = ExtResource("8_3omrd")
+
+[node name="Sword-Attack3" type="Node3D" parent="." node_paths=PackedStringArray("combos_into", "slash_effect")]
+visible = false
+script = ExtResource("4_l2ofj")
 animation_name = "Sword-Attack3"
 combos_into = NodePath("../Sword-Attack1")
 cancel_delay = 0.65
 attack_delay = 0.225
+slash_effect = NodePath("SlashEffect")
 
 [node name="Hitbox" type="Area3D" parent="Sword-Attack3"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1.98525)
 collision_layer = 0
 collision_mask = 0
-script = ExtResource("5_ahw5s")
+script = ExtResource("5_kd63v")
 damage = 8
 hit_stun = 0.35
 knockback = 6.0
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Sword-Attack3/Hitbox"]
-transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, -0.0165758, 0.742375, 0.461387)
+transform = Transform3D(1, 0, 0, 0, 0.999809, -0.019564, 0, 0.019564, 0.999809, -0.0165758, 1.18013, 0.430119)
 shape = SubResource("CapsuleShape3D_3vbbo")
+
+[node name="SlashEffect" type="Node3D" parent="Sword-Attack3" node_paths=PackedStringArray("mesh")]
+script = ExtResource("6_ipoi0")
+duration = 0.175
+mesh = NodePath("CSGPolygon3D")
+
+[node name="Path3D" type="Path3D" parent="Sword-Attack3/SlashEffect"]
+curve = SubResource("Curve3D_edfe5")
+
+[node name="CSGPolygon3D" type="CSGPolygon3D" parent="Sword-Attack3/SlashEffect"]
+cast_shadow = 0
+polygon = PackedVector2Array(0, -0.6, -0.2, 0, 0, 0.6, 0.2, 0)
+mode = 2
+path_node = NodePath("../Path3D")
+path_interval_type = 0
+path_interval = 0.2
+path_simplify_angle = 0.0
+path_rotation = 2
+path_local = true
+path_continuous_u = true
+path_u_distance = 0.0
+path_joined = false
+material = ExtResource("9_374lx")
