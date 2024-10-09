@@ -120,6 +120,9 @@ func regenerate_mesh():
 	print("generated terrain in "+str(elapsed_time)+"ms")
 
 func generate_terrain_cells():
+	if not cell_geometry:
+		cell_geometry = {}
+	
 	for z in range(dimensions.z - 1):
 		for x in range(dimensions.x - 1):
 			cell_coords = Vector2i(x, z)
