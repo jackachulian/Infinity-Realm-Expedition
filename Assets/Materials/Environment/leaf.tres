@@ -6,5 +6,15 @@
 [resource]
 render_priority = 0
 shader = ExtResource("1_bdsnr")
-shader_parameter/albedo = Color(0.835804, 0.113021, 0.224298, 1)
+shader_parameter/albedo = Color(0.767487, 0.231063, 0.43255, 1)
+shader_parameter/shadow_size = -0.215
+shader_parameter/shadow_blend = 1.251
+shader_parameter/shadow_banding = 2.0
+shader_parameter/shadow_extra_intensity = 0.0
+shader_parameter/shadow_color = Color(0.288335, 0.202954, 0.632704, 1)
+shader_parameter/light_tint = Color(0.853846, 0.797858, 0.757543, 1)
+shader_parameter/rimlight_size = 0.426
+shader_parameter/rimlight_blend = 0.985
+shader_parameter/rimlight_banding = 2.0
+shader_parameter/rimlight_color = Color(1, 1, 1, 1)
 shader_parameter/leaf_texture = ExtResource("2_usyq0")

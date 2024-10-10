@@ -23,10 +23,10 @@
 [ext_resource type="PackedScene" uid="uid://1qj7f1tmhxpo" path="res://Assets/Scenes/Weapons/iron_sword.tscn" id="22_oanvs"]
 [ext_resource type="Script" path="res://Assets/Scripts/Hurtbox.gd" id="31_pkqhk"]
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_0tpbr"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_l8n23"]
 shader = ExtResource("15_rhd6w")
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_8xy7t"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_jr66p"]
 resource_local_to_scene = true
 render_priority = 0
 shader = ExtResource("16_qm1pa")
@@ -36,8 +36,8 @@ shader_parameter/tex = ExtResource("19_2vl7e")
 shader_parameter/color_ramp = ExtResource("17_pvvl0")
 shader_parameter/curve = ExtResource("18_7jk02")
 
-[sub_resource type="QuadMesh" id="QuadMesh_0x15y"]
-material = SubResource("ShaderMaterial_8xy7t")
+[sub_resource type="QuadMesh" id="QuadMesh_8h0rw"]
+material = SubResource("ShaderMaterial_jr66p")
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_v8du6"]
 
@@ -287,13 +287,14 @@ amount = 20
 lifetime = 20.0
 explosiveness = 1.0
 fixed_fps = 0
-process_material = SubResource("ShaderMaterial_0tpbr")
-draw_pass_1 = SubResource("QuadMesh_0x15y")
+process_material = SubResource("ShaderMaterial_l8n23")
+draw_pass_1 = SubResource("QuadMesh_8h0rw")
 script = ExtResource("19_0mkq7")
 length = 20
 texture = ExtResource("19_2vl7e")
 color_ramp = ExtResource("17_pvvl0")
 curve = ExtResource("18_7jk02")
+_defaults_have_been_set = true
 
 [node name="Arm" parent="Armature/Skeleton3D" index="1"]
 layers = 4
