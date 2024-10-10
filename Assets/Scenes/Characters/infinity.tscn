@@ -55,7 +55,9 @@ axis_lock_angular_x = true
 axis_lock_angular_y = true
 axis_lock_angular_z = true
 floor_constant_speed = true
+floor_snap_length = 0.15
 platform_floor_layers = 1
+safe_margin = 0.003
 script = ExtResource("2_pd53c")
 weapon = NodePath("IronSword")
 damage_flash_mat = ExtResource("4_cyyo3")
@@ -85,7 +87,7 @@ script = ExtResource("4_fm0wv")
 move_stop_state = NodePath("../RunStop")
 jump_state = NodePath("../JumpRise")
 fall_state = NodePath("../JumpFall")
-speed = 7.0
+speed = 7.5
 
 [node name="JumpCheckRayCast3D" type="RayCast3D" parent="StateMachine/Move" index="0"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.55, -0.75)
@@ -102,7 +104,7 @@ script = ExtResource("9_blb1u")
 animation_name = "Dash"
 action_on_anim_finish = true
 state_on_anim_finish = NodePath("../DashStop")
-instant_velocity_on_enter = Vector3(0, 0, -14)
+instant_velocity_on_enter = Vector3(0, 0, -15)
 rotate_mode = 1
 movement_speed = 8.0
 gravity_multiplier = 0.0

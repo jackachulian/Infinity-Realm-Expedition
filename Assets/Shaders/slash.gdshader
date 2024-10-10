@@ -1,6 +1,8 @@
 shader_type spatial;
 render_mode cull_disabled;
 
+uniform vec4 slash_color : source_color = vec4(0.8, 0.8, 0.8, 1.0);
+
 uniform sampler2D slash_gradient : source_color, filter_nearest;
 
 // Script will animate this from 0 to 1
@@ -38,9 +40,9 @@ void fragment() {
 	if (shape <= 0.0) {
 		ALPHA = 0.0;
 	} else {
-		vec4 color = texture(slash_gradient, vec2(clamp(shape, 0.01, 0.99), 0));
-		ALBEDO = color.rgb;
-		ALPHA = color.a;
+		float gradient_value = texture(slash_gradient, vec2(clamp(shape, 0.01, 0.99), 0)).a;
+		ALBEDO = slash_color.rgb;
+		ALPHA = gradient_value * slash_color.a;
 	}
 	
 	//ALBEDO = vec3(UV.x, UV.y, 0);
