@@ -1,12 +1,30 @@
-[gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://duemk4wleilj4"]
+[gd_resource type="ShaderMaterial" load_steps=5 format=3 uid="uid://duemk4wleilj4"]
 
 [ext_resource type="Shader" path="res://Assets/Shaders/botw-toon-shader-hideable.gdshader" id="1_3n0hb"]
+
+[sub_resource type="Gradient" id="Gradient_pjlaw"]
+interpolation_mode = 1
+offsets = PackedFloat32Array(0, 0.333333, 0.666667)
+colors = PackedColorArray(0.257409, 0.171096, 0.22068, 1, 0.381575, 0.273665, 0.381786, 1, 0.505741, 0.376235, 0.542892, 1)
+metadata/_snap_enabled = true
+metadata/_snap_count = 3
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_726g7"]
+noise_type = 2
+frequency = 0.1
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_scfye"]
+width = 32
+height = 32
+seamless = true
+color_ramp = SubResource("Gradient_pjlaw")
+noise = SubResource("FastNoiseLite_726g7")
 
 [resource]
 resource_local_to_scene = true
 render_priority = 0
 shader = ExtResource("1_3n0hb")
-shader_parameter/tint = Color(0.480126, 0.407856, 0.519301, 1)
+shader_parameter/tint = Color(1, 1, 1, 1)
 shader_parameter/metallic = 0.0
 shader_parameter/shadow_size = -0.09
 shader_parameter/shadow_blend = 0.001
@@ -25,3 +43,4 @@ shader_parameter/use_view = false
 shader_parameter/view_bias = Color(1, 0, 1, 1)
 shader_parameter/view_multiplier = -1.0
 shader_parameter/hide_amount = 0.0
+shader_parameter/albedo_texture = SubResource("NoiseTexture2D_scfye")

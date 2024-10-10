@@ -1,5 +1,5 @@
 shader_type spatial;
-render_mode unshaded, cull_disabled;
+render_mode cull_disabled;
 
 uniform sampler2D slash_gradient : source_color, filter_nearest;
 
@@ -11,6 +11,10 @@ uniform bool is_vertical = false;
 
 // true for swing left-to-right, false for swing right-to-left
 uniform bool is_left_to_right = true;
+
+void vertex() {
+	NORMAL = vec3(0,1,0);
+}
 
 void fragment() {
 	float normalized_y;

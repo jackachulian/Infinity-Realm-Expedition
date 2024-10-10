@@ -10,7 +10,7 @@ shader_type spatial;
 render_mode diffuse_toon, specular_toon, depth_prepass_alpha;
 
 uniform vec4 tint : source_color;
-uniform sampler2D albedo_texture : source_color;
+uniform sampler2D albedo_texture : source_color, filter_nearest;
 uniform float metallic : hint_range(0.0, 1.0) = 0.0;
 uniform sampler2D normal_map : source_color;
 uniform float shadow_size = 0.045;
