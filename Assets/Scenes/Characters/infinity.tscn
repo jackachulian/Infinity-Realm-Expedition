@@ -1,6 +1,6 @@
 [gd_scene load_steps=29 format=3 uid="uid://c7vlx700fgtqs"]
 
-[ext_resource type="PackedScene" uid="uid://bfdvxynauwmtj" path="res://Assets/Models/infinity.glb" id="1_rm5qk"]
+[ext_resource type="PackedScene" uid="uid://bfdvxynauwmtj" path="res://Assets/Models/Characters/infinity.glb" id="1_rm5qk"]
 [ext_resource type="Script" path="res://Assets/Scripts/Entity.gd" id="2_pd53c"]
 [ext_resource type="Script" path="res://Assets/Scripts/Model.gd" id="3_11b10"]
 [ext_resource type="Script" path="res://Assets/Scripts/Movement.gd" id="3_p5r50"]
@@ -294,7 +294,6 @@ length = 20
 texture = ExtResource("19_2vl7e")
 color_ramp = ExtResource("17_pvvl0")
 curve = ExtResource("18_7jk02")
-_defaults_have_been_set = true
 
 [node name="Arm" parent="Armature/Skeleton3D" index="1"]
 layers = 4

@@ -1,0 +1,25 @@
+[gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://duemk4wleilj4"]
+
+[ext_resource type="Shader" path="res://Assets/Shaders/botw-toon-shader.gdshader" id="1_d7e57"]
+
+[resource]
+render_priority = 0
+shader = ExtResource("1_d7e57")
+shader_parameter/tint = Color(0.480126, 0.407856, 0.519301, 1)
+shader_parameter/metallic = 0.0
+shader_parameter/shadow_size = -0.09
+shader_parameter/shadow_blend = 0.001
+shader_parameter/shadow_extra_intensity = 0.0
+shader_parameter/shadow_color = Color(0.124341, 0.00994054, 0.277439, 1)
+shader_parameter/light_tint = Color(0.802327, 0.824767, 0.65014, 1)
+shader_parameter/rimlight_size = 0.921
+shader_parameter/rimlight_blend = 0.01
+shader_parameter/rimlight_color = Color(0.862745, 0.823529, 0.623529, 0.243137)
+shader_parameter/use_normalmap = false
+shader_parameter/animated = false
+shader_parameter/time_scale = 0.02
+shader_parameter/normal_bias = Vector3(0, 0, 0)
+shader_parameter/light_bias = Vector3(0, 0, 0)
+shader_parameter/use_view = false
+shader_parameter/view_bias = Color(1, 0, 1, 1)
+shader_parameter/view_multiplier = -1.0

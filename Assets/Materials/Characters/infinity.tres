@@ -2,7 +2,7 @@
 
 [ext_resource type="Shader" path="res://Assets/Shaders/botw-toon-shader.gdshader" id="1_vdixj"]
 [ext_resource type="Material" uid="uid://b78rdg6wuxier" path="res://Assets/Materials/player-outline.tres" id="1_yrdum"]
-[ext_resource type="Texture2D" uid="uid://fkmkn0ubq3w6" path="res://Assets/Models/infinity_infinity.png" id="2_60k7q"]
+[ext_resource type="Texture2D" uid="uid://fkmkn0ubq3w6" path="res://Assets/Models/Characters/infinity_infinity.png" id="2_60k7q"]
 
 [resource]
 render_priority = 0

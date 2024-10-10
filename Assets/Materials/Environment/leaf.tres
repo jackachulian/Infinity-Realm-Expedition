@@ -1,0 +1,10 @@
+[gd_resource type="ShaderMaterial" load_steps=3 format=3 uid="uid://11048jvnti0n"]
+
+[ext_resource type="Shader" path="res://Assets/Shaders/leaf.gdshader" id="1_bdsnr"]
+[ext_resource type="Texture2D" uid="uid://u6vomsyblmbe" path="res://Assets/Sprites/misc/leaf.png" id="2_usyq0"]
+
+[resource]
+render_priority = 0
+shader = ExtResource("1_bdsnr")
+shader_parameter/albedo = Color(0.835804, 0.113021, 0.224298, 1)
+shader_parameter/leaf_texture = ExtResource("2_usyq0")

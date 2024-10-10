@@ -21,7 +21,7 @@ func _ready():
 func setup_states(state_parent: Node):
 	for state in state_parent.get_children():
 		if state is State:
-			print("registered state ", state.name)
+			#print("registered state ", state.name)
 			# if statemachine is part of an entity, store it here
 			if entity: state.entity = entity
 			# make sure all inactive states are not being processed
@@ -66,7 +66,7 @@ func switch_to(state: State):
 	current_state.set_process(true)
 	current_state.on_enter_state()
 	
-	print(entity.name+"'s state changed to "+current_state.name)
+	#print(entity.name+"'s state changed to "+current_state.name)
 
 func is_in_state(state_name: String):
 	return current_state and current_state.name == state_name
