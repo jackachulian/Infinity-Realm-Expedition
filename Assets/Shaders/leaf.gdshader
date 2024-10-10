@@ -1,5 +1,5 @@
 shader_type spatial;
-render_mode depth_prepass_alpha, cull_disabled, depth_draw_opaque;
+render_mode depth_prepass_alpha, cull_disabled;
 
 uniform sampler2D leaf_texture : source_color, filter_nearest;
 
@@ -16,6 +16,9 @@ uniform float rimlight_blend = 0.01;
 uniform float rimlight_banding = 3.0;
 uniform vec4 rimlight_color : source_color;
 
+// 0 = not being hidden, 1 = fully invisible. object hider script will likely only animate this to about 0.9
+uniform float hide_amount = 0.0;
+
 void vertex() {
 	// Called for every vertex the material is visible on.
 }
@@ -28,7 +31,7 @@ float fresnel(float amount, vec3 normal, vec3 view)
 void fragment() {
 	vec4 tex = texture(leaf_texture, UV);
 	ALBEDO = albedo;
-	ALPHA = tex.a;
+	ALPHA = tex.a * (1.0 - hide_amount);
 	
 	//ALBEDO = vec3(UV.x, UV.y, 0);
 }

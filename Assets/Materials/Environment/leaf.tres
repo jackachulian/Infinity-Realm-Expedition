@@ -4,6 +4,7 @@
 [ext_resource type="Texture2D" uid="uid://u6vomsyblmbe" path="res://Assets/Sprites/misc/leaf.png" id="2_usyq0"]
 
 [resource]
+resource_local_to_scene = true
 render_priority = 0
 shader = ExtResource("1_bdsnr")
 shader_parameter/albedo = Color(0.600045, 0.364648, 0.673058, 1)
@@ -17,4 +18,5 @@ shader_parameter/rimlight_size = -0.264
 shader_parameter/rimlight_blend = 0.985
 shader_parameter/rimlight_banding = 2.0
 shader_parameter/rimlight_color = Color(1, 1, 1, 1)
+shader_parameter/hide_amount = 0.0
 shader_parameter/leaf_texture = ExtResource("2_usyq0")

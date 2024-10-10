@@ -1,10 +1,11 @@
 [gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://duemk4wleilj4"]
 
-[ext_resource type="Shader" path="res://Assets/Shaders/botw-toon-shader.gdshader" id="1_d7e57"]
+[ext_resource type="Shader" path="res://Assets/Shaders/botw-toon-shader-hideable.gdshader" id="1_3n0hb"]
 
 [resource]
+resource_local_to_scene = true
 render_priority = 0
-shader = ExtResource("1_d7e57")
+shader = ExtResource("1_3n0hb")
 shader_parameter/tint = Color(0.480126, 0.407856, 0.519301, 1)
 shader_parameter/metallic = 0.0
 shader_parameter/shadow_size = -0.09
@@ -23,3 +24,4 @@ shader_parameter/light_bias = Vector3(0, 0, 0)
 shader_parameter/use_view = false
 shader_parameter/view_bias = Color(1, 0, 1, 1)
 shader_parameter/view_multiplier = -1.0
+shader_parameter/hide_amount = 0.0
