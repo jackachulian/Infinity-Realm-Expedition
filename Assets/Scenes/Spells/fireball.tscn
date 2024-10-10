@@ -1,0 +1,33 @@
+[gd_scene load_steps=5 format=3 uid="uid://bktdf5kpipna2"]
+
+[ext_resource type="Script" path="res://Assets/Scripts/SpellSystem/Spell.gd" id="1_tswqt"]
+[ext_resource type="Shader" uid="uid://rrupreks2ha" path="res://Assets/Shaders/emissive.tres" id="2_1pwvq"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_shu7k"]
+render_priority = 0
+shader = ExtResource("2_1pwvq")
+shader_parameter/albedo = Color(0.229796, 0.136547, 0.211766, 1)
+shader_parameter/point_size = 1.0
+shader_parameter/roughness = 1.0
+shader_parameter/metallic_texture_channel = null
+shader_parameter/specular = 0.5
+shader_parameter/metallic = 0.0
+shader_parameter/emission = Color(0.888597, 0.367461, 0.168711, 1)
+shader_parameter/emission_energy = 4.0
+shader_parameter/uv1_scale = Vector3(1, 1, 1)
+shader_parameter/uv1_offset = Vector3(0, 0, 0)
+shader_parameter/uv2_scale = Vector3(1, 1, 1)
+shader_parameter/uv2_offset = Vector3(0, 0, 0)
+
+[sub_resource type="SphereMesh" id="SphereMesh_mqn5h"]
+material = SubResource("ShaderMaterial_shu7k")
+radius = 0.25
+height = 0.5
+radial_segments = 6
+rings = 3
+
+[node name="Fireball" type="Node3D"]
+script = ExtResource("1_tswqt")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+mesh = SubResource("SphereMesh_mqn5h")

@@ -87,10 +87,10 @@ script = ExtResource("4_fm0wv")
 move_stop_state = NodePath("../RunStop")
 jump_state = NodePath("../JumpRise")
 fall_state = NodePath("../JumpFall")
-speed = 7.5
+speed = 8.0
 
 [node name="JumpCheckRayCast3D" type="RayCast3D" parent="StateMachine/Move" index="0"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.55, -0.495605)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.67108, -0.495605)
 target_position = Vector3(0, -5, 0)
 hit_from_inside = true
 hit_back_faces = false

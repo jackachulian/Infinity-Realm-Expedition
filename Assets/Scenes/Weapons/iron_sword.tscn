@@ -1,6 +1,6 @@
 [gd_scene load_steps=17 format=4 uid="uid://1qj7f1tmhxpo"]
 
-[ext_resource type="Script" path="res://Assets/Scripts/Weapon.gd" id="1_g6we3"]
+[ext_resource type="Script" path="res://Assets/Scripts/SpellSystem/Weapon.gd" id="1_g6we3"]
 [ext_resource type="Material" uid="uid://dclrr382uupwn" path="res://Assets/Materials/Weapons/sword-cutout.tres" id="2_1lhru"]
 [ext_resource type="Material" uid="uid://cy866e0nw8osb" path="res://Assets/Materials/Weapons/sword-handle-cutout.tres" id="3_fjwcs"]
 [ext_resource type="Script" path="res://Assets/Scripts/StateMachine/States/Generic/AttackState.gd" id="4_l2ofj"]
@@ -129,7 +129,7 @@ height = 3.34746
 
 [sub_resource type="Curve3D" id="Curve3D_edfe5"]
 _data = {
-"points": PackedVector3Array(0, 0.0229828, 0.429014, 0, -0.0229828, -0.429014, 0.00376952, 2.33807, -0.509521, 0, 0.390709, 0.0995927, 0, -0.390709, -0.0995927, -0.00744629, 1.41458, -1.69745, 0, 0.505623, -0.252812, 0, -0.505623, 0.252812, -0.00744629, 0.350311, -1.30328),
+"points": PackedVector3Array(-0.0441959, 0.170254, 0.300723, 0.0441959, -0.170254, -0.300723, -0.0441492, 2.52278, -0.70516, 0, 0.390709, 0.0995927, 0, -0.390709, -0.0995927, -0.00744629, 1.41458, -1.69745, 0, 0.505623, -0.252812, 0, -0.505623, 0.252812, -0.00744629, 0.350311, -1.30328),
 "tilts": PackedFloat32Array(0, 0, 0)
 }
 point_count = 3
