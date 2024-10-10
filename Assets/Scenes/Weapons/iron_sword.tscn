@@ -8,7 +8,7 @@
 [ext_resource type="Script" path="res://Assets/Scripts/SlashEffect.gd" id="6_ipoi0"]
 [ext_resource type="Material" uid="uid://dwuyheouak115" path="res://Assets/Materials/Weapons/slash-trail-rtl.tres" id="7_f68li"]
 [ext_resource type="Material" uid="uid://dl12ctyvpgcj1" path="res://Assets/Materials/Weapons/slash-trail-ltr.tres" id="8_3omrd"]
-[ext_resource type="Material" uid="uid://bxve3kb0kgqe2" path="res://Assets/Materials/Weapons/slash-trail-center.tres" id="9_374lx"]
+[ext_resource type="Material" uid="uid://ddfeufuigjkti" path="res://Assets/Materials/Weapons/slash-trail-center.tres" id="9_374lx"]
 
 [sub_resource type="ArrayMesh" id="ArrayMesh_y6xd2"]
 _surfaces = [{
@@ -109,8 +109,8 @@ blend_shape_mode = 0
 shadow_mesh = SubResource("ArrayMesh_y6xd2")
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_e7xoe"]
-radius = 1.13549
-height = 4.0
+radius = 1.68838
+height = 3.78963
 
 [sub_resource type="Curve3D" id="Curve3D_7voc5"]
 _data = {
@@ -120,12 +120,12 @@ _data = {
 point_count = 3
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_4jjti"]
-radius = 1.11187
-height = 3.3702
+radius = 1.58778
+height = 3.37436
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_3vbbo"]
-radius = 1.25265
-height = 3.01501
+radius = 1.29004
+height = 3.34746
 
 [sub_resource type="Curve3D" id="Curve3D_edfe5"]
 _data = {
@@ -162,7 +162,7 @@ script = ExtResource("5_kd63v")
 knockback = 3.5
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Sword-Attack1/Hitbox"]
-transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, -0.0165758, 1.07877, 0.645491)
+transform = Transform3D(-1, 8.74228e-08, 0, -8.74228e-08, -1, 0, 0, 0, 1, -0.0165758, 1.07877, 0.958211)
 shape = SubResource("CapsuleShape3D_e7xoe")
 
 [node name="SlashEffect" type="Node3D" parent="Sword-Attack1" node_paths=PackedStringArray("mesh")]
@@ -205,7 +205,7 @@ script = ExtResource("5_kd63v")
 knockback = 4.25
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Sword-Attack2/Hitbox"]
-transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, -0.0165758, 1.04289, 0.584825)
+transform = Transform3D(-0.999996, -0.00272262, 0, 0.00272262, -0.999996, 0, 0, 0, 1, -0.0165758, 1.04289, 0.818409)
 shape = SubResource("CapsuleShape3D_4jjti")
 
 [node name="SlashEffect" type="Node3D" parent="Sword-Attack2" node_paths=PackedStringArray("mesh")]
