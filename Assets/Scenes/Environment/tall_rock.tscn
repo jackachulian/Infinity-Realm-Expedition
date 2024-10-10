@@ -1,0 +1,19 @@
+[gd_scene load_steps=4 format=3 uid="uid://3t2kbnmoiqp"]
+
+[ext_resource type="PackedScene" uid="uid://crta12nb8f8vf" path="res://Assets/Models/Environment/tall-rock.glb" id="1_sbscb"]
+[ext_resource type="Material" uid="uid://ew6hn7dft80y" path="res://Assets/Materials/Environment/rock.tres" id="2_saupb"]
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_s11ge"]
+radius = 0.811187
+
+[node name="tall-rock" instance=ExtResource("1_sbscb")]
+
+[node name="Icosphere" parent="." index="0"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.340518, 0)
+material_override = ExtResource("2_saupb")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="." index="1"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D" index="0"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+shape = SubResource("CylinderShape3D_s11ge")

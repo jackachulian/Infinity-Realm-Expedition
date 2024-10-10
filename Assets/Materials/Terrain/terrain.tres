@@ -8,8 +8,8 @@
 [ext_resource type="NoiseTexture3D" uid="uid://3jnauc3rxtsh" path="res://Assets/Textures/wall_3d_noise.tres" id="5_dkbif"]
 
 [sub_resource type="Gradient" id="Gradient_wpj7c"]
-offsets = PackedFloat32Array(0, 0.363171, 0.905371, 1)
-colors = PackedColorArray(1, 1, 1, 1, 0.967506, 0.967506, 0.967506, 1, 0.67451, 0.67451, 0.67451, 1, 0.674815, 0.674815, 0.674814, 1)
+offsets = PackedFloat32Array(0, 0.429668, 0.721228, 1)
+colors = PackedColorArray(0.89926, 0.899258, 0.899258, 1, 0.864677, 0.864675, 0.864675, 1, 0.762406, 0.762403, 0.762403, 1, 0.724646, 0.724642, 0.724641, 1)
 
 [sub_resource type="GradientTexture1D" id="GradientTexture1D_eqy7y"]
 gradient = SubResource("Gradient_wpj7c")
@@ -25,8 +25,8 @@ gradient = SubResource("Gradient_aftyc")
 render_priority = 0
 next_pass = ExtResource("1_ry4uo")
 shader = ExtResource("1_21hti")
-shader_parameter/ledgeTopThickness = 0.575
-shader_parameter/ledgeBottomThickness = 0.0
+shader_parameter/ledgeTopThickness = 1.0
+shader_parameter/ledgeBottomThickness = 1.0
 shader_parameter/grassNoiseScale = 64.0
 shader_parameter/rockWallNoiseScale = 8.0
 shader_parameter/rockLedgeNoiseScale = 8.0

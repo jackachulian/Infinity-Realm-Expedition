@@ -21,7 +21,7 @@ uniform vec3 uv2_offset;
 
 // new
 uniform sampler2D color_gradient;
-uniform sampler2D fresnel_gradient;
+uniform sampler2D fresnel_gradient : hint_default_black;
 
 float fresnel(float amount, vec3 normal, vec3 view)
 {
