@@ -1,3 +1,6 @@
+# Make sure all main attack / spell states are AttackStates!
+# Either that or change how attacks are registered in GenericInput's request_action() method
+
 extends State
 class_name AttackState
 
@@ -17,6 +20,8 @@ class_name AttackState
 # Object(s) that should be enabled/disabled when entering/exiting this state. (slash effect)
 @export var slash_effect: SlashEffect
 
+# Projectile to shoot after attack_delay. If null, no projectile shot
+@export var projectile: Projectile
 
 @onready var hitbox: Hitbox = $Hitbox
 
@@ -28,6 +33,8 @@ func _ready():
 		hitbox.visible = false
 	if slash_effect:
 		slash_effect.visible = false
+	if projectile:
+		projectile.visible = false
 
 func check_transition(delta: float) -> State:
 	# go to idle after anim is completely finished
@@ -52,6 +59,15 @@ func physics_update(delta: float):
 			hitbox.deal_damage()
 		if slash_effect:
 			instantiate_slash_effect()
+		if projectile:
+			var new_projectile: Projectile = projectile.duplicate()
+			remove_child(new_projectile)
+			entity.get_parent().add_child(new_projectile)
+			new_projectile.visible = true
+			new_projectile.freeze = false
+			new_projectile.global_transform = projectile.global_transform
+			print("shooting ", new_projectile.name, " at ", new_projectile.global_position)
+			new_projectile.shoot(entity)
 			
 func instantiate_slash_effect():
 	var slash: SlashEffect = slash_effect.duplicate()

@@ -48,8 +48,22 @@ func _ready():
 		for mesh in $Armature.find_children("*", "MeshInstance3D", true):
 			flash_meshes.append(mesh)
 			
+	if not weapon:
+		weapon = get_node_or_null("Loadout/Weapon")
 	if weapon:
 		weapon.equip(self)
+		
+	var spell_parent: Node = get_node_or_null("Loadout/Spells")
+	if spell_parent:
+		for spell: Spell in spell_parent.get_children():
+			if not spell:
+				continue
+			if spell not in spells:
+				print(name, ": added spell ", spell.name, " from loadout")
+				spells.append(spell)
+	
+	for spell in spells:
+		spell.equip(self)
 
 func _process(delta: float):
 	if flash_timer > 0:

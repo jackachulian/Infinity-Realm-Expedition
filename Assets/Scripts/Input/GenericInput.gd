@@ -38,25 +38,31 @@ var dashes_left: int = 0
 
 var dash_cooldown_remaining: float = 0
 
-# Clear the attack buffer and lets this input know its attack was registered just now
-func clear_main_attack_buffer():
-	pass
-	
-# Clear the move buffer and lets this input know its move *or attack* was registered just now
-func clear_move_buffer():
-	pass
+# the attack currently being used. -1 for none, 0 for main attack, 1-6 for spells
+var current_attack: int = -1
 
 func is_dash_requested() -> bool:
 	return false
 
 func is_main_attack_requested() -> bool:
 	return false
+func clear_main_attack_buffer():
+	pass
+
+# get the spell the entity is currently trying to use. 0 for not trying to use a spell.
+func get_spell_requested() -> int:
+	return 0
+# spell_number: index of the spell that was used + 1. also the number key used to use the spell.
+func clear_spell_buffer(spell_number: int):
+	pass
 	
 func is_shield_requested() -> bool:
 	return false
 
 func is_move_requested() -> bool:
 	return false
+func clear_move_buffer():
+	pass
 
 
 func _process(delta):
@@ -89,20 +95,36 @@ func request_action() -> State:
 				dashes_left -= 1
 				return dash_state
 	
-	# Main Attack
-	if is_main_attack_requested():
-		clear_main_attack_buffer()
-		clear_move_buffer()
-		
-		# if current state combos into another attack, return that
-		# otherwise, return main attack
-		var state = entity.state_machine.current_state
-		if state is AttackState and state.combos_into:
-			return entity.state_machine.current_state.combos_into
-		elif entity.weapon:
-			return entity.weapon.entry_state
+	# Get the spell requested if any, will be 0 if no spell requested
+	var requested_attack: int = get_spell_requested()
+	
+	# Attack (Main attack and spells)
+	if requested_attack > 0 or is_main_attack_requested():
+		if requested_attack > 0:
+			clear_spell_buffer(requested_attack)
 		else:
-			return main_attack_state
+			clear_main_attack_buffer()
+			
+		var requested_state: State = null
+		if requested_attack > 0: # Spell
+			if entity.spells and requested_attack <= len(entity.spells):
+				requested_state = entity.spells[requested_attack - 1].entry_state;
+		else: # Main attack
+			if entity.weapon:
+				requested_state = entity.weapon.entry_state
+			else:
+				requested_state = main_attack_state
+				
+		if requested_state:
+			# if current attack is the same as requested attack and it combos into another attack, return that
+			# otherwise, return the requested attack state
+			var current_state = entity.state_machine.current_state
+			if current_attack == requested_attack and current_state is AttackState and current_state.combos_into:
+				return entity.state_machine.current_state.combos_into
+			else:
+				current_attack = requested_attack
+				return requested_state
+		
 			
 	# Shield
 	if is_shield_requested() and shield_state:

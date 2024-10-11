@@ -8,12 +8,7 @@ extends Spell
 @export var mana_drain: float = 0.0
 
 func equip(entity: Entity):
-	print("equipping weapon ", name)
-	
-	entity.state_machine.setup_states(self)
-	
-	visible = true
-	
+	super.equip(entity)
 	if weapon_model:
 		remove_child(weapon_model)
 		entity.weapon_parent_node.add_child(weapon_model)

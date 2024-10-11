@@ -147,11 +147,11 @@ mesh = SubResource("ArrayMesh_kumut")
 skeleton = NodePath("")
 
 [node name="Sword-Attack1" type="Node3D" parent="." node_paths=PackedStringArray("combos_into", "slash_effect")]
-visible = false
 script = ExtResource("4_l2ofj")
 animation_name = "Sword-Attack1"
 combos_into = NodePath("../Sword-Attack2")
 cancel_delay = 0.275
+attack_delay = null
 slash_effect = NodePath("SlashEffect")
 
 [node name="Hitbox" type="Area3D" parent="Sword-Attack1"]
@@ -189,7 +189,6 @@ path_joined = false
 material = ExtResource("7_f68li")
 
 [node name="Sword-Attack2" type="Node3D" parent="." node_paths=PackedStringArray("combos_into", "slash_effect")]
-visible = false
 script = ExtResource("4_l2ofj")
 animation_name = "Sword-Attack2"
 combos_into = NodePath("../Sword-Attack3")
@@ -232,7 +231,6 @@ path_joined = false
 material = ExtResource("8_3omrd")
 
 [node name="Sword-Attack3" type="Node3D" parent="." node_paths=PackedStringArray("slash_effect")]
-visible = false
 script = ExtResource("4_l2ofj")
 animation_name = "Sword-Attack3"
 cancel_delay = 0.475

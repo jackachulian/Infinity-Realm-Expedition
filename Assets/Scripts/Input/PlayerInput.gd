@@ -3,7 +3,7 @@ extends GenericInput
 
 @onready var camera: Node3D = get_viewport().get_camera_3d()
 
-# Amount of input buffer for the attack button (seconds)
+# Amount of input buffer for the current requested attack. Used for main attack (0) and spells (1-6)
 @export var attack_buffer: float = 0.25
 
 # Amount of input buffer for the move buttons for cancelling actions (seconds)
@@ -18,7 +18,8 @@ extends GenericInput
 # When attack inputs are pressed, this statemachine's state will be changed if it is not in delay
 @onready var state_machine: StateMachine = $"../StateMachine"
 
-
+# Requested attack. 0 for main attack requested, 1-6 for spell requested.
+var requested_attack: int = 0
 
 # counts down seconds for buffers
 var attack_buffer_remaining: float = 0
@@ -41,9 +42,19 @@ func _process(delta):
 		move_input_hold_elapsed = 0
 	else:
 		move_input_hold_elapsed += delta
-	
-	if Input.is_action_just_pressed("attack"):
-		attack_buffer_remaining = attack_buffer
+		
+	const attack_inputs := ["attack", "spell_1", "spell_2", "spell_3"]
+		
+	requested_attack = -1
+	for i in len(attack_inputs):
+		var action_name: String = attack_inputs[i]
+		if Input.is_action_just_pressed(action_name):
+			requested_attack = i
+			break
+		
+	# Set the attack buffer if an attack is requested, or decrement it if no attack requested
+	if requested_attack >= 0:
+		attack_buffer_remaining = attack_buffer 
 	elif attack_buffer_remaining > 0:
 		attack_buffer_remaining = move_toward(attack_buffer_remaining, 0, delta)
 		
@@ -73,7 +84,13 @@ func is_dash_requested():
 func is_main_attack_requested():
 	# Will request attack while attack buffer is still counting down and not 0
 	# When an attack is registered, attack buffer remaining will be set to 0
-	return attack_buffer_remaining > 0
+	return requested_attack == 0 and attack_buffer_remaining > 0
+	
+func get_spell_requested() -> int:
+	if attack_buffer_remaining <= 0:
+		return 0
+	# will return 0 if main attack, which will be treated as no spell requested
+	return requested_attack
 
 func is_move_requested():
 	return move_buffer_remaining > 0 and not is_shield_requested()
@@ -86,6 +103,11 @@ func is_shield_requested():
 func clear_main_attack_buffer():
 	attack_buffer_remaining = 0
 	move_buffer_remaining = 0
+	
+func clear_spell_buffer(spell_number: int):
+	if requested_attack == spell_number:
+		attack_buffer_remaining = 0
+		move_buffer_remaining = 0
 	
 # Called when an attack is registered by the state machine. 
 # ensures one attack input doesn't trigger multiple attacks.

@@ -1,8 +1,11 @@
-[gd_scene load_steps=6 format=3 uid="uid://bktdf5kpipna2"]
+[gd_scene load_steps=10 format=3 uid="uid://bktdf5kpipna2"]
 
 [ext_resource type="Script" path="res://Assets/Scripts/SpellSystem/Spell.gd" id="1_tswqt"]
+[ext_resource type="PhysicsMaterial" uid="uid://cnqil3k1wtly4" path="res://Assets/Physics/frictionless.tres" id="2_lb8at"]
+[ext_resource type="Script" path="res://Assets/Scripts/Projectile.gd" id="2_n4kaa"]
 [ext_resource type="Material" uid="uid://t55lhnyxnspc" path="res://Assets/Materials/Spells/fireball.tres" id="2_r6ltc"]
 [ext_resource type="Material" uid="uid://b85w67gym317b" path="res://Assets/Materials/Spells/fireball-outer.tres" id="3_vc3i4"]
+[ext_resource type="Script" path="res://Assets/Scripts/StateMachine/States/Generic/AttackState.gd" id="6_8tjbl"]
 
 [sub_resource type="SphereMesh" id="SphereMesh_mqn5h"]
 material = ExtResource("2_r6ltc")
@@ -18,12 +21,44 @@ height = 0.5
 radial_segments = 6
 rings = 3
 
-[node name="Fireball" type="Node3D"]
-script = ExtResource("1_tswqt")
+[sub_resource type="SphereShape3D" id="SphereShape3D_r154p"]
+radius = 0.319082
 
-[node name="Inner" type="MeshInstance3D" parent="."]
+[node name="Fireball-Spell" type="Node3D" node_paths=PackedStringArray("entry_state")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, -1)
+script = ExtResource("1_tswqt")
+primary_type = 1
+mana_cost = 5
+cast_delay = 3.0
+entry_state = NodePath("Fireball-State")
+
+[node name="Fireball-Projectile" type="RigidBody3D" parent="."]
+collision_layer = 8
+collision_mask = 8
+physics_material_override = ExtResource("2_lb8at")
+gravity_scale = 0.0
+lock_rotation = true
+script = ExtResource("2_n4kaa")
+type = 1
+shoot_velocity = Vector3(0, 0, -10)
+
+[node name="Inner" type="MeshInstance3D" parent="Fireball-Projectile"]
 transform = Transform3D(0.66, 0, 0, 0, 0.66, 0, 0, 0, 0.66, 0, 0, 0)
 mesh = SubResource("SphereMesh_mqn5h")
+skeleton = NodePath("../..")
 
-[node name="Outer" type="MeshInstance3D" parent="."]
+[node name="Outer" type="MeshInstance3D" parent="Fireball-Projectile"]
 mesh = SubResource("SphereMesh_emrk8")
+skeleton = NodePath("../..")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Fireball-Projectile"]
+shape = SubResource("SphereShape3D_r154p")
+
+[node name="Fireball-State" type="Node3D" parent="." node_paths=PackedStringArray("combos_into", "slash_effect", "projectile")]
+script = ExtResource("6_8tjbl")
+animation_name = "Cast"
+combos_into = NodePath("")
+cancel_delay = 0.25
+attack_delay = null
+slash_effect = NodePath("")
+projectile = NodePath("../Fireball-Projectile")

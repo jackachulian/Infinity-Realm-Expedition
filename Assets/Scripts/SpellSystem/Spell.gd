@@ -22,3 +22,8 @@ enum SpellType {
 	HELPER,
 	MODIFIER
 }
+
+func equip(entity: Entity):
+	print("equipping weapon/spell ", name)
+	entity.state_machine.setup_states(self)
+	visible = true
