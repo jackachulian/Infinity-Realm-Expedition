@@ -6,9 +6,9 @@ var target: Node3D
 # Time between attacks
 @export var move_cooldown: float = 0.0
 
-@export var main_attack_cooldown: float = 5.0
+@export var main_attack_cooldown: float = 1.5
 
-@export var max_main_attack_range: float = 5.0
+@export var remove_cooldown_on_hit: bool = true
 
 var move_cooldown_remaining: float
 var attack_cooldown_remaining: float
@@ -39,6 +39,10 @@ func _process(delta: float) -> void:
 	
 	if entity.input.main_attack_state:
 		attack_cooldown_remaining = move_toward(attack_cooldown_remaining, 0, delta)
+		
+	if remove_cooldown_on_hit and entity.get_current_state().name == "Hurt":
+		move_cooldown_remaining = 0
+		attack_cooldown_remaining = 0
 	
 func clear_main_attack_buffer():
 	attack_cooldown_remaining = main_attack_cooldown

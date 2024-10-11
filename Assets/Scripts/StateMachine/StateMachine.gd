@@ -16,6 +16,8 @@ func _ready():
 			
 	# connect signal to animationplayer - when its anim finishes, lets the state know its animtion is done
 	entity.get_node("AnimationPlayer").animation_finished.connect(_on_anim_finished)
+	
+	call_deferred("switch_to", get_child(0))
 
 # For each child node of the given node, if it is a State, set up its entity reference to the entity this state machine is for
 func setup_states(state_parent: Node):

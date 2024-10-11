@@ -77,8 +77,11 @@ func _process(delta: float):
 func _physics_process(delta: float):
 	hit_stun_timer = move_toward(hit_stun_timer, 0, delta)
 
-func get_state(state_name: String):
+func get_state(state_name: String) -> State:
 	return state_machine.get_node_or_null(state_name)
+
+func get_current_state() -> State:
+	return state_machine.current_state
 
 func is_in_state(state: State):
 	return state_machine.current_state == state
