@@ -26,7 +26,7 @@ class_name AttackState
 # Projectile to shoot after attack_delay. If null, no projectile shot
 @export var projectile: Projectile
 
-@onready var hitbox: Hitbox = $Hitbox
+@onready var hitbox: Hitbox = get_node_or_null("Hitbox")
 
 # if htbox's attack has already happened during this state
 var hitbox_activated: bool = false 

@@ -13,9 +13,6 @@ extends Node3D
 # State to enter when using this spell (Should be a child of this spell node)
 @export var entry_state: State
 
-
-var cast_cooldown_remaining: float
-
 # Type shown in the spell details menu
 # Based on the power types explained on the lemnsicate wiki
 # https://lemniscate.fandom.com/wiki/Power_System#Magic_Types
@@ -25,12 +22,20 @@ enum SpellType {
 	HELPER,
 	MODIFIER
 }
+@export var spell_type: SpellType
+
+var cast_cooldown_remaining: float
 
 func _process(delta: float) -> void:
 	if cast_cooldown_remaining > 0:
 		cast_cooldown_remaining = move_toward(cast_cooldown_remaining, 0, delta)
 
-func can_be_used() -> bool:
+# Returns true only if the passed entity can use the spell.
+func can_be_used(entity: Entity) -> bool:	
+	# If this is a projectile-type spell and shoot maker is obstructed, can't use this spell
+	if spell_type == SpellType.PROJECTILE and entity.is_shoot_obstructed():
+		return false
+	
 	# TODO: check for mana cost
 	return cast_cooldown_remaining <= 0
 	

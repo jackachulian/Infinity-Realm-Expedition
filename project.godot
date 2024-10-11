@@ -127,6 +127,10 @@ select_spell_3={
 3d_physics/layer_4="Objects"
 3d_physics/layer_6="Hideable"
 
+[physics]
+
+3d/default_gravity=25.0
+
 [rendering]
 
 textures/canvas_textures/default_texture_filter=0

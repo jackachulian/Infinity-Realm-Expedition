@@ -13,6 +13,9 @@ extends RigidBody3D
 # velocity upon firing, relative to entity using this spell
 @export var shoot_velocity: Vector3 = Vector3.BACK * 10;
 
+# if true, projectile will be destroyed when colliding with another body (terrain, other objects, etc)
+@export var destroy_on_hit_wall: bool = true
+
 @onready var hitbox: Hitbox = $Hitbox
 
 var remaining_lifetime: float
@@ -33,6 +36,9 @@ func shoot(entity: Entity):
 	var shoot_basis: Basis = Basis(offset_direction.rotated(Vector3.UP, deg_to_rad(90)), Vector3.UP, offset_direction)
 	linear_velocity = shoot_basis * shoot_velocity;
 	
+	if destroy_on_hit_wall:
+		body_entered.connect(on_collide)
+	
 	if hitbox:
 		hitbox.deal_damage_persistent()
 		hitbox.on_deal_damage.connect(on_hitbox_deal_damage)
@@ -48,6 +54,10 @@ func _physics_process(delta: float) -> void:
 		remaining_lifetime -= delta;
 		if remaining_lifetime <= 0.0:
 			destroy()
+
+func on_collide(body: Node):
+	if destroy_on_hit_wall:
+		destroy()
 
 func destroy():
 	queue_free()

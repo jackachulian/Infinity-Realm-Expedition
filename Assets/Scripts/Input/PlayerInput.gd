@@ -74,7 +74,7 @@ func _process(delta):
 		aim_target = target_position
 	
 	# Spell selection
-	const spell_select_inputs := ["spell_1", "spell_2", "spell_3"]
+	const spell_select_inputs := ["select_spell_1", "select_spell_2", "select_spell_3"]
 	
 	for i in len(spell_select_inputs):
 		var action_name: String = spell_select_inputs[i]

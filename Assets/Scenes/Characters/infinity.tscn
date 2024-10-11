@@ -1,4 +1,4 @@
-[gd_scene load_steps=29 format=3 uid="uid://c7vlx700fgtqs"]
+[gd_scene load_steps=30 format=3 uid="uid://c7vlx700fgtqs"]
 
 [ext_resource type="PackedScene" uid="uid://bfdvxynauwmtj" path="res://Assets/Models/Characters/infinity.glb" id="1_rm5qk"]
 [ext_resource type="Script" path="res://Assets/Scripts/Entity.gd" id="2_pd53c"]
@@ -10,6 +10,7 @@
 [ext_resource type="Script" path="res://Assets/Scripts/StateMachine/StateMachine.gd" id="4_yke0m"]
 [ext_resource type="PackedScene" uid="uid://bktdf5kpipna2" path="res://Assets/Scenes/Spells/fireball.tscn" id="5_f61yv"]
 [ext_resource type="Script" path="res://Assets/Scripts/StateMachine/States/Generic/IdleState.gd" id="5_yhrb3"]
+[ext_resource type="PackedScene" uid="uid://bmmdiwdumsig7" path="res://Assets/Scenes/Spells/water-ball.tscn" id="6_opfyh"]
 [ext_resource type="Script" path="res://Assets/Scripts/StateMachine/States/Generic/StandardState.gd" id="9_blb1u"]
 [ext_resource type="Script" path="res://Assets/Scripts/StateMachine/States/Generic/ShieldState.gd" id="10_jxd4a"]
 [ext_resource type="Material" uid="uid://dclrr382uupwn" path="res://Assets/Materials/Weapons/sword-cutout.tres" id="15_ba15w"]
@@ -76,9 +77,11 @@ visible = false
 [node name="Fireball-Spell" parent="Loadout/Spells" index="0" instance=ExtResource("5_f61yv")]
 visible = false
 
+[node name="Waterball-Spell" parent="Loadout/Spells" index="1" instance=ExtResource("6_opfyh")]
+visible = false
+
 [node name="Input" type="Node3D" parent="." index="1" node_paths=PackedStringArray("move_state", "dash_state", "shield_state")]
 script = ExtResource("4_1mgmj")
-attack_buffer = 1.0
 dash_buffer = 0.15
 dash_input_direction_buffer = 0.05
 move_state = NodePath("../StateMachine/Move")
@@ -221,7 +224,6 @@ bones/13/rotation = Quaternion(-0.0040819, 0.0025162, -0.0862622, 0.996261)
 bones/13/scale = Vector3(1, 1, 1)
 bones/14/position = Vector3(-7.51809e-09, 0.362667, 3.51468e-08)
 bones/14/rotation = Quaternion(0.0246638, 0.0194363, 0.0259224, 0.999171)
-bones/14/scale = Vector3(1, 1, 1)
 bones/15/position = Vector3(-5.88311e-10, 0.120048, 4.02597e-08)
 bones/15/rotation = Quaternion(4.9887e-07, 5.08876e-07, 5.4399e-09, 1)
 bones/16/position = Vector3(0.0391013, 0.0297616, -0.00203171)
@@ -294,13 +296,13 @@ bones/39/rotation = Quaternion(0.108899, -0.0208534, -0.0126774, 0.993753)
 bones/39/scale = Vector3(1, 1, 0.999998)
 
 [node name="Helmet" parent="Armature/Skeleton3D" index="0"]
-transform = Transform3D(0.8, -1.17711e-10, -1.15967e-08, -1.14308e-09, 0.8, -1.35973e-07, 1.24962e-08, 0, 0.8, -0.00204645, 0.363882, -0.0276382)
+transform = Transform3D(0.8, -2.37512e-08, -7.98143e-08, 2.27862e-08, 0.8, -3.83705e-07, 7.84348e-08, 3.39933e-07, 0.8, -0.00204643, 0.363883, -0.0276385)
 
 [node name="Helmet" parent="Armature/Skeleton3D/Helmet" index="0"]
 material_override = ExtResource("21_uqxah")
 
 [node name="Blade" parent="Armature/Skeleton3D" index="1"]
-transform = Transform3D(0.499857, 0.00847342, 0.00847094, 0.00847215, -1.31313e-07, -0.499928, -0.00847221, 0.499928, -0.000143549, -1.11425, 1.55299, 0.340716)
+transform = Transform3D(0.499857, 0.00847293, 0.00847097, 0.00847216, -8.13041e-07, -0.499928, -0.00847179, 0.499928, -0.000144354, -1.11426, 1.55299, 0.340715)
 
 [node name="Blade" parent="Armature/Skeleton3D/Blade" index="0"]
 layers = 8
@@ -323,7 +325,6 @@ length = 20
 texture = ExtResource("19_2vl7e")
 color_ramp = ExtResource("17_pvvl0")
 curve = ExtResource("18_7jk02")
-_defaults_have_been_set = true
 
 [node name="Arm" parent="Armature/Skeleton3D" index="2"]
 layers = 4

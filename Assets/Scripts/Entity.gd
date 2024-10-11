@@ -120,3 +120,12 @@ func take_knockback(force: Vector3):
 
 func is_hit_stunned():
 	return hit_stun_timer > 0
+
+func is_shoot_obstructed() -> bool:
+	var space_state = get_world_3d().direct_space_state
+	var origin = Vector3(global_position.x, shoot_marker.global_position.y, global_position.z)
+	var end = shoot_marker.global_position
+	var query = PhysicsRayQueryParameters3D.create(origin, end)
+	query.collide_with_bodies = true
+	var result = space_state.intersect_ray(query)
+	return not result.is_empty()
