@@ -13,6 +13,9 @@ extends Node3D
 # State to enter when using this spell (Should be a child of this spell node)
 @export var entry_state: State
 
+
+var cast_cooldown_remaining: float
+
 # Type shown in the spell details menu
 # Based on the power types explained on the lemnsicate wiki
 # https://lemniscate.fandom.com/wiki/Power_System#Magic_Types
@@ -22,6 +25,19 @@ enum SpellType {
 	HELPER,
 	MODIFIER
 }
+
+func _process(delta: float) -> void:
+	if cast_cooldown_remaining > 0:
+		cast_cooldown_remaining = move_toward(cast_cooldown_remaining, 0, delta)
+
+func can_be_used() -> bool:
+	# TODO: check for mana cost
+	return cast_cooldown_remaining <= 0
+	
+# subtracts mana and sets cooldown. called from withing GenericInput.gd in request_action()
+func consume_use() -> void:
+	# TODO: subtract mana cost
+	cast_cooldown_remaining = cast_delay
 
 func equip(entity: Entity):
 	print("equipping weapon/spell ", name)

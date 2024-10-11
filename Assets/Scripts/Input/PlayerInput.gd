@@ -83,15 +83,15 @@ func _process(delta):
 			break
 			
 	# Attacking (main attack and spells)
+	var inputted_attack: int = -1
 	if Input.is_action_just_pressed("attack"):
-		requested_attack = 0
+		inputted_attack = 0
 	elif Input.is_action_just_pressed("spell"):
-		requested_attack = equipped_spell_number
-	else:
-		requested_attack = -1
+		inputted_attack = equipped_spell_number
 		
 	# Set the attack buffer if an attack is requested, or countdown buffer timer if no attack requested
-	if requested_attack >= 0:
+	if inputted_attack >= 0:
+		requested_attack = inputted_attack
 		attack_buffer_remaining = attack_buffer 
 	elif attack_buffer_remaining > 0:
 		attack_buffer_remaining = move_toward(attack_buffer_remaining, 0, delta)

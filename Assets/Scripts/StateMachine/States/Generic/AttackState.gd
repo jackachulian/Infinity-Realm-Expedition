@@ -7,6 +7,9 @@ class_name AttackState
 # Name of the animation to play for this attack
 @export var animation_name: String
 
+# If true, will face the cursor aim direction upoon entering this state. If false, will face move direction
+@export var face_aim: bool = true
+
 # When attack button is pressed again, once cancel delay is over, this attack is used next in the combo. if empty, same attack is used again.
 @export var combos_into: State
 
@@ -88,13 +91,19 @@ func on_enter_state():
 	hitbox_activated = false
 	
 	# upon entering this attack state, turn to face the input direction
-	if entity.input.direction:
+	if face_aim:
+		var offset = (entity.input.get_aim_target() - entity.global_position).normalized()
+		var aim_angle = atan2(-offset.x, -offset.z);
+		entity.face_angle(aim_angle);
+	else:
 		var input_angle = atan2(-entity.input.direction.x, -entity.input.direction.z)
 		entity.face_angle(input_angle)
+		
 	
 	entity.movement.direction = Vector3.ZERO
 	
 	if entity.anim.has_animation(animation_name):
+		entity.anim.stop()
 		entity.anim.play(animation_name)
 	
 func on_exit_state():

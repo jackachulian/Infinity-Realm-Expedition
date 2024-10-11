@@ -104,16 +104,14 @@ func request_action() -> State:
 	var requested_attack: int = get_spell_requested()
 	
 	# Attack (Main attack and spells)
-	if requested_attack > 0 or is_main_attack_requested():
-		if requested_attack > 0:
-			clear_spell_buffer(requested_attack)
-		else:
-			clear_main_attack_buffer()
-			
+	if requested_attack > 0 or is_main_attack_requested():	
 		var requested_state: State = null
 		if requested_attack > 0: # Spell
 			if entity.spells and requested_attack <= len(entity.spells):
-				requested_state = entity.spells[requested_attack - 1].entry_state;
+				var spell: Spell = entity.spells[requested_attack - 1]
+				if spell.can_be_used():
+					spell.consume_use()
+					requested_state = spell.entry_state
 		else: # Main attack
 			if entity.weapon:
 				requested_state = entity.weapon.entry_state
@@ -121,6 +119,12 @@ func request_action() -> State:
 				requested_state = main_attack_state
 				
 		if requested_state:
+			# Clear appropriate buffer
+			if requested_attack > 0:
+				clear_spell_buffer(requested_attack)
+			else:
+				clear_main_attack_buffer()
+			
 			# if current attack is the same as requested attack and it combos into another attack, return that
 			# otherwise, return the requested attack state
 			var current_state = entity.state_machine.current_state

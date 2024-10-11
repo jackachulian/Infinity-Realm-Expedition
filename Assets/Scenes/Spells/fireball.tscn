@@ -33,7 +33,7 @@ height = 1.30478
 script = ExtResource("1_tswqt")
 primary_type = 1
 mana_cost = 5
-cast_delay = 3.0
+cast_delay = 0.5
 entry_state = NodePath("Fireball-State")
 
 [node name="Fireball-Projectile" type="RigidBody3D" parent="."]
@@ -81,7 +81,7 @@ shape = SubResource("CapsuleShape3D_6kwo0")
 script = ExtResource("6_8tjbl")
 animation_name = "Cast"
 combos_into = NodePath("")
-cancel_delay = 0.25
-attack_delay = 0.05
+cancel_delay = 0.225
+attack_delay = 0.0
 slash_effect = NodePath("")
 projectile = NodePath("../Fireball-Projectile")
