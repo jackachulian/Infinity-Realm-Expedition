@@ -53,7 +53,7 @@ void fragment() {
 "
 
 [resource]
-render_priority = 0
+render_priority = 1
 shader = SubResource("Shader_jsjct")
 shader_parameter/albedo = Color(0.229796, 0.136547, 0.211766, 1)
 shader_parameter/point_size = 1.0
@@ -62,7 +62,7 @@ shader_parameter/metallic_texture_channel = null
 shader_parameter/specular = 0.5
 shader_parameter/metallic = 0.0
 shader_parameter/emission = Color(0.888597, 0.367461, 0.168711, 1)
-shader_parameter/emission_energy = 10.0
+shader_parameter/emission_energy = 74.67
 shader_parameter/uv1_scale = Vector3(1, 1, 1)
 shader_parameter/uv1_offset = Vector3(0, 0, 0)
 shader_parameter/uv2_scale = Vector3(1, 1, 1)

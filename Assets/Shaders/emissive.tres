@@ -4,7 +4,7 @@
 code = "// NOTE: Shader automatically converted from Godot Engine 4.3.stable's StandardMaterial3D.
 
 shader_type spatial;
-render_mode blend_mix, depth_draw_opaque, cull_back, diffuse_burley, specular_schlick_ggx;
+render_mode blend_mix, cull_back, diffuse_burley, specular_schlick_ggx, depth_draw_always;
 
 uniform vec4 albedo : source_color;
 uniform sampler2D texture_albedo : source_color, filter_linear_mipmap, repeat_enable;
@@ -21,6 +21,8 @@ uniform float metallic : hint_range(0.0, 1.0, 0.01);
 uniform sampler2D texture_emission : source_color, hint_default_black, filter_linear_mipmap, repeat_enable;
 uniform vec4 emission : source_color;
 uniform float emission_energy : hint_range(0.0, 100.0, 0.01);
+
+uniform float transparency = 0.5;
 
 uniform vec3 uv1_scale;
 uniform vec3 uv1_offset;
@@ -49,5 +51,7 @@ void fragment() {
 	vec3 emission_tex = texture(texture_emission, base_uv).rgb;
 	// Emission Operator: Add
 	EMISSION = (emission.rgb + emission_tex) * emission_energy;
+	
+	ALPHA = transparency;
 }
 "

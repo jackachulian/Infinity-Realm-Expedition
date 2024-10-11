@@ -1,5 +1,5 @@
 shader_type spatial;
-render_mode depth_prepass_alpha, cull_disabled;
+render_mode cull_disabled;
 
 uniform sampler2D leaf_texture : source_color, filter_nearest;
 
@@ -29,9 +29,16 @@ float fresnel(float amount, vec3 normal, vec3 view)
 }
 
 void fragment() {
+	if (hide_amount > 0.0) {
+		ALPHA = (1.0 - hide_amount);
+	}
+	
 	vec4 tex = texture(leaf_texture, UV);
+	
 	ALBEDO = albedo;
-	ALPHA = tex.a * (1.0 - hide_amount);
+	if (tex.a < 0.5) {
+		discard;
+	}
 	
 	//ALBEDO = vec3(UV.x, UV.y, 0);
 }

@@ -5,7 +5,7 @@
 
 [resource]
 resource_local_to_scene = true
-render_priority = 1
+render_priority = 0
 shader = ExtResource("1_bdsnr")
 shader_parameter/albedo = Color(0.618533, 0.350349, 0.454275, 1)
 shader_parameter/shadow_size = -0.12
