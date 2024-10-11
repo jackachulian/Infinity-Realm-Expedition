@@ -106,6 +106,7 @@ animation_name = "Dash"
 action_on_anim_finish = true
 state_on_anim_finish = NodePath("../DashStop")
 instant_velocity_on_enter = Vector3(0, 0, -15)
+limit_exit_linear_velocity = true
 rotate_mode = 1
 movement_speed = 8.0
 gravity_multiplier = 0.0
@@ -274,7 +275,7 @@ bones/38/rotation = Quaternion(0.108981, 0.133099, -0.0277185, 0.984703)
 bones/38/scale = Vector3(1, 1, 0.999999)
 
 [node name="Blade" parent="Armature/Skeleton3D" index="0"]
-transform = Transform3D(0.185572, 0.0806905, 0.457222, 0.440293, 0.12566, -0.200878, -0.147327, 0.477178, -0.0244167, -0.485079, 0.896215, 0.464431)
+transform = Transform3D(0.185573, 0.0806903, 0.457222, 0.440293, 0.125659, -0.200878, -0.147326, 0.477178, -0.024417, -0.485079, 0.896215, 0.464429)
 
 [node name="Blade" parent="Armature/Skeleton3D/Blade" index="0"]
 layers = 8

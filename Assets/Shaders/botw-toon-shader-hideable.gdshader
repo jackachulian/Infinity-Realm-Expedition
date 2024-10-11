@@ -7,7 +7,7 @@
 // Smoke trees
 // Two to the One from the One to the Three
 shader_type spatial;
-render_mode diffuse_toon, specular_toon, depth_draw_always, depth_prepass_alpha;
+render_mode diffuse_toon, specular_toon, depth_prepass_alpha, depth_draw_opaque;
 
 uniform vec4 tint : source_color;
 uniform sampler2D albedo_texture : source_color, filter_nearest;

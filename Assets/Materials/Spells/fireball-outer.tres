@@ -1,0 +1,20 @@
+[gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://b85w67gym317b"]
+
+[ext_resource type="Shader" uid="uid://bu5urmu1rlhbu" path="res://Assets/Shaders/emissive.tres" id="1_dna1t"]
+
+[resource]
+render_priority = 1
+shader = ExtResource("1_dna1t")
+shader_parameter/albedo = Color(0.519731, 0.133584, 0.387862, 1)
+shader_parameter/point_size = 1.0
+shader_parameter/roughness = 1.0
+shader_parameter/metallic_texture_channel = null
+shader_parameter/specular = 0.5
+shader_parameter/metallic = 0.0
+shader_parameter/emission = Color(0.967676, 0.497855, 0.333265, 1)
+shader_parameter/emission_energy = 2.55
+shader_parameter/transparency = 0.46
+shader_parameter/uv1_scale = Vector3(1, 1, 1)
+shader_parameter/uv1_offset = Vector3(0, 0, 0)
+shader_parameter/uv2_scale = Vector3(1, 1, 1)
+shader_parameter/uv2_offset = Vector3(0, 0, 0)

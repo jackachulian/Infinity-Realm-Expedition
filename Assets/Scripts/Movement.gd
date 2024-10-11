@@ -33,7 +33,7 @@ const scale_matrix = Transform3D()
 # Points in the direction that objects should be scaled in to produce screen uniform movement
 var camera_axis: Vector3
 # amont to scale the camera forward axis movement by. set to 1 for no change
-@onready var scale_factor: float = 1.0
+@onready var scale_factor: float = 1.25
 
 func update_camera_screen_uniform():
 	camera_axis = -camera.global_transform.basis.z
