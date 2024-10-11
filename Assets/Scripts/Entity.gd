@@ -32,6 +32,9 @@ enum EntityType {
 @onready var movement: Movement = $Movement
 @onready var anim: AnimationPlayer = $AnimationPlayer
 
+# Point that projectiles from spells are shot from
+var shoot_marker: Marker3D
+
 # Amount of seconds this character will show damage_flash_mat for on all meshes
 var flash_timer: float = 0
 
@@ -64,6 +67,8 @@ func _ready():
 	
 	for spell in spells:
 		spell.equip(self)
+		
+	shoot_marker = get_node_or_null("ShootMarker")
 
 func _process(delta: float):
 	if flash_timer > 0:

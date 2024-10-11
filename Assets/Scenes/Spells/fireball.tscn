@@ -22,10 +22,9 @@ radial_segments = 6
 rings = 3
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_r154p"]
-radius = 0.319082
+radius = 0.506435
 
 [node name="Fireball-Spell" type="Node3D" node_paths=PackedStringArray("entry_state")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, -1)
 script = ExtResource("1_tswqt")
 primary_type = 1
 mana_cost = 5
@@ -40,10 +39,10 @@ gravity_scale = 0.0
 lock_rotation = true
 script = ExtResource("2_n4kaa")
 type = 1
-shoot_velocity = Vector3(0, 0, -10)
+lifetime = 3.0
 
 [node name="Inner" type="MeshInstance3D" parent="Fireball-Projectile"]
-transform = Transform3D(0.66, 0, 0, 0, 0.66, 0, 0, 0, 0.66, 0, 0, 0)
+transform = Transform3D(0.75, 0, 0, 0, 0.75, 0, 0, 0, 0.75, 0, 0, 0)
 mesh = SubResource("SphereMesh_mqn5h")
 skeleton = NodePath("../..")
 
@@ -59,6 +58,6 @@ script = ExtResource("6_8tjbl")
 animation_name = "Cast"
 combos_into = NodePath("")
 cancel_delay = 0.25
-attack_delay = null
+attack_delay = 0.05
 slash_effect = NodePath("")
 projectile = NodePath("../Fireball-Projectile")

@@ -1,8 +1,6 @@
 class_name PlayerInput
 extends GenericInput
 
-@onready var camera: Node3D = get_viewport().get_camera_3d()
-
 # Amount of input buffer for the current requested attack. Used for main attack (0) and spells (1-6)
 @export var attack_buffer: float = 0.25
 
@@ -18,6 +16,14 @@ extends GenericInput
 # When attack inputs are pressed, this statemachine's state will be changed if it is not in delay
 @onready var state_machine: StateMachine = $"../StateMachine"
 
+@onready var viewport: Viewport = get_viewport()
+@onready var camera: Camera3D = viewport.get_camera_3d()
+
+# Currently equipped spell that will be requested to use when right-clicking (input method may change since writing this)
+# this value should be sent to and mirrored with the UI when changed
+# 0 for none equipped (probably not possible), 1 for spell number, aka the number key used to select it
+var equipped_spell_number: int = 0
+
 # Requested attack. 0 for main attack requested, 1-6 for spell requested.
 var requested_attack: int = 0
 
@@ -32,8 +38,18 @@ var move_input_hold_elapsed: float = 0
 # true when dash requested. may need to wait until after brief multi-direction leeway window passes
 var dash_press_queued: bool = false
 
+# point the player is aiming towards. aka, the last mouse intersection with the Y plane of the character
+var aim_target: Vector3
+
+
+
+func _ready():
+	equip_spell(1)
+
 func _process(delta):
 	super._process(delta)
+	
+	# movement direction input
 	var input_dir = Input.get_vector("left", "right", "forward", "back")
 	var forward = Vector3(input_dir.x, 0, input_dir.y).rotated(Vector3.UP, camera.global_rotation.y)
 	direction = forward.normalized()
@@ -42,17 +58,39 @@ func _process(delta):
 		move_input_hold_elapsed = 0
 	else:
 		move_input_hold_elapsed += delta
-		
-	const attack_inputs := ["attack", "spell_1", "spell_2", "spell_3"]
-		
-	requested_attack = -1
-	for i in len(attack_inputs):
-		var action_name: String = attack_inputs[i]
+	
+	# Aim target position from mouse
+	var local_mouse_pos: Vector2 = MainTextureRect.instance.get_local_mouse_position()
+	var viewport_size: Vector2 = viewport.size
+	var mouse_pos = local_mouse_pos * (viewport_size / MainTextureRect.instance.size)
+			
+	var ray_origin := camera.project_ray_origin(mouse_pos)
+	var ray_dir := camera.project_ray_normal(mouse_pos)
+	
+	var shoot_plane := Plane(Vector3.UP, Vector3(0, entity.shoot_marker.global_position.y, 0))
+	var target_position = shoot_plane.intersects_ray(ray_origin, ray_dir)
+	
+	if target_position:
+		aim_target = target_position
+	
+	# Spell selection
+	const spell_select_inputs := ["spell_1", "spell_2", "spell_3"]
+	
+	for i in len(spell_select_inputs):
+		var action_name: String = spell_select_inputs[i]
 		if Input.is_action_just_pressed(action_name):
-			requested_attack = i
+			equip_spell(i+1)
 			break
+			
+	# Attacking (main attack and spells)
+	if Input.is_action_just_pressed("attack"):
+		requested_attack = 0
+	elif Input.is_action_just_pressed("spell"):
+		requested_attack = equipped_spell_number
+	else:
+		requested_attack = -1
 		
-	# Set the attack buffer if an attack is requested, or decrement it if no attack requested
+	# Set the attack buffer if an attack is requested, or countdown buffer timer if no attack requested
 	if requested_attack >= 0:
 		attack_buffer_remaining = attack_buffer 
 	elif attack_buffer_remaining > 0:
@@ -68,6 +106,13 @@ func _process(delta):
 	elif dash_buffer_remaining > 0:
 		dash_buffer_remaining = move_toward(dash_buffer_remaining, 0, delta)
 	
+func get_aim_target() -> Vector3:
+	return aim_target
+	
+func equip_spell(spell_number: int):
+	equipped_spell_number = spell_number
+	# TODO: update UI
+
 func is_move_key_just_pressed():
 	return Input.is_action_just_pressed("forward") or Input.is_action_just_pressed("back") or Input.is_action_just_pressed("left") or Input.is_action_just_pressed("right")
 	

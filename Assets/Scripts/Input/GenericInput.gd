@@ -64,6 +64,11 @@ func is_move_requested() -> bool:
 func clear_move_buffer():
 	pass
 
+# get the 3d world position that the entity is aiming towards.
+# used for projectiles that shoot towards aim direction (ex. fireball, most projectiles really.)
+func get_aim_target() -> Vector3:
+	return Vector3.ZERO
+
 
 func _process(delta):
 	dash_cooldown_remaining = move_toward(dash_cooldown_remaining, 0, delta)

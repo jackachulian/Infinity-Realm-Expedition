@@ -151,7 +151,6 @@ script = ExtResource("4_l2ofj")
 animation_name = "Sword-Attack1"
 combos_into = NodePath("../Sword-Attack2")
 cancel_delay = 0.275
-attack_delay = null
 slash_effect = NodePath("SlashEffect")
 
 [node name="Hitbox" type="Area3D" parent="Sword-Attack1"]
