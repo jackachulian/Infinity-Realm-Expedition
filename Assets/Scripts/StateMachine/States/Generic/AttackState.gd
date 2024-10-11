@@ -31,6 +31,7 @@ var hitbox_activated: bool = false
 func _ready():
 	if hitbox:
 		hitbox.visible = false
+		hitbox.disable_shape()
 	if slash_effect:
 		slash_effect.visible = false
 	if projectile:

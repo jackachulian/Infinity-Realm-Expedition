@@ -22,8 +22,6 @@ uniform sampler2D texture_emission : source_color, hint_default_black, filter_li
 uniform vec4 emission : source_color;
 uniform float emission_energy : hint_range(0.0, 100.0, 0.01);
 
-uniform float transparency = 0.5;
-
 uniform vec3 uv1_scale;
 uniform vec3 uv1_offset;
 uniform vec3 uv2_scale;
@@ -51,7 +49,5 @@ void fragment() {
 	vec3 emission_tex = texture(texture_emission, base_uv).rgb;
 	// Emission Operator: Add
 	EMISSION = (emission.rgb + emission_tex) * emission_energy;
-	
-	ALPHA = transparency;
 }
 "

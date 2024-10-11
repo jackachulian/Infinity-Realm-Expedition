@@ -10,7 +10,7 @@ class_name Hitbox
 # Amount of frames the target will lose control over their character when this attack hits (unable to move, attack, etc)
 @export var hit_stun: float = 0.25
 
-# The knockback force of this attack.
+# The knockback force of this attack. faces in this hitbox's global -z direction
 @export var knockback: float = 7.5
 
 @export var hit_players: bool = false
@@ -21,25 +21,33 @@ class_name Hitbox
 
 @onready var shape: CollisionShape3D = get_child(0)
 
+signal on_deal_damage(to: Area3D)
+
 func _init() -> void:
 	# Only send collisions to hurtboxes, which have mask of 01
 	collision_layer = 0
 	collision_mask = (2 if hit_players else 0) + (4 if hit_enemies else 0) + (8 if hit_objects else 0)
-	
-func _ready():
-	disable_shape()
 
-# Trigger this hitbox one and deal damage to all overlapping bodies once.
+# Trigger this hitbox once during only this frame and deal damage to all overlapping bodies once.
 func deal_damage():
 	print("attacking with hitbox "+name)
 	for area in get_overlapping_areas():
-		print("overlapping with area "+area.name)
-		if area.has_method("take_damage"):
-			area.take_damage(damage)
-		if area.has_method("take_hit_stun"):
-			area.take_hit_stun(hit_stun)
-		if area.has_method("take_knockback") and knockback > 0:
-			area.take_knockback(knockback * -global_basis.z)
+		deal_damage_to(area)
+		
+func deal_damage_to(area: Area3D):
+	print("overlapping with area "+area.name)
+	if area.has_method("take_damage"):
+		area.take_damage(damage)
+	if area.has_method("take_hit_stun"):
+		area.take_hit_stun(hit_stun)
+	if area.has_method("take_knockback") and knockback > 0:
+		area.take_knockback(knockback * -global_basis.z)
+	on_deal_damage.emit(area)
+
+# Will deal damage to any entity it comes in contact with during any frame, though it will hit each entity only once.
+func deal_damage_persistent():
+	print("persistently dealing damage with ", name)
+	area_entered.connect(deal_damage_to)
 
 func enable_shape():
 	visible = true

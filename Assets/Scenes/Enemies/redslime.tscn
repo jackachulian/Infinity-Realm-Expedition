@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=3 uid="uid://bnq6kyw7csjrm"]
+[gd_scene load_steps=14 format=3 uid="uid://bnq6kyw7csjrm"]
 
 [ext_resource type="PackedScene" uid="uid://5xkk1fd51bor" path="res://Assets/Models/Enemies/redslime.glb" id="1_f33ua"]
 [ext_resource type="Material" uid="uid://c2846f7m7sd1j" path="res://Assets/Materials/Slime/slime-red.tres" id="2_1gwk5"]
@@ -14,6 +14,10 @@
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_hp8ij"]
 height = 0.6
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_b48nq"]
+height = 0.830904
+radius = 0.668693
 
 [node name="redslime" instance=ExtResource("1_f33ua")]
 collision_layer = 4
@@ -110,4 +114,4 @@ script = ExtResource("6_hdqk2")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Hurtbox" index="0"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.3, 0)
-shape = SubResource("CylinderShape3D_hp8ij")
+shape = SubResource("CylinderShape3D_b48nq")

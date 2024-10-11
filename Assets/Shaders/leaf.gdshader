@@ -1,5 +1,5 @@
 shader_type spatial;
-render_mode cull_disabled;
+render_mode cull_disabled, depth_prepass_alpha;
 
 uniform sampler2D leaf_texture : source_color, filter_nearest;
 
