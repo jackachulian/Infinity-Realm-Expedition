@@ -29,10 +29,13 @@ func shoot(entity: Entity):
 	freeze = false
 	#linear_velocity = entity.quaternion * shoot_velocity # forward
 	
+	var aim_origin := entity.global_position
+	aim_origin.y = entity.shoot_marker.global_position.y
 	var aim_target := entity.input.get_aim_target()
+	
+	var offset_direction := (aim_target - aim_origin).normalized()
 	look_at(aim_target)
 	print("towards ", aim_target)
-	var offset_direction := (aim_target - entity.shoot_marker.global_position).normalized()
 	var shoot_basis: Basis = Basis(offset_direction.rotated(Vector3.UP, deg_to_rad(90)), Vector3.UP, offset_direction)
 	linear_velocity = shoot_basis * shoot_velocity;
 	
