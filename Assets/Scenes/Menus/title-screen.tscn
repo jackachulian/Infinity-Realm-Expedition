@@ -1,7 +1,16 @@
-[gd_scene load_steps=3 format=3 uid="uid://cpuhu4ifjhgwc"]
+[gd_scene load_steps=4 format=3 uid="uid://cpuhu4ifjhgwc"]
 
 [ext_resource type="Script" path="res://Assets/Scripts/Menus/MainMenu.gd" id="1_l1cy2"]
 [ext_resource type="PackedScene" uid="uid://cnn0jerhkfw2f" path="res://Assets/Scenes/Maps/testing-level.tscn" id="2_y6s1o"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_44knn"]
+font_size = 48
+font_color = Color(0.182081, 0.852202, 0.916155, 1)
+outline_size = 2
+outline_color = Color(0, 0, 0, 1)
+shadow_size = 6
+shadow_color = Color(0, 0, 0, 0.494118)
+shadow_offset = Vector2(-1, 1)
 
 [node name="TitleScreen" type="Control"]
 layout_mode = 3
@@ -12,6 +21,19 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_l1cy2")
 new_game_scene = ExtResource("2_y6s1o")
+
+[node name="TempTitleLabel" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -20.0
+offset_top = 60.0
+offset_right = 20.0
+offset_bottom = 76.0
+grow_horizontal = 2
+text = "EXPEDITION"
+label_settings = SubResource("LabelSettings_44knn")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
 layout_mode = 1
