@@ -1,0 +1,7 @@
+[gd_resource type="Theme" load_steps=2 format=3 uid="uid://eyjprbhu2ta8"]
+
+[ext_resource type="FontFile" uid="uid://do7e52qfc2rt5" path="res://themes/infinity-realm/Plumbum.ttf" id="1_xrf6e"]
+
+[resource]
+default_font = ExtResource("1_xrf6e")
+default_font_size = 16

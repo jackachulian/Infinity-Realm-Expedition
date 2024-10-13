@@ -17,8 +17,11 @@ config/icon="res://icon.svg"
 
 [display]
 
-window/size/viewport_width=1280
-window/size/viewport_height=720
+window/size/viewport_width=640
+window/size/viewport_height=360
+window/size/window_width_override=1280
+window/size/window_height_override=720
+window/stretch/mode="canvas_items"
 
 [editor_plugins]
 
@@ -48,7 +51,7 @@ screen_snap=""
 
 [gui]
 
-theme/custom="res://Assets/theme/spacey.tres"
+theme/custom="res://themes/infinity-realm/infinity-realm-theme.tres"
 
 [input]
 
@@ -138,4 +141,3 @@ lights_and_shadows/directional_shadow/size=8192
 lights_and_shadows/directional_shadow/soft_shadow_filter_quality=0
 lights_and_shadows/positional_shadow/soft_shadow_filter_quality=0
 textures/default_filters/use_nearest_mipmap_filter=true
-environment/defaults/default_clear_color=Color(0, 0, 0, 1)
