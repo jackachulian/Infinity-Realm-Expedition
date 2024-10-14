@@ -1,21 +1,20 @@
-class_name Weapon
-extends Spell
+class_name EquippedWeapon
+extends EquippedSpell
+
 
 # Node that is parented to the user's hand (or whatever bone parent holds their weapon) when activated
 @export var weapon_model: Node3D
 
-# Constant rate of mana drained per second while this weapon is activated.
-@export var mana_drain: float = 0.0
-
-# Mana cost to summon this weapon.
-@export var summon_cost: float = 0.0
-
-# Durability of the weapon. While active, player can take at most this much damage before the weapon breaks.
-# If 0, weapon is unbreakable.
-@export var durability: int = 0
-
 # If false, this is a physical non-summoned weapon and it will be "summoned" (placed into hand) as soon as and while it is equipped.
 @export var is_summoned: bool = true
+
+# data should ideally be of tpye WeaponData
+var weapon_data: WeaponData:
+	get():
+		return data as WeaponData
+
+func load_data_from_database():
+	data = load("res://Assets/Database/Weapons/"+name+".tres")
 
 func equip(entity: Entity):
 	super.equip(entity)

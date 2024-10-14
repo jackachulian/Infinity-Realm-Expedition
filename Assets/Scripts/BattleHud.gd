@@ -29,11 +29,12 @@ func _ready():
 func setup():
 	for child in spell_container.get_children():
 		child.queue_free()
-		
-	weapon_display.setup(player.weapon, 0)
+	
+	if player.weapon:
+		weapon_display.setup(player.weapon, 0)
 		
 	for i in range(len(player.spells)):
-		var spell: Spell = player.spells[i]
+		var spell: EquippedSpell = player.spells[i]
 		var spell_display: SpellDisplayItem = spell_display_item_scene.instantiate()
 		spell_container.add_child(spell_display)
 		spell_display.setup(spell, i+1)

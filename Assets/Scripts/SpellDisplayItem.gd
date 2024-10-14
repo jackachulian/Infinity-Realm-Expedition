@@ -7,9 +7,9 @@ extends Control
 
 
 # Called when the node enters the scene tree for the first time.
-func setup(spell: Spell, spell_number: int):
-	if spell.spell_icon:
-		icon_texture_rect.texture = spell.spell_icon
+func setup(equipped_spell: EquippedSpell, spell_number: int):
+	if equipped_spell.data.icon:
+		icon_texture_rect.texture = equipped_spell.data.icon
 		
 	if spell_number > 0:
 		spell_number_label.text = str(spell_number)

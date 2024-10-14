@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="WeaponData" load_steps=4 format=3 uid="uid://xe5rof700554"]
+
+[ext_resource type="Script" path="res://Assets/Scripts/Data/WeaponData.gd" id="1_751ss"]
+[ext_resource type="PackedScene" uid="uid://1qj7f1tmhxpo" path="res://Assets/Scenes/EquippedWeapons/iron_sword.tscn" id="1_fye8b"]
+[ext_resource type="Texture2D" uid="uid://cng65m10ftnwy" path="res://Assets/Sprites/Spells/Icons/iron-sword.png" id="2_xey0i"]
+
+[resource]
+script = ExtResource("1_751ss")
+mana_drain = 0.0
+summon_cost = 0.0
+durability = 0
+display_name = "Iron Sword"
+icon = ExtResource("2_xey0i")
+primary_type = 10
+mana_cost = 3
+cast_delay = 0.5
+equip_node = ExtResource("1_fye8b")
+spell_type = 0

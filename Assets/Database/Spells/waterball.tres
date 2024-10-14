@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="SpellData" load_steps=4 format=3 uid="uid://t7hlcj1muedl"]
+
+[ext_resource type="PackedScene" uid="uid://bmmdiwdumsig7" path="res://Assets/Scenes/EquippedSpells/water-ball.tscn" id="1_p5es6"]
+[ext_resource type="Texture2D" uid="uid://ob0nx37rt1ba" path="res://Assets/Sprites/Spells/Icons/waterball.png" id="2_6y5sv"]
+[ext_resource type="Script" path="res://Assets/Scripts/Data/SpellData.gd" id="3_dy2jw"]
+
+[resource]
+script = ExtResource("3_dy2jw")
+display_name = "Waterball"
+icon = ExtResource("2_6y5sv")
+primary_type = 3
+mana_cost = 3
+cast_delay = 0.5
+equip_node = ExtResource("1_p5es6")
+spell_type = 0

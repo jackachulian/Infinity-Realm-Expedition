@@ -1,8 +1,7 @@
-[gd_scene load_steps=14 format=3 uid="uid://bmmdiwdumsig7"]
+[gd_scene load_steps=13 format=3 uid="uid://bmmdiwdumsig7"]
 
-[ext_resource type="Script" path="res://Assets/Scripts/SpellSystem/Spell.gd" id="1_87xmh"]
+[ext_resource type="Script" path="res://Assets/Scripts/SpellSystem/EquippedSpell.gd" id="1_87xmh"]
 [ext_resource type="PhysicsMaterial" uid="uid://bokkekxboxktn" path="res://Assets/Physics/bouncy.tres" id="2_016xg"]
-[ext_resource type="Texture2D" uid="uid://ob0nx37rt1ba" path="res://Assets/Sprites/Spells/Icons/waterball.png" id="2_no0m2"]
 [ext_resource type="Script" path="res://Assets/Scripts/Projectile.gd" id="3_4pwk2"]
 [ext_resource type="Shader" uid="uid://bu5urmu1rlhbu" path="res://Assets/Shaders/emissive.tres" id="4_o2h40"]
 [ext_resource type="Script" path="res://Assets/Scripts/Hitbox.gd" id="6_hhn2k"]
@@ -61,13 +60,9 @@ radius = 0.318723
 radius = 0.518561
 height = 1.30478
 
-[node name="Waterball-Spell" type="Node3D" node_paths=PackedStringArray("entry_state")]
+[node name="waterball" type="Node3D" node_paths=PackedStringArray("entry_state")]
 script = ExtResource("1_87xmh")
-primary_type = 3
-mana_cost = 5
-cast_delay = 0.5
 entry_state = NodePath("Waterball-State")
-spell_icon = ExtResource("2_no0m2")
 
 [node name="Waterball-Projectile" type="RigidBody3D" parent="."]
 collision_layer = 8

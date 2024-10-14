@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="SpellData" load_steps=4 format=3 uid="uid://d3wje7oijqab4"]
+
+[ext_resource type="PackedScene" uid="uid://bktdf5kpipna2" path="res://Assets/Scenes/EquippedSpells/fireball.tscn" id="1_13qcb"]
+[ext_resource type="Texture2D" uid="uid://pd4hnokqsm54" path="res://Assets/Sprites/Spells/Icons/fireball.png" id="2_xwuqs"]
+[ext_resource type="Script" path="res://Assets/Scripts/Data/SpellData.gd" id="3_jbubw"]
+
+[resource]
+script = ExtResource("3_jbubw")
+display_name = "Fireball"
+icon = ExtResource("2_xwuqs")
+primary_type = 1
+mana_cost = 3
+cast_delay = 0.5
+equip_node = ExtResource("1_13qcb")
+spell_type = 0

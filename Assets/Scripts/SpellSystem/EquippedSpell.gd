@@ -1,32 +1,15 @@
-class_name Spell
+class_name EquippedSpell
 extends Node3D
 
-# Element shown in the spells menu for this spell
-@export var primary_type: Elements.Element
-
-# Must have this much mana to use the spell.
-@export var mana_cost: int
-
-# Cooldown before this spell can be cast again after using
-@export var cast_delay: float
+# NOTE: The name of this node, is used to get the SpellData that defines the stats
+# ex.
+# fireball will get SpellData from Assets/Database/Spells/fireball.tres 
+# iron_sword will get SpellData from Assets/Database/Weapons/iron_sword.tres
 
 # State to enter when using this spell (Should be a child of this spell node)
 @export var entry_state: State
 
-# Texture displayed on the battle HUD for this spell
-@export var spell_icon: Texture2D
-
-# Type shown in the spell details menu
-# Based on the power types explained on the lemnsicate wiki
-# https://lemniscate.fandom.com/wiki/Power_System#Magic_Types
-enum SpellType {
-	PROJECTILE,
-	DEVICE, # weapon
-	HELPER,
-	MODIFIER
-}
-@export var spell_type: SpellType
-
+var data: SpellData
 
 # The entity that currently has this spell equipped, if any.
 var entity: Entity
@@ -40,19 +23,27 @@ func _process(delta: float) -> void:
 # Returns true only if the passed entity can use the spell.
 func can_be_used(entity: Entity) -> bool:	
 	# If this is a projectile-type spell and shoot maker is obstructed, can't use this spell
-	if spell_type == SpellType.PROJECTILE and entity.is_shoot_obstructed():
+	if data.spell_type == SpellData.SpellType.PROJECTILE and entity.is_shoot_obstructed():
 		return false
 	
 	# TODO: check for mana cost
 	return cast_cooldown_remaining <= 0
-	
+
 # subtracts mana and sets cooldown. called from withing GenericInput.gd in request_action()
 func consume_use() -> void:
 	# TODO: subtract mana cost
-	cast_cooldown_remaining = cast_delay
+	cast_cooldown_remaining = data.cast_delay
+
+func load_data_from_database():
+	data = load("res://Assets/Database/Spells/"+name+".tres")
 
 func equip(entity: Entity):
+	if not data:
+		load_data_from_database()
+		
 	print("equipping weapon/spell ", name)
 	self.entity = entity
 	entity.state_machine.setup_states(self)
 	visible = true
+	
+	

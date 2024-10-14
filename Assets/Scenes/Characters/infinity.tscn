@@ -8,9 +8,9 @@
 [ext_resource type="Material" uid="uid://bwwxf12w26ovn" path="res://Assets/Materials/damage-flash.tres" id="4_cyyo3"]
 [ext_resource type="Script" path="res://Assets/Scripts/StateMachine/States/Generic/MoveState.gd" id="4_fm0wv"]
 [ext_resource type="Script" path="res://Assets/Scripts/StateMachine/StateMachine.gd" id="4_yke0m"]
-[ext_resource type="PackedScene" uid="uid://bktdf5kpipna2" path="res://Assets/Scenes/Spells/fireball.tscn" id="5_f61yv"]
+[ext_resource type="PackedScene" uid="uid://bktdf5kpipna2" path="res://Assets/Scenes/EquippedSpells/fireball.tscn" id="5_f61yv"]
 [ext_resource type="Script" path="res://Assets/Scripts/StateMachine/States/Generic/IdleState.gd" id="5_yhrb3"]
-[ext_resource type="PackedScene" uid="uid://bmmdiwdumsig7" path="res://Assets/Scenes/Spells/water-ball.tscn" id="6_opfyh"]
+[ext_resource type="PackedScene" uid="uid://bmmdiwdumsig7" path="res://Assets/Scenes/EquippedSpells/water-ball.tscn" id="6_opfyh"]
 [ext_resource type="Script" path="res://Assets/Scripts/StateMachine/States/Generic/StandardState.gd" id="9_blb1u"]
 [ext_resource type="Script" path="res://Assets/Scripts/StateMachine/States/Generic/ShieldState.gd" id="10_jxd4a"]
 [ext_resource type="Material" uid="uid://dclrr382uupwn" path="res://Assets/Materials/Weapons/sword-cutout.tres" id="15_ba15w"]
@@ -21,8 +21,8 @@
 [ext_resource type="Texture2D" uid="uid://ct31fhxvcragr" path="res://Packages/GPUTrail-main/defaults/curve.tres" id="18_7jk02"]
 [ext_resource type="Script" path="res://Packages/GPUTrail-main/GPUTrail3D.gd" id="19_0mkq7"]
 [ext_resource type="Texture2D" uid="uid://d0aqx8k5y48w8" path="res://Assets/Sprites/misc/slash-effect.png" id="19_2vl7e"]
-[ext_resource type="Material" uid="uid://cfe0foe1wlito" path="res://Assets/Materials/Characters/infinity-with-cutout.tres" id="21_uqxah"]
-[ext_resource type="PackedScene" uid="uid://1qj7f1tmhxpo" path="res://Assets/Scenes/Weapons/iron_sword.tscn" id="22_oanvs"]
+[ext_resource type="Material" path="res://Assets/Materials/Characters/infinity-with-cutout.tres" id="21_uqxah"]
+[ext_resource type="PackedScene" uid="uid://1qj7f1tmhxpo" path="res://Assets/Scenes/EquippedWeapons/iron_sword.tscn" id="22_oanvs"]
 [ext_resource type="Script" path="res://Assets/Scripts/Hurtbox.gd" id="31_pkqhk"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_8hllg"]
@@ -59,8 +59,8 @@ floor_snap_length = 0.15
 platform_floor_layers = 1
 safe_margin = 0.003
 script = ExtResource("2_pd53c")
-weapon = NodePath("Loadout/Weapon/IronSword")
-spells = [NodePath("Loadout/Spells/Fireball-Spell")]
+weapon = NodePath("Loadout/Weapon/iron_sword")
+spells = [NodePath("Loadout/Spells/fireball"), NodePath("Loadout/Spells/waterball")]
 damage_flash_mat = ExtResource("4_cyyo3")
 weapon_parent_node = NodePath("Armature/Skeleton3D/Blade")
 
@@ -69,15 +69,15 @@ editor_description = "Once weapons/spells are added, if loadout is added to the 
 
 [node name="Weapon" type="Node3D" parent="Loadout" index="0"]
 
-[node name="IronSword" parent="Loadout/Weapon" index="0" instance=ExtResource("22_oanvs")]
+[node name="iron_sword" parent="Loadout/Weapon" index="0" instance=ExtResource("22_oanvs")]
 visible = false
 
 [node name="Spells" type="Node3D" parent="Loadout" index="1"]
 
-[node name="Fireball-Spell" parent="Loadout/Spells" index="0" instance=ExtResource("5_f61yv")]
+[node name="fireball" parent="Loadout/Spells" index="0" instance=ExtResource("5_f61yv")]
 visible = false
 
-[node name="Waterball-Spell" parent="Loadout/Spells" index="1" instance=ExtResource("6_opfyh")]
+[node name="waterball" parent="Loadout/Spells" index="1" instance=ExtResource("6_opfyh")]
 visible = false
 
 [node name="Input" type="Node3D" parent="." index="1" node_paths=PackedStringArray("move_state", "dash_state", "shield_state")]

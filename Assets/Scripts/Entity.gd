@@ -11,10 +11,10 @@ enum EntityType {
 @export var entity_type: EntityType
 
 # Currently equipped weapon, if any. Null for no weapon
-@export var weapon: Weapon
+@export var weapon: EquippedWeapon
 
 # All spells this entity has equipped. Should be located in the spells node that is a child of this entity
-@export var spells: Array[Spell]
+@export var spells: Array[EquippedSpell]
 
 # Amount of damage this entity can take before it is defeated.
 @export var hit_points: int = 10
@@ -58,7 +58,7 @@ func _ready():
 		
 	var spell_parent: Node = get_node_or_null("Loadout/Spells")
 	if spell_parent:
-		for spell: Spell in spell_parent.get_children():
+		for spell: EquippedSpell in spell_parent.get_children():
 			if not spell:
 				continue
 			if spell not in spells:
