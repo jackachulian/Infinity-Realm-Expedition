@@ -1,0 +1,8 @@
+[gd_scene format=3 uid="uid://vuu8v4pl37cy"]
+
+[node name="SpellsButton" type="Button"]
+offset_left = 297.0
+offset_top = 96.0
+offset_right = 393.0
+offset_bottom = 114.0
+text = "Spells"
