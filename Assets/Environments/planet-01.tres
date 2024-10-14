@@ -31,4 +31,3 @@ fog_light_color = Color(0.508072, 0.535325, 0.540745, 1)
 fog_density = 0.005
 fog_aerial_perspective = 1.0
 fog_depth_begin = 30.0
-adjustment_enabled = true
