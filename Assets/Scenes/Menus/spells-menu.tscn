@@ -1,0 +1,86 @@
+[gd_scene load_steps=6 format=3 uid="uid://bilursuiapru5"]
+
+[ext_resource type="Script" path="res://Assets/Scripts/Menus/SpellsMenu.gd" id="1_25olg"]
+[ext_resource type="Script" path="res://Assets/Scripts/UI/polygon-outline.gd" id="2_c6y6h"]
+[ext_resource type="Script" path="res://Assets/Scripts/UI/SlantedList.gd" id="3_a18o7"]
+[ext_resource type="PackedScene" uid="uid://bbcp2hsb2ut70" path="res://Assets/Scenes/Menus/spell_display.tscn" id="4_kgypb"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_plsc6"]
+font_color = Color(1, 0.799098, 0.800301, 1)
+shadow_color = Color(0, 0, 0, 0.227451)
+
+[node name="SpellsMenu" type="Control"]
+process_mode = 3
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_25olg")
+
+[node name="PixelatedSubViewportContainer" type="SubViewportContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="PixelatedSubViewport" type="SubViewport" parent="PixelatedSubViewportContainer"]
+disable_3d = true
+transparent_bg = true
+handle_input_locally = false
+size = Vector2i(640, 360)
+render_target_update_mode = 4
+
+[node name="Polygon2D" type="Polygon2D" parent="PixelatedSubViewportContainer/PixelatedSubViewport"]
+color = Color(0.147428, 0.165949, 0.172387, 1)
+polygon = PackedVector2Array(70, 23, 326, 23, 582, -41, 627, 319, 371, 383, 115, 383)
+script = ExtResource("2_c6y6h")
+outline_color = Color(0.779291, 0.779291, 0.779291, 1)
+
+[node name="Label" type="Label" parent="."]
+layout_mode = 0
+offset_left = 89.0
+offset_top = 36.0
+offset_right = 174.0
+offset_bottom = 59.0
+text = "--- Spells ---
+"
+label_settings = SubResource("LabelSettings_plsc6")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 0
+offset_left = 102.0
+offset_top = 65.0
+offset_right = 336.0
+offset_bottom = 336.0
+script = ExtResource("3_a18o7")
+
+[node name="SpellDisplay" parent="VBoxContainer" instance=ExtResource("4_kgypb")]
+layout_mode = 2
+
+[node name="SpellDisplay2" parent="VBoxContainer" instance=ExtResource("4_kgypb")]
+layout_mode = 2
+
+[node name="SpellDisplay3" parent="VBoxContainer" instance=ExtResource("4_kgypb")]
+layout_mode = 2
+
+[node name="SpellDisplay4" parent="VBoxContainer" instance=ExtResource("4_kgypb")]
+layout_mode = 2
+
+[node name="SpellDisplay5" parent="VBoxContainer" instance=ExtResource("4_kgypb")]
+layout_mode = 2
+
+[node name="SpellDisplay6" parent="VBoxContainer" instance=ExtResource("4_kgypb")]
+layout_mode = 2
+
+[node name="SpellDisplay7" parent="VBoxContainer" instance=ExtResource("4_kgypb")]
+layout_mode = 2
+
+[node name="SpellDisplay8" parent="VBoxContainer" instance=ExtResource("4_kgypb")]
+layout_mode = 2
+
+[node name="SpellDisplay9" parent="VBoxContainer" instance=ExtResource("4_kgypb")]
+layout_mode = 2

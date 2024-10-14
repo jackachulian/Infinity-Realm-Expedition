@@ -2,8 +2,11 @@ class_name PauseMenu
 extends Control
 
 @onready var pause_menu_buttons: Control = $PauseMenuButtons
-@onready var options_menu: OptionsMenu = $OptionsMenu
 @onready var spells_button: Button = $PauseMenuButtons/SpellsButton
+
+@onready var spells_menu: SpellsMenu = $SpellsMenu
+@onready var options_menu: OptionsMenu = $OptionsMenu
+
 
 
 var last_focused_control: Control
@@ -12,7 +15,6 @@ var paused: bool = false
 func _ready() -> void:
 	pause_menu_buttons.visible = true
 	options_menu.visible = false
-	options_menu.exited.connect(_on_options_exited)
 	visible = false
 	last_focused_control = spells_button
 	
@@ -45,7 +47,9 @@ func exit():
 	pause_menu_buttons.visible = false
 
 func _on_spells_pressed():
-	pass
+	exit()
+	spells_menu.open()
+	spells_menu.exited.connect(_on_submenu_exited)
 	
 func _on_equipment_pressed():
 	pass
@@ -59,6 +63,9 @@ func _on_records_pressed():
 func _on_options_pressed():
 	exit()
 	options_menu.open()
+	options_menu.exited.connect(_on_submenu_exited)
 	
-func _on_options_exited():
+func _on_submenu_exited(submenu: Control):
+	if submenu.has_signal("exited"):
+		submenu.exited.disconnect(_on_submenu_exited)
 	open()

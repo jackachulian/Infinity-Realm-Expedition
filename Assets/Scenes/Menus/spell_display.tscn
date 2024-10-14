@@ -1,0 +1,27 @@
+[gd_scene load_steps=2 format=3 uid="uid://bbcp2hsb2ut70"]
+
+[ext_resource type="Texture2D" uid="uid://pd4hnokqsm54" path="res://Assets/Sprites/Spells/Icons/fireball.png" id="1_lpe4v"]
+
+[node name="SpellDisplay" type="Control"]
+custom_minimum_size = Vector2(0, 24)
+layout_mode = 3
+anchors_preset = 0
+offset_right = 168.0
+offset_bottom = 24.0
+
+[node name="IconTextureRect" type="TextureRect" parent="."]
+clip_contents = true
+layout_mode = 0
+offset_right = 24.0
+offset_bottom = 24.0
+texture = ExtResource("1_lpe4v")
+expand_mode = 2
+stretch_mode = 3
+
+[node name="Label" type="Label" parent="."]
+layout_mode = 0
+offset_left = 26.0
+offset_right = 66.0
+offset_bottom = 24.0
+text = "Fireball"
+vertical_alignment = 1

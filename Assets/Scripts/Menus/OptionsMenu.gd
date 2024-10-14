@@ -19,7 +19,7 @@ func exit():
 	print("closing options menu")
 	opened = false
 	visible = false
-	exited.emit()
+	exited.emit(self)
 
 func _on_exit_pressed():
 	exit()

@@ -1,9 +1,10 @@
-[gd_scene load_steps=5 format=3 uid="uid://crfgll53nx1pi"]
+[gd_scene load_steps=6 format=3 uid="uid://crfgll53nx1pi"]
 
 [ext_resource type="Script" path="res://Assets/Scripts/UI/polygon-outline.gd" id="1_jdit4"]
 [ext_resource type="Script" path="res://Assets/Scripts/Menus/PauseMenu.gd" id="1_mgdk0"]
 [ext_resource type="PackedScene" uid="uid://vuu8v4pl37cy" path="res://Assets/Scenes/Menus/pause_menu_button.tscn" id="2_me4vd"]
 [ext_resource type="PackedScene" uid="uid://ds3vcu6wahlim" path="res://Assets/Scenes/Menus/options_menu.tscn" id="4_hwjd7"]
+[ext_resource type="PackedScene" uid="uid://bilursuiapru5" path="res://Assets/Scenes/Menus/spells-menu.tscn" id="5_mnj5f"]
 
 [node name="PauseMenu" type="Control"]
 process_mode = 3
@@ -46,7 +47,7 @@ script = ExtResource("1_jdit4")
 outline_color = Color(0.779291, 0.779291, 0.779291, 1)
 
 [node name="Polygon2D" type="Polygon2D" parent="PauseMenuButtons/PixelatedSubViewportContainer/PixelatedSubViewport"]
-color = Color(0.304749, 0.304775, 0.326939, 1)
+color = Color(0.152941, 0.168627, 0.180392, 1)
 polygon = PackedVector2Array(317, -3, 445, -3, 323, 363, 195, 363)
 script = ExtResource("1_jdit4")
 outline_color = Color(0.779291, 0.779291, 0.779291, 1)
@@ -116,6 +117,10 @@ text = "Options"
 metadata/_edit_use_anchors_ = true
 
 [node name="OptionsMenu" parent="." instance=ExtResource("4_hwjd7")]
+visible = false
+layout_mode = 1
+
+[node name="SpellsMenu" parent="." instance=ExtResource("5_mnj5f")]
 visible = false
 layout_mode = 1
 

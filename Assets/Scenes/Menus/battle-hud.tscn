@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://dpfh6ela6sv1l"]
 
 [ext_resource type="Script" path="res://Assets/Scripts/BattleHud.gd" id="1_2arqo"]
-[ext_resource type="PackedScene" uid="uid://877fb26ym5ek" path="res://Assets/Scenes/Menus/spell_display_item.tscn" id="1_tlqap"]
+[ext_resource type="PackedScene" uid="uid://877fb26ym5ek" path="res://Assets/Scenes/Menus/battle_spell_display.tscn" id="1_tlqap"]
 
 [node name="BattleHUD" type="Control"]
 layout_mode = 3
