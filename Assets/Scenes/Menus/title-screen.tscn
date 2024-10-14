@@ -61,3 +61,7 @@ text = "Options"
 layout_mode = 2
 text = "Exit
 "
+
+[connection signal="pressed" from="VBoxContainer/PlayButton" to="." method="_on_play_pressed"]
+[connection signal="pressed" from="VBoxContainer/OptionsButton" to="." method="_on_options_pressed"]
+[connection signal="pressed" from="VBoxContainer/ExitButton" to="." method="_on_quit_pressed"]
