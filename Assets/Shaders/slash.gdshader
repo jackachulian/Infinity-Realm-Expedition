@@ -25,7 +25,7 @@ void fragment() {
 	} else {
 		normalized_y = (UV.y - 0.1667) * 6.0;
 	}
-	
+
 	float normalized_x;
 	if (is_vertical) {
 		normalized_x = UV.x;
@@ -36,7 +36,7 @@ void fragment() {
 	}
 
 	float shape = normalized_x - normalized_y - t;
-	
+
 	if (shape <= 0.0) {
 		ALPHA = 0.0;
 	} else {
@@ -44,7 +44,7 @@ void fragment() {
 		ALBEDO = slash_color.rgb;
 		ALPHA = gradient_value * slash_color.a;
 	}
-	
+
 	//ALBEDO = vec3(UV.x, UV.y, 0);
 	//ALBEDO = vec3(normalized_y);
 }

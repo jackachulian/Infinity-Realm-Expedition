@@ -16,8 +16,7 @@ extends GenericInput
 # When attack inputs are pressed, this statemachine's state will be changed if it is not in delay
 @onready var state_machine: StateMachine = $"../StateMachine"
 
-@onready var viewport: Viewport = get_viewport()
-@onready var camera: Camera3D = viewport.get_camera_3d()
+@onready var camera: Camera3D = Camera3DTexelSnapped.instance
 
 # Currently equipped spell that will be requested to use when right-clicking (input method may change since writing this)
 # this value should be sent to and mirrored with the UI when changed
@@ -61,7 +60,7 @@ func _process(delta):
 	
 	# Aim target position from mouse
 	var local_mouse_pos: Vector2 = MainTextureRect.instance.get_local_mouse_position()
-	var viewport_size: Vector2 = viewport.size
+	var viewport_size: Vector2 = camera.get_viewport().size
 	var mouse_pos = local_mouse_pos * (viewport_size / MainTextureRect.instance.size)
 			
 	var ray_origin := camera.project_ray_origin(mouse_pos)

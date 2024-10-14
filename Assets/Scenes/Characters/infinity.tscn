@@ -25,10 +25,10 @@
 [ext_resource type="PackedScene" uid="uid://1qj7f1tmhxpo" path="res://Assets/Scenes/Weapons/iron_sword.tscn" id="22_oanvs"]
 [ext_resource type="Script" path="res://Assets/Scripts/Hurtbox.gd" id="31_pkqhk"]
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_l8n23"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_8hllg"]
 shader = ExtResource("15_rhd6w")
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_jr66p"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_w3t4v"]
 resource_local_to_scene = true
 render_priority = 0
 shader = ExtResource("16_qm1pa")
@@ -38,8 +38,8 @@ shader_parameter/tex = ExtResource("19_2vl7e")
 shader_parameter/color_ramp = ExtResource("17_pvvl0")
 shader_parameter/curve = ExtResource("18_7jk02")
 
-[sub_resource type="QuadMesh" id="QuadMesh_8h0rw"]
-material = SubResource("ShaderMaterial_jr66p")
+[sub_resource type="QuadMesh" id="QuadMesh_j78ht"]
+material = SubResource("ShaderMaterial_w3t4v")
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_5hlel"]
 radius = 0.375
@@ -297,6 +297,7 @@ bones/39/scale = Vector3(1, 1, 0.999998)
 
 [node name="Helmet" parent="Armature/Skeleton3D" index="0"]
 transform = Transform3D(0.8, -2.37512e-08, -7.98143e-08, 2.27862e-08, 0.8, -3.83705e-07, 7.84348e-08, 3.39933e-07, 0.8, -0.00204643, 0.363883, -0.0276385)
+visible = false
 
 [node name="Helmet" parent="Armature/Skeleton3D/Helmet" index="0"]
 material_override = ExtResource("21_uqxah")
@@ -305,6 +306,7 @@ material_override = ExtResource("21_uqxah")
 transform = Transform3D(0.499857, 0.00847293, 0.00847097, 0.00847216, -8.13041e-07, -0.499928, -0.00847179, 0.499928, -0.000144354, -1.11426, 1.55299, 0.340715)
 
 [node name="Blade" parent="Armature/Skeleton3D/Blade" index="0"]
+visible = false
 layers = 8
 surface_material_override/0 = ExtResource("15_ba15w")
 surface_material_override/1 = ExtResource("16_5l1c5")
@@ -318,13 +320,14 @@ amount = 20
 lifetime = 20.0
 explosiveness = 1.0
 fixed_fps = 0
-process_material = SubResource("ShaderMaterial_l8n23")
-draw_pass_1 = SubResource("QuadMesh_8h0rw")
+process_material = SubResource("ShaderMaterial_8hllg")
+draw_pass_1 = SubResource("QuadMesh_j78ht")
 script = ExtResource("19_0mkq7")
 length = 20
 texture = ExtResource("19_2vl7e")
 color_ramp = ExtResource("17_pvvl0")
 curve = ExtResource("18_7jk02")
+_defaults_have_been_set = true
 
 [node name="Arm" parent="Armature/Skeleton3D" index="2"]
 layers = 4
@@ -341,6 +344,7 @@ material_override = ExtResource("21_uqxah")
 [node name="Hair" parent="Armature/Skeleton3D" index="5"]
 layers = 4
 material_override = ExtResource("21_uqxah")
+cast_shadow = 0
 
 [node name="Hand" parent="Armature/Skeleton3D" index="6"]
 layers = 4

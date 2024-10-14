@@ -4,6 +4,8 @@ extends Camera3D
 @export var snap := true
 @export var snap_objects := true
 
+static var instance: Camera3DTexelSnapped
+
 var texel_error := Vector2.ZERO
 
 @onready var _prev_rotation := global_rotation
@@ -13,6 +15,8 @@ var _texel_size: float = 0.0
 var _snap_nodes: Array[Node]
 var _pre_snapped_positions: Array[Vector3]
 
+func _enter_tree() -> void:
+	instance = self
 
 func _ready() -> void:
 	RenderingServer.frame_post_draw.connect(_snap_objects_revert)
@@ -23,7 +27,7 @@ func _process(_delta: float) -> void:
 	if global_rotation != _prev_rotation:
 		_prev_rotation = global_rotation
 		_snap_space = global_transform
-	var viewport = get_viewport() as SubViewport
+	var viewport = get_viewport()
 	_texel_size = size / float(viewport.size.y if keep_aspect == KEEP_HEIGHT else viewport.size.x)
 	# camera position in snap space
 	var snap_space_position := global_position * _snap_space

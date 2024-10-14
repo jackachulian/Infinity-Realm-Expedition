@@ -70,7 +70,7 @@ func physics_update(delta: float):
 			
 func shoot_projectile():
 	var new_projectile: Projectile = projectile.duplicate()
-	remove_child(new_projectile)
+	#remove_child(new_projectile)
 	entity.get_parent().add_child(new_projectile)
 	new_projectile.visible = true
 	new_projectile.freeze = false

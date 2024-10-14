@@ -1,0 +1,39 @@
+[gd_scene load_steps=3 format=3 uid="uid://dpfh6ela6sv1l"]
+
+[ext_resource type="Script" path="res://Assets/Scripts/BattleHud.gd" id="1_2arqo"]
+[ext_resource type="PackedScene" uid="uid://877fb26ym5ek" path="res://Assets/Scenes/Menus/spell_display_item.tscn" id="1_tlqap"]
+
+[node name="BattleHUD" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_2arqo")
+
+[node name="SpellContainer" type="HBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 74.0
+offset_top = -32.0
+grow_horizontal = 2
+grow_vertical = 0
+
+[node name="SpellDisplayItem" parent="SpellContainer" instance=ExtResource("1_tlqap")]
+layout_mode = 2
+
+[node name="SpellDisplayItem2" parent="SpellContainer" instance=ExtResource("1_tlqap")]
+layout_mode = 2
+
+[node name="WeaponSpellDisplayItem" parent="." instance=ExtResource("1_tlqap")]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_top = -32.0
+offset_bottom = 0.0
+grow_vertical = 0

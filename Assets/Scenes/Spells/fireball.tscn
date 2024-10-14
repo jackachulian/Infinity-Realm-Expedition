@@ -1,6 +1,7 @@
-[gd_scene load_steps=12 format=3 uid="uid://bktdf5kpipna2"]
+[gd_scene load_steps=13 format=3 uid="uid://bktdf5kpipna2"]
 
 [ext_resource type="Script" path="res://Assets/Scripts/SpellSystem/Spell.gd" id="1_tswqt"]
+[ext_resource type="Texture2D" uid="uid://pd4hnokqsm54" path="res://Assets/Sprites/Spells/Icons/fireball.png" id="2_6rxs6"]
 [ext_resource type="PhysicsMaterial" uid="uid://cnqil3k1wtly4" path="res://Assets/Physics/frictionless.tres" id="2_lb8at"]
 [ext_resource type="Script" path="res://Assets/Scripts/Projectile.gd" id="2_n4kaa"]
 [ext_resource type="Material" uid="uid://t55lhnyxnspc" path="res://Assets/Materials/Spells/fireball.tres" id="2_r6ltc"]
@@ -27,7 +28,6 @@ radius = 0.318723
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_6kwo0"]
 radius = 0.518561
-height = 1.30478
 
 [node name="Fireball-Spell" type="Node3D" node_paths=PackedStringArray("entry_state")]
 script = ExtResource("1_tswqt")
@@ -35,6 +35,7 @@ primary_type = 1
 mana_cost = 5
 cast_delay = 0.5
 entry_state = NodePath("Fireball-State")
+spell_icon = ExtResource("2_6rxs6")
 
 [node name="Fireball-Projectile" type="RigidBody3D" parent="."]
 collision_layer = 8

@@ -18,8 +18,6 @@ var speed := 5.0
 
 @onready var entity: Entity = $".."
 
-@onready var camera: Node3D = get_viewport().get_camera_3d()
-
 # May be modified by move states
 # ex. infinity's run state copies inputted direction to this move direction during run
 var direction: Vector3 = Vector3.ZERO
@@ -36,7 +34,7 @@ var camera_axis: Vector3
 @onready var scale_factor: float = 1.25
 
 func update_camera_screen_uniform():
-	camera_axis = -camera.global_transform.basis.z
+	camera_axis = Camera3DTexelSnapped.instance.global_transform.basis.z
 	camera_axis.y = 0
 	camera_axis = camera_axis.normalized()
 	

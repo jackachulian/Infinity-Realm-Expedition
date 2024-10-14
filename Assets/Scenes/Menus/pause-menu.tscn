@@ -1,0 +1,126 @@
+[gd_scene load_steps=5 format=3 uid="uid://crfgll53nx1pi"]
+
+[ext_resource type="Script" path="res://Assets/Scripts/UI/polygon-outline.gd" id="1_jdit4"]
+[ext_resource type="Script" path="res://Assets/Scripts/Menus/PauseMenu.gd" id="1_mgdk0"]
+[ext_resource type="PackedScene" uid="uid://vuu8v4pl37cy" path="res://Assets/Scenes/Menus/pause_menu_button.tscn" id="2_me4vd"]
+[ext_resource type="PackedScene" uid="uid://ds3vcu6wahlim" path="res://Assets/Scenes/Menus/options_menu.tscn" id="4_hwjd7"]
+
+[node name="PauseMenu" type="Control"]
+process_mode = 3
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_mgdk0")
+
+[node name="PauseMenuButtons" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="PixelatedSubViewportContainer" type="SubViewportContainer" parent="PauseMenuButtons"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="PixelatedSubViewport" type="SubViewport" parent="PauseMenuButtons/PixelatedSubViewportContainer"]
+disable_3d = true
+transparent_bg = true
+handle_input_locally = false
+size = Vector2i(640, 360)
+render_target_update_mode = 4
+
+[node name="Polygon2D2" type="Polygon2D" parent="PauseMenuButtons/PixelatedSubViewportContainer/PixelatedSubViewport"]
+visible = false
+color = Color(0.304749, 0.304775, 0.326939, 1)
+polygon = PackedVector2Array(346, 0, 474, 0, 396, 164, 396, 196, 474, 360, 346, 360, 264, 196, 264, 164)
+script = ExtResource("1_jdit4")
+outline_color = Color(0.779291, 0.779291, 0.779291, 1)
+
+[node name="Polygon2D" type="Polygon2D" parent="PauseMenuButtons/PixelatedSubViewportContainer/PixelatedSubViewport"]
+color = Color(0.304749, 0.304775, 0.326939, 1)
+polygon = PackedVector2Array(317, -3, 445, -3, 323, 363, 195, 363)
+script = ExtResource("1_jdit4")
+outline_color = Color(0.779291, 0.779291, 0.779291, 1)
+
+[node name="SpellsButton" parent="PauseMenuButtons" instance=ExtResource("2_me4vd")]
+layout_mode = 0
+anchor_left = 0.464063
+anchor_top = 0.266667
+anchor_right = 0.614062
+anchor_bottom = 0.316667
+offset_left = 0.0
+offset_top = -7.62939e-06
+offset_right = 0.0
+offset_bottom = 0.0
+metadata/_edit_use_anchors_ = true
+
+[node name="EquipmentButton" parent="PauseMenuButtons" instance=ExtResource("2_me4vd")]
+layout_mode = 0
+anchor_left = 0.451562
+anchor_top = 0.333333
+anchor_right = 0.601563
+anchor_bottom = 0.383333
+offset_left = 0.0
+offset_top = 0.0
+offset_right = 0.0
+offset_bottom = 0.0
+text = "Equipment"
+metadata/_edit_use_anchors_ = true
+
+[node name="ItemsButton" parent="PauseMenuButtons" instance=ExtResource("2_me4vd")]
+layout_mode = 0
+anchor_left = 0.439063
+anchor_top = 0.4
+anchor_right = 0.589063
+anchor_bottom = 0.45
+offset_left = 0.0
+offset_top = 0.0
+offset_right = 0.0
+offset_bottom = 0.0
+text = "Items"
+metadata/_edit_use_anchors_ = true
+
+[node name="RecordsButton" parent="PauseMenuButtons" instance=ExtResource("2_me4vd")]
+layout_mode = 0
+anchor_left = 0.426562
+anchor_top = 0.466667
+anchor_right = 0.576563
+anchor_bottom = 0.516667
+offset_left = 0.0
+offset_top = 0.0
+offset_right = 0.0
+offset_bottom = 0.0
+text = "Records"
+metadata/_edit_use_anchors_ = true
+
+[node name="OptionsButton" parent="PauseMenuButtons" instance=ExtResource("2_me4vd")]
+layout_mode = 0
+anchor_left = 0.414063
+anchor_top = 0.533333
+anchor_right = 0.564062
+anchor_bottom = 0.583333
+offset_left = 0.0
+offset_top = -1.52588e-05
+offset_right = 0.0
+offset_bottom = 0.0
+text = "Options"
+metadata/_edit_use_anchors_ = true
+
+[node name="OptionsMenu" parent="." instance=ExtResource("4_hwjd7")]
+visible = false
+layout_mode = 1
+
+[connection signal="pressed" from="PauseMenuButtons/SpellsButton" to="." method="_on_spells_pressed"]
+[connection signal="pressed" from="PauseMenuButtons/EquipmentButton" to="." method="_on_equipment_pressed"]
+[connection signal="pressed" from="PauseMenuButtons/ItemsButton" to="." method="_on_items_pressed"]
+[connection signal="pressed" from="PauseMenuButtons/RecordsButton" to="." method="_on_records_pressed"]
+[connection signal="pressed" from="PauseMenuButtons/OptionsButton" to="." method="_on_options_pressed"]

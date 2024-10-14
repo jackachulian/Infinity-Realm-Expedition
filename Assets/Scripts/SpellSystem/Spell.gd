@@ -13,6 +13,9 @@ extends Node3D
 # State to enter when using this spell (Should be a child of this spell node)
 @export var entry_state: State
 
+# Texture displayed on the battle HUD for this spell
+@export var spell_icon: Texture2D
+
 # Type shown in the spell details menu
 # Based on the power types explained on the lemnsicate wiki
 # https://lemniscate.fandom.com/wiki/Power_System#Magic_Types
@@ -23,6 +26,10 @@ enum SpellType {
 	MODIFIER
 }
 @export var spell_type: SpellType
+
+
+# The entity that currently has this spell equipped, if any.
+var entity: Entity
 
 var cast_cooldown_remaining: float
 
@@ -46,5 +53,6 @@ func consume_use() -> void:
 
 func equip(entity: Entity):
 	print("equipping weapon/spell ", name)
+	self.entity = entity
 	entity.state_machine.setup_states(self)
 	visible = true
