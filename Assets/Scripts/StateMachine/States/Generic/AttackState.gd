@@ -10,6 +10,8 @@ class_name AttackState
 # If true, will face the cursor aim direction upoon entering this state. If false, will face move direction
 @export var face_aim: bool = true
 
+@export var rotation_snap: float = 45
+
 # When attack button is pressed again, once cancel delay is over, this attack is used next in the combo. if empty, same attack is used again.
 @export var combos_into: State
 
@@ -94,10 +96,10 @@ func on_enter_state():
 	if face_aim:
 		var offset = (entity.input.get_aim_target() - entity.global_position).normalized()
 		var aim_angle = atan2(-offset.x, -offset.z);
-		entity.face_angle(aim_angle);
+		entity.face_angle(aim_angle, rotation_snap);
 	else:
 		var input_angle = atan2(-entity.input.direction.x, -entity.input.direction.z)
-		entity.face_angle(input_angle)
+		entity.face_angle(input_angle, rotation_snap)
 		
 	
 	entity.movement.direction = Vector3.ZERO
