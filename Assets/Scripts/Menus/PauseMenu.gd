@@ -1,6 +1,8 @@
 class_name PauseMenu
 extends Control
 
+@onready var battle_hud: BattleHud = $"../BattleHUD"
+
 @onready var pause_menu_buttons: Control = $PauseMenuButtons
 @onready var spells_button: Button = $PauseMenuButtons/SpellsButton
 
@@ -30,12 +32,14 @@ func _input(event: InputEvent) -> void:
 	
 func pause():
 	get_tree().paused = true
+	battle_hud.visible = false
 	visible = true
 	open()
 	
 func unpause():
 	exit()
 	visible = false
+	battle_hud.visible = true
 	get_tree().paused = false
 	
 func open():

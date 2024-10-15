@@ -51,7 +51,7 @@ screen_snap=""
 
 [gui]
 
-theme/custom="res://themes/infinity-realm/infinity-realm-theme.tres"
+theme/custom="res://themes/infinity-realm/slanted.tres"
 
 [input]
 

@@ -1,0 +1,10 @@
+[gd_resource type="StyleBoxTexture" load_steps=2 format=3 uid="uid://dy10hs3s3w5nx"]
+
+[ext_resource type="Texture2D" uid="uid://cawkibvudx8es" path="res://Assets/Sprites/UI/spell-background-focused.png" id="1_no404"]
+
+[resource]
+texture = ExtResource("1_no404")
+texture_margin_left = 8.0
+texture_margin_top = 1.0
+texture_margin_right = 8.0
+texture_margin_bottom = 1.0
