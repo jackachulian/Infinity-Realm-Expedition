@@ -40,6 +40,7 @@ func display_spells():
 	for spell_name in SaveManager.save.spells:
 		var spell_data: SpellData = load("res://Assets/Database/Spells/"+spell_name+".tres")
 		var spell_display: SpellDisplay = spell_display_scene.instantiate() as SpellDisplay
+		spell_container.add_child(spell_display)
 		spell_display.setup(spell_data)
 
 func _on_exit_pressed():
