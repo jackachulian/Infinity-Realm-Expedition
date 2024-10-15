@@ -7,3 +7,4 @@ extends Resource
 
 # List of weapons in inventory
 @export var weapons: PackedStringArray
+	
