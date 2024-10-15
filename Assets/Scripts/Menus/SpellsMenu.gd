@@ -12,7 +12,7 @@ signal exited
 
 # The spell display that was pressed in the menu and is currently being managed (swap, equip, unequip, etc).
 # Null for no spell currently being managed.
-@export var selected_spell_display: SpellDisplay
+var selected_spell_display: SpellDisplay
 
 func _ready() -> void:
 	equipped_spells.spell_pressed.connect(_on_equipped_spell_pressed)
@@ -39,17 +39,19 @@ func exit():
 
 func open_equipped_spells():
 	for disp: SpellDisplay in spell_container.get_children():
-		disp.disabled = true
+		var selected = disp == selected_spell_display
+		disp.set_spell_disabled(true, selected)
 		disp.focus_mode = FocusMode.FOCUS_NONE
 	equipped_spells.visible = true
 	equipped_spells.display_equipped_spells()
+	await get_tree().process_frame
 	var first: SpellIconDisplay = equipped_spells.spell_container.get_child(0)
 	if first:
 		first.grab_focus()
 
 func close_equipped_spells():
 	for disp: SpellDisplay in spell_container.get_children():
-		disp.disabled = false
+		disp.set_spell_disabled(false, false)
 		disp.focus_mode = FocusMode.FOCUS_ALL
 	equipped_spells.visible = false
 	selected_spell_display.grab_focus()

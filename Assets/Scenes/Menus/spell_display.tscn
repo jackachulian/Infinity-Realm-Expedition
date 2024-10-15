@@ -1,11 +1,13 @@
-[gd_scene load_steps=8 format=3 uid="uid://bbcp2hsb2ut70"]
+[gd_scene load_steps=11 format=3 uid="uid://bbcp2hsb2ut70"]
 
 [ext_resource type="StyleBox" uid="uid://dy10hs3s3w5nx" path="res://themes/infinity-realm/spell-focused.tres" id="1_1qr0j"]
 [ext_resource type="StyleBox" uid="uid://bxur1gk0iyk3j" path="res://themes/infinity-realm/spell-panel.tres" id="1_74l7e"]
 [ext_resource type="Texture2D" uid="uid://pd4hnokqsm54" path="res://Assets/Sprites/Spells/Icons/fireball.png" id="1_lpe4v"]
+[ext_resource type="StyleBox" uid="uid://dh7vfn36mgacv" path="res://themes/infinity-realm/spell-disabled.tres" id="2_61inx"]
 [ext_resource type="StyleBox" uid="uid://wj26v6t8l0bu" path="res://themes/infinity-realm/spell-hovered.tres" id="2_gv2p4"]
 [ext_resource type="Texture2D" uid="uid://f0nkh0dl8q7s" path="res://Assets/Sprites/UI/spell-background-pressed.png" id="3_e3070"]
 [ext_resource type="Script" path="res://Assets/Scripts/UI/SpellDisplay.gd" id="5_cq0yr"]
+[ext_resource type="Texture2D" uid="uid://cawkibvudx8es" path="res://Assets/Sprites/UI/spell-background-focused.png" id="7_v6wms"]
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_jqb5d"]
 texture = ExtResource("3_e3070")
@@ -14,15 +16,29 @@ texture_margin_top = 1.0
 texture_margin_right = 8.0
 texture_margin_bottom = 1.0
 
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_owuk1"]
+texture = ExtResource("7_v6wms")
+texture_margin_left = 8.0
+texture_margin_top = 1.0
+texture_margin_right = 8.0
+texture_margin_bottom = 1.0
+modulate_color = Color(0.154068, 0.594026, 0.486029, 1)
+
 [node name="SpellDisplay" type="Button"]
 custom_minimum_size = Vector2(0, 26)
 offset_right = 168.0
 offset_bottom = 26.0
+theme_override_colors/font_disabled_color = Color(0.82, 0.82, 0.82, 0.494118)
 theme_override_styles/focus = ExtResource("1_1qr0j")
+theme_override_styles/disabled = ExtResource("2_61inx")
 theme_override_styles/hover = ExtResource("2_gv2p4")
 theme_override_styles/pressed = SubResource("StyleBoxTexture_jqb5d")
 theme_override_styles/normal = ExtResource("1_74l7e")
 script = ExtResource("5_cq0yr")
+font_disabled_color = Color(0.662452, 0.662452, 0.662452, 0.517647)
+font_selected_color = Color(0.115662, 0.733263, 0.676404, 1)
+disabled_box = ExtResource("2_61inx")
+selected_box = SubResource("StyleBoxTexture_owuk1")
 
 [node name="IconTextureRect" type="TextureRect" parent="."]
 clip_contents = true
