@@ -26,6 +26,6 @@ func summon():
 	if weapon_model:
 		var scale = weapon_model.scale
 		remove_child(weapon_model)
-		entity.weapon_parent_node.add_child(weapon_model)
+		entity.weapon_model_parent.add_child(weapon_model)
 		weapon_model.visible = true
 		weapon_model.scale = scale

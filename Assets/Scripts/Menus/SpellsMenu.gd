@@ -42,6 +42,9 @@ func display_spells():
 		var spell_display: SpellDisplay = spell_display_scene.instantiate() as SpellDisplay
 		spell_container.add_child(spell_display)
 		spell_display.setup(spell_data)
+		
+		
+	
 
 func _on_exit_pressed():
 	exit()

@@ -5,36 +5,32 @@
 class_name BattleHud
 extends Control
 
-# Entity the player controls. Player entity's spells will be displayed in the hud.
-@export var player: Entity
-
-@export var spell_display_item_scene: PackedScene
-
-
 static var instance: BattleHud
 
 @onready var spell_container: HBoxContainer = $SpellContainer
 
-@onready var weapon_display: SpellDisplayItem = $WeaponSpellDisplayItem
+@onready var weapon_display: SpellIconDisplay = $WeaponSpellDisplayItem
 
-
+@onready var spell_display_item_scene: PackedScene = preload("res://Assets/Scenes/Menus/spell_icon_display.tscn")
 
 func _enter_tree() -> void:
 	instance = self
 
 func _ready():
-	if player:
+	if Entity.player:
 		setup()
 
 func setup():
 	for child in spell_container.get_children():
 		child.queue_free()
 	
-	if player.weapon:
-		weapon_display.setup(player.weapon, 0)
+	if Entity.player.weapon:
+		weapon_display.setup(Entity.player.weapon, 0)
+	else:
+		weapon_display.setup(null, 0)
 		
-	for i in range(len(player.spells)):
-		var spell: EquippedSpell = player.spells[i]
-		var spell_display: SpellDisplayItem = spell_display_item_scene.instantiate()
+	for i in range(len(Entity.player.spells)):
+		var spell: EquippedSpell = Entity.player.spells[i]
+		var spell_display: SpellIconDisplay = spell_display_item_scene.instantiate()
 		spell_container.add_child(spell_display)
-		spell_display.setup(spell, i+1)
+		spell_display.setup_equipped(spell, i+1)

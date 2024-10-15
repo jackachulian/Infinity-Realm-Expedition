@@ -29,3 +29,13 @@ enum SpellType {
 	MODIFIER
 }
 @export var spell_type: SpellType
+
+
+func instantiate_equipped_spell() -> EquippedSpell:
+	return equip_node.instantiate() as EquippedSpell
+
+
+# (Helper Function) Load the data for the spell with the given name.
+static func load_spell_data(name: String) -> SpellData:
+	return load("res://Assets/Database/Spells/"+name+".tres")
+	

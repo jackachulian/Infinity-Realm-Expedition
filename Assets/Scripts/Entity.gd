@@ -1,5 +1,8 @@
-extends CharacterBody3D # as of writing only CharacterBody3D uses but going to write work with any node for now
 class_name Entity
+extends CharacterBody3D # as of writing only CharacterBody3D uses but going to write work with any node for now
+
+# Stores a reference to the current Player entity that can be accesible anywhere while in any level
+static var player: Entity
 
 enum EntityType {
 	PLAYER,
@@ -23,7 +26,7 @@ enum EntityType {
 @export var damage_flash_mat: Material
 
 #Equipped weapons should be parented to this node (usually an exposed armature bone)
-@export var weapon_parent_node: Node3D
+@export var weapon_model_parent: Node3D
 
 # Nodes that may be used by states to get various info
 # idk how godot works but may want to make these get_node_or_null
@@ -31,6 +34,10 @@ enum EntityType {
 @onready var state_machine: StateMachine = $StateMachine
 @onready var movement: Movement = $Movement
 @onready var anim: AnimationPlayer = $AnimationPlayer
+
+@onready var weapon_parent: Node3D = $Loadout/Weapon
+@onready var spells_parent: Node3D = $Loadout/Spells
+
 
 # Point that projectiles from spells are shot from
 var shoot_marker: Marker3D
@@ -47,15 +54,21 @@ var hit_stun_timer: float = 0
 var flash_meshes: Array[MeshInstance3D]
 
 func _ready():
+	if entity_type == EntityType.PLAYER:
+		Entity.player = self
+	
 	if damage_flash_mat:
 		for mesh in $Armature.find_children("*", "MeshInstance3D", true):
 			flash_meshes.append(mesh)
 			
+	# Check if entity already has a weapon in the weapon node - it will equip this withotu need for extra code
 	if not weapon:
-		weapon = get_node_or_null("Loadout/Weapon")
+		if weapon_parent and weapon_parent.get_child_count() > 0:
+			weapon = weapon_parent.get_child(0) as EquippedWeapon
 	if weapon:
 		weapon.equip(self)
 		
+	# Check if entity already has spells - it will equip these
 	var spell_parent: Node = get_node_or_null("Loadout/Spells")
 	if spell_parent:
 		for spell: EquippedSpell in spell_parent.get_children():

@@ -34,12 +34,12 @@ func consume_use() -> void:
 	# TODO: subtract mana cost
 	cast_cooldown_remaining = data.cast_delay
 
-func load_data_from_database():
-	data = load("res://Assets/Database/Spells/"+name+".tres")
-
 func equip(entity: Entity):
 	if not data:
-		load_data_from_database()
+		data = SpellData.load_spell_data(name)
+		
+	if self is EquippedWeapon:
+		entity.weapon_parent_node
 		
 	print("equipping weapon/spell ", name)
 	self.entity = entity
