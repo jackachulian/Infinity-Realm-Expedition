@@ -1,9 +1,9 @@
 [gd_scene load_steps=8 format=3 uid="uid://bbcp2hsb2ut70"]
 
-[ext_resource type="StyleBox" uid="uid://dy10hs3s3w5nx" path="res://themes/infinity-realm/spell-focused.tres" id="1_1qr0j"]
-[ext_resource type="StyleBox" uid="uid://bxur1gk0iyk3j" path="res://themes/infinity-realm/spell-panel.tres" id="1_74l7e"]
+[ext_resource type="StyleBox" path="res://themes/infinity-realm/spell-focused.tres" id="1_1qr0j"]
+[ext_resource type="StyleBox" path="res://themes/infinity-realm/spell-panel.tres" id="1_74l7e"]
 [ext_resource type="Texture2D" uid="uid://pd4hnokqsm54" path="res://Assets/Sprites/Spells/Icons/fireball.png" id="1_lpe4v"]
-[ext_resource type="StyleBox" uid="uid://wj26v6t8l0bu" path="res://themes/infinity-realm/spell-hovered.tres" id="2_gv2p4"]
+[ext_resource type="StyleBox" path="res://themes/infinity-realm/spell-hovered.tres" id="2_gv2p4"]
 [ext_resource type="Texture2D" uid="uid://f0nkh0dl8q7s" path="res://Assets/Sprites/UI/spell-background-pressed.png" id="3_e3070"]
 [ext_resource type="Script" path="res://Assets/Scripts/UI/SpellDisplay.gd" id="5_cq0yr"]
 

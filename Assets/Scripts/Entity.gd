@@ -79,7 +79,8 @@ func _ready():
 				spells.append(spell)
 	
 	for spell in spells:
-		spell.equip(self)
+		if spell:
+			spell.equip(self)
 		
 	shoot_marker = get_node_or_null("ShootMarker")
 

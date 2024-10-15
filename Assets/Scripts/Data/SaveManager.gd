@@ -17,7 +17,7 @@ func _init() -> void:
 			
 func _ready():
 	if save:
-		setup_game()
+		setup_player_entity()
 
 func _notification(what):
 	if what == NOTIFICATION_WM_CLOSE_REQUEST:
