@@ -1,6 +1,6 @@
 [gd_resource type="Theme" load_steps=9 format=3 uid="uid://biq6bd7sgcyms"]
 
-[ext_resource type="StyleBox" path="res://themes/infinity-realm/slanted-box-disabled.tres" id="1_dvrgh"]
+[ext_resource type="StyleBox" uid="uid://b08pt32uorwry" path="res://themes/infinity-realm/slanted-box-disabled.tres" id="1_dvrgh"]
 [ext_resource type="StyleBox" uid="uid://cxi0dpaqkhs6q" path="res://themes/infinity-realm/slanted-box-focus.tres" id="2_jp2uv"]
 [ext_resource type="StyleBox" uid="uid://d2qcdv5315cvr" path="res://themes/infinity-realm/slanted-box-hover.tres" id="3_sel57"]
 [ext_resource type="Texture2D" uid="uid://l4ljm4l00u16" path="res://Assets/Sprites/UI/slanted-button-pressed-focused.png" id="4_gotm1"]

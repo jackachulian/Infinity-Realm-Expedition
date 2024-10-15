@@ -109,7 +109,7 @@ func request_action() -> State:
 		if requested_attack > 0: # Spell
 			if entity.spells and requested_attack <= len(entity.spells):
 				var spell: EquippedSpell = entity.spells[requested_attack - 1]
-				if spell.can_be_used(entity):
+				if spell and spell.can_be_used(entity):
 					spell.consume_use()
 					requested_state = spell.entry_state
 		else: # Main attack

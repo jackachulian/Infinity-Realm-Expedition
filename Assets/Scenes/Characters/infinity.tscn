@@ -46,7 +46,7 @@ height = 1.8
 radius = 0.375
 height = 1.8
 
-[node name="infinity" node_paths=PackedStringArray("weapon", "spells", "weapon_model_parent") instance=ExtResource("1_rm5qk")]
+[node name="infinity" node_paths=PackedStringArray("spells", "weapon_model_parent") instance=ExtResource("1_rm5qk")]
 collision_layer = 4
 axis_lock_angular_x = true
 axis_lock_angular_y = true
@@ -56,7 +56,6 @@ floor_snap_length = 0.15
 platform_floor_layers = 1
 safe_margin = 0.003
 script = ExtResource("2_pd53c")
-weapon = NodePath("")
 spells = [null, null, null]
 damage_flash_mat = ExtResource("4_cyyo3")
 weapon_model_parent = NodePath("Armature/Skeleton3D/Blade")

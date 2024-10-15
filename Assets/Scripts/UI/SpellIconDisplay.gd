@@ -7,7 +7,10 @@ extends Control
 @onready var spell_number_label: Label = $SpellNumberLabel
 
 func setup_equipped(equipped_spell: EquippedSpell, spell_number: int):
-	setup_data(equipped_spell.data, spell_number)
+	if equipped_spell:
+		setup_data(equipped_spell.data, spell_number)
+	else:
+		setup_data(null, spell_number)
 
 func setup_data(spell_data: SpellData, spell_number: int):
 	if not spell_data:

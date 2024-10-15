@@ -25,9 +25,9 @@ func setup():
 		child.queue_free()
 	
 	if Entity.player.weapon:
-		weapon_display.setup(Entity.player.weapon, 0)
+		weapon_display.setup_equipped(Entity.player.weapon, 0)
 	else:
-		weapon_display.setup(null, 0)
+		weapon_display.setup_equipped(null, 0)
 		
 	for i in range(len(Entity.player.spells)):
 		var spell: EquippedSpell = Entity.player.spells[i]
