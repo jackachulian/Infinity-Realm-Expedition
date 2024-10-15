@@ -1,0 +1,26 @@
+[gd_resource type="Theme" load_steps=9 format=3 uid="uid://eyjprbhu2ta8"]
+
+[ext_resource type="StyleBox" uid="uid://b08pt32uorwry" path="res://themes/infinity-realm/slanted-box-disabled.tres" id="1_dvrgh"]
+[ext_resource type="StyleBox" uid="uid://cxi0dpaqkhs6q" path="res://themes/infinity-realm/slanted-box-focus.tres" id="2_jp2uv"]
+[ext_resource type="StyleBox" uid="uid://d2qcdv5315cvr" path="res://themes/infinity-realm/slanted-box-hover.tres" id="3_sel57"]
+[ext_resource type="Texture2D" uid="uid://l4ljm4l00u16" path="res://Assets/Sprites/UI/slanted-button-pressed-focused.png" id="4_gotm1"]
+[ext_resource type="StyleBox" uid="uid://ymaav01yjud0" path="res://themes/infinity-realm/slanted-box.tres" id="5_dn8v3"]
+[ext_resource type="StyleBox" uid="uid://datw51gchv03i" path="res://themes/infinity-realm/slanted-box-pressed.tres" id="6_f4b2c"]
+[ext_resource type="FontFile" uid="uid://do7e52qfc2rt5" path="res://themes/infinity-realm/Plumbum.ttf" id="7_kc8dv"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_sb7a6"]
+texture = ExtResource("4_gotm1")
+texture_margin_left = 8.0
+texture_margin_top = 1.0
+texture_margin_right = 8.0
+texture_margin_bottom = 1.0
+
+[resource]
+default_font = ExtResource("7_kc8dv")
+default_font_size = 16
+Button/styles/disabled = ExtResource("1_dvrgh")
+Button/styles/focus = ExtResource("2_jp2uv")
+Button/styles/hover = ExtResource("3_sel57")
+Button/styles/hover_pressed = SubResource("StyleBoxTexture_sb7a6")
+Button/styles/normal = ExtResource("5_dn8v3")
+Button/styles/pressed = ExtResource("6_f4b2c")
