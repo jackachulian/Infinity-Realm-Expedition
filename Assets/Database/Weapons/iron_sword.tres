@@ -14,5 +14,5 @@ icon = ExtResource("2_xey0i")
 primary_type = 10
 mana_cost = 3
 cast_delay = 0.5
-equip_node = ExtResource("1_fye8b")
+equipped_spell_scene = ExtResource("1_fye8b")
 spell_type = 0

@@ -40,9 +40,8 @@ var dash_press_queued: bool = false
 # point the player is aiming towards. aka, the last mouse intersection with the Y plane of the character
 var aim_target: Vector3
 
-
-
 func _ready():
+	await get_tree().process_frame
 	equip_spell(1)
 
 func _process(delta):
@@ -110,7 +109,7 @@ func get_aim_target() -> Vector3:
 	
 func equip_spell(spell_number: int):
 	equipped_spell_number = spell_number
-	# TODO: update UI
+	BattleHud.instance.select_spell(spell_number)
 
 func is_move_key_just_pressed():
 	return Input.is_action_just_pressed("forward") or Input.is_action_just_pressed("back") or Input.is_action_just_pressed("left") or Input.is_action_just_pressed("right")

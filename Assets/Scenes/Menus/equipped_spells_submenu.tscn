@@ -13,6 +13,7 @@ border_width_left = 1
 border_width_top = 1
 border_width_right = 1
 border_width_bottom = 1
+border_color = Color(0.380787, 0.893315, 0.800802, 1)
 
 [sub_resource type="LabelSettings" id="LabelSettings_3hfk3"]
 font_color = Color(0.448619, 0.898183, 0.815858, 1)

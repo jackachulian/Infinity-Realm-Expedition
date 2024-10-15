@@ -1,14 +1,22 @@
-[gd_scene load_steps=3 format=3 uid="uid://877fb26ym5ek"]
+[gd_scene load_steps=4 format=3 uid="uid://877fb26ym5ek"]
 
 [ext_resource type="Script" path="res://Assets/Scripts/UI/SpellIconDisplay.gd" id="1_q1tfu"]
 [ext_resource type="Texture2D" uid="uid://pd4hnokqsm54" path="res://Assets/Sprites/Spells/Icons/fireball.png" id="1_tss1g"]
 
-[node name="SpellDisplayItem" type="Control"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_odokm"]
+draw_center = false
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0, 0.90335, 0.978071, 1)
+
+[node name="SpellDisplayItem" type="Button"]
 custom_minimum_size = Vector2(32, 32)
-layout_mode = 3
-anchors_preset = 0
 offset_right = 32.0
 offset_bottom = 32.0
+theme_override_styles/focus = SubResource("StyleBoxFlat_odokm")
+flat = true
 script = ExtResource("1_q1tfu")
 
 [node name="BorderColorRect" type="ColorRect" parent="."]

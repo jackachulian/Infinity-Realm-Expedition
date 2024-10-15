@@ -109,6 +109,6 @@ layout_mode = 2
 
 [node name="EquippedSpells" parent="." instance=ExtResource("5_vtxdy")]
 layout_mode = 1
-offset_left = 348.0
-offset_top = -89.0
-offset_right = 540.0
+offset_left = 327.0
+offset_right = 570.0
+offset_bottom = -30.0

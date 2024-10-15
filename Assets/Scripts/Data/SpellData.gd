@@ -17,7 +17,7 @@ extends Resource
 @export var cast_delay: float
 
 # Contains a scene. Root node is a Spell
-@export var equip_node: PackedScene
+@export var equipped_spell_scene: PackedScene
 
 # Type shown in the spell details menu
 # Based on the power types explained on the lemnsicate wiki
@@ -32,7 +32,11 @@ enum SpellType {
 
 
 func instantiate_equipped_spell() -> EquippedSpell:
-	return equip_node.instantiate() as EquippedSpell
+	if not equipped_spell_scene:
+		printerr("Spell ", display_name, " has no equipped spell scene!")
+		return
+	
+	return equipped_spell_scene.instantiate() as EquippedSpell
 
 
 # (Helper Function) Load the data for the spell with the given name.

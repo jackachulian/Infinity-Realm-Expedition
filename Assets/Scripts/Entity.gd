@@ -35,8 +35,8 @@ enum EntityType {
 @onready var movement: Movement = $Movement
 @onready var anim: AnimationPlayer = $AnimationPlayer
 
-@onready var weapon_parent: Node3D = $Loadout/Weapon
-@onready var spells_parent: Node3D = $Loadout/Spells
+@onready var weapon_parent: Node3D = get_node_or_null("Loadout/Weapon")
+@onready var spells_parent: Node3D = get_node_or_null("Loadout/Spells")
 
 
 # Point that projectiles from spells are shot from
@@ -69,14 +69,14 @@ func _ready():
 		weapon.equip(self)
 		
 	# Check if entity already has spells - it will equip these
-	var spell_parent: Node = get_node_or_null("Loadout/Spells")
-	if spell_parent:
-		for spell: EquippedSpell in spell_parent.get_children():
+	if spells_parent:
+		for i in spells_parent.get_child_count():
+			var spell: EquippedSpell = spells_parent.get_child(i)
 			if not spell:
 				continue
 			if spell not in spells:
 				print(name, ": added spell ", spell.name, " from loadout")
-				spells.append(spell)
+				spells[i] = spell
 	
 	for spell in spells:
 		if spell:
@@ -90,6 +90,30 @@ func _process(delta: float):
 
 func _physics_process(delta: float):
 	hit_stun_timer = move_toward(hit_stun_timer, 0, delta)
+
+func equip(spell_number: int, spell_data: SpellData):
+	if spell_number > len(spells):
+		printerr("trying to equip ", spell_data.display_name, " into spell slot ", spell_number, " but there are only ", len(spells), " spell slots!")
+		return
+		
+	if spells[spell_number-1]:
+		printerr("There is already a spell equipped in slot ", spell_number, " - unequipping it first")
+		unequip(spell_number)
+		
+	var equipped_spell: EquippedSpell = spell_data.instantiate_equipped_spell()
+	equipped_spell.data = spell_data
+	spells[spell_number-1] = equipped_spell
+	spells_parent.add_child(equipped_spell)
+	equipped_spell.equip(self)
+	print("equipped ", spell_data.display_name, " in slot ", spell_number)
+
+func unequip(spell_number: int):
+	if spells[spell_number-1]:
+		print("unequipped ", spells[spell_number-1].data.display_name, " from slot ", spell_number)
+		spells[spell_number-1].queue_free()
+	else:
+		print("noting unequipped from slot ", spell_number)
+	spells[spell_number-1] = null
 
 func get_state(state_name: String) -> State:
 	return state_machine.get_node_or_null(state_name)

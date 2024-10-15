@@ -17,20 +17,26 @@ func _enter_tree() -> void:
 	instance = self
 
 func _ready():
+	instance = self
 	if Entity.player:
-		setup()
+		setup_spells()
 
-func setup():
+func setup_spells():
 	for child in spell_container.get_children():
 		child.queue_free()
 	
 	if Entity.player.weapon:
-		weapon_display.setup_equipped(Entity.player.weapon, 0)
+		weapon_display.setup_equipped(Entity.player.weapon, 0, true)
 	else:
-		weapon_display.setup_equipped(null, 0)
+		weapon_display.setup_equipped(null, 0, true)
 		
 	for i in range(len(Entity.player.spells)):
 		var spell: EquippedSpell = Entity.player.spells[i]
 		var spell_display: SpellIconDisplay = spell_display_item_scene.instantiate()
 		spell_container.add_child(spell_display)
-		spell_display.setup_equipped(spell, i+1)
+		spell_display.setup_equipped(spell, i+1, true)
+
+func select_spell(spell_number: int):
+	var disp: SpellIconDisplay = spell_container.get_child(spell_number - 1)
+	if disp:
+		disp.grab_focus()

@@ -21,7 +21,7 @@ func _process(delta: float) -> void:
 		cast_cooldown_remaining = move_toward(cast_cooldown_remaining, 0, delta)
 
 # Returns true only if the passed entity can use the spell.
-func can_be_used(entity: Entity) -> bool:	
+func can_be_used(entity: Entity) -> bool:
 	# If this is a projectile-type spell and shoot maker is obstructed, can't use this spell
 	if data.spell_type == SpellData.SpellType.PROJECTILE and entity.is_shoot_obstructed():
 		return false
@@ -38,12 +38,8 @@ func equip(entity: Entity):
 	if not data:
 		data = SpellData.load_spell_data(name)
 		
-	if self is EquippedWeapon:
-		entity.weapon_parent_node
-		
 	print("equipping weapon/spell ", name)
 	self.entity = entity
 	entity.state_machine.setup_states(self)
 	visible = true
-	
 	
