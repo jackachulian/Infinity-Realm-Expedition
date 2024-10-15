@@ -1,0 +1,8 @@
+[gd_resource type="Resource" script_class="SaveFile" load_steps=2 format=3 uid="uid://b6twhrqpicmi5"]
+
+[ext_resource type="Script" path="res://Assets/Scripts/Data/SaveFile.gd" id="1_mssej"]
+
+[resource]
+script = ExtResource("1_mssej")
+spells = PackedStringArray("fireball", "waterball")
+weapons = PackedStringArray("iron_sword")

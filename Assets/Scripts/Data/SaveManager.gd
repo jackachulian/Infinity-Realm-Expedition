@@ -1,3 +1,6 @@
+class_name SaveManager
+extends Node
+
 # Note: This can be called from anywhere inside the tree. This function is
 # path independent.
 # Go through everything in the persist category and ask them to return a
