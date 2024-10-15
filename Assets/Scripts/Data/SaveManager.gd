@@ -3,8 +3,8 @@ extends Node
 
 @export var load_on_ready: bool = true
 
-# The currently LOADED save.
-var save: SaveFile
+# The currently loaded save.
+static var save: SaveFile
 
 const SAVE_FILE_NAME = "user://savegame.tres"
 
