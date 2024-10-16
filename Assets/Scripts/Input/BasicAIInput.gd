@@ -14,7 +14,7 @@ var move_cooldown_remaining: float
 var attack_cooldown_remaining: float
 
 func _ready():
-	target = $"../../infinity"
+	target = Entity.player
 	
 	if target:
 		print(name+" is targeting "+target.name)
@@ -28,10 +28,10 @@ func _ready():
 func _process(delta: float) -> void:
 	# face/move towards target
 	
-		
-	facing = (target.global_position - global_position)
-	facing.y = 0
-	facing = facing.normalized()
+	if target:	
+		facing = (target.global_position - global_position)
+		facing.y = 0
+		facing = facing.normalized()
 	
 	move_cooldown_remaining = move_toward(move_cooldown_remaining, 0, delta)
 	if move_cooldown_remaining <= 0:
@@ -48,10 +48,10 @@ func clear_main_attack_buffer():
 	attack_cooldown_remaining = main_attack_cooldown
 
 func is_main_attack_requested():
-	return attack_cooldown_remaining <= 0
+	return target and attack_cooldown_remaining <= 0
 
 func clear_move_buffer():
 	move_cooldown_remaining = move_cooldown
 
 func is_move_requested():
-	return move_cooldown_remaining <= 0
+	return target and move_cooldown_remaining <= 0
