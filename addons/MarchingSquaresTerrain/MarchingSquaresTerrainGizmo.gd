@@ -80,13 +80,10 @@ func _redraw():
 			
 	var terrain_chunk_hovered: bool = terrain_plugin.terrain_hovered and terrain_system.chunks.has(terrain_plugin.current_hovered_chunk)
 	
-	# draw radius if any terrain chunk is hovered no matter the mode
 	if terrain_chunk_hovered:
 		var brush_transform = Transform3D(Vector3.RIGHT * terrain_plugin.brush_size, Vector3.UP, Vector3.BACK * terrain_plugin.brush_size, pos)
 		add_mesh(terrain_plugin.BRUSH_RADIUS_VISUAL, null, brush_transform)
-	
-	# if in brush mode, draw squares over all points contained by the radius
-	if terrain_chunk_hovered and terrain_plugin.mode == MarchingSquaresTerrainPlugin.TerrainToolMode.BRUSH:
+
 		pos = terrain_plugin.brush_position
 		
 		#var chunk_space_coords = Vector2(pos.x / terrain_system.cell_size.x, pos.z / terrain_system.cell_size.y)

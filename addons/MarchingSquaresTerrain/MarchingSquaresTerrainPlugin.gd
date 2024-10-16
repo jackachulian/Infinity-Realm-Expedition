@@ -170,7 +170,7 @@ func handle_mouse(camera: Camera3D, event: InputEvent) -> int:
 				draw_area_hovered = true
 				
 		# ALT to clear the current draw pattern. don't clear while setting
-		if mode == TerrainToolMode.BRUSH and Input.is_key_pressed(KEY_ALT) and not is_setting:
+		if Input.is_key_pressed(KEY_ALT) and not is_setting:
 			current_draw_pattern.clear()
 
 		# Check for terrain collision
@@ -183,7 +183,7 @@ func handle_mouse(camera: Camera3D, event: InputEvent) -> int:
 			is_chunk_plane_hovered = true
 			current_hovered_chunk = chunk_coords
 
-		if mode == TerrainToolMode.BRUSH and event is InputEventMouseButton and event.button_index == MouseButton.MOUSE_BUTTON_LEFT:
+		if event is InputEventMouseButton and event.button_index == MouseButton.MOUSE_BUTTON_LEFT:
 			if event.is_pressed() and draw_area_hovered:
 				draw_height_set = false
 				if Input.is_key_pressed(KEY_SHIFT):
