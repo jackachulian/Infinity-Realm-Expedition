@@ -10,3 +10,6 @@ extends SpellData
 # Durability of the weapon. While active, player can take at most this much damage before the weapon breaks.
 # If 0, weapon is unbreakable.
 @export var durability: int = 0
+
+static func load_weapon_data(name: String) -> WeaponData:
+	return load("res://Assets/Database/Weapons/"+name+".tres")

@@ -57,4 +57,3 @@ func instantiate_equipped_spell() -> EquippedSpell:
 # (Helper Function) Load the data for the spell with the given name.
 static func load_spell_data(name: String) -> SpellData:
 	return load("res://Assets/Database/Spells/"+name+".tres")
-	

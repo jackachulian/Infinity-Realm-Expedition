@@ -61,7 +61,7 @@ func _ready():
 		for mesh in $Armature.find_children("*", "MeshInstance3D", true):
 			flash_meshes.append(mesh)
 			
-	# Check if entity already has a weapon in the weapon node - it will equip this withotu need for extra code
+	# Check if entity already has a weapon in the weapon node - it will equip this without need for extra code
 	if not weapon:
 		if weapon_parent and weapon_parent.get_child_count() > 0:
 			weapon = weapon_parent.get_child(0) as EquippedWeapon
@@ -114,6 +114,22 @@ func unequip(spell_number: int):
 	else:
 		print("noting unequipped from slot ", spell_number)
 	spells[spell_number-1] = null
+
+func equip_weapon(weapon_data: WeaponData):
+	if weapon:
+		printerr("There is already a weapon equipped - unequipping it first")
+		unequip_weapon()
+		
+	var equipped_weapon: EquippedWeapon = weapon_data.instantiate_equipped_spell() as EquippedWeapon
+	equipped_weapon.data = weapon_data
+	weapon = equipped_weapon
+	weapon_parent.add_child(equipped_weapon)
+	equipped_weapon.equip(self)
+	print("equipped ", weapon_data.display_name)
+
+func unequip_weapon():
+	weapon.queue_free()
+	weapon = null
 
 func get_state(state_name: String) -> State:
 	return state_machine.get_node_or_null(state_name)

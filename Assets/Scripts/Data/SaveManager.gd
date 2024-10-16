@@ -16,8 +16,8 @@ func _init() -> void:
 			new_game()
 			
 func _ready():
-	if save:
-		setup_player_entity()
+	setup_player_entity()
+		
 
 func _notification(what):
 	if what == NOTIFICATION_WM_CLOSE_REQUEST:
@@ -43,6 +43,10 @@ func load_game():
 # Call appropriate functions to load equipped spells, weapons, etc. after the save file is successfully loaded.
 # Called on ready
 func setup_player_entity():
+	if not save:
+		printerr("Trying to set up player but no save is loaded!")
+		return
+		
 	if not Entity.player:
 		printerr("Trying to setup player before player entity is instantiated!")
 		return
@@ -51,11 +55,19 @@ func setup_player_entity():
 		printerr("Corrupt save: Invalid equipped weapon. Fixing by unequipping weapon.")
 		save.equipped_weapon = -1
 			
-	if save.equipped_weapon > 0:
+	if save.equipped_weapon >= 0:
 		var weapon_name = save.weapons[save.equipped_weapon]
-		var weapon_data = SpellData.load_spell_data(weapon_name)
-		var equipped_weapon = weapon_data.instantiate_equipped_spell()
+		var weapon_data := WeaponData.load_weapon_data(weapon_name)
+		Entity.player.equip_weapon(weapon_data)
 		
+	for i in len(save.equipped_spells):
+		var id = save.equipped_spells[i]
+		if id >= 0:
+			var spell_name = save.spells[id]
+			var spell_data = SpellData.load_spell_data(spell_name)
+			Entity.player.equip(i, spell_data)
+			
+	BattleHud.instance.setup_spells()
 
 # Note: This can be called from anywhere inside the tree. This function is
 # path independent.

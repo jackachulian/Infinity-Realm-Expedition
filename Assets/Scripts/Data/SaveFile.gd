@@ -22,6 +22,9 @@ func _init() -> void:
 	spells.append("fireball")
 	spells.append("fireball")
 	spells.append("waterball")
-	weapons.append("ironsword")
+	weapons.append("iron_sword")
 	
 	equipped_spells.resize(3)
+	
+	# have just the iron sword equipped at the start
+	equipped_weapon = 0
