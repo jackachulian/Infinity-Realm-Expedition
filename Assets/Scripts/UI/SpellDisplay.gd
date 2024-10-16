@@ -11,7 +11,11 @@ var name_label: Label
 
 var spell: SpellData
 
-func setup(spell: SpellData):
+#  The index of this spell in SaveManager.save.spells.
+var id: int
+
+func setup(id: int, spell: SpellData):
+	self.id = id
 	self.spell = spell
 	icon_texture_rect = $IconTextureRect
 	name_label = $NameLabel

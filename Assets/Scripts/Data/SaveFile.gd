@@ -11,6 +11,7 @@ extends Resource
 # Contains which spells are currently equipped by the player.
 # Index is the spell slot, value is the index in the spells array.
 # The length of this array dictates how many spells the player can equip.
+# -1 for no spell equipped in this slot.
 @export var equipped_spells: Array[int]
 
 # The weapon equipped. Value is the index in the weapons array. -1 for no weapon equipped.

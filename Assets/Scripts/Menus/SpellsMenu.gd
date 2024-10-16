@@ -70,7 +70,8 @@ func display_spells():
 		printerr("spell display scene no exist on spell menu")
 		return
 	
-	for spell_name in SaveManager.save.spells:
+	for i in len(SaveManager.save.spells):
+		var spell_name := SaveManager.save.spells[i]
 		var spell_data: SpellData = load("res://Assets/Database/Spells/"+spell_name+".tres")
 		if not spell_data:
 			printerr("spell not found in database: "+spell_name)
@@ -78,10 +79,11 @@ func display_spells():
 		
 		var spell_display: SpellDisplay = spell_display_scene.instantiate() as SpellDisplay
 		spell_container.add_child(spell_display)
-		spell_display.setup(spell_data)
+		spell_display.setup(i, spell_data)
 		spell_display.focus_entered.connect(func(): _on_spell_display_focused(spell_display))
 		spell_display.focus_exited.connect(func(): _on_spell_display_unfocused(spell_display))
 		spell_display.pressed.connect(func(): _on_spell_display_pressed(spell_display))
+		
 		
 	await get_tree().process_frame
 		
@@ -106,8 +108,22 @@ func _on_spell_display_pressed(spell_display: SpellDisplay):
 func _on_equipped_spell_pressed(spell_icon_display: SpellIconDisplay):
 	var spell_number: int = spell_icon_display.spell_number
 	if Entity.player.spells[spell_number-1] != null:
+		# Make sure the target slot will be empty
 		Entity.player.unequip(spell_number)
+		SaveManager.save.equipped_spells[spell_number-1] = -1
+		
+	# Check all other slots to see if the spell being equipped is already equipped there, 
+	# if so unequip it from that slot to prevent duplicate spell
+	for i in len(SaveManager.save.equipped_spells):
+		var id := SaveManager.save.equipped_spells[i]
+		if id == selected_spell_display.id:
+			Entity.player.unequip(i+1)
+			SaveManager.save.equipped_spells[i] = -1
+			break
+				
+		
 	Entity.player.equip(spell_number, selected_spell_display.spell)
+	SaveManager.save.equipped_spells[spell_number-1] = selected_spell_display.id
 	BattleHud.instance.setup_spells()
 	close_equipped_spells()
 
