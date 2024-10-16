@@ -120,10 +120,10 @@ func _redraw():
 				var chunk: MarchingSquaresTerrainChunk = terrain_system.chunks[cursor_chunk_coords]
 				
 				var x_min := x_tl if chunk_x == chunk_tl_x else 0
-				var x_max := x_br if chunk_x == chunk_br_x else terrain_system.dimensions.x-1
+				var x_max := x_br if chunk_x == chunk_br_x else terrain_system.dimensions.x
 				
 				var z_min := z_tl if chunk_z == chunk_tl_z else 0
-				var z_max := z_br if chunk_z == chunk_br_z else terrain_system.dimensions.z-1
+				var z_max := z_br if chunk_z == chunk_br_z else terrain_system.dimensions.z
 				
 				#print(cursor_chunk_coords, ": ", Vector2i(x_min, x_max), " ", Vector2i(z_min, z_max))
 				

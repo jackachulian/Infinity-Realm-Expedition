@@ -55,6 +55,12 @@ var flash_meshes: Array[MeshInstance3D]
 
 func _ready():
 	if entity_type == EntityType.PLAYER:
+		# If there's already a player, delete this player.
+		# mmainly putting this is so that I can put a player within a level scene and have it delete itself when the main game is run.
+		if Entity.player:
+			queue_free()
+			return
+		
 		Entity.player = self
 	
 	if damage_flash_mat:

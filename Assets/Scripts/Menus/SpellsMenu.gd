@@ -98,7 +98,6 @@ func _on_spell_display_focused(spell_display: SpellDisplay):
 
 func _on_spell_display_unfocused(spell_display: SpellDisplay):
 	focused_spell_display = null
-	spell_info.visible = false
 
 func _on_spell_display_pressed(spell_display: SpellDisplay):
 	selected_spell_display = spell_display
