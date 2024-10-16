@@ -45,8 +45,8 @@ void fragment() {
 	float rockBrightness = texture(rockWallNoise, position / rockWallNoiseScale).r;
 
 	if (debug) {
-		ALBEDO = COLOR.rgb;
-		//ALBEDO = vec3(UV.x, UV.y, 0);
+		//ALBEDO = COLOR.rgb;
+		ALBEDO = vec3(UV.x, UV.y, 0);
 		//ALBEDO = NORMAL;
 	}
 
@@ -72,6 +72,6 @@ void fragment() {
 	EMISSION = vec3(0);
 }
 
-void light() {
-    DIFFUSE_LIGHT += clamp(dot(NORMAL, LIGHT), 0.0, 1.0) * ATTENUATION * 0.5 * LIGHT_COLOR;
-}
+//void light() {
+    //DIFFUSE_LIGHT += clamp(dot(NORMAL, LIGHT), 0.0, 1.0) * ATTENUATION * 0.5 * LIGHT_COLOR;
+//}

@@ -726,7 +726,7 @@ func generate_height_map():
 		height_map[z].resize(dimensions.x)
 		for x in range(dimensions.x):
 			height_map[z][x] = 0.0
-			color_map[z*dimensions.x + x] = Color.BLACK
+			color_map[z*dimensions.x + x] = Color(0,0,0,0)
 		
 	if height_map_image:
 		var image = height_map_image.get_image()
