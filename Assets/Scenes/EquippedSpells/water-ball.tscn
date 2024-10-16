@@ -102,6 +102,8 @@ shape = SubResource("SphereShape3D_r154p")
 collision_layer = 0
 collision_mask = 0
 script = ExtResource("6_hhn2k")
+damage = 4
+knockback = 7.5
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Waterball-Projectile/Hitbox"]
 shape = SubResource("CapsuleShape3D_6kwo0")

@@ -10,6 +10,11 @@ signal exited
 
 @onready var equipped_spells: EquippedSpellSubmenu = $EquippedSpells
 
+@onready var spell_info: SpellInfo = $SpellInfo
+
+# Spell currently in focus by the user, and the spell that SpellInfo is being shown for on the right side of the spell menu
+var focused_spell_display: SpellDisplay
+
 # The spell display that was pressed in the menu and is currently being managed (swap, equip, unequip, etc).
 # Null for no spell currently being managed.
 var selected_spell_display: SpellDisplay
@@ -67,9 +72,15 @@ func display_spells():
 	
 	for spell_name in SaveManager.save.spells:
 		var spell_data: SpellData = load("res://Assets/Database/Spells/"+spell_name+".tres")
+		if not spell_data:
+			printerr("spell not found in database: "+spell_name)
+			continue
+		
 		var spell_display: SpellDisplay = spell_display_scene.instantiate() as SpellDisplay
 		spell_container.add_child(spell_display)
 		spell_display.setup(spell_data)
+		spell_display.focus_entered.connect(func(): _on_spell_display_focused(spell_display))
+		spell_display.focus_exited.connect(func(): _on_spell_display_unfocused(spell_display))
 		spell_display.pressed.connect(func(): _on_spell_display_pressed(spell_display))
 		
 	await get_tree().process_frame
@@ -77,6 +88,15 @@ func display_spells():
 	var first: SpellDisplay = spell_container.get_child(0)
 	if first:
 		first.grab_focus()
+
+func _on_spell_display_focused(spell_display: SpellDisplay):
+	focused_spell_display = spell_display
+	spell_info.visible = true
+	spell_info.display(spell_display.spell)
+
+func _on_spell_display_unfocused(spell_display: SpellDisplay):
+	focused_spell_display = null
+	spell_info.visible = false
 
 func _on_spell_display_pressed(spell_display: SpellDisplay):
 	selected_spell_display = spell_display

@@ -28,7 +28,6 @@ offset_bottom = 29.0
 color = Color(0, 0, 0, 0.247059)
 
 [node name="IconTextureRect" type="TextureRect" parent="."]
-clip_contents = true
 layout_mode = 2
 offset_left = 4.0
 offset_top = 4.0

@@ -1,4 +1,4 @@
-[gd_resource type="Theme" load_steps=9 format=3 uid="uid://biq6bd7sgcyms"]
+[gd_resource type="Theme" load_steps=10 format=3 uid="uid://biq6bd7sgcyms"]
 
 [ext_resource type="StyleBox" uid="uid://b08pt32uorwry" path="res://themes/infinity-realm/slanted-box-disabled.tres" id="1_dvrgh"]
 [ext_resource type="StyleBox" uid="uid://cxi0dpaqkhs6q" path="res://themes/infinity-realm/slanted-box-focus.tres" id="2_jp2uv"]
@@ -15,6 +15,9 @@ texture_margin_top = 1.0
 texture_margin_right = 8.0
 texture_margin_bottom = 1.0
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_gunco"]
+bg_color = Color(0.1806, 0.19089, 0.21, 1)
+
 [resource]
 default_font = ExtResource("7_kc8dv")
 default_font_size = 16
@@ -24,3 +27,4 @@ Button/styles/hover = ExtResource("3_sel57")
 Button/styles/hover_pressed = SubResource("StyleBoxTexture_sb7a6")
 Button/styles/normal = ExtResource("5_dn8v3")
 Button/styles/pressed = ExtResource("6_f4b2c")
+PanelContainer/styles/panel = SubResource("StyleBoxFlat_gunco")

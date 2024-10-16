@@ -1,10 +1,11 @@
-[gd_scene load_steps=7 format=3 uid="uid://bilursuiapru5"]
+[gd_scene load_steps=8 format=3 uid="uid://bilursuiapru5"]
 
 [ext_resource type="Script" path="res://Assets/Scripts/Menus/SpellsMenu.gd" id="1_25olg"]
 [ext_resource type="Script" path="res://Assets/Scripts/UI/polygon-outline.gd" id="2_c6y6h"]
 [ext_resource type="Script" path="res://Assets/Scripts/UI/SlantedList.gd" id="3_a18o7"]
 [ext_resource type="PackedScene" uid="uid://bbcp2hsb2ut70" path="res://Assets/Scenes/Menus/spell_display.tscn" id="4_kgypb"]
 [ext_resource type="PackedScene" uid="uid://b631s06qgsjip" path="res://Assets/Scenes/Menus/equipped_spells_submenu.tscn" id="5_vtxdy"]
+[ext_resource type="PackedScene" uid="uid://bk5w8djmm4tnd" path="res://Assets/Scenes/Menus/spell_info.tscn" id="6_2rmle"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_plsc6"]
 font_color = Color(1, 0.799098, 0.800301, 1)
@@ -59,7 +60,7 @@ text = "--- Spells ---
 "
 label_settings = SubResource("LabelSettings_plsc6")
 
-[node name="ColorRect" type="ColorRect" parent="Label"]
+[node name="Divider" type="ColorRect" parent="Label"]
 layout_mode = 1
 anchors_preset = 12
 anchor_top = 1.0
@@ -112,3 +113,10 @@ layout_mode = 1
 offset_left = 327.0
 offset_right = 570.0
 offset_bottom = -30.0
+
+[node name="SpellInfo" parent="." instance=ExtResource("6_2rmle")]
+layout_mode = 0
+offset_left = 307.0
+offset_top = 50.0
+offset_right = 530.0
+offset_bottom = 249.0

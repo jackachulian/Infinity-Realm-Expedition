@@ -67,7 +67,7 @@ void fragment() {
 		vec3 grassAlbedo = texture(grassGradient, vec2(colorHeight, 0)).rgb;
 		ALBEDO = grassAlbedo;
 	}
-	
+
 	EMISSION = vec3(0);
 }
 

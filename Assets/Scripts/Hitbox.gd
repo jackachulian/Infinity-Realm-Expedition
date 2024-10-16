@@ -11,7 +11,7 @@ class_name Hitbox
 @export var hit_stun: float = 0.25
 
 # The knockback force of this attack. faces in this hitbox's global -z direction
-@export var knockback: float = 7.5
+@export var knockback: float = 5
 
 @export var hit_players: bool = false
 

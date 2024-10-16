@@ -15,3 +15,19 @@ enum Element {
 	LIGHT,
 	DARK
 }
+
+const element_icons: Array[Texture] = [
+	null,
+	preload("res://Assets/Sprites/Elements/fire.png"),
+	null,
+	preload("res://Assets/Sprites/Elements/water.png"),
+	null,
+	null,
+	null,
+	null,
+	null,
+	null,
+	null,
+	null,
+	null
+]
