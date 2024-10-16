@@ -726,7 +726,7 @@ func generate_height_map():
 		height_map[z].resize(dimensions.x)
 		for x in range(dimensions.x):
 			height_map[z][x] = 0.0
-			color_map[z*dimensions.x + x] = Color(randf(), randf(), randf(), randf())
+			color_map[z*dimensions.x + x] = Color.BLACK
 		
 	if height_map_image:
 		var image = height_map_image.get_image()
@@ -755,6 +755,9 @@ func generate_height_map():
 func get_height(cc: Vector2i) -> float:
 	return height_map[cc.y][cc.x]
 	
+func get_color(cc: Vector2i) -> Color:
+	return color_map[cc.y*dimensions.x + cc.x]
+	
 # Draw to height.
 # Returns the coordinates of all additional chunks affected by this height change.
 # Empty for inner points, neightoring edge for non-corner edges, and 3 other corners for corner points.
@@ -768,6 +771,12 @@ func draw_height(x: int, z: int, y: float):
 	notify_needs_update(z-1, x)
 	notify_needs_update(z-1, x-1)
 	
+func draw_color(x: int, z: int, color: Color):
+	color_map[z*dimensions.x + x] = color
+	notify_needs_update(z, x)
+	notify_needs_update(z, x-1)
+	notify_needs_update(z-1, x)
+	notify_needs_update(z-1, x-1)
 	
 func notify_needs_update(z: int, x: int):
 	if z < 0 or z >= terrain_system.dimensions.z-1 or x < 0 or x >= terrain_system.dimensions.x-1:

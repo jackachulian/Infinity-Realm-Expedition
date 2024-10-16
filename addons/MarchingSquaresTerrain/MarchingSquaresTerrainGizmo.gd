@@ -154,7 +154,10 @@ func _redraw():
 						if terrain_plugin.is_drawing:
 							if not terrain_plugin.current_draw_pattern.has(cursor_chunk_coords):
 								terrain_plugin.current_draw_pattern[cursor_chunk_coords] = {}
-							terrain_plugin.current_draw_pattern[cursor_chunk_coords][cursor_cell_coords] = chunk.height_map[z][x]
+							if terrain_plugin.mode == terrain_plugin.TerrainToolMode.GROUND_TEXTURE:
+								terrain_plugin.current_draw_pattern[cursor_chunk_coords][cursor_cell_coords] = terrain_plugin.ground_texture_color
+							else:
+								terrain_plugin.current_draw_pattern[cursor_chunk_coords][cursor_cell_coords] = chunk.get_height(cursor_cell_coords)
 			
 	var height_diff: float
 	if terrain_plugin.is_setting and terrain_plugin.draw_height_set:
