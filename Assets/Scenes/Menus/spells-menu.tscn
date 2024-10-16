@@ -38,7 +38,7 @@ size = Vector2i(640, 360)
 render_target_update_mode = 4
 
 [node name="Polygon2D" type="Polygon2D" parent="PixelatedSubViewportContainer/PixelatedSubViewport"]
-position = Vector2(-40, -10)
+position = Vector2(-20, -10)
 color = Color(0.121053, 0.1204, 0.14, 1)
 polygon = PackedVector2Array(70, 23, 326, 23, 582, -41, 627, 319, 371, 383, 115, 383)
 script = ExtResource("2_c6y6h")
@@ -52,9 +52,9 @@ default_color = Color(0.336608, 0.336608, 0.336608, 1)
 
 [node name="Label" type="Label" parent="."]
 layout_mode = 0
-offset_left = 52.0
+offset_left = 72.0
 offset_top = 23.0
-offset_right = 248.0
+offset_right = 268.0
 offset_bottom = 41.0
 text = "--- Spells ---
 "
@@ -73,9 +73,9 @@ color = Color(1, 1, 1, 0.266667)
 
 [node name="SpellContainer" type="VBoxContainer" parent="."]
 layout_mode = 0
-offset_left = 59.0
+offset_left = 79.0
 offset_top = 51.0
-offset_right = 249.0
+offset_right = 269.0
 offset_bottom = 333.0
 theme_override_constants/separation = 6
 script = ExtResource("3_a18o7")
@@ -110,13 +110,13 @@ layout_mode = 2
 
 [node name="EquippedSpells" parent="." instance=ExtResource("5_vtxdy")]
 layout_mode = 1
-offset_left = 327.0
-offset_right = 570.0
+offset_left = 347.0
+offset_right = 590.0
 offset_bottom = -30.0
 
 [node name="SpellInfo" parent="." instance=ExtResource("6_2rmle")]
 layout_mode = 0
-offset_left = 307.0
+offset_left = 327.0
 offset_top = 50.0
-offset_right = 530.0
+offset_right = 550.0
 offset_bottom = 249.0

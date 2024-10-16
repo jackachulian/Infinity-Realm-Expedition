@@ -31,6 +31,19 @@ void vertex() {
 	position = NODE_POSITION_WORLD + VERTEX;
 }
 
+vec3 grass_albedo() {
+	float colorNoise = texture(grassNoise, vec2(position.x, position.z) / grassNoiseScale).r;
+	float colorHeight = clamp(colorNoise, 0.01, 0.99);
+	// Use the height in heightmap space (stored in vertex color) to get the grass color
+	vec3 grassAlbedo = texture(grassGradient, vec2(colorHeight, 0)).rgb;
+	return grassAlbedo;
+}
+
+vec3 rock_albedo() {
+	float rockBrightness = texture(rockWallNoise, position / rockWallNoiseScale).r;
+	return texture(rockGradient, vec2(rockBrightness, 0)).rgb;
+}
+
 void fragment() {
 	bool isWall = UV.x > 0.99 && UV.y > 0.99;
 
@@ -42,7 +55,7 @@ void fragment() {
 	float bottomLedgeValue = UV.x - 1.0 + ledgeBottomThickness * thicknessMult;
 	bool bottomLedge = bottomLedgeValue > 0.0;
 
-	float rockBrightness = texture(rockWallNoise, position / rockWallNoiseScale).r;
+	
 
 	if (debug) {
 		//ALBEDO = COLOR.rgb;
@@ -52,21 +65,23 @@ void fragment() {
 
 	// ==== Walls
 	else if (isWall) {
-		ALBEDO = texture(rockGradient, vec2(rockBrightness, 0)).rgb;
+		ALBEDO = rock_albedo();
 	}
 	// ==== Ledges
 	else if (topLedge || bottomLedge) {
+		// Rock ledge albedo
+		float rockBrightness = texture(rockWallNoise, position / rockWallNoiseScale).r;
 		float ledgeRockBrightness = texture(ledgeRockBrightnessGradient, vec2(rockBrightness, 0)).r;
 		float ledgeEdgeBrightness = texture(ledgeEdgeBrightnessGradient, vec2(max(topLedgeValue / (ledgeTopThickness * thicknessMult), bottomLedgeValue / (ledgeBottomThickness * thicknessMult)), 0)).r;
 		ALBEDO = texture(rockGradient, vec2(ledgeRockBrightness * ledgeEdgeBrightness, 0)).rgb;
 	}
 	// ==== Floors
 	else {
-		float colorNoise = texture(grassNoise, vec2(position.x, position.z) / grassNoiseScale).r;
-		float colorHeight = clamp(colorNoise, 0.01, 0.99);
-		// Use the height in heightmap space (stored in vertex color) to get the grass color
-		vec3 grassAlbedo = texture(grassGradient, vec2(colorHeight, 0)).rgb;
-		ALBEDO = grassAlbedo;
+		if (COLOR.r > 0.25) {
+			ALBEDO = rock_albedo();
+		} else {
+			ALBEDO = grass_albedo();
+		}
 	}
 
 	EMISSION = vec3(0);

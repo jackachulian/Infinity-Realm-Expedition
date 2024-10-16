@@ -75,6 +75,8 @@ func initialize_terrain(should_regenerate_mesh: bool = true):
 	if Engine.is_editor_hint():
 		if not height_map:
 			generate_height_map()
+		if not color_map:
+			generate_color_map()
 		if not mesh and should_regenerate_mesh:
 			regenerate_mesh()
 		
@@ -719,14 +721,12 @@ func add_diagonal_floor(b_y: float, c_y: float, a_cliff: bool, d_cliff: bool):
 func generate_height_map():	
 	height_map = []
 	height_map.resize(dimensions.z)
-	color_map = PackedColorArray()
-	color_map.resize(dimensions.z * dimensions.x)
 	for z in range(dimensions.z):
 		height_map[z] = []
 		height_map[z].resize(dimensions.x)
 		for x in range(dimensions.x):
 			height_map[z][x] = 0.0
-			color_map[z*dimensions.x + x] = Color(0,0,0,0)
+			#color_map[z*dimensions.x + x] = Color(randf(),randf(),randf(),randf())
 		
 	if height_map_image:
 		var image = height_map_image.get_image()
@@ -751,6 +751,14 @@ func generate_height_map():
 				height_map[z][x] = noise_sample * dimensions.y
 	else:
 		print("no noise")
+	
+func generate_color_map():
+	color_map = PackedColorArray()
+	color_map.resize(dimensions.z * dimensions.x)
+	for z in range(dimensions.z):
+		for x in range(dimensions.x):
+			color_map[z*dimensions.x + x] = Color(0,0,0,0)
+			#color_map[z*dimensions.x + x] = Color(randf(),randf(),randf(),randf())
 	
 func get_height(cc: Vector2i) -> float:
 	return height_map[cc.y][cc.x]

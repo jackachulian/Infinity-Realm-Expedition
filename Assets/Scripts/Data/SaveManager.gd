@@ -58,7 +58,8 @@ func setup_player_entity():
 	if save.equipped_weapon >= 0:
 		var weapon_name = save.weapons[save.equipped_weapon]
 		var weapon_data := WeaponData.load_weapon_data(weapon_name)
-		Entity.player.equip_weapon(weapon_data)
+		if weapon_data:
+			Entity.player.equip_weapon(weapon_data)
 		
 	for i in len(save.equipped_spells):
 		var id = save.equipped_spells[i]
