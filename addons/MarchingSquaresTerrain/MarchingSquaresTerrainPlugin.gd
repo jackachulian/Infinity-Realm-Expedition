@@ -196,6 +196,9 @@ func handle_mouse(camera: Camera3D, event: InputEvent) -> int:
 			elif event.is_released():
 				if is_drawing:
 					is_drawing = false
+					if mode == TerrainToolMode.GROUND_TEXTURE:
+						print("ground draw texture here...")
+						current_draw_pattern.clear()
 				if is_setting:
 					is_setting = false
 					draw_pattern(terrain)	
