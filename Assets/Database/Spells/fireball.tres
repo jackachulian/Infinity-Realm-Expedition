@@ -8,8 +8,12 @@
 script = ExtResource("3_jbubw")
 display_name = "Fireball"
 icon = ExtResource("2_xwuqs")
-primary_type = 1
+spell_type = 0
+primary_element = 1
 mana_cost = 3
 cast_delay = 0.5
+is_burst = false
+damage = 5
+knockback = 5.0
+description = "Shoots balls of fire."
 equipped_spell_scene = ExtResource("1_13qcb")
-spell_type = 0
