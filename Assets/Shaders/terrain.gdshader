@@ -45,6 +45,7 @@ void fragment() {
 	float rockBrightness = texture(rockWallNoise, position / rockWallNoiseScale).r;
 
 	if (debug) {
+		//ALBEDO = COLOR.rgb;
 		ALBEDO = vec3(UV.x, UV.y, 0);
 		//ALBEDO = NORMAL;
 	}

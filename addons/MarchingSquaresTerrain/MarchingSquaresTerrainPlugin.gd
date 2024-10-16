@@ -10,10 +10,12 @@ var terrain_brush_dock_active: bool
 var terrain_brush_dock: Control
 var tool_options_button: OptionButton
 var tool_checkbox: CheckBox
+var color_picker: ColorPickerButton
 
 enum TerrainToolMode {
 	BRUSH = 0,
-	MANAGE_CHUNKS = 1
+	MANAGE_CHUNKS = 1,
+	GROUND_TEXTURE = 2
 }
 var mode: TerrainToolMode = TerrainToolMode.BRUSH
 
@@ -26,6 +28,9 @@ var brush_position: Vector3
 
 # current drawing brush size
 var brush_size: float = 3.0
+
+# Color currently being drawn to the ground texture
+var ground_texture_color: Color
 
 # A dictionary with keys for each tile that is currently being drawn to with the brush. Value is the height that preview was drawn to,
 # used for restoring when undoing
@@ -79,6 +84,9 @@ func activate_terrain_brush_dock():
 		tool_checkbox = terrain_brush_dock.get_node("FlattenCheckBox")
 		tool_checkbox.toggled.connect(on_tool_checkbox_changed)
 		
+		color_picker = terrain_brush_dock.get_node("ColorPickerButton")
+		color_picker.color_changed.connect(on_color_picker_changed)
+		
 		on_tool_mode_changed(mode)
 		
 		add_control_to_container(CONTAINER_SPATIAL_EDITOR_MENU, terrain_brush_dock)
@@ -88,6 +96,7 @@ func deactivate_terrain_brush_dock():
 		terrain_brush_dock_active = false
 		tool_options_button.item_selected.disconnect(on_tool_mode_changed)
 		tool_checkbox.toggled.disconnect(on_tool_checkbox_changed)
+		color_picker.color_changed.disconnect(on_color_picker_changed)
 		remove_control_from_container(CONTAINER_SPATIAL_EDITOR_MENU, terrain_brush_dock)
 
 func _edit(object: Object) -> void:
@@ -130,8 +139,8 @@ func handle_mouse(camera: Camera3D, event: InputEvent) -> int:
 	
 	var shift_held = Input.is_key_pressed(KEY_SHIFT)
 	
-	# If in brush mode, perform terrain raycast
-	if mode == TerrainToolMode.BRUSH:
+	# If in brush mode or ground drawing mode, perform terrain raycast
+	if mode == TerrainToolMode.BRUSH or mode == TerrainToolMode.GROUND_TEXTURE:
 		var draw_position
 		var draw_area_hovered: bool = false
 		
@@ -161,7 +170,7 @@ func handle_mouse(camera: Camera3D, event: InputEvent) -> int:
 				draw_area_hovered = true
 				
 		# ALT to clear the current draw pattern. don't clear while setting
-		if Input.is_key_pressed(KEY_ALT) and not is_setting:
+		if mode == TerrainToolMode.BRUSH and Input.is_key_pressed(KEY_ALT) and not is_setting:
 			current_draw_pattern.clear()
 
 		# Check for terrain collision
@@ -174,7 +183,7 @@ func handle_mouse(camera: Camera3D, event: InputEvent) -> int:
 			is_chunk_plane_hovered = true
 			current_hovered_chunk = chunk_coords
 
-		if event is InputEventMouseButton and event.button_index == MouseButton.MOUSE_BUTTON_LEFT:
+		if mode == TerrainToolMode.BRUSH and event is InputEventMouseButton and event.button_index == MouseButton.MOUSE_BUTTON_LEFT:
 			if event.is_pressed() and draw_area_hovered:
 				draw_height_set = false
 				if Input.is_key_pressed(KEY_SHIFT):
@@ -345,13 +354,20 @@ func on_tool_mode_changed(index: int):
 	
 	current_draw_pattern.clear()
 	
-	var tool_checkbox: CheckBox = terrain_brush_dock.get_node("FlattenCheckBox")
 	if mode == TerrainToolMode.BRUSH:
 		tool_checkbox.visible = true
 		tool_checkbox.set_pressed_no_signal(flatten)
 	else:
 		tool_checkbox.visible = false
+		
+	if mode == TerrainToolMode.GROUND_TEXTURE:
+		color_picker.visible = true
+	else:
+		color_picker.visible = false
 
 func on_tool_checkbox_changed(state: bool):
 	if mode == TerrainToolMode.BRUSH:
 		flatten = state
+		
+func on_color_picker_changed(color: Color):
+	ground_texture_color = color

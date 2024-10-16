@@ -51,6 +51,12 @@ extends Node3D
 
 var chunks: Dictionary = {}
 
+func _init() -> void:
+	if not terrain_material:
+		terrain_material = load("res://Assets/Materials/Terrain/terrain.tres")
+	if not grass_material:
+		grass_material = load("res://Assets/Materials/Terrain/grass.tres")
+
 func _enter_tree() -> void:
 	for chunk in get_children():
 		if chunk is MarchingSquaresTerrainChunk:

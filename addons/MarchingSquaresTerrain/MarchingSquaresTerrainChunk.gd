@@ -12,6 +12,9 @@ extends MeshInstance3D
 # Stores the heights from the heightmap.
 @export_storage var height_map: Array
 
+# Stores the heights from the heightmap.
+@export_storage var color_map: PackedColorArray
+
 var grass_planter: GrassPlanter
 
 # Size of the 2 dimensional cell array (xz value) and y scale (y value)
@@ -131,10 +134,12 @@ func generate_terrain_cells():
 			if not needs_update[z][x]:
 				var verts = cell_geometry[cell_coords]["verts"]
 				var uvs = cell_geometry[cell_coords]["uvs"]
+				var colors = cell_geometry[cell_coords]["colors"]
 				var is_floor = cell_geometry[cell_coords]["is_floor"]
 				for i in range(len(verts)):
 					st.set_smooth_group(0 if is_floor[i] == true else -1)
 					st.set_uv(uvs[i])
+					st.set_color(colors[i])
 					st.add_vertex(verts[i])
 				continue	
 				
@@ -146,6 +151,7 @@ func generate_terrain_cells():
 			cell_geometry[cell_coords] = {
 				"verts": PackedVector3Array(),
 				"uvs": PackedVector2Array(),
+				"colors": PackedColorArray(),
 				"is_floor": [],
 				#"normals": PackedVector3Array()
 			}
@@ -513,14 +519,18 @@ func add_point(x: float, y: float, z: float, uv_x: float = 0, uv_y: float = 0, u
 	var uv = Vector2(uv_x, uv_y) if floor_mode else Vector2(1, 1)
 	st.set_uv(uv)
 	
-	# Color = terrain space coordinates. 
-	# for XZ, 0,0,0 = top left of heightmap at lowest height, 1,1,1 = bottom right of heightmap at highest height
-	#st.set_color(Color((cell_x+x) / dimensions.x, y / dimensions.x, (cell_z+z) / dimensions.z))
+	# Color = a blend between the 4 corner colors of the cell.
+	var ab_color = lerp(color_map[cell_coords.y*dimensions.x + cell_coords.x], color_map[cell_coords.y*dimensions.x + cell_coords.x + 1], x)
+	var cd_color = lerp(color_map[(cell_coords.y + 1)*dimensions.x + cell_coords.x], color_map[(cell_coords.y + 1)*dimensions.x + cell_coords.x + 1], x)
+	var color = lerp(ab_color, cd_color, z)
+	st.set_color(color)
+	
 	var vert = Vector3((cell_coords.x+x) * cell_size.x, y, (cell_coords.y+z) * cell_size.y)
 	st.add_vertex(vert)
 	
 	cell_geometry[cell_coords]["verts"].append(vert)
 	cell_geometry[cell_coords]["uvs"].append(uv)
+	cell_geometry[cell_coords]["colors"].append(color)
 	cell_geometry[cell_coords]["is_floor"].append(floor_mode)
 	
 # if true, currently making floor geometry. if false, currently making wall geometry.
@@ -709,11 +719,14 @@ func add_diagonal_floor(b_y: float, c_y: float, a_cliff: bool, d_cliff: bool):
 func generate_height_map():	
 	height_map = []
 	height_map.resize(dimensions.z)
+	color_map = PackedColorArray()
+	color_map.resize(dimensions.z * dimensions.x)
 	for z in range(dimensions.z):
 		height_map[z] = []
 		height_map[z].resize(dimensions.x)
 		for x in range(dimensions.x):
 			height_map[z][x] = 0.0
+			color_map[z*dimensions.x + x] = Color(randf(), randf(), randf(), randf())
 		
 	if height_map_image:
 		var image = height_map_image.get_image()
