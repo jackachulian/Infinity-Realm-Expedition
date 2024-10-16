@@ -65,7 +65,7 @@ func setup_player_entity():
 		if id >= 0:
 			var spell_name = save.spells[id]
 			var spell_data = SpellData.load_spell_data(spell_name)
-			Entity.player.equip(i, spell_data)
+			Entity.player.equip(i+1, spell_data)
 			
 	BattleHud.instance.setup_spells()
 

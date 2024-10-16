@@ -92,6 +92,10 @@ func _physics_process(delta: float):
 	hit_stun_timer = move_toward(hit_stun_timer, 0, delta)
 
 func equip(spell_number: int, spell_data: SpellData):
+	if spell_number <= 0:
+		printerr("invalid spell number ", spell_number, ". Spell number must be 1 or greater")
+		return
+		
 	if spell_number > len(spells):
 		printerr("trying to equip ", spell_data.display_name, " into spell slot ", spell_number, " but there are only ", len(spells), " spell slots!")
 		return
