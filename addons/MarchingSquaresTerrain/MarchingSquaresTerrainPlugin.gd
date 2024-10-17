@@ -306,7 +306,8 @@ func draw_pattern(terrain: MarchingSquaresTerrain):
 				draw_value = lerp(restore_value, ground_texture_color, sample)
 			else:
 				restore_value = chunk.get_height(draw_cell_coords)
-				draw_value = lerp(restore_value, brush_position.y, sample)
+				var height_diff = brush_position.y - draw_height
+				draw_value = lerp(restore_value, restore_value + height_diff, sample)
 				
 			restore_pattern[draw_chunk_coords][draw_cell_coords] = restore_value
 			pattern[draw_chunk_coords][draw_cell_coords] = draw_value
