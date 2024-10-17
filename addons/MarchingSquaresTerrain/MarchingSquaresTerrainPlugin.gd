@@ -284,6 +284,9 @@ func draw_pattern(terrain: MarchingSquaresTerrain):
 	for draw_chunk_coords: Vector2i in current_draw_pattern.keys():
 		var draw_chunk_dict = pattern[draw_chunk_coords]
 		for draw_cell_coords: Vector2i in draw_chunk_dict:
+			if mode == TerrainToolMode.GROUND_TEXTURE:
+				draw_chunk_dict[draw_cell_coords] = ground_texture_color
+			
 			for cx in range(-1, 2):
 				for cz in range(-1, 2):
 					if (cx == 0 and cz == 0):
@@ -328,9 +331,6 @@ func draw_pattern(terrain: MarchingSquaresTerrain):
 				restore_pattern[draw_chunk_coords][draw_cell_coords] = chunk.get_height(draw_cell_coords)
 			elif mode == TerrainToolMode.GROUND_TEXTURE:
 				restore_pattern[draw_chunk_coords][draw_cell_coords] = chunk.get_color(draw_cell_coords)
-
-	print("pattern: ", pattern)
-	print("restore pattern: ", restore_pattern)
 
 	if mode == TerrainToolMode.GROUND_TEXTURE:
 		undo_redo.create_action("terrain color draw")

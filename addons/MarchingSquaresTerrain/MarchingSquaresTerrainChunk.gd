@@ -9,7 +9,7 @@ extends MeshInstance3D
 # Used to set heights per pixel (overrides noisemap)
 @export var height_map_image: Texture2D
 
-@export var higher_poly_floors: bool = false
+@export var higher_poly_floors: bool = true
 
 # Stores the heights from the heightmap.
 @export_storage var height_map: Array
@@ -138,11 +138,13 @@ func generate_terrain_cells():
 			if not needs_update[z][x]:
 				var verts = cell_geometry[cell_coords]["verts"]
 				var uvs = cell_geometry[cell_coords]["uvs"]
+				#var uv2s = cell_geometry[cell_coords]["uv2s"]
 				var colors = cell_geometry[cell_coords]["colors"]
 				var is_floor = cell_geometry[cell_coords]["is_floor"]
 				for i in range(len(verts)):
 					st.set_smooth_group(0 if is_floor[i] == true else -1)
 					st.set_uv(uvs[i])
+					#st.set_uv2(uv2s[i])
 					st.set_color(colors[i])
 					st.add_vertex(verts[i])
 				continue	
@@ -155,6 +157,7 @@ func generate_terrain_cells():
 			cell_geometry[cell_coords] = {
 				"verts": PackedVector3Array(),
 				"uvs": PackedVector2Array(),
+				#"uv2s": PackedVector2Array(),
 				"colors": PackedColorArray(),
 				"is_floor": [],
 				#"normals": PackedVector3Array()
@@ -519,9 +522,14 @@ func add_point(x: float, y: float, z: float, uv_x: float = 0, uv_y: float = 0, u
 		x = 1 - z
 		z = temp	
 	
+	# uv - used for ledge detection. X = closeness to top terrace, Y = closeness to bottom of terrace
 	# walls will always have UV of 1, 1
 	var uv = Vector2(uv_x, uv_y) if floor_mode else Vector2(1, 1)
 	st.set_uv(uv)
+	
+	
+	#var uv2 = Vector2(uv_x, uv_y) if floor_mode else Vector2(1, 1)
+	#st.set_uv(uv2)
 	
 	# Color = a blend between the 4 corner colors of the cell.
 	var ab_color = lerp(color_map[cell_coords.y*dimensions.x + cell_coords.x], color_map[cell_coords.y*dimensions.x + cell_coords.x + 1], x)
@@ -534,6 +542,7 @@ func add_point(x: float, y: float, z: float, uv_x: float = 0, uv_y: float = 0, u
 	
 	cell_geometry[cell_coords]["verts"].append(vert)
 	cell_geometry[cell_coords]["uvs"].append(uv)
+	#cell_geometry[cell_coords]["uv2s"].append(uv2)
 	cell_geometry[cell_coords]["colors"].append(color)
 	cell_geometry[cell_coords]["is_floor"].append(floor_mode)
 	

@@ -49,6 +49,7 @@ func generate_grass_on_cell(cell_coords: Vector2i):
 	#print("generating grass on ", cell_coords, " index: ", index)
 	var verts: PackedVector3Array = cell_geometry["verts"]
 	var uvs: PackedVector2Array = cell_geometry["uvs"]
+	var colors: PackedColorArray = cell_geometry["colors"]
 	var is_floor: Array = cell_geometry["is_floor"]
 	for i in range(0, len(verts), 3):
 		# only place grass on floors
@@ -90,14 +91,21 @@ func generate_grass_on_cell(cell_coords: Vector2i):
 				
 				# Don't place grass on ledges
 				var uv = uvs[i]*u + uvs[i+1]*v + uvs[i+2]*(1-u-v)
-				if uv.x <= 1-chunk.terrain_system.ledge_bottom_thickness and uv.y <= 1-chunk.terrain_system.ledge_top_thickness:
+				var on_ledge: bool = uv.x > 1-chunk.terrain_system.ledge_bottom_thickness or uv.y > 1-chunk.terrain_system.ledge_top_thickness
+				
+				# Don't place grass on anything except grass color (0,0,0,0)
+				var color = colors[i]*u + colors[i+1]*v + colors[i+2]*(1-u-v)
+				var on_rock: bool = color.r >= 0.25 and color.g < 0.5 and color.b < 0.5 and color.a < 0.5
+				
+				if not on_ledge and not on_rock:
 					#print("placing grass at ", p)a
 					
 					var scale = randf_range(1, 1.5)
 					
 					# 50% chance to flip horizontally
 					var basis := Basis(
-						(Vector3.LEFT if randf_range(0, 1) < 0.5 else Vector3.RIGHT) * scale, 
+						#(Vector3.LEFT if randf() < 0.5 else Vector3.RIGHT) * scale, 
+						Vector3.RIGHT * scale, 
 						Vector3.UP * scale, 
 						Vector3.BACK * scale
 					)

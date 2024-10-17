@@ -4,10 +4,14 @@ shader_type spatial;
 uniform float ledgeTopThickness : hint_range(0, 1) = 0.5;
 uniform float ledgeBottomThickness : hint_range(0, 1) = 0;
 
+// Floor vars
+uniform float rockPathThreshold = 0.75;
+
 // Noise tiling
 uniform float grassNoiseScale = 8;
 uniform float rockWallNoiseScale = 8;
 uniform float rockLedgeNoiseScale = 8;
+uniform float rockPathNoiseScale = 8;
 
 // Brightnesss gradient textures
 uniform sampler2D ledgeRockBrightnessGradient : source_color;
@@ -22,6 +26,7 @@ uniform sampler2D rockGradient : source_color, filter_nearest;
 uniform sampler2D grassNoise : source_color;
 uniform sampler3D rockWallNoise : source_color;
 uniform sampler3D rockLedgeNoise : source_color;
+uniform sampler2D rockPathNoise : source_color;
 
 uniform bool debug = false;
 
@@ -55,8 +60,6 @@ void fragment() {
 	float bottomLedgeValue = UV.x - 1.0 + ledgeBottomThickness * thicknessMult;
 	bool bottomLedge = bottomLedgeValue > 0.0;
 
-	
-
 	if (debug) {
 		ALBEDO = COLOR.rgb;
 		//ALBEDO = vec3(UV.x, UV.y, 0);
@@ -78,7 +81,12 @@ void fragment() {
 	// ==== Floors
 	else {
 		if (COLOR.r > 0.25) {
-			ALBEDO = rock_albedo();
+			float pathNoise = texture(rockPathNoise, vec2(position.x, position.z) / rockPathNoiseScale).r;
+			if (pathNoise < rockPathThreshold) {
+				ALBEDO = rock_albedo();
+			} else {
+				ALBEDO = grass_albedo();
+			}
 		} else {
 			ALBEDO = grass_albedo();
 		}
