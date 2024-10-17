@@ -23,11 +23,13 @@ gradient = SubResource("Gradient_aftyc")
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_aow66"]
 noise_type = 2
-frequency = 0.2742
+frequency = 0.125
+fractal_octaves = 3
+cellular_jitter = 1.125
 
 [sub_resource type="NoiseTexture2D" id="NoiseTexture2D_4tgk0"]
-width = 64
-height = 64
+width = 128
+height = 128
 seamless = true
 noise = SubResource("FastNoiseLite_aow66")
 
@@ -37,7 +39,7 @@ next_pass = ExtResource("1_ry4uo")
 shader = ExtResource("1_21hti")
 shader_parameter/ledgeTopThickness = 0.625
 shader_parameter/ledgeBottomThickness = 0.0
-shader_parameter/rockPathThreshold = 0.56
+shader_parameter/rockPathThreshold = 0.675
 shader_parameter/grassNoiseScale = 64.0
 shader_parameter/rockWallNoiseScale = 8.0
 shader_parameter/rockLedgeNoiseScale = 8.0

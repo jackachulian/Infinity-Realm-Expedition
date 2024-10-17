@@ -36,9 +36,13 @@ void vertex() {
 	position = NODE_POSITION_WORLD + VERTEX;
 }
 
-vec3 grass_albedo() {
+vec3 grass_albedo(vec4 color) {
 	float colorNoise = texture(grassNoise, vec2(position.x, position.z) / grassNoiseScale).r;
-	float colorHeight = clamp(colorNoise, 0.01, 0.99);
+	float rockBrightness = texture(rockWallNoise, position / rockWallNoiseScale).r;
+	float threshold = 0.25 + rockBrightness*0.25;
+	float pathColorLessen = clamp(color.r, 0, 1);
+	return vec3(pathColorLessen);
+	float colorHeight = clamp(colorNoise - pathColorLessen, 0.01, 0.99);
 	// Use the height in heightmap space (stored in vertex color) to get the grass color
 	vec3 grassAlbedo = texture(grassGradient, vec2(colorHeight, 0)).rgb;
 	return grassAlbedo;
@@ -80,15 +84,14 @@ void fragment() {
 	}
 	// ==== Floors
 	else {
-		if (COLOR.r > 0.25) {
+		float rockBrightness = texture(rockWallNoise, position / rockWallNoiseScale).r;
+		float threshold = 0.25 + rockBrightness*0.25;
+		if (COLOR.r > threshold) {
 			float pathNoise = texture(rockPathNoise, vec2(position.x, position.z) / rockPathNoiseScale).r;
-			if (pathNoise < rockPathThreshold) {
-				ALBEDO = rock_albedo();
-			} else {
-				ALBEDO = grass_albedo();
-			}
+			float scaledPathNoise = clamp(pathNoise * (COLOR.r), 0.01, 0.99) * 0.675;
+			ALBEDO = texture(rockGradient, vec2(1.0-scaledPathNoise, 0)).rgb;
 		} else {
-			ALBEDO = grass_albedo();
+			ALBEDO = grass_albedo(COLOR);
 		}
 	}
 
