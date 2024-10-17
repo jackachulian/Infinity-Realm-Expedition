@@ -286,14 +286,28 @@ func handle_mouse(camera: Camera3D, event: InputEvent) -> int:
 func draw_pattern(terrain: MarchingSquaresTerrain):
 	var undo_redo := MarchingSquaresTerrainPlugin.instance.get_undo_redo()
 	
-	var pattern = current_draw_pattern.duplicate(true)
+	var pattern = {}
+	var restore_pattern = {}
 	
 	# Ensure points on both sides of chunk borders are updated
 	for draw_chunk_coords: Vector2i in current_draw_pattern.keys():
-		var draw_chunk_dict = pattern[draw_chunk_coords]
+		pattern[draw_chunk_coords] = {}
+		restore_pattern[draw_chunk_coords] = {}
+		var draw_chunk_dict = current_draw_pattern[draw_chunk_coords]
 		for draw_cell_coords: Vector2i in draw_chunk_dict:
+			var chunk: MarchingSquaresTerrainChunk = terrain.chunks[draw_chunk_coords]
+			var sample: float = draw_chunk_dict[draw_cell_coords]
+			var restore_value
+			var draw_value
 			if mode == TerrainToolMode.GROUND_TEXTURE:
-				draw_chunk_dict[draw_cell_coords] = ground_texture_color
+				restore_value = chunk.get_color(draw_cell_coords)
+				draw_value = lerp(restore_value, ground_texture_color, sample)
+			else:
+				restore_value = chunk.get_height(draw_cell_coords)
+				draw_value = lerp(restore_value, brush_position.y, sample)
+				
+			restore_pattern[draw_chunk_coords][draw_cell_coords] = restore_value
+			pattern[draw_chunk_coords][draw_cell_coords] = draw_value
 			
 			for cx in range(-1, 2):
 				for cz in range(-1, 2):
@@ -325,53 +339,42 @@ func draw_pattern(terrain: MarchingSquaresTerrain):
 						
 					if not pattern.has(adjacent_chunk_coords):
 						pattern[adjacent_chunk_coords] = {}
+						restore_pattern[adjacent_chunk_coords] = {}
 						
-					pattern[adjacent_chunk_coords][adjacent_cell_coords] = draw_chunk_dict[draw_cell_coords]
+					pattern[adjacent_chunk_coords][adjacent_cell_coords] = draw_value
+					restore_pattern[adjacent_chunk_coords][adjacent_cell_coords] = restore_value
 
 	# In brush mode this stores the height BEFORE set
 	# in grund texture mode this is the color BEFORE the draw
-	var restore_pattern = {}
-	for draw_chunk_coords: Vector2i in pattern.keys():
-		var chunk: MarchingSquaresTerrainChunk = terrain.chunks[draw_chunk_coords]
-		restore_pattern[draw_chunk_coords] = {}
-		for draw_cell_coords: Vector2i in pattern[draw_chunk_coords]:
-			if mode == TerrainToolMode.BRUSH:
-				restore_pattern[draw_chunk_coords][draw_cell_coords] = chunk.get_height(draw_cell_coords)
-			elif mode == TerrainToolMode.GROUND_TEXTURE:
-				restore_pattern[draw_chunk_coords][draw_cell_coords] = chunk.get_color(draw_cell_coords)
+	#
+	#for draw_chunk_coords: Vector2i in pattern.keys():
+		#var chunk: MarchingSquaresTerrainChunk = terrain.chunks[draw_chunk_coords]
+		#restore_pattern[draw_chunk_coords] = {}
+		#for draw_cell_coords: Vector2i in pattern[draw_chunk_coords]:
+			#if mode == TerrainToolMode.BRUSH:
+				#restore_pattern[draw_chunk_coords][draw_cell_coords] = chunk.get_height(draw_cell_coords)
+			#elif mode == TerrainToolMode.GROUND_TEXTURE:
+				#restore_pattern[draw_chunk_coords][draw_cell_coords] = chunk.get_color(draw_cell_coords)
 
 	if mode == TerrainToolMode.GROUND_TEXTURE:
 		undo_redo.create_action("terrain color draw")
 		undo_redo.add_do_method(self, "draw_color_pattern_action", terrain, pattern)
 		undo_redo.add_undo_method(self, "draw_color_pattern_action", terrain, restore_pattern)
 		undo_redo.commit_action()
-		
-	elif flatten:
-		undo_redo.create_action("terrain height draw flat")
-		undo_redo.add_do_method(self, "draw_pattern_action", terrain, restore_pattern, DrawMode.SET_FLAT, brush_position.y)
-		undo_redo.add_undo_method(self, "draw_pattern_action", terrain, restore_pattern, DrawMode.SET_FROM_PATTERN)
-		undo_redo.commit_action()
 	else:
-		var y_delta = brush_position.y - draw_height
 		undo_redo.create_action("terrain height draw")
-		undo_redo.add_do_method(self, "draw_pattern_action", terrain, restore_pattern, DrawMode.RAISE_LOWER, y_delta)
-		undo_redo.add_undo_method(self, "draw_pattern_action", terrain, restore_pattern, DrawMode.SET_FROM_PATTERN)
+		undo_redo.add_do_method(self, "draw_height_pattern_action", terrain, pattern)
+		undo_redo.add_undo_method(self, "draw_height_pattern_action", terrain, restore_pattern)
 		undo_redo.commit_action()
 	
 # For each cell in pattern, raise/lower by y delta.
-func draw_pattern_action(terrain: MarchingSquaresTerrain, pattern: Dictionary, draw_mode: DrawMode, y: float = 0):
+func draw_height_pattern_action(terrain: MarchingSquaresTerrain, pattern: Dictionary):
 	for draw_chunk_coords: Vector2i in pattern:
 		var draw_chunk_dict = pattern[draw_chunk_coords]
 		var chunk: MarchingSquaresTerrainChunk = terrain.chunks[draw_chunk_coords]
 		for draw_cell_coords: Vector2i in draw_chunk_dict:
-			if draw_mode == DrawMode.RAISE_LOWER:
-				var cell_y = chunk.get_height(draw_cell_coords)
-				chunk.draw_height(draw_cell_coords.x, draw_cell_coords.y, cell_y + y)
-			elif draw_mode == DrawMode.SET_FLAT:
-				chunk.draw_height(draw_cell_coords.x, draw_cell_coords.y, y)
-			elif draw_mode == DrawMode.SET_FROM_PATTERN:
-				y = draw_chunk_dict[draw_cell_coords]
-				chunk.draw_height(draw_cell_coords.x, draw_cell_coords.y, y)	
+			var height: float = draw_chunk_dict[draw_cell_coords]
+			chunk.draw_height(draw_cell_coords.x, draw_cell_coords.y, height)
 		chunk.regenerate_mesh()
 		
 func draw_color_pattern_action(terrain: MarchingSquaresTerrain, pattern: Dictionary):
@@ -382,12 +385,6 @@ func draw_color_pattern_action(terrain: MarchingSquaresTerrain, pattern: Diction
 			var color: Color = draw_chunk_dict[draw_cell_coords]
 			chunk.draw_color(draw_cell_coords.x, draw_cell_coords.y, color)
 		chunk.regenerate_mesh()
-
-enum DrawMode {
-	RAISE_LOWER = 0,
-	SET_FLAT = 1,
-	SET_FROM_PATTERN = 2
-}
 
 func on_tool_mode_changed(index: int):
 	print("set mode to ", index)
