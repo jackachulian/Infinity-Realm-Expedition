@@ -114,7 +114,8 @@ func _redraw():
 		#var world_x = floor((pos.x + terrain_system.cell_size.x/2) / terrain_system.cell_size.x) * terrain_system.cell_size.x
 		#var world_z = floor((pos.z + terrain_system.cell_size.y/2) / terrain_system.cell_size.y) * terrain_system.cell_size.y
 		
-		var max_distance_squared = pow((terrain_plugin.brush_size/2), 2)
+		var max_distance = (terrain_plugin.brush_size/2)
+		var max_distance_squared = max_distance*max_distance
 		
 		for chunk_z in range(chunk_tl_z, chunk_br_z+1):
 			for chunk_x in range(chunk_tl_x, chunk_br_x+1):
@@ -137,8 +138,16 @@ func _redraw():
 						var world_x: float = (chunk_x * (terrain_system.dimensions.x-1) + x) * terrain_system.cell_size.x
 						var world_z: float = (chunk_z * (terrain_system.dimensions.z-1) + z) * terrain_system.cell_size.y
 						
-						if Vector2(pos.x, pos.z).distance_squared_to(Vector2(world_x, world_z)) > max_distance_squared:
+						var distance_squared: float = Vector2(pos.x, pos.z).distance_squared_to(Vector2(world_x, world_z))
+						if distance_squared > max_distance_squared:
 							continue
+							
+						var sample
+						if terrain_plugin.falloff:
+							var t = (max_distance_squared - distance_squared)/max_distance_squared
+							sample = terrain_plugin.falloff_curve.sample(t)
+						else:
+							sample = 1.0
 						
 						var y: float
 						if not terrain_plugin.current_draw_pattern.is_empty() and terrain_plugin.flatten:
@@ -147,14 +156,19 @@ func _redraw():
 							y = chunk.height_map[z][x]
 						
 						var draw_position = Vector3(world_x, y, world_z)
-						var draw_transform = Transform3D(Vector3.RIGHT, Vector3.UP, Vector3.BACK, draw_position)
+						var draw_transform = Transform3D(Vector3.RIGHT*sample, Vector3.UP*sample, Vector3.BACK*sample, draw_position)
 						add_mesh(terrain_plugin.BRUSH_VISUAL, brush_material, draw_transform)
 						
 						# Draw to current pattern
 						if terrain_plugin.is_drawing:
 							if not terrain_plugin.current_draw_pattern.has(cursor_chunk_coords):
 								terrain_plugin.current_draw_pattern[cursor_chunk_coords] = {}
-							terrain_plugin.current_draw_pattern[cursor_chunk_coords][cursor_cell_coords] = 1.0
+							if terrain_plugin.current_draw_pattern[cursor_chunk_coords].has(cursor_cell_coords):
+								var prev_sample = terrain_plugin.current_draw_pattern[cursor_chunk_coords][cursor_cell_coords]
+								if sample > prev_sample:
+									terrain_plugin.current_draw_pattern[cursor_chunk_coords][cursor_cell_coords] = sample
+							else:
+								terrain_plugin.current_draw_pattern[cursor_chunk_coords][cursor_cell_coords] = sample
 								
 			
 	var height_diff: float
@@ -170,14 +184,16 @@ func _redraw():
 				var draw_z = (draw_chunk_coords.y * (terrain_system.dimensions.z - 1) + draw_coords.y) * terrain_system.cell_size.y
 				var draw_y = terrain_plugin.draw_height if terrain_plugin.flatten else chunk.height_map[draw_coords.y][draw_coords.x]
 				
-				var draw_position = Vector3(draw_x, draw_y, draw_z)
-				var draw_transform = Transform3D(Vector3.RIGHT, Vector3.UP, Vector3.BACK, draw_position)
-				add_mesh(terrain_plugin.BRUSH_VISUAL, null, draw_transform)
+				var sample: float = draw_chunk_dict[draw_coords]
 				
 				# If setting, also show a square at the height to set to
 				if terrain_plugin.is_setting and terrain_plugin.draw_height_set:
-					draw_position = Vector3(draw_x, draw_y + height_diff, draw_z)
-					draw_transform = Transform3D(Vector3.RIGHT, Vector3.UP, Vector3.BACK, draw_position)
+					var draw_position = Vector3(draw_x, draw_y + height_diff * sample, draw_z)
+					var draw_transform = Transform3D(Vector3.RIGHT*sample, Vector3.UP*sample, Vector3.BACK*sample, draw_position)
+					add_mesh(terrain_plugin.BRUSH_VISUAL, null, draw_transform)
+				else:
+					var draw_position = Vector3(draw_x, draw_y, draw_z)
+					var draw_transform = Transform3D(Vector3.RIGHT*sample, Vector3.UP*sample, Vector3.BACK*sample, draw_position)
 					add_mesh(terrain_plugin.BRUSH_VISUAL, null, draw_transform)
 		
 func try_add_chunk(terrain_system: MarchingSquaresTerrain, coords: Vector2i):

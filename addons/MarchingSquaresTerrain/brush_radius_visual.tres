@@ -1,13 +1,17 @@
-[gd_resource type="CylinderMesh" load_steps=2 format=3 uid="uid://cg3lvmu68oaaa"]
+[gd_resource type="CylinderMesh" load_steps=5 format=3 uid="uid://cg3lvmu68oaaa"]
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_4ui3w"]
-transparency = 1
-blend_mode = 1
-depth_draw_mode = 2
-no_depth_test = true
-albedo_color = Color(1, 1, 1, 0.541176)
+[ext_resource type="Shader" path="res://addons/MarchingSquaresTerrain/brush_radius_visual.gdshader" id="1_bjf8s"]
+[ext_resource type="Curve" uid="uid://c0bexjsfvvcxb" path="res://addons/MarchingSquaresTerrain/curve_falloff.tres" id="2_tqblm"]
+
+[sub_resource type="CurveTexture" id="CurveTexture_xffaj"]
+curve = ExtResource("2_tqblm")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_c1nuo"]
+render_priority = 0
+shader = ExtResource("1_bjf8s")
+shader_parameter/curve_texture = SubResource("CurveTexture_xffaj")
 
 [resource]
-material = SubResource("StandardMaterial3D_4ui3w")
+material = SubResource("ShaderMaterial_c1nuo")
 height = 0.001
 rings = 1
