@@ -298,7 +298,7 @@ func draw_pattern(terrain: MarchingSquaresTerrain):
 		var draw_chunk_dict = current_draw_pattern[draw_chunk_coords]
 		for draw_cell_coords: Vector2i in draw_chunk_dict:
 			var chunk: MarchingSquaresTerrainChunk = terrain.chunks[draw_chunk_coords]
-			var sample: float = draw_chunk_dict[draw_cell_coords]
+			var sample: float = clamp(draw_chunk_dict[draw_cell_coords], 0.001, 0.999)
 			var restore_value
 			var draw_value
 			if mode == TerrainToolMode.GROUND_TEXTURE:

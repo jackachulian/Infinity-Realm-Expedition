@@ -145,7 +145,7 @@ func _redraw():
 						var sample
 						if terrain_plugin.falloff:
 							var t = (max_distance_squared - distance_squared)/max_distance_squared
-							sample = terrain_plugin.falloff_curve.sample(t)
+							sample = terrain_plugin.falloff_curve.sample(clamp(t, 0.001, 0.999))
 						else:
 							sample = 1.0
 						
