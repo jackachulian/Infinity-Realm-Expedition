@@ -25,7 +25,7 @@ window/stretch/mode="canvas_items"
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/MarchingSquaresTerrain/plugin.cfg")
+enabled=PackedStringArray("res://addons/MarchingSquaresTerrain/plugin.cfg", "res://addons/proton_scatter/plugin.cfg")
 
 [file_customization]
 
