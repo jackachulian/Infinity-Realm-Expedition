@@ -88,7 +88,7 @@ script = ExtResource("4_fm0wv")
 move_stop_state = NodePath("../RunStop")
 jump_state = NodePath("../JumpRise")
 fall_state = NodePath("../JumpFall")
-speed = 8.0
+speed = 10.0
 
 [node name="JumpCheckRayCast3D" type="RayCast3D" parent="StateMachine/Move" index="0"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.67108, -0.495605)
@@ -106,7 +106,7 @@ script = ExtResource("9_blb1u")
 animation_name = "Dash"
 action_on_anim_finish = true
 state_on_anim_finish = NodePath("../DashStop")
-instant_velocity_on_enter = Vector3(0, 0, -15)
+instant_velocity_on_enter = Vector3(0, 0, -18)
 limit_exit_linear_velocity = true
 rotate_mode = 1
 movement_speed = 8.0
@@ -164,7 +164,7 @@ rise_gravity = 50.0
 fall_gravity = 75.0
 
 [node name="Armature" parent="." index="4"]
-transform = Transform3D(-0.8, 0, 6.99382e-08, 0, 0.8, 0, -6.99382e-08, 0, -0.8, 0, 0, 0)
+transform = Transform3D(-0.8, 0, 1.20797e-07, 0, 0.8, 0, -1.20797e-07, 0, -0.8, 0, 0, 0)
 script = ExtResource("3_11b10")
 
 [node name="Skeleton3D" parent="Armature" index="0"]

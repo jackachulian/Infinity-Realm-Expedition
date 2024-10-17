@@ -16,7 +16,8 @@ var _snap_nodes: Array[Node]
 var _pre_snapped_positions: Array[Vector3]
 
 func _enter_tree() -> void:
-	instance = self
+	if process_mode != ProcessMode.PROCESS_MODE_DISABLED:
+		instance = self
 
 func _ready() -> void:
 	RenderingServer.frame_post_draw.connect(_snap_objects_revert)

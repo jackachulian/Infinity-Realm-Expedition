@@ -6,7 +6,7 @@
 [ext_resource type="NoiseTexture3D" uid="uid://3jnauc3rxtsh" path="res://Assets/Textures/wall_3d_noise.tres" id="4_2xhhq"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_qm6u7"]
-render_priority = 0
+render_priority = -2
 shader = ExtResource("1_f7h4j")
 shader_parameter/depth_threshold = 0.368
 shader_parameter/reverse_depth_threshold = 0.703
