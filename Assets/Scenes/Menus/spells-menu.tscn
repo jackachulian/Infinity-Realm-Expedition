@@ -45,7 +45,7 @@ script = ExtResource("2_c6y6h")
 outline_color = Color(0.779291, 0.779291, 0.779291, 1)
 
 [node name="Line2D" type="Line2D" parent="PixelatedSubViewportContainer/PixelatedSubViewport"]
-position = Vector2(-40, -10)
+position = Vector2(-20, -10)
 points = PackedVector2Array(326, 23, 371, 383)
 width = 1.0
 default_color = Color(0.336608, 0.336608, 0.336608, 1)
