@@ -6,7 +6,7 @@ extends Polygon2D
 		outline_color = value
 		queue_redraw()
 		
-@export var outline_width: int = 1:
+@export var outline_width: int = -1:
 	set(value):
 		outline_width = value
 		queue_redraw()

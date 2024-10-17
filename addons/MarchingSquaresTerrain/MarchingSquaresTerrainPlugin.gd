@@ -9,7 +9,8 @@ var gizmo_plugin = MarchingSquaresTerrainGizmoPlugin.new()
 var terrain_brush_dock_active: bool
 var terrain_brush_dock: Control
 var tool_options_button: OptionButton
-var tool_checkbox: CheckBox
+var tool_checkbox: CheckBox # flatten
+var falloff_checkbox: CheckBox # falloff
 var color_picker: ColorPickerButton
 
 enum TerrainToolMode {
@@ -20,6 +21,7 @@ enum TerrainToolMode {
 var mode: TerrainToolMode = TerrainToolMode.BRUSH
 
 var flatten: bool = true
+var falloff: bool = true
 
 var is_chunk_plane_hovered: bool
 var current_hovered_chunk: Vector2i
@@ -57,6 +59,8 @@ var base_position: Vector3
 const BRUSH_VISUAL: Mesh = preload("brush_visual.tres")
 var BRUSH_RADIUS_VISUAL: Mesh
 
+@onready var falloff_curve: Curve = preload("res://addons/MarchingSquaresTerrain/curve_falloff.tres")
+
 # This function gets called when the plugin is activated.
 func _enter_tree():
 	instance = self
@@ -85,6 +89,9 @@ func activate_terrain_brush_dock():
 		tool_checkbox = terrain_brush_dock.get_node("FlattenCheckBox")
 		tool_checkbox.toggled.connect(on_tool_checkbox_changed)
 		
+		falloff_checkbox = terrain_brush_dock.get_node("FalloffCheckBox")
+		falloff_checkbox.toggled.connect(on_falloff_checkbox_changed)
+		
 		color_picker = terrain_brush_dock.get_node("ColorPickerButton")
 		color_picker.color_changed.connect(on_color_picker_changed)
 		
@@ -97,6 +104,7 @@ func deactivate_terrain_brush_dock():
 		terrain_brush_dock_active = false
 		tool_options_button.item_selected.disconnect(on_tool_mode_changed)
 		tool_checkbox.toggled.disconnect(on_tool_checkbox_changed)
+		falloff_checkbox.toggled.disconnect(on_falloff_checkbox_changed)
 		color_picker.color_changed.disconnect(on_color_picker_changed)
 		remove_control_from_container(CONTAINER_SPATIAL_EDITOR_MENU, terrain_brush_dock)
 
@@ -393,14 +401,23 @@ func on_tool_mode_changed(index: int):
 	else:
 		tool_checkbox.visible = false
 		
+	if mode == TerrainToolMode.BRUSH or mode == TerrainToolMode.GROUND_TEXTURE:
+		falloff_checkbox.visible = true
+		falloff_checkbox.set_pressed_no_signal(falloff)
+	else:
+		falloff_checkbox.visible = false
+		
 	if mode == TerrainToolMode.GROUND_TEXTURE:
 		color_picker.visible = true
 	else:
 		color_picker.visible = false
 
 func on_tool_checkbox_changed(state: bool):
-	if mode == TerrainToolMode.BRUSH:
-		flatten = state
+	flatten = state
+		
+func on_falloff_checkbox_changed(state: bool):
+	falloff = state
+		
 		
 func on_color_picker_changed(color: Color):
 	ground_texture_color = color

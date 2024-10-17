@@ -516,7 +516,7 @@ func rotate_cell(rotations: int):
 
 # Adds a point. Coordinates are relative to the top-left corner (not mesh origin relative).
 # UV.x is closeness to the bottom of an edge. and UV.Y is closeness to the edge of a cliff.
-func add_point(x: float, y: float, z: float, uv_x: float = 0, uv_y: float = 0, uv2_x: float = 0, uv2_y: float = 0):
+func add_point(x: float, y: float, z: float, uv_x: float = 0, uv_y: float = 0, diag_midpoint: bool = false):
 	for i in range(r):
 		var temp = x
 		x = 1 - z
@@ -532,9 +532,22 @@ func add_point(x: float, y: float, z: float, uv_x: float = 0, uv_y: float = 0, u
 	#st.set_uv(uv2)
 	
 	# Color = a blend between the 4 corner colors of the cell.
-	var ab_color = lerp(color_map[cell_coords.y*dimensions.x + cell_coords.x], color_map[cell_coords.y*dimensions.x + cell_coords.x + 1], x)
-	var cd_color = lerp(color_map[(cell_coords.y + 1)*dimensions.x + cell_coords.x], color_map[(cell_coords.y + 1)*dimensions.x + cell_coords.x + 1], x)
-	var color = lerp(ab_color, cd_color, z)
+	
+	# Use the minimum bewteen both lerped diagonals, component-wise
+	# will result in smoother diagonal paths
+	var color: Color
+	if diag_midpoint:
+		var ad_color = lerp(color_map[cell_coords.y*dimensions.x + cell_coords.x], color_map[(cell_coords.y + 1)*dimensions.x + cell_coords.x + 1], 0.5)
+		var bc_color = lerp(color_map[cell_coords.y*dimensions.x + cell_coords.x + 1], color_map[(cell_coords.y + 1)*dimensions.x + cell_coords.x], 0.5)
+		color = Color(min(ad_color.r, bc_color.r), min(ad_color.g, bc_color.g), min(ad_color.b, bc_color.b), min(ad_color.a, bc_color.a))
+		if ad_color.r > 0.99 or bc_color.r > 0.99: color.r = 1.0;
+		if ad_color.g > 0.99 or bc_color.g > 0.99: color.g = 1.0;
+		if ad_color.b > 0.99 or bc_color.b > 0.99: color.b = 1.0;
+		if ad_color.a > 0.99 or bc_color.a > 0.99: color.a = 1.0;
+	else:
+		var ab_color = lerp(color_map[cell_coords.y*dimensions.x + cell_coords.x], color_map[cell_coords.y*dimensions.x + cell_coords.x + 1], x)
+		var cd_color = lerp(color_map[(cell_coords.y + 1)*dimensions.x + cell_coords.x], color_map[(cell_coords.y + 1)*dimensions.x + cell_coords.x + 1], x)
+		color = lerp(ab_color, cd_color, z)
 	st.set_color(color)
 	
 	var vert = Vector3((cell_coords.x+x) * cell_size.x, y, (cell_coords.y+z) * cell_size.y)
@@ -565,19 +578,19 @@ func add_full_floor():
 
 		add_point(0, ay, 0)
 		add_point(1, by, 0)
-		add_point(0.5, ey, 0.5)
+		add_point(0.5, ey, 0.5, 0, 0, true)
 		
 		add_point(1, by, 0)
 		add_point(1, dy, 1)
-		add_point(0.5, ey, 0.5)
+		add_point(0.5, ey, 0.5, 0, 0, true)
 		
 		add_point(1, dy, 1)
 		add_point(0, cy, 1)
-		add_point(0.5, ey, 0.5)
+		add_point(0.5, ey, 0.5, 0, 0, true)
 		
 		add_point(0, cy, 1)
 		add_point(0, ay, 0)
-		add_point(0.5, ey, 0.5)
+		add_point(0.5, ey, 0.5, 0, 0, true)
 	else:
 		add_point(0, ay, 0)
 		add_point(1, by, 0)

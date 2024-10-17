@@ -3,7 +3,7 @@
 [ext_resource type="PackedScene" uid="uid://c7vlx700fgtqs" path="res://Assets/Scenes/Characters/infinity.tscn" id="1_ayth2"]
 [ext_resource type="Script" path="res://Assets/Scripts/GameplayBaseNode.gd" id="1_rlrk0"]
 [ext_resource type="Script" path="res://Assets/Scripts/Camera3DTexelSnapped.gd" id="2_jq2uv"]
-[ext_resource type="PackedScene" uid="uid://dd6fx2mbdx7sf" path="res://Assets/Scenes/Levels/serene-village.tscn" id="2_y8fvv"]
+[ext_resource type="PackedScene" uid="uid://d0tvg6r1qe2m1" path="res://Assets/Scenes/Levels/testing-level.tscn" id="2_ujya0"]
 [ext_resource type="Script" path="res://Assets/Scripts/CameraPivot.gd" id="3_mxb0v"]
 [ext_resource type="Script" path="res://Assets/Scripts/ObjectHider.gd" id="13_h4pjn"]
 [ext_resource type="Script" path="res://Assets/Scripts/MainTextureRect.gd" id="15_ypvux"]
@@ -16,7 +16,7 @@ viewport_path = NodePath("SubViewport")
 
 [node name="GameplayBaseNode" type="Node3D"]
 script = ExtResource("1_rlrk0")
-first_level_scene = ExtResource("2_y8fvv")
+first_level_scene = ExtResource("2_ujya0")
 
 [node name="SubViewport" type="SubViewport" parent="."]
 size = Vector2i(640, 360)
