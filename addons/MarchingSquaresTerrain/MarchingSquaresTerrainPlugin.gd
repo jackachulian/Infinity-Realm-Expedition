@@ -281,7 +281,7 @@ func draw_pattern(terrain: MarchingSquaresTerrain):
 	var pattern = current_draw_pattern.duplicate(true)
 	
 	# Ensure points on both sides of chunk borders are updated
-	for draw_chunk_coords: Vector2i in pattern.keys():
+	for draw_chunk_coords: Vector2i in current_draw_pattern.keys():
 		var draw_chunk_dict = pattern[draw_chunk_coords]
 		for draw_cell_coords: Vector2i in draw_chunk_dict:
 			for cx in range(-1, 2):
@@ -319,15 +319,18 @@ func draw_pattern(terrain: MarchingSquaresTerrain):
 
 	# In brush mode this stores the height BEFORE set
 	# in grund texture mode this is the color BEFORE the draw
-	var restore_pattern = current_draw_pattern.duplicate(true)
-	for draw_chunk_coords: Vector2i in restore_pattern.keys():
+	var restore_pattern = {}
+	for draw_chunk_coords: Vector2i in pattern.keys():
 		var chunk: MarchingSquaresTerrainChunk = terrain.chunks[draw_chunk_coords]
-		var draw_chunk_dict = restore_pattern[draw_chunk_coords]
-		for draw_cell_coords: Vector2i in draw_chunk_dict:
+		restore_pattern[draw_chunk_coords] = {}
+		for draw_cell_coords: Vector2i in pattern[draw_chunk_coords]:
 			if mode == TerrainToolMode.BRUSH:
-				restore_pattern[draw_chunk_coords][draw_cell_coords] = chunk.get_height(draw_chunk_coords)
+				restore_pattern[draw_chunk_coords][draw_cell_coords] = chunk.get_height(draw_cell_coords)
 			elif mode == TerrainToolMode.GROUND_TEXTURE:
-				restore_pattern[draw_chunk_coords][draw_cell_coords] = chunk.get_color(draw_chunk_coords)
+				restore_pattern[draw_chunk_coords][draw_cell_coords] = chunk.get_color(draw_cell_coords)
+
+	print("pattern: ", pattern)
+	print("restore pattern: ", restore_pattern)
 
 	if mode == TerrainToolMode.GROUND_TEXTURE:
 		undo_redo.create_action("terrain color draw")

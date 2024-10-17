@@ -9,6 +9,8 @@ extends MeshInstance3D
 # Used to set heights per pixel (overrides noisemap)
 @export var height_map_image: Texture2D
 
+@export var higher_poly_floors: bool = false
+
 # Stores the heights from the heightmap.
 @export_storage var height_map: Array
 
@@ -548,14 +550,33 @@ func start_wall():
 
 func add_full_floor():
 	start_floor()
-	# ABC tri
-	add_point(0, ay, 0)
-	add_point(1, by, 0)
-	add_point(0, cy, 1)
-	# DCB tri
-	add_point(1, dy, 1)
-	add_point(0, cy, 1)
-	add_point(1, by, 0)
+	
+	if (higher_poly_floors):
+		var ey = (ay+by+cy+dy)/4
+
+		add_point(0, ay, 0)
+		add_point(1, by, 0)
+		add_point(0.5, ey, 0.5)
+		
+		add_point(1, by, 0)
+		add_point(1, dy, 1)
+		add_point(0.5, ey, 0.5)
+		
+		add_point(1, dy, 1)
+		add_point(0, cy, 1)
+		add_point(0.5, ey, 0.5)
+		
+		add_point(0, cy, 1)
+		add_point(0, ay, 0)
+		add_point(0.5, ey, 0.5)
+	else:
+		add_point(0, ay, 0)
+		add_point(1, by, 0)
+		add_point(0, cy, 1)
+
+		add_point(1, dy, 1)
+		add_point(0, cy, 1)
+		add_point(1, by, 0)
 
 # Add an outer corner, where A is the raised corner.
 # if flatten_bottom is true, then bottom_height is used for the lower height of the wall
