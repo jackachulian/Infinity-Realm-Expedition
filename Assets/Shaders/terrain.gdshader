@@ -5,13 +5,15 @@ uniform float ledgeTopThickness : hint_range(0, 1) = 0.5;
 uniform float ledgeBottomThickness : hint_range(0, 1) = 0;
 
 // Floor vars
-uniform float rockPathThreshold = 0.75;
+uniform float rockPathThreshold = 0.25;
+uniform float rockPathNoiseAmplitude = 0.25;
 
 // Noise tiling
 uniform float grassNoiseScale = 8;
 uniform float rockWallNoiseScale = 8;
 uniform float rockLedgeNoiseScale = 8;
 uniform float rockPathNoiseScale = 8;
+uniform float rockPathEdgeNoiseScale = 8;
 
 // Brightnesss gradient textures
 uniform sampler2D ledgeRockBrightnessGradient : source_color;
@@ -27,6 +29,7 @@ uniform sampler2D grassNoise : source_color;
 uniform sampler3D rockWallNoise : source_color;
 uniform sampler3D rockLedgeNoise : source_color;
 uniform sampler2D rockPathNoise : source_color;
+uniform sampler2D rockPathEdgeNoise : source_color;
 
 uniform bool debug = false;
 
@@ -38,13 +41,13 @@ void vertex() {
 
 vec3 grass_albedo(vec4 color) {
 	float colorNoise = texture(grassNoise, vec2(position.x, position.z) / grassNoiseScale).r;
-	float rockBrightness = texture(rockWallNoise, position / rockWallNoiseScale).r;
-	float threshold = 0.25 + rockBrightness*0.25;
-	float pathColorLessen = clamp(color.r, 0, 1);
-	return vec3(pathColorLessen);
-	float colorHeight = clamp(colorNoise - pathColorLessen, 0.01, 0.99);
+	float rockEdgeNoise = texture(rockPathEdgeNoise, vec2(position.x, position.z) / rockPathEdgeNoiseScale).r;
+	float threshold = rockPathThreshold + (rockEdgeNoise-0.5)*rockPathNoiseAmplitude;
+	float pathColorLessen = clamp(color.r - threshold + 0.25, 0, 1);
+	float colorHeight = clamp(colorNoise - min(pathColorLessen, color.r), 0, 1);
 	// Use the height in heightmap space (stored in vertex color) to get the grass color
 	vec3 grassAlbedo = texture(grassGradient, vec2(colorHeight, 0)).rgb;
+	//return vec3(pathColorLessen);
 	return grassAlbedo;
 }
 
@@ -84,11 +87,11 @@ void fragment() {
 	}
 	// ==== Floors
 	else {
-		float rockBrightness = texture(rockWallNoise, position / rockWallNoiseScale).r;
-		float threshold = 0.25 + rockBrightness*0.25;
+		float rockEdgeNoise = texture(rockPathEdgeNoise, vec2(position.x, position.z) / rockPathEdgeNoiseScale).r;
+		float threshold = clamp(rockPathThreshold + (rockEdgeNoise-0.5)*rockPathNoiseAmplitude, 0, 1);
 		if (COLOR.r > threshold) {
 			float pathNoise = texture(rockPathNoise, vec2(position.x, position.z) / rockPathNoiseScale).r;
-			float scaledPathNoise = clamp(pathNoise * (COLOR.r), 0.01, 0.99) * 0.675;
+			float scaledPathNoise = clamp((pathNoise+0.25-COLOR.r*0.5)*0.5 + 0.15, 0.01, 0.99);
 			ALBEDO = texture(rockGradient, vec2(1.0-scaledPathNoise, 0)).rgb;
 		} else {
 			ALBEDO = grass_albedo(COLOR);
