@@ -60,6 +60,7 @@ const BRUSH_VISUAL: Mesh = preload("brush_visual.tres")
 var BRUSH_RADIUS_VISUAL: Mesh
 
 @onready var falloff_curve: Curve = preload("res://addons/MarchingSquaresTerrain/curve_falloff.tres")
+@onready var brush_radius_material: ShaderMaterial = preload("res://addons/MarchingSquaresTerrain/brush_radius_material.tres")
 
 # This function gets called when the plugin is activated.
 func _enter_tree():
@@ -67,6 +68,7 @@ func _enter_tree():
 	add_custom_type("MarchingSquaresTerrain", "Node3D", preload("MarchingSquaresTerrain.gd"), preload("res://icon.svg"))
 	add_custom_type("MarchingSquaresTerrainChunk", "MeshInstance3D", preload("MarchingSquaresTerrainChunk.gd"), preload("res://icon.svg"))
 	add_node_3d_gizmo_plugin(gizmo_plugin)
+	brush_radius_material.set_shader_parameter("falloff_visible", falloff)
 
 # This function gets called when the plugin is deactivated.
 func _exit_tree():
@@ -414,6 +416,7 @@ func on_tool_checkbox_changed(state: bool):
 		
 func on_falloff_checkbox_changed(state: bool):
 	falloff = state
+	brush_radius_material.set_shader_parameter("falloff_visible", falloff)
 		
 		
 func on_color_picker_changed(color: Color):
