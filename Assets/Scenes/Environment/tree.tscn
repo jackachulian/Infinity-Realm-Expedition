@@ -1,8 +1,8 @@
 [gd_scene load_steps=13 format=3 uid="uid://b8tof31mndqii"]
 
 [ext_resource type="PackedScene" uid="uid://k08p6axl24ko" path="res://Assets/Models/Environment/tree.glb" id="1_2b3x1"]
-[ext_resource type="Material" uid="uid://11048jvnti0n" path="res://Assets/Materials/Environment/leaf.tres" id="2_m6vlq"]
-[ext_resource type="Material" uid="uid://duemk4wleilj4" path="res://Assets/Materials/Environment/trunk.tres" id="2_q0wbg"]
+[ext_resource type="Material" uid="uid://11048jvnti0n" path="res://Assets/Materials/Features/Environment/leaf.tres" id="2_m6vlq"]
+[ext_resource type="Material" uid="uid://duemk4wleilj4" path="res://Assets/Materials/Features/Environment/trunk.tres" id="2_q0wbg"]
 [ext_resource type="Shader" path="res://Assets/Shaders/leaf.gdshader" id="3_lw0jv"]
 [ext_resource type="Script" path="res://Assets/Scripts/HideableObject.gd" id="5_6ucqw"]
 

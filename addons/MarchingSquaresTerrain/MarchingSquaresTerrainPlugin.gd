@@ -177,7 +177,7 @@ func handle_mouse(camera: Camera3D, event: InputEvent) -> int:
 			var space_state = camera.get_world_3d().direct_space_state
 			var ray_length := 10000.0  # Adjust ray length as needed
 			var end := ray_origin + ray_dir * ray_length
-			var collision_mask = 1 # only terrain
+			var collision_mask = 16 # only terrain
 			var query := PhysicsRayQueryParameters3D.create(ray_origin, end, collision_mask)
 			var result = space_state.intersect_ray(query)
 			if result:

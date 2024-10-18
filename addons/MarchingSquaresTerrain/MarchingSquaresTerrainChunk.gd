@@ -81,6 +81,9 @@ func initialize_terrain(should_regenerate_mesh: bool = true):
 			generate_color_map()
 		if not mesh and should_regenerate_mesh:
 			regenerate_mesh()
+		for child in get_children():
+			if child is StaticBody3D:
+				child.collision_layer = 17 # ground (1) + terrain (16)
 		
 	else:
 		print("trying to generate terrain during runtime; not supported")
@@ -122,6 +125,10 @@ func regenerate_mesh():
 		if child is StaticBody3D:
 			child.free()
 	create_trimesh_collision()
+	for child in get_children():
+		if child is StaticBody3D:
+			child.collision_layer = 17 # ground (1) + terrain (16)
+	
 	
 	var elapsed_time: int = Time.get_ticks_msec() - start_time
 	print("generated terrain in "+str(elapsed_time)+"ms")

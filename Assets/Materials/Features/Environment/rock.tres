@@ -1,0 +1,25 @@
+[gd_resource type="ShaderMaterial" load_steps=6 format=3 uid="uid://ew6hn7dft80y"]
+
+[ext_resource type="Shader" path="res://Assets/Shaders/outline_spatial_shader.gdshader" id="1_f7h4j"]
+[ext_resource type="Shader" path="res://Assets/Shaders/rock.gdshader" id="2_migh5"]
+[ext_resource type="Texture2D" uid="uid://b6j1ifkybyob6" path="res://Assets/Textures/rock_gradient.tres" id="3_ktif4"]
+[ext_resource type="NoiseTexture3D" uid="uid://3jnauc3rxtsh" path="res://Assets/Textures/wall_3d_noise.tres" id="4_2xhhq"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_qm6u7"]
+render_priority = -2
+shader = ExtResource("1_f7h4j")
+shader_parameter/depth_threshold = 0.368
+shader_parameter/reverse_depth_threshold = 0.703
+shader_parameter/normal_threshold = 0.6
+shader_parameter/darken_amount = 0.5
+shader_parameter/lighten_amount = 1.4
+shader_parameter/debug = false
+shader_parameter/normal_edge_bias = Vector3(1, 1, 1)
+
+[resource]
+render_priority = 0
+next_pass = SubResource("ShaderMaterial_qm6u7")
+shader = ExtResource("2_migh5")
+shader_parameter/rockNoiseScale = 8.0
+shader_parameter/rockGradient = ExtResource("3_ktif4")
+shader_parameter/rockWallNoise = ExtResource("4_2xhhq")
