@@ -156,8 +156,9 @@ func handle_mouse(camera: Camera3D, event: InputEvent) -> int:
 		var draw_area_hovered: bool = false
 		
 		if is_setting and draw_height_set:
-			var set_plane = Plane(Vector3(ray_dir.x, 0, ray_dir.z), base_position)
-			var set_position = set_plane.intersects_ray(ray_origin, ray_dir)
+			var local_ray_dir = ray_dir * terrain.transform
+			var set_plane = Plane(Vector3(local_ray_dir.x, 0, local_ray_dir.z), base_position)
+			var set_position = set_plane.intersects_ray(terrain.to_local(ray_origin), local_ray_dir)
 			if set_position:
 				brush_position = set_position
 		
@@ -166,6 +167,7 @@ func handle_mouse(camera: Camera3D, event: InputEvent) -> int:
 			var chunk_plane = Plane(Vector3.UP, Vector3(0, draw_height, 0))
 			draw_position = chunk_plane.intersects_ray(ray_origin, ray_dir)
 			if draw_position:
+				draw_position = terrain.to_local(draw_position)
 				draw_area_hovered = true
 
 		else:
@@ -177,7 +179,7 @@ func handle_mouse(camera: Camera3D, event: InputEvent) -> int:
 			var query := PhysicsRayQueryParameters3D.create(ray_origin, end, collision_mask)
 			var result = space_state.intersect_ray(query)
 			if result:
-				draw_position = result.position
+				draw_position = terrain.to_local(result.position)
 				draw_area_hovered = true
 				
 		# ALT to clear the current draw pattern. don't clear while setting
@@ -306,8 +308,11 @@ func draw_pattern(terrain: MarchingSquaresTerrain):
 				draw_value = lerp(restore_value, ground_texture_color, sample)
 			else:
 				restore_value = chunk.get_height(draw_cell_coords)
-				var height_diff = brush_position.y - draw_height
-				draw_value = lerp(restore_value, restore_value + height_diff, sample)
+				if flatten:
+					draw_value = lerp(restore_value, brush_position.y, sample)
+				else:
+					var height_diff = brush_position.y - draw_height
+					draw_value = lerp(restore_value, restore_value + height_diff, sample)
 				
 			restore_pattern[draw_chunk_coords][draw_cell_coords] = restore_value
 			pattern[draw_chunk_coords][draw_cell_coords] = draw_value
