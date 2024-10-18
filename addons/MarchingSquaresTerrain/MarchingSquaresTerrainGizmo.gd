@@ -64,7 +64,6 @@ func _redraw():
 		
 		# otherwise, drag that pattern's height
 		else:
-			print("setting")
 			# if alt held, ONLY drag the cursor cell
 			if Input.is_key_pressed(KEY_ALT):
 				terrain_plugin.current_draw_pattern.clear()
@@ -74,7 +73,6 @@ func _redraw():
 			terrain_plugin.base_position = pos
 			
 	if terrain_plugin.is_drawing and not terrain_plugin.draw_height_set:
-		print("drawing")
 		terrain_plugin.draw_height_set = true
 		terrain_plugin.draw_height = terrain_plugin.brush_position.y
 			

@@ -312,6 +312,7 @@ func draw_pattern(terrain: MarchingSquaresTerrain):
 				restore_value = chunk.get_height(draw_cell_coords)
 				if flatten:
 					draw_value = lerp(restore_value, brush_position.y, sample)
+					#draw_value = lerp(base_position.y, brush_position.y, sample)
 				else:
 					var height_diff = brush_position.y - draw_height
 					draw_value = lerp(restore_value, restore_value + height_diff, sample)

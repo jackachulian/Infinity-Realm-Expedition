@@ -1,0 +1,27 @@
+[gd_scene load_steps=2 format=3 uid="uid://bwy3onvfvvg4w"]
+
+[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_e7x3s"]
+points = PackedVector3Array(1.25, -1, -2, -0.75, -1, -2, -0.75, 1, -2, 1.25, -1, 2, -0.75, -1, 2, -0.75, 1, 2)
+
+[node name="CSGStairs" type="CSGBox3D"]
+size = Vector3(2, 2, 4)
+
+[node name="CSGStairs2" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, 0.5, 0)
+operation = 2
+size = Vector3(1, 1, 4)
+
+[node name="CSGStairs3" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.750061, 0)
+operation = 2
+size = Vector3(1, 0.500122, 4)
+
+[node name="CSGStairs4" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.750244, 0, 0)
+operation = 2
+size = Vector3(0.500488, 1, 4)
+
+[node name="StaticBody3D" type="StaticBody3D" parent="."]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D"]
+shape = SubResource("ConvexPolygonShape3D_e7x3s")
