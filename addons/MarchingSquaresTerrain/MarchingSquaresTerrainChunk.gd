@@ -841,6 +841,3 @@ func notify_needs_update(z: int, x: int):
 		return
 		
 	needs_update[z][x] = true
-			
-func simple_grass():
-	var grass_mesh = SurfaceTool.new();

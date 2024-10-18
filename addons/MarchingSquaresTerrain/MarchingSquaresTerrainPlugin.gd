@@ -217,7 +217,8 @@ func handle_mouse(camera: Camera3D, event: InputEvent) -> int:
 				if is_setting:
 					is_setting = false
 					draw_pattern(terrain)	
-					current_draw_pattern.clear()
+					#current_draw_pattern.clear()
+					draw_height = brush_position.y
 			gizmo_plugin.terrain_gizmo._redraw()
 			return EditorPlugin.AFTER_GUI_INPUT_STOP
 			
@@ -320,6 +321,10 @@ func draw_pattern(terrain: MarchingSquaresTerrain):
 			restore_pattern[draw_chunk_coords][draw_cell_coords] = restore_value
 			pattern[draw_chunk_coords][draw_cell_coords] = draw_value
 			
+	for draw_chunk_coords: Vector2i in current_draw_pattern.keys():
+		var draw_chunk_dict = current_draw_pattern[draw_chunk_coords]
+		for draw_cell_coords: Vector2i in draw_chunk_dict:
+			var sample: float = clamp(draw_chunk_dict[draw_cell_coords], 0.001, 0.999)
 			for cx in range(-1, 2):
 				for cz in range(-1, 2):
 					if (cx == 0 and cz == 0):
@@ -353,7 +358,16 @@ func draw_pattern(terrain: MarchingSquaresTerrain):
 					if not restore_pattern.has(adjacent_chunk_coords):
 						restore_pattern[adjacent_chunk_coords] = {}
 						
-					pattern[adjacent_chunk_coords][adjacent_cell_coords] = draw_value
+					var draw_value = pattern[draw_chunk_coords][draw_cell_coords]
+					var restore_value = restore_pattern[draw_chunk_coords][draw_cell_coords]
+						
+					var adj_draw_value
+					if current_draw_pattern.has(adjacent_chunk_coords) and current_draw_pattern[adjacent_chunk_coords].has(adjacent_cell_coords) and current_draw_pattern[adjacent_chunk_coords][adjacent_cell_coords] > sample:
+						adj_draw_value = pattern[adjacent_chunk_coords][adjacent_cell_coords]
+					else:
+						adj_draw_value = draw_value
+						
+					pattern[adjacent_chunk_coords][adjacent_cell_coords] = adj_draw_value
 					restore_pattern[adjacent_chunk_coords][adjacent_cell_coords] = restore_value
 
 	# In brush mode this stores the height BEFORE set
