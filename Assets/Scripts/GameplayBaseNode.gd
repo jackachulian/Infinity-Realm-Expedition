@@ -1,7 +1,7 @@
 class_name GameplayBaseNode
 extends Node3D
 
-@export var level: Node3D
+@export var level: Level
 @export var first_level_scene: PackedScene
 
 func _ready() -> void:
@@ -11,7 +11,10 @@ func _ready() -> void:
 			return
 			
 		# this may be quite an expensive call in the future, so may want to add a loading screen and load in the background
-		level = first_level_scene.instantiate()
+		level = first_level_scene.instantiate() as Level
 		
 		add_child(level)
 		move_child(level, 2) # after subviewport and after player
+
+		if level.spawnpoint:
+			Entity.player.global_position = level.spawnpoint.global_position

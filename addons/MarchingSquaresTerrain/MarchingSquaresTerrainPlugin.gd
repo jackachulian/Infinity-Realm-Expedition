@@ -68,7 +68,6 @@ func _enter_tree():
 	add_custom_type("MarchingSquaresTerrain", "Node3D", preload("MarchingSquaresTerrain.gd"), preload("res://icon.svg"))
 	add_custom_type("MarchingSquaresTerrainChunk", "MeshInstance3D", preload("MarchingSquaresTerrainChunk.gd"), preload("res://icon.svg"))
 	add_node_3d_gizmo_plugin(gizmo_plugin)
-	brush_radius_material.set_shader_parameter("falloff_visible", falloff)
 
 # This function gets called when the plugin is deactivated.
 func _exit_tree():
@@ -76,6 +75,9 @@ func _exit_tree():
 	terrain_brush_dock.free()
 	remove_custom_type("MarchingSquaresTerrain")
 	remove_node_3d_gizmo_plugin(gizmo_plugin)
+	
+func _ready():
+	brush_radius_material.set_shader_parameter("falloff_visible", falloff)
 	
 func activate_terrain_brush_dock():
 	if not terrain_brush_dock_active:
@@ -347,6 +349,7 @@ func draw_pattern(terrain: MarchingSquaresTerrain):
 						
 					if not pattern.has(adjacent_chunk_coords):
 						pattern[adjacent_chunk_coords] = {}
+					if not restore_pattern.has(adjacent_chunk_coords):
 						restore_pattern[adjacent_chunk_coords] = {}
 						
 					pattern[adjacent_chunk_coords][adjacent_cell_coords] = draw_value

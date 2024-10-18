@@ -1,7 +1,7 @@
 [gd_scene load_steps=4 format=3 uid="uid://cpuhu4ifjhgwc"]
 
 [ext_resource type="Script" path="res://Assets/Scripts/Menus/MainMenu.gd" id="1_l1cy2"]
-[ext_resource type="PackedScene" uid="uid://cnn0jerhkfw2f" path="res://Assets/Scenes/Maps/gameplay_base_node.tscn" id="2_y6s1o"]
+[ext_resource type="PackedScene" uid="uid://cnn0jerhkfw2f" path="res://Assets/Scenes/gameplay_base_node.tscn" id="2_y6s1o"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_44knn"]
 font_size = 48

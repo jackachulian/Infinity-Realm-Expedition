@@ -1,28 +1,28 @@
 [gd_scene load_steps=12 format=3 uid="uid://cnn0jerhkfw2f"]
 
-[ext_resource type="PackedScene" uid="uid://c7vlx700fgtqs" path="res://Assets/Scenes/Characters/infinity.tscn" id="1_ayth2"]
-[ext_resource type="Script" path="res://Assets/Scripts/GameplayBaseNode.gd" id="1_rlrk0"]
-[ext_resource type="Script" path="res://Assets/Scripts/Camera3DTexelSnapped.gd" id="2_jq2uv"]
-[ext_resource type="PackedScene" uid="uid://d0tvg6r1qe2m1" path="res://Assets/Scenes/Levels/testing-level.tscn" id="2_ujya0"]
-[ext_resource type="Script" path="res://Assets/Scripts/CameraPivot.gd" id="3_mxb0v"]
-[ext_resource type="Script" path="res://Assets/Scripts/ObjectHider.gd" id="13_h4pjn"]
-[ext_resource type="Script" path="res://Assets/Scripts/MainTextureRect.gd" id="15_ypvux"]
-[ext_resource type="PackedScene" uid="uid://dpfh6ela6sv1l" path="res://Assets/Scenes/Menus/battle-hud.tscn" id="16_b1hx6"]
-[ext_resource type="PackedScene" uid="uid://crfgll53nx1pi" path="res://Assets/Scenes/Menus/pause-menu.tscn" id="18_li0v0"]
-[ext_resource type="Script" path="res://Assets/Scripts/Data/SaveManager.gd" id="21_tqpss"]
+[ext_resource type="Script" path="res://Assets/Scripts/GameplayBaseNode.gd" id="1_5seeb"]
+[ext_resource type="PackedScene" uid="uid://dd6fx2mbdx7sf" path="res://Assets/Scenes/Levels/serene-village.tscn" id="2_a0jdv"]
+[ext_resource type="Script" path="res://Assets/Scripts/CameraPivot.gd" id="3_4fxb2"]
+[ext_resource type="Script" path="res://Assets/Scripts/Camera3DTexelSnapped.gd" id="4_4e4e3"]
+[ext_resource type="Script" path="res://Assets/Scripts/ObjectHider.gd" id="5_btpna"]
+[ext_resource type="PackedScene" uid="uid://c7vlx700fgtqs" path="res://Assets/Scenes/Characters/infinity.tscn" id="6_padxh"]
+[ext_resource type="Script" path="res://Assets/Scripts/MainTextureRect.gd" id="7_ls1yr"]
+[ext_resource type="PackedScene" uid="uid://dpfh6ela6sv1l" path="res://Assets/Scenes/Menus/battle-hud.tscn" id="8_xm7dh"]
+[ext_resource type="PackedScene" uid="uid://crfgll53nx1pi" path="res://Assets/Scenes/Menus/pause-menu.tscn" id="9_aa4pr"]
+[ext_resource type="Script" path="res://Assets/Scripts/Data/SaveManager.gd" id="10_ietri"]
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_uan28"]
 viewport_path = NodePath("SubViewport")
 
 [node name="GameplayBaseNode" type="Node3D"]
-script = ExtResource("1_rlrk0")
-first_level_scene = ExtResource("2_ujya0")
+script = ExtResource("1_5seeb")
+first_level_scene = ExtResource("2_a0jdv")
 
 [node name="SubViewport" type="SubViewport" parent="."]
 size = Vector2i(640, 360)
 
 [node name="CameraPivot" type="Node3D" parent="SubViewport" node_paths=PackedStringArray("follow")]
-script = ExtResource("3_mxb0v")
+script = ExtResource("3_4fxb2")
 follow = NodePath("../../infinity")
 
 [node name="PlayerCamera" type="Camera3D" parent="SubViewport/CameraPivot"]
@@ -34,7 +34,7 @@ current = true
 fov = 33.0
 size = 26.667
 far = 100.0
-script = ExtResource("2_jq2uv")
+script = ExtResource("4_4e4e3")
 
 [node name="ObjectHiderRayCast3D" type="RayCast3D" parent="SubViewport/CameraPivot/PlayerCamera"]
 transform = Transform3D(1, 0, 0, 0, 0.999743, 0.0226873, 0, -0.0226873, 0.999743, 0, 0, 0)
@@ -44,9 +44,9 @@ hit_from_inside = true
 hit_back_faces = false
 collide_with_areas = true
 collide_with_bodies = false
-script = ExtResource("13_h4pjn")
+script = ExtResource("5_btpna")
 
-[node name="infinity" parent="." groups=["screen_snap"] instance=ExtResource("1_ayth2")]
+[node name="infinity" parent="." groups=["screen_snap"] instance=ExtResource("6_padxh")]
 transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 0, 0)
 
 [node name="MainTextureRect" type="TextureRect" parent="."]
@@ -57,7 +57,7 @@ grow_horizontal = 2
 grow_vertical = 2
 texture = SubResource("ViewportTexture_uan28")
 stretch_mode = 6
-script = ExtResource("15_ypvux")
+script = ExtResource("7_ls1yr")
 
 [node name="UI" type="Control" parent="."]
 layout_mode = 3
@@ -67,7 +67,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="BattleHUD" parent="UI" instance=ExtResource("16_b1hx6")]
+[node name="BattleHUD" parent="UI" instance=ExtResource("8_xm7dh")]
 layout_mode = 1
 anchors_preset = 13
 anchor_left = 0.5
@@ -75,9 +75,9 @@ anchor_right = 0.5
 offset_left = -320.0
 offset_right = 320.0
 
-[node name="PauseMenu" parent="UI" instance=ExtResource("18_li0v0")]
+[node name="PauseMenu" parent="UI" instance=ExtResource("9_aa4pr")]
 visible = false
 layout_mode = 1
 
 [node name="SaveManager" type="Node" parent="."]
-script = ExtResource("21_tqpss")
+script = ExtResource("10_ietri")

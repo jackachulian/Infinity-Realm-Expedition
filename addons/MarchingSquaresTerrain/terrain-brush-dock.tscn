@@ -1,7 +1,4 @@
-[gd_scene load_steps=3 format=3 uid="uid://h1yig2twfhgv"]
-
-[ext_resource type="Script" path="res://addons/MarchingSquaresTerrain/curve_viewer.gd" id="1_yamn4"]
-[ext_resource type="Curve" path="res://addons/MarchingSquaresTerrain/curve_falloff.tres" id="2_gtevr"]
+[gd_scene format=3 uid="uid://h1yig2twfhgv"]
 
 [node name="Terrain-brush-dock" type="Control"]
 layout_mode = 3
@@ -40,14 +37,3 @@ layout_mode = 0
 offset_left = 167.0
 offset_right = 250.0
 offset_bottom = 31.0
-
-[node name="Control" type="Control" parent="."]
-visible = false
-layout_mode = 1
-anchors_preset = 9
-anchor_bottom = 1.0
-offset_left = 273.0
-offset_right = 355.0
-grow_vertical = 2
-script = ExtResource("1_yamn4")
-curve = ExtResource("2_gtevr")

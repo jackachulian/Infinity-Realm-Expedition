@@ -1,5 +1,5 @@
 shader_type spatial;
-render_mode unshaded, depth_prepass_alpha;
+render_mode unshaded;
 
 uniform sampler2D screen_texture : source_color, hint_screen_texture, filter_nearest;
 uniform sampler2D depth_texture : source_color, hint_depth_texture, filter_nearest;
