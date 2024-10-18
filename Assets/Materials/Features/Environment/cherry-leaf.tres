@@ -1,0 +1,22 @@
+[gd_resource type="ShaderMaterial" load_steps=3 format=3 uid="uid://b26dl54fyj6r0"]
+
+[ext_resource type="Shader" path="res://Assets/Shaders/leaf.gdshader" id="1_kn6m6"]
+[ext_resource type="Texture2D" uid="uid://d1va2uwt1vrn4" path="res://Assets/Sprites/misc/leaf2.png" id="2_807na"]
+
+[resource]
+resource_local_to_scene = true
+render_priority = 0
+shader = ExtResource("1_kn6m6")
+shader_parameter/albedo = Color(0.823415, 0.55866, 0.85763, 1)
+shader_parameter/shadow_size = -0.12
+shader_parameter/shadow_blend = 1.261
+shader_parameter/shadow_banding = 2.0
+shader_parameter/shadow_extra_intensity = 0.0
+shader_parameter/shadow_color = Color(0.495207, 0.0671364, 0.598214, 1)
+shader_parameter/light_tint = Color(0.919866, 0.939467, 0.718072, 1)
+shader_parameter/rimlight_size = -0.264
+shader_parameter/rimlight_blend = 0.83
+shader_parameter/rimlight_banding = 2.0
+shader_parameter/rimlight_color = Color(1, 1, 1, 1)
+shader_parameter/hide_amount = 0.0
+shader_parameter/leaf_texture = ExtResource("2_807na")

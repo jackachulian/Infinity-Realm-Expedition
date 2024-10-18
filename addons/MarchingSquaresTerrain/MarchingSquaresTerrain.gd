@@ -31,7 +31,7 @@ extends Node3D
 			chunk.grass_planter.multimesh.instance_count = (dimensions.x-1) * (dimensions.z-1) * grass_subdivisions * grass_subdivisions
 			chunk.grass_planter.regenerate_all_cells()
 
-@export var grass_size := Vector2(0.5, 0.5):
+@export var grass_size := Vector2(0.75, 0.75):
 	set(value):
 		grass_size = value
 		for chunk: MarchingSquaresTerrainChunk in chunks.values():

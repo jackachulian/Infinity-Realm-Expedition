@@ -10,13 +10,14 @@ var terrain_brush_dock_active: bool
 var terrain_brush_dock: Control
 var tool_options_button: OptionButton
 var tool_checkbox: CheckBox # flatten
-var falloff_checkbox: CheckBox # falloff
+var falloff_checkbox: CheckBox
+var snap_checkbox: CheckBox
 var color_picker: ColorPickerButton
 
 enum TerrainToolMode {
 	BRUSH = 0,
 	MANAGE_CHUNKS = 1,
-	GROUND_TEXTURE = 2
+	GROUND_TEXTURE = 2,
 }
 var mode: TerrainToolMode = TerrainToolMode.BRUSH
 
@@ -216,9 +217,11 @@ func handle_mouse(camera: Camera3D, event: InputEvent) -> int:
 						current_draw_pattern.clear()
 				if is_setting:
 					is_setting = false
-					draw_pattern(terrain)	
-					#current_draw_pattern.clear()
-					draw_height = brush_position.y
+					draw_pattern(terrain)
+					if Input.is_key_pressed(KEY_SHIFT):
+						draw_height = brush_position.y
+					else:
+						current_draw_pattern.clear()
 			gizmo_plugin.terrain_gizmo._redraw()
 			return EditorPlugin.AFTER_GUI_INPUT_STOP
 			
@@ -296,6 +299,10 @@ func draw_pattern(terrain: MarchingSquaresTerrain):
 	var pattern = {}
 	var restore_pattern = {}
 	
+	#var snap: bool =  Input.is_key_pressed(KEY_S)
+	#var snap: bool = true
+	var snap: bool = not Input.is_key_pressed(KEY_S)
+	
 	# Ensure points on both sides of chunk borders are updated
 	for draw_chunk_coords: Vector2i in current_draw_pattern.keys():
 		pattern[draw_chunk_coords] = {}
@@ -317,6 +324,8 @@ func draw_pattern(terrain: MarchingSquaresTerrain):
 				else:
 					var height_diff = brush_position.y - draw_height
 					draw_value = lerp(restore_value, restore_value + height_diff, sample)
+				if snap:
+					draw_value = round(draw_value/terrain.height_banding) * terrain.height_banding
 				
 			restore_pattern[draw_chunk_coords][draw_cell_coords] = restore_value
 			pattern[draw_chunk_coords][draw_cell_coords] = draw_value
