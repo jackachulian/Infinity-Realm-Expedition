@@ -38,6 +38,7 @@ func _ready():
 		hitbox.visible = false
 		hitbox.disable_shape()
 	if slash_effect:
+		slash_effect.top_level = true
 		slash_effect.visible = false
 	if projectile:
 		projectile.visible = false
@@ -81,10 +82,8 @@ func shoot_projectile():
 	
 			
 func instantiate_slash_effect():
-	var slash: SlashEffect = slash_effect.duplicate()
-	slash.global_transform = entity.global_transform
-	entity.get_parent().add_child(slash, true)
-	slash.animate()
+	slash_effect.global_transform = entity.global_transform
+	slash_effect.animate()
 	
 
 func on_enter_state():

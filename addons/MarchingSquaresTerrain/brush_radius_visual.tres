@@ -1,6 +1,6 @@
 [gd_resource type="CylinderMesh" load_steps=2 format=3 uid="uid://cg3lvmu68oaaa"]
 
-[ext_resource type="Material" uid="uid://dtevocyixqsgv" path="res://addons/MarchingSquaresTerrain/brush_radius_material.tres" id="1_sft8u"]
+[ext_resource type="Material" path="res://addons/MarchingSquaresTerrain/brush_radius_material.tres" id="1_sft8u"]
 
 [resource]
 material = ExtResource("1_sft8u")

@@ -164,6 +164,7 @@ transform = Transform3D(-1, 8.74228e-08, 0, -8.74228e-08, -1, 0, 0, 0, 1, -0.016
 shape = SubResource("CapsuleShape3D_e7xoe")
 
 [node name="SlashEffect" type="Node3D" parent="Sword-Attack1" node_paths=PackedStringArray("mesh")]
+top_level = true
 script = ExtResource("6_ipoi0")
 duration = 0.125
 mesh = NodePath("CSGPolygon3D")
@@ -206,6 +207,7 @@ transform = Transform3D(-0.999996, -0.00272262, 0, 0.00272262, -0.999996, 0, 0, 
 shape = SubResource("CapsuleShape3D_4jjti")
 
 [node name="SlashEffect" type="Node3D" parent="Sword-Attack2" node_paths=PackedStringArray("mesh")]
+top_level = true
 script = ExtResource("6_ipoi0")
 duration = 0.133
 mesh = NodePath("CSGPolygon3D")
@@ -249,6 +251,7 @@ transform = Transform3D(1, 0, 0, 0, 0.999809, -0.019564, 0, 0.019564, 0.999809, 
 shape = SubResource("CapsuleShape3D_3vbbo")
 
 [node name="SlashEffect" type="Node3D" parent="Sword-Attack3" node_paths=PackedStringArray("mesh")]
+top_level = true
 script = ExtResource("6_ipoi0")
 duration = 0.175
 mesh = NodePath("CSGPolygon3D")

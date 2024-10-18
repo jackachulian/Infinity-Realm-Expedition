@@ -1,7 +1,7 @@
-[gd_resource type="ShaderMaterial" load_steps=4 format=3 uid="uid://dtevocyixqsgv"]
+[gd_resource type="ShaderMaterial" load_steps=4 format=3 uid="uid://dd07mmmqi62n8"]
 
 [ext_resource type="Shader" path="res://addons/MarchingSquaresTerrain/brush_radius_visual.gdshader" id="1_lrdpq"]
-[ext_resource type="Curve" uid="uid://c0bexjsfvvcxb" path="res://addons/MarchingSquaresTerrain/curve_falloff.tres" id="2_4hsdl"]
+[ext_resource type="Curve" path="res://addons/MarchingSquaresTerrain/curve_falloff.tres" id="2_4hsdl"]
 
 [sub_resource type="CurveTexture" id="CurveTexture_xffaj"]
 curve = ExtResource("2_4hsdl")

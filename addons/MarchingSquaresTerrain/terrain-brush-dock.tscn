@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://h1yig2twfhgv"]
 
 [ext_resource type="Script" path="res://addons/MarchingSquaresTerrain/curve_viewer.gd" id="1_yamn4"]
-[ext_resource type="Curve" uid="uid://c0bexjsfvvcxb" path="res://addons/MarchingSquaresTerrain/curve_falloff.tres" id="2_gtevr"]
+[ext_resource type="Curve" path="res://addons/MarchingSquaresTerrain/curve_falloff.tres" id="2_gtevr"]
 
 [node name="Terrain-brush-dock" type="Control"]
 layout_mode = 3

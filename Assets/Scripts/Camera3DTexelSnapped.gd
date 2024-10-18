@@ -62,5 +62,5 @@ func _snap_objects() -> void:
 
 func _snap_objects_revert() -> void:
 	for i in _snap_nodes.size():
-		(_snap_nodes[i] as Node3D).global_position = _pre_snapped_positions[i]
+		_snap_nodes[i].global_position = _pre_snapped_positions[i]
 	_snap_nodes.clear()

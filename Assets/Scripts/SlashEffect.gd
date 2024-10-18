@@ -13,4 +13,3 @@ func animate():
 	mesh.material.set_shader_parameter("t", 0.5)
 	await get_tree().create_timer(duration * 0.333).timeout
 	visible = false
-	queue_free()
