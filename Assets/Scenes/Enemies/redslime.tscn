@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=3 uid="uid://bnq6kyw7csjrm"]
+[gd_scene load_steps=14 format=3 uid="uid://bnq6kyw7csjrm"]
 
 [ext_resource type="PackedScene" uid="uid://5xkk1fd51bor" path="res://Assets/Models/Enemies/redslime.glb" id="1_f33ua"]
 [ext_resource type="Material" uid="uid://c2846f7m7sd1j" path="res://Assets/Materials/Slime/slime-red.tres" id="2_1gwk5"]
@@ -7,7 +7,6 @@
 [ext_resource type="Material" uid="uid://bwwxf12w26ovn" path="res://Assets/Materials/damage-flash.tres" id="3_quer2"]
 [ext_resource type="Script" path="res://Assets/Scripts/Input/BasicAIInput.gd" id="3_ytsi7"]
 [ext_resource type="Script" path="res://Assets/Scripts/StateMachine/StateMachine.gd" id="4_4psyd"]
-[ext_resource type="PackedScene" uid="uid://1qj7f1tmhxpo" path="res://Assets/Scenes/EquippedWeapons/iron_sword.tscn" id="4_j7qav"]
 [ext_resource type="Material" uid="uid://dryb2rb71lolt" path="res://Assets/Materials/Slime/pupil.tres" id="4_pue12"]
 [ext_resource type="Script" path="res://Assets/Scripts/Hurtbox.gd" id="6_hdqk2"]
 [ext_resource type="Script" path="res://Assets/Scripts/StateMachine/States/Generic/StandardState.gd" id="6_sthgl"]
@@ -36,9 +35,6 @@ weapon_model_parent = NodePath(".")
 editor_description = "Once weapons/spells are added, if loadout is added to the player, it should be here, processed before input. This is because currently as of writing, main attack state is stored in input, which the state machine reads if it is requested to send to the main attack state."
 
 [node name="Weapon" type="Node3D" parent="Loadout" index="0"]
-
-[node name="iron_sword" parent="Loadout/Weapon" index="0" instance=ExtResource("4_j7qav")]
-visible = false
 
 [node name="Spells" type="Node3D" parent="Loadout" index="1"]
 
