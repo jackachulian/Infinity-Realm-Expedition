@@ -9,5 +9,5 @@ curve = ExtResource("2_4hsdl")
 [resource]
 render_priority = 0
 shader = ExtResource("1_lrdpq")
-shader_parameter/falloff_visible = false
+shader_parameter/falloff_visible = true
 shader_parameter/curve_texture = SubResource("CurveTexture_xffaj")

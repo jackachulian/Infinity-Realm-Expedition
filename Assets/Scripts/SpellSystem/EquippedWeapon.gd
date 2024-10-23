@@ -8,6 +8,9 @@ extends EquippedSpell
 # If false, this is a physical non-summoned weapon and it will be "summoned" (placed into hand) as soon as and while it is equipped.
 @export var is_summoned: bool = true
 
+# Used by AI to know when they are close enough to an opponent to use this spell
+@export var ai_distance: float = 5
+
 # data should ideally be of tpye WeaponData
 var weapon_data: WeaponData:
 	get():

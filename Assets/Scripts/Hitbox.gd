@@ -13,11 +13,13 @@ class_name Hitbox
 # The knockback force of this attack. faces in this hitbox's global -z direction
 @export var knockback: float = 5
 
-@export var hit_players: bool = false
+@export var hit_players: bool = true
 
 @export var hit_enemies: bool = true
 
 @export var hit_objects: bool = true
+
+@export var hit_self: bool = false
 
 @onready var shape: CollisionShape3D = get_child(0)
 
@@ -29,12 +31,20 @@ func _init() -> void:
 	collision_mask = (2 if hit_players else 0) + (4 if hit_enemies else 0) + (8 if hit_objects else 0)
 
 # Trigger this hitbox once during only this frame and deal damage to all overlapping bodies once.
-func deal_damage():
+# entity: the attacking entity, if any. null for no entity
+func deal_damage(attacker: Entity):
 	print("attacking with hitbox "+name)
 	for area in get_overlapping_areas():
-		deal_damage_to(area)
+		deal_damage_to(area, attacker)
 		
-func deal_damage_to(area: Area3D):
+# area = the area to deal damage to
+# entity - the entity that using the attack that is dealing this damage to the other
+func deal_damage_to(area: Area3D, entity: Entity):
+	# Don't deal damage to self
+	if area is Hurtbox:
+		if entity and area.entity == entity:
+			return 
+	
 	print("overlapping with area "+area.name)
 	if area.has_method("take_damage"):
 		area.take_damage(damage)

@@ -63,7 +63,8 @@ func physics_update(delta: float):
 	if not hitbox_activated and time_elapsed >= attack_delay:
 		hitbox_activated = true
 		if hitbox:
-			hitbox.deal_damage()
+			var attacker := entity
+			hitbox.deal_damage(attacker)
 		if slash_effect:
 			instantiate_slash_effect()
 		if projectile:
