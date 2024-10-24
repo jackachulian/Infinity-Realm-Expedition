@@ -1,11 +1,10 @@
-[gd_scene load_steps=18 format=3 uid="uid://c7vlx700fgtqs"]
+[gd_scene load_steps=17 format=3 uid="uid://c7vlx700fgtqs"]
 
 [ext_resource type="PackedScene" uid="uid://bfdvxynauwmtj" path="res://Assets/Models/Characters/infinity.glb" id="1_rm5qk"]
 [ext_resource type="Script" path="res://Assets/Scripts/Entity.gd" id="2_pd53c"]
 [ext_resource type="Script" path="res://Assets/Scripts/Model.gd" id="3_11b10"]
 [ext_resource type="Script" path="res://Assets/Scripts/Movement.gd" id="3_p5r50"]
 [ext_resource type="Script" path="res://Assets/Scripts/Input/PlayerInput.gd" id="4_1mgmj"]
-[ext_resource type="Material" uid="uid://bwwxf12w26ovn" path="res://Assets/Materials/damage-flash.tres" id="4_cyyo3"]
 [ext_resource type="Script" path="res://Assets/Scripts/StateMachine/States/Generic/MoveState.gd" id="4_fm0wv"]
 [ext_resource type="Script" path="res://Assets/Scripts/StateMachine/StateMachine.gd" id="4_yke0m"]
 [ext_resource type="Script" path="res://Assets/Scripts/StateMachine/States/Generic/IdleState.gd" id="5_yhrb3"]
@@ -26,6 +25,7 @@ height = 1.8
 
 [node name="infinity" node_paths=PackedStringArray("spells", "weapon_model_parent") instance=ExtResource("1_rm5qk")]
 collision_layer = 4
+collision_mask = 5
 axis_lock_angular_x = true
 axis_lock_angular_y = true
 axis_lock_angular_z = true
@@ -36,7 +36,6 @@ platform_floor_layers = 1
 safe_margin = 0.003
 script = ExtResource("2_pd53c")
 spells = [null, null, null]
-damage_flash_mat = ExtResource("4_cyyo3")
 weapon_model_parent = NodePath("Armature/Skeleton3D/Blade")
 
 [node name="Loadout" type="Node3D" parent="." index="0"]

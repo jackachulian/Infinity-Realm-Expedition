@@ -1,13 +1,12 @@
-[gd_scene load_steps=14 format=3 uid="uid://bnq6kyw7csjrm"]
+[gd_scene load_steps=13 format=3 uid="uid://bnq6kyw7csjrm"]
 
 [ext_resource type="PackedScene" uid="uid://5xkk1fd51bor" path="res://Assets/Models/Enemies/redslime.glb" id="1_f33ua"]
-[ext_resource type="Material" uid="uid://c2846f7m7sd1j" path="res://Assets/Materials/Slime/slime-red.tres" id="2_1gwk5"]
+[ext_resource type="Material" uid="uid://c2846f7m7sd1j" path="res://Assets/Materials/Enemies/Slime/slime-red.tres" id="2_1gwk5"]
 [ext_resource type="Script" path="res://Assets/Scripts/Entity.gd" id="2_5lb7x"]
-[ext_resource type="Material" uid="uid://ch6chfqbxbcr3" path="res://Assets/Materials/Slime/eye.tres" id="3_l1tm4"]
-[ext_resource type="Material" uid="uid://bwwxf12w26ovn" path="res://Assets/Materials/damage-flash.tres" id="3_quer2"]
+[ext_resource type="Material" uid="uid://ch6chfqbxbcr3" path="res://Assets/Materials/Enemies/Slime/eye.tres" id="3_l1tm4"]
 [ext_resource type="Script" path="res://Assets/Scripts/Input/BasicAIInput.gd" id="3_ytsi7"]
 [ext_resource type="Script" path="res://Assets/Scripts/StateMachine/StateMachine.gd" id="4_4psyd"]
-[ext_resource type="Material" uid="uid://dryb2rb71lolt" path="res://Assets/Materials/Slime/pupil.tres" id="4_pue12"]
+[ext_resource type="Material" uid="uid://dryb2rb71lolt" path="res://Assets/Materials/Enemies/Slime/pupil.tres" id="4_pue12"]
 [ext_resource type="Script" path="res://Assets/Scripts/Hurtbox.gd" id="6_hdqk2"]
 [ext_resource type="Script" path="res://Assets/Scripts/StateMachine/States/Generic/StandardState.gd" id="6_sthgl"]
 [ext_resource type="Script" path="res://Assets/Scripts/Movement.gd" id="7_w7v2a"]
@@ -28,7 +27,6 @@ axis_lock_angular_z = true
 platform_floor_layers = 1
 script = ExtResource("2_5lb7x")
 entity_type = 1
-damage_flash_mat = ExtResource("3_quer2")
 weapon_model_parent = NodePath(".")
 
 [node name="Loadout" type="Node3D" parent="." index="0"]

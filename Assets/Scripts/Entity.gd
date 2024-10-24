@@ -23,7 +23,7 @@ enum EntityType {
 @export var hit_points: int = 10
 
 # If a material is assigned, character will flash with that material when damaged.
-@export var damage_flash_mat: Material
+@export var damage_flash_mat: Material = preload("res://Assets/Materials/damage-flash.tres")
 
 #Equipped weapons should be parented to this node (usually an exposed armature bone)
 @export var weapon_model_parent: Node3D
@@ -162,7 +162,8 @@ func face_angle(angle: float, rotation_snap: float = 45):
 func take_damage(damage: int):
 	hit_points -= damage
 	damage_flash()
-	state_machine.switch_to_state_name("Hurt")
+	if state_machine:
+		state_machine.switch_to_state_name("Hurt")
 	print(name+" took "+str(damage)+" damage - HP: "+str(hit_points))
 
 func damage_flash():

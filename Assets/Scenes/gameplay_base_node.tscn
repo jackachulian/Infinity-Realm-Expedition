@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=3 uid="uid://oo33f7t80pj5"]
+[gd_scene load_steps=16 format=3 uid="uid://oo33f7t80pj5"]
 
 [ext_resource type="Script" path="res://Assets/Scripts/GameplayBaseNode.gd" id="1_5seeb"]
 [ext_resource type="PackedScene" uid="uid://d0tvg6r1qe2m1" path="res://Assets/Scenes/Levels/testing-level.tscn" id="2_je3iq"]
@@ -10,6 +10,7 @@
 [ext_resource type="PackedScene" uid="uid://dpfh6ela6sv1l" path="res://Assets/Scenes/Menus/battle-hud.tscn" id="8_xm7dh"]
 [ext_resource type="PackedScene" uid="uid://crfgll53nx1pi" path="res://Assets/Scenes/Menus/pause-menu.tscn" id="9_aa4pr"]
 [ext_resource type="Script" path="res://Assets/Scripts/Data/SaveManager.gd" id="10_ietri"]
+[ext_resource type="PackedScene" uid="uid://533ohv8gj0yg" path="res://Assets/Scenes/Enemies/phaser_pod.tscn" id="11_b1due"]
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_uan28"]
 viewport_path = NodePath("SubViewport")
@@ -98,3 +99,6 @@ script = ExtResource("10_ietri")
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_aoddd")
+
+[node name="phaser-pod" parent="." instance=ExtResource("11_b1due")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7, -1, 11)

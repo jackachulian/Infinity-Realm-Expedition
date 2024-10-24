@@ -72,7 +72,7 @@ func _physics_process(delta):
 	elif entity.is_on_floor():
 		var decel;
 		
-		var decel_override = entity.state_machine.current_state.get_decel_override() if entity.state_machine.current_state else -1
+		var decel_override = entity.state_machine.current_state.get_decel_override() if entity.state_machine and entity.state_machine.current_state else -1
 		if decel_override >= 0:
 			decel = decel_override
 		elif entity.is_hit_stunned():
