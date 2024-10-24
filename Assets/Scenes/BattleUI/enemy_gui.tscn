@@ -1,0 +1,50 @@
+[gd_scene load_steps=4 format=3 uid="uid://dc0dntuusjno4"]
+
+[ext_resource type="Script" path="res://Assets/Scripts/UI/Battle/enemy_gui.gd" id="1_8nvjd"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_btlum"]
+bg_color = Color(0.0616, 0.06436, 0.08, 0.67451)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_4dvff"]
+bg_color = Color(0.798519, 0.212662, 0.29429, 1)
+
+[node name="EnemyGUI" type="Control"]
+custom_minimum_size = Vector2(48, 20)
+layout_mode = 3
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -320.0
+offset_top = -360.0
+offset_right = -272.0
+offset_bottom = -340.0
+grow_horizontal = 2
+grow_vertical = 0
+pivot_offset = Vector2(48, 32)
+size_flags_horizontal = 4
+script = ExtResource("1_8nvjd")
+
+[node name="NameLabel" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 16.0
+grow_horizontal = 2
+text = "EnemyName"
+horizontal_alignment = 1
+
+[node name="HealthBar" type="ProgressBar" parent="."]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -4.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_styles/background = SubResource("StyleBoxFlat_btlum")
+theme_override_styles/fill = SubResource("StyleBoxFlat_4dvff")
+value = 75.0
+show_percentage = false

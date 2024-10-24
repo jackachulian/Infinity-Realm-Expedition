@@ -11,6 +11,9 @@ static var instance: BattleHud
 
 @onready var weapon_display: SpellIconDisplay = $WeaponSpellDisplayItem
 
+@onready var enemy_guis: CanvasLayer = $EnemyGUIs
+
+
 @onready var spell_display_item_scene: PackedScene = preload("res://Assets/Scenes/Menus/spell_icon_display.tscn")
 
 func _enter_tree() -> void:

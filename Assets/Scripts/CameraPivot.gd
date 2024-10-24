@@ -11,8 +11,10 @@ func _ready() -> void:
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
-	if follow:
+	if is_instance_valid(follow):
 		global_position = follow.global_position
+	else:
+		follow = null
 	
 	if Input.is_action_just_pressed("rotate_left"):
 		target_angle -= deg_to_rad(45);

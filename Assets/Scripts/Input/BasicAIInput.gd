@@ -32,10 +32,12 @@ func _ready():
 func _process(delta: float) -> void:
 	# face/move towards target
 	
-	if target:	
+	if is_instance_valid(target):	
 		facing = (target.global_position - global_position)
 		facing.y = 0
 		facing = facing.normalized()
+	else:
+		target = null
 	
 	move_cooldown_remaining = move_toward(move_cooldown_remaining, 0, delta)
 	if move_cooldown_remaining <= 0:

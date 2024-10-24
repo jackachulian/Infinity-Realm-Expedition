@@ -26,6 +26,7 @@ axis_lock_angular_y = true
 axis_lock_angular_z = true
 platform_floor_layers = 1
 script = ExtResource("2_5lb7x")
+display_name = "Red Slime"
 entity_type = 1
 weapon_model_parent = NodePath(".")
 

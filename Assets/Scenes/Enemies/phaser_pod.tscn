@@ -21,6 +21,7 @@ radius = 0.620143
 [node name="phaser-pod" node_paths=PackedStringArray("spells") groups=["screen_snap"] instance=ExtResource("1_qt2gn")]
 collision_layer = 4
 collision_mask = 5
+display_name = "Phaser Pod"
 entity_type = 1
 spells = [null]
 

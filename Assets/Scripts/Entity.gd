@@ -10,6 +10,9 @@ enum EntityType {
 	OBJECT
 }
 
+# Name displayed over health bar (used for enemy GUI above their head sometimes)
+@export var display_name: String
+
 # True if this should take damage from enemy attacks and any hitbox that can damage players.
 @export var entity_type: EntityType
 
@@ -20,7 +23,7 @@ enum EntityType {
 @export var spells: Array[EquippedSpell]
 
 # Amount of damage this entity can take before it is defeated.
-@export var hit_points: int = 10
+@export var max_hit_points: int = 10
 
 # If a material is assigned, character will flash with that material when damaged.
 @export var damage_flash_mat: Material = preload("res://Assets/Materials/damage-flash.tres")
@@ -38,6 +41,11 @@ enum EntityType {
 @onready var weapon_parent: Node3D = get_node_or_null("Loadout/Weapon")
 @onready var spells_parent: Node3D = get_node_or_null("Loadout/Spells")
 
+# Current amount of hit points
+@onready var hit_points: int = max_hit_points
+
+#contains a EnemyGUI node
+@onready var enemy_gui_scene: PackedScene = preload("res://Assets/Scenes/BattleUI/enemy_gui.tscn")
 
 # Point that projectiles from spells are shot from
 var shoot_marker: Marker3D
@@ -53,6 +61,11 @@ var hit_stun_timer: float = 0
 # All meshes on this character, saved to this array on ready, for use with damage flashes.
 var flash_meshes: Array[MeshInstance3D]
 var flash_mesh_restore_overrides: Array[Material]
+
+# GUI currently spawned and assigned to this enemy
+var enemy_gui: EnemyGUI
+
+signal damaged(damage: int)
 
 func _ready():
 	if entity_type == EntityType.PLAYER:
@@ -94,6 +107,14 @@ func _ready():
 			spell.equip(self)
 		
 	shoot_marker = get_node_or_null("ShootMarker")
+	
+	# create UI
+	call_deferred("create_gui")
+
+func create_gui():
+	enemy_gui = enemy_gui_scene.instantiate() as EnemyGUI
+	BattleHud.instance.enemy_guis.add_child(enemy_gui)
+	enemy_gui.connect_to_entity(self)
 
 func _process(delta: float):
 	if flash_timer > 0:
@@ -164,10 +185,17 @@ func face_angle(angle: float, rotation_snap: float = 45):
 
 func take_damage(damage: int):
 	hit_points -= damage
-	damage_flash()
-	if state_machine:
-		state_machine.switch_to_state_name("Hurt")
-	print(name+" took "+str(damage)+" damage - HP: "+str(hit_points))
+	
+	if hit_points <= 0:
+		print(display_name, " was defeated")
+		queue_free()
+		return
+	else:
+		damage_flash()
+		if state_machine:
+			state_machine.switch_to_state_name("Hurt")
+		damaged.emit(damage)
+		print(name+" took "+str(damage)+" damage - HP: "+str(hit_points))
 
 func damage_flash():
 	flash_timer = 0.125

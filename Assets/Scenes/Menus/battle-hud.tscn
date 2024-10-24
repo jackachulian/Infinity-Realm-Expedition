@@ -37,3 +37,5 @@ layout_mode = 2
 
 [node name="SpellDisplayItem2" parent="SpellContainer" instance=ExtResource("1_tlqap")]
 layout_mode = 2
+
+[node name="EnemyGUIs" type="CanvasLayer" parent="."]
