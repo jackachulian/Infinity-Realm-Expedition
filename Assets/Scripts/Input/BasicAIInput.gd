@@ -16,6 +16,8 @@ var move_cooldown_remaining: float
 var attack_cooldown_remaining: float
 var spell_cooldown_remaining: float
 
+var distance_from_target: float
+
 func _ready():
 	target = Entity.player
 	
@@ -36,6 +38,10 @@ func _process(delta: float) -> void:
 		facing = (target.global_position - global_position)
 		facing.y = 0
 		facing = facing.normalized()
+		
+		var pos = Vector2(global_position.x, global_position.z)
+		var target_pos = Vector2(target.global_position.x, target.global_position.z)
+		distance_from_target = pos.distance_to(target_pos)
 	else:
 		target = null
 	
@@ -52,7 +58,6 @@ func _process(delta: float) -> void:
 		move_cooldown_remaining = 0
 		attack_cooldown_remaining = 0
 
-
 func is_move_requested():
 	return target and move_cooldown_remaining <= 0
 
@@ -62,9 +67,6 @@ func clear_move_buffer():
 
 func is_main_attack_requested():
 	if target and attack_cooldown_remaining <= 0 and entity.weapon and entity.weapon.entry_state:
-		var pos = Vector2(global_position.x, global_position.z)
-		var target_pos = Vector2(target.global_position.x, target.global_position.z)
-		var distance_from_target = pos.distance_to(target_pos)
 		if distance_from_target <= entity.weapon.ai_distance:
 			return true
 			
@@ -75,12 +77,20 @@ func clear_main_attack_buffer():
 
 
 func get_spell_requested() -> int:
-	if spell_cooldown_remaining > 0:
+	if not target or spell_cooldown_remaining > 0 or len(entity.spells) == 0:
 		return 0
 		
 	# try to use a random spell while this ai is not on spell cooldown
 	# this is different from the actual spells' cooldowns. spell use wll not work if on cooldown
-	return randi_range(1, len(entity.spells))
+	var spell_number = randi_range(1, len(entity.spells))
+	var spell := entity.spells[spell_number-1]
+	
+	#return spell_number
+	
+	if spell.ai_distance >= distance_from_target:
+		return spell_number
+	else:
+		return 0
 
 func clear_spell_buffer(spell_number: int):
 	spell_cooldown_remaining = spell_cooldown
