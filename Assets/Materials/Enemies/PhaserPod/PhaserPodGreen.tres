@@ -5,13 +5,13 @@
 [resource]
 render_priority = 0
 shader = ExtResource("1_uy01a")
-shader_parameter/albedo = Color(0.390512, 0.64316, 0.0784449, 1)
+shader_parameter/albedo = Color(0.484416, 0.618319, 0.15521, 1)
 shader_parameter/point_size = null
 shader_parameter/roughness = null
 shader_parameter/metallic_texture_channel = null
 shader_parameter/specular = null
 shader_parameter/metallic = 0.0
-shader_parameter/emission = Color(0.392157, 0.643137, 0.0784314, 1)
+shader_parameter/emission = Color(0.477396, 0.621462, 0.122191, 1)
 shader_parameter/emission_energy = 0.75
 shader_parameter/uv1_scale = null
 shader_parameter/uv1_offset = null

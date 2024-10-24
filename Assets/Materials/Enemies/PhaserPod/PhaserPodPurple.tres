@@ -5,7 +5,7 @@
 [resource]
 render_priority = 0
 shader = ExtResource("1_o38be")
-shader_parameter/tint = Color(0.453099, 0.116923, 0.763364, 1)
+shader_parameter/tint = Color(0.470582, 0.386136, 0.985759, 1)
 shader_parameter/metallic = 0.0
 shader_parameter/shadow_size = 0.045
 shader_parameter/shadow_blend = 0.001

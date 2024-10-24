@@ -1,7 +1,7 @@
 [gd_scene load_steps=13 format=3 uid="uid://533ohv8gj0yg"]
 
 [ext_resource type="PackedScene" uid="uid://bmkkf7ydj6ou4" path="res://Assets/Models/Enemies/phaser-pod.glb" id="1_qt2gn"]
-[ext_resource type="PackedScene" uid="uid://bktdf5kpipna2" path="res://Assets/Scenes/EquippedSpells/fireball.tscn" id="2_4fk2i"]
+[ext_resource type="PackedScene" uid="uid://wlfevcme3etk" path="res://Assets/Scenes/EquippedSpells/spark.tscn" id="2_68qqe"]
 [ext_resource type="Material" uid="uid://dym8w57x0d5hr" path="res://Assets/Materials/Enemies/PhaserPod/PhaserPodPurple.tres" id="2_74qek"]
 [ext_resource type="Script" path="res://Assets/Scripts/StateMachine/StateMachine.gd" id="2_f47qs"]
 [ext_resource type="Script" path="res://Assets/Scripts/Input/BasicAIInput.gd" id="2_th1kn"]
@@ -31,7 +31,8 @@ editor_description = "Once weapons/spells are added, if loadout is added to the 
 
 [node name="Spells" type="Node3D" parent="Loadout" index="1"]
 
-[node name="fireball" parent="Loadout/Spells" index="0" instance=ExtResource("2_4fk2i")]
+[node name="spark" parent="Loadout/Spells" index="0" instance=ExtResource("2_68qqe")]
+visible = false
 
 [node name="Input" type="Node3D" parent="." index="1"]
 script = ExtResource("2_th1kn")
@@ -62,7 +63,7 @@ air_decel = 0.5
 transform = Transform3D(-0.425, 0, -3.71547e-08, 0, 0.425, 0, 3.71547e-08, 0, -0.425, 0, 0, 0)
 
 [node name="Skeleton3D" parent="Armature" index="0"]
-bones/0/rotation = Quaternion(0.0298187, -2.14673e-17, -5.49154e-17, 0.999555)
+bones/0/rotation = Quaternion(0.0298186, -2.14673e-17, -5.49154e-17, 0.999555)
 bones/0/scale = Vector3(1, 1, 1)
 bones/1/rotation = Quaternion(-0.00567791, -9.66977e-17, -5.30239e-17, 0.999984)
 bones/2/position = Vector3(0.714331, 0.876022, -0.198869)

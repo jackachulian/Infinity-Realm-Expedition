@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="SpellData" load_steps=4 format=3 uid="uid://bxhc2bb2gif6r"]
+
+[ext_resource type="PackedScene" uid="uid://bktdf5kpipna2" path="res://Assets/Scenes/EquippedSpells/fireball.tscn" id="1_i8yj4"]
+[ext_resource type="Texture2D" uid="uid://d2ui8p8vxa481" path="res://Assets/Sprites/Portraits/ElectroPortrait.png" id="2_ykrvs"]
+[ext_resource type="Script" path="res://Assets/Scripts/Data/SpellData.gd" id="3_of604"]
+
+[resource]
+script = ExtResource("3_of604")
+display_name = "Spark"
+icon = ExtResource("2_ykrvs")
+spell_type = 0
+primary_element = 7
+mana_cost = 3
+cast_delay = 0.5
+is_burst = false
+damage = 5
+knockback = 5.0
+description = "Shoots balls of fire."
+equipped_spell_scene = ExtResource("1_i8yj4")

@@ -1,0 +1,116 @@
+[gd_scene load_steps=13 format=3 uid="uid://wlfevcme3etk"]
+
+[ext_resource type="Script" path="res://Assets/Scripts/SpellSystem/EquippedSpell.gd" id="1_s3urv"]
+[ext_resource type="PhysicsMaterial" uid="uid://bokkekxboxktn" path="res://Assets/Physics/bouncy.tres" id="2_u8y38"]
+[ext_resource type="Script" path="res://Assets/Scripts/Projectile.gd" id="3_u1u63"]
+[ext_resource type="Shader" uid="uid://bu5urmu1rlhbu" path="res://Assets/Shaders/emissive.tres" id="4_tcdw4"]
+[ext_resource type="Script" path="res://Assets/Scripts/Hitbox.gd" id="6_olno5"]
+[ext_resource type="Script" path="res://Assets/Scripts/StateMachine/States/Generic/AttackState.gd" id="7_favji"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_mitgy"]
+render_priority = 0
+shader = ExtResource("4_tcdw4")
+shader_parameter/albedo = Color(0.867093, 0.894645, 0.967255, 1)
+shader_parameter/point_size = null
+shader_parameter/roughness = null
+shader_parameter/metallic_texture_channel = null
+shader_parameter/specular = null
+shader_parameter/metallic = null
+shader_parameter/emission = Color(0.892282, 0.951868, 0.434915, 1)
+shader_parameter/emission_energy = 8.9
+shader_parameter/uv1_scale = null
+shader_parameter/uv1_offset = null
+shader_parameter/uv2_scale = null
+shader_parameter/uv2_offset = null
+
+[sub_resource type="SphereMesh" id="SphereMesh_mqn5h"]
+material = SubResource("ShaderMaterial_mitgy")
+radius = 0.25
+height = 0.5
+radial_segments = 8
+rings = 4
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_8xvh1"]
+render_priority = 0
+shader = ExtResource("4_tcdw4")
+shader_parameter/albedo = Color(0.615712, 0.694461, 0.154008, 1)
+shader_parameter/point_size = null
+shader_parameter/roughness = 0.102
+shader_parameter/metallic_texture_channel = null
+shader_parameter/specular = null
+shader_parameter/metallic = null
+shader_parameter/emission = Color(0.539093, 0.516728, 0.12101, 1)
+shader_parameter/emission_energy = 2.5
+shader_parameter/uv1_scale = null
+shader_parameter/uv1_offset = null
+shader_parameter/uv2_scale = null
+shader_parameter/uv2_offset = null
+
+[sub_resource type="SphereMesh" id="SphereMesh_emrk8"]
+material = SubResource("ShaderMaterial_8xvh1")
+radius = 0.25
+height = 0.5
+radial_segments = 8
+rings = 4
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_r154p"]
+radius = 0.318723
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_6kwo0"]
+radius = 0.518561
+height = 1.30478
+
+[node name="spark" type="Node3D" node_paths=PackedStringArray("entry_state")]
+script = ExtResource("1_s3urv")
+entry_state = NodePath("Spark-State")
+
+[node name="Spark-Projectile" type="RigidBody3D" parent="."]
+collision_layer = 8
+collision_mask = 9
+physics_material_override = ExtResource("2_u8y38")
+gravity_scale = 0.0
+lock_rotation = true
+script = ExtResource("3_u1u63")
+type = 7
+lifetime = 3.0
+shoot_velocity = Vector3(0, 5, 10)
+
+[node name="Inner" type="MeshInstance3D" parent="Spark-Projectile"]
+transform = Transform3D(0.7, 0, 0, 0, 0.7, 0, 0, 0, 0.7, 0, 0, 0)
+layers = 8
+transparency = 0.9
+mesh = SubResource("SphereMesh_mqn5h")
+skeleton = NodePath("../..")
+
+[node name="Outer" type="MeshInstance3D" parent="Spark-Projectile"]
+transform = Transform3D(1.35, 0, 0, 0, 1.35, 0, 0, 0, 1.35, 0, 0, 0)
+layers = 8
+transparency = 0.33
+mesh = SubResource("SphereMesh_emrk8")
+skeleton = NodePath("../..")
+
+[node name="Shadow" type="MeshInstance3D" parent="Spark-Projectile"]
+transform = Transform3D(1.35, 0, 0, 0, 1.35, 0, 0, 0, 1.35, 0, 0, 0)
+layers = 8
+cast_shadow = 3
+skeleton = NodePath("../..")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Spark-Projectile"]
+shape = SubResource("SphereShape3D_r154p")
+
+[node name="Hitbox" type="Area3D" parent="Spark-Projectile"]
+collision_layer = 0
+collision_mask = 0
+script = ExtResource("6_olno5")
+damage = 4
+knockback = 7.5
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Spark-Projectile/Hitbox"]
+shape = SubResource("CapsuleShape3D_6kwo0")
+
+[node name="Spark-State" type="Node3D" parent="." node_paths=PackedStringArray("projectile")]
+script = ExtResource("7_favji")
+animation_name = "Cast"
+cancel_delay = 0.225
+attack_delay = 0.0
+projectile = NodePath("../Spark-Projectile")
