@@ -132,6 +132,7 @@ func request_action() -> State:
 				return entity.state_machine.current_state.combos_into
 			else:
 				current_attack = requested_attack
+				print(entity, " requested attack ", requested_attack)
 				return requested_state
 		
 			

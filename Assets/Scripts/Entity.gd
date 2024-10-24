@@ -84,7 +84,10 @@ func _ready():
 				continue
 			if spell not in spells:
 				print(name, ": added spell ", spell.name, " from loadout")
-				spells[i] = spell
+				if len(spells) <= i:
+					spells.append(spell)
+				else:
+					spells[i] = spell
 	
 	for spell in spells:
 		if spell:
@@ -189,6 +192,9 @@ func is_hit_stunned():
 	return hit_stun_timer > 0
 
 func is_shoot_obstructed() -> bool:
+	if not shoot_marker:
+		return false
+	
 	var space_state = get_world_3d().direct_space_state
 	var origin = Vector3(global_position.x, shoot_marker.global_position.y, global_position.z)
 	var end = shoot_marker.global_position

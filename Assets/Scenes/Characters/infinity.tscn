@@ -12,7 +12,7 @@
 [ext_resource type="Script" path="res://Assets/Scripts/StateMachine/States/Generic/ShieldState.gd" id="10_jxd4a"]
 [ext_resource type="Material" uid="uid://dclrr382uupwn" path="res://Assets/Materials/Weapons/sword-cutout.tres" id="15_ba15w"]
 [ext_resource type="Material" uid="uid://cy866e0nw8osb" path="res://Assets/Materials/Weapons/sword-handle-cutout.tres" id="16_5l1c5"]
-[ext_resource type="Material" uid="uid://cfe0foe1wlito" path="res://Assets/Materials/Characters/infinity-with-cutout.tres" id="21_uqxah"]
+[ext_resource type="Material" path="res://Assets/Materials/Characters/infinity-with-cutout.tres" id="21_uqxah"]
 [ext_resource type="Script" path="res://Assets/Scripts/Hurtbox.gd" id="31_pkqhk"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_5hlel"]

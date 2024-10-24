@@ -31,7 +31,10 @@ func shoot(entity: Entity):
 	#linear_velocity = entity.quaternion * shoot_velocity # forward
 	
 	var aim_origin := entity.global_position
-	aim_origin.y = entity.shoot_marker.global_position.y
+	if entity.shoot_marker:
+		aim_origin.y = entity.shoot_marker.global_position.y
+	else:
+		aim_origin.y = entity.global_position.y
 	var aim_target := entity.input.get_aim_target()
 	
 	var offset_direction := (aim_target - aim_origin).normalized()

@@ -76,7 +76,10 @@ func shoot_projectile():
 	entity.get_parent().add_child(new_projectile)
 	new_projectile.visible = true
 	new_projectile.freeze = false
-	new_projectile.global_transform = entity.shoot_marker.global_transform
+	if entity.shoot_marker:
+		new_projectile.global_transform = entity.shoot_marker.global_transform
+	else:
+		new_projectile.global_transform = entity.global_transform
 	print("shooting ", new_projectile.name, " at ", new_projectile.global_position)
 	new_projectile.shoot(entity)
 			
@@ -104,9 +107,13 @@ func on_enter_state():
 	
 	entity.movement.direction = Vector3.ZERO
 	
-	if entity.anim.has_animation(animation_name):
-		entity.anim.stop()
-		entity.anim.play(animation_name)
+	var try_anims = [animation_name, "Cast", "Shoot"]
+	
+	for animname in try_anims:
+		if entity.anim.has_animation(animname):
+			entity.anim.stop()
+			entity.anim.play(animname)
+			break
 	
 func on_exit_state():
 	if hitbox:
