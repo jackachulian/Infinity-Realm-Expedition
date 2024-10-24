@@ -87,7 +87,7 @@ func check_transition(delta: float) -> State:
 	if falling_state and entity.velocity.y < 0:
 		return falling_state
 		
-	if can_use_actions and time_elapsed >= action_delay:
+	if can_use_actions and time_elapsed >= action_delay and entity.input:
 		var requested_action: State = entity.input.request_action()
 		# If a state is requested, return that action
 		# Prevent same state if prevent_self_action_request bool is true, 
@@ -106,7 +106,7 @@ func update_rotation(delta: float):
 	
 	var input_angle
 	
-	if rotate_mode == RotateMode.FACE_INPUT_DURING:
+	if rotate_mode == RotateMode.FACE_INPUT_DURING and entity.input:
 		input_angle = entity.input.uniform_input_angle()
 	elif rotate_mode == RotateMode.FACE_KNOCKBACK:
 		if entity.velocity == Vector3.ZERO:
@@ -144,7 +144,7 @@ func on_enter_state():
 	if movement_mode == MovementMode.STOP:
 		entity.movement.direction = Vector3.ZERO
 	
-	if rotate_mode == RotateMode.FACE_INPUT_AT_START or rotate_mode == RotateMode.FACE_INPUT_DURING:
+	if rotate_mode == RotateMode.FACE_INPUT_AT_START or rotate_mode == RotateMode.FACE_INPUT_DURING and entity.input:
 		entity.face_angle(entity.input.uniform_input_angle(true))
 	if instant_velocity_on_enter:
 		entity.velocity = entity.movement.screen_uniform_vector(instant_velocity_on_enter.rotated(Vector3.UP, entity.input.uniform_input_angle(false)));

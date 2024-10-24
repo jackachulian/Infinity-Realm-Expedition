@@ -1,8 +1,10 @@
-[gd_scene load_steps=9 format=3 uid="uid://533ohv8gj0yg"]
+[gd_scene load_steps=11 format=3 uid="uid://533ohv8gj0yg"]
 
 [ext_resource type="PackedScene" uid="uid://bmkkf7ydj6ou4" path="res://Assets/Models/Enemies/phaser-pod.glb" id="1_qt2gn"]
 [ext_resource type="Material" uid="uid://dym8w57x0d5hr" path="res://Assets/Materials/Enemies/PhaserPod/PhaserPodPurple.tres" id="2_74qek"]
+[ext_resource type="Script" path="res://Assets/Scripts/StateMachine/StateMachine.gd" id="2_f47qs"]
 [ext_resource type="Material" uid="uid://nydtdl6ny0w6" path="res://Assets/Materials/Enemies/PhaserPod/PhaserPodBlack.tres" id="3_fe82o"]
+[ext_resource type="Script" path="res://Assets/Scripts/StateMachine/States/Generic/StandardState.gd" id="3_xwjkq"]
 [ext_resource type="Material" uid="uid://dyrp2p8knvtef" path="res://Assets/Materials/Enemies/PhaserPod/PhaserPodGreen.tres" id="4_228oi"]
 [ext_resource type="Script" path="res://Assets/Scripts/Hurtbox.gd" id="5_1o0m5"]
 [ext_resource type="Script" path="res://Assets/Scripts/Movement.gd" id="6_hmrkd"]
@@ -19,7 +21,28 @@ collision_layer = 4
 collision_mask = 5
 entity_type = 1
 
-[node name="Armature" parent="." index="0"]
+[node name="StateMachine" type="Node3D" parent="." index="0"]
+script = ExtResource("2_f47qs")
+
+[node name="Idle" type="Node" parent="StateMachine" index="0" node_paths=PackedStringArray("falling_state")]
+script = ExtResource("3_xwjkq")
+falling_state = NodePath("")
+rotate_mode = 2
+movement_speed = 4.0
+can_use_actions = true
+
+[node name="Hurt" type="Node" parent="StateMachine" index="1" node_paths=PackedStringArray("state_on_anim_finish")]
+script = ExtResource("3_xwjkq")
+animation_name = "Hurt"
+state_on_anim_finish = NodePath("../Idle")
+rotate_mode = 3
+
+[node name="Movement" type="Node" parent="." index="1"]
+script = ExtResource("6_hmrkd")
+air_accel = 1.0
+air_decel = 0.5
+
+[node name="Armature" parent="." index="2"]
 transform = Transform3D(0.425, 0, 0, 0, 0.425, 0, 0, 0, 0.425, 0, 0, 0)
 
 [node name="Skeleton3D" parent="Armature" index="0"]
@@ -44,11 +67,11 @@ surface_material_override/0 = ExtResource("2_74qek")
 surface_material_override/1 = ExtResource("3_fe82o")
 surface_material_override/2 = ExtResource("4_228oi")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="." index="2"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." index="4"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.669052, 0)
 shape = SubResource("CapsuleShape3D_8auxm")
 
-[node name="Hurtbox" type="Area3D" parent="." index="3"]
+[node name="Hurtbox" type="Area3D" parent="." index="5"]
 collision_layer = 0
 collision_mask = 0
 script = ExtResource("5_1o0m5")
@@ -56,8 +79,3 @@ script = ExtResource("5_1o0m5")
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Hurtbox" index="0"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.688077, 0)
 shape = SubResource("CylinderShape3D_f4uu2")
-
-[node name="Movement" type="Node" parent="." index="4"]
-script = ExtResource("6_hmrkd")
-air_accel = 1.0
-air_decel = 0.5
