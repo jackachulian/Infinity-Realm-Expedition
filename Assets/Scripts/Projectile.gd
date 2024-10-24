@@ -23,6 +23,9 @@ var remaining_lifetime: float
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	freeze = true
+	
+	# Should only be on the Projectiles layer, which will only collide with terrain and objects, not entities.
+	collision_layer = 2
 
 # entity: the entity shooting the projectile.
 func shoot(entity: Entity):

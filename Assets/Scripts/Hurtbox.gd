@@ -4,11 +4,12 @@ class_name Hurtbox
 @onready var entity: Entity = $".."
 
 func _ready() -> void:
-	# Only receive collisions from layer 2 (mask: 01)
+	# Only get collisions from the type of hurtbox this is
+	# Hitboxes will only see this layer
 	if entity.entity_type == entity.EntityType.PLAYER:
-		collision_layer = 2
+		collision_layer = 128 # only take damage from enemy hitbox layer
 	elif entity.entity_type == entity.EntityType.ENEMY:
-		collision_layer = 4
+		collision_layer = 64 # only take damage from player hitbox layer
 	elif entity.entity_type == entity.EntityType.OBJECT:
 		collision_layer = 8
 	collision_mask = 0

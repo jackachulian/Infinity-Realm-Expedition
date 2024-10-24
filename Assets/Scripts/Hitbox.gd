@@ -26,9 +26,11 @@ class_name Hitbox
 signal on_deal_damage(to: Area3D)
 
 func _init() -> void:
-	# Only send collisions to hurtboxes, which have mask of 01
+	# 8 = objects layer (4)
+	# 64 = player hitbox layer (7)
+	# 128 = enemy hitbox player (8)
+	collision_mask = (64 if hit_players else 0) + (128 if hit_enemies else 0) + (8 if hit_objects else 0)
 	collision_layer = 0
-	collision_mask = (2 if hit_players else 0) + (4 if hit_enemies else 0) + (8 if hit_objects else 0)
 
 # Trigger this hitbox once during only this frame and deal damage to all overlapping bodies once.
 # entity: the attacking entity, if any. null for no entity
