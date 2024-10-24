@@ -38,11 +38,11 @@ func deal_damage(attacker: Entity):
 		deal_damage_to(area, attacker)
 		
 # area = the area to deal damage to
-# entity - the entity that using the attack that is dealing this damage to the other
-func deal_damage_to(area: Area3D, entity: Entity):
+# attacker - the entity that using the attack that is dealing this damage to the other
+func deal_damage_to(area: Area3D, attacker: Entity):
 	# Don't deal damage to self
 	if area is Hurtbox:
-		if entity and area.entity == entity:
+		if attacker and area.entity == attacker:
 			return 
 	
 	print("overlapping with area "+area.name)
@@ -55,9 +55,9 @@ func deal_damage_to(area: Area3D, entity: Entity):
 	on_deal_damage.emit(area)
 
 # Will deal damage to any entity it comes in contact with during any frame, though it will hit each entity only once.
-func deal_damage_persistent():
+func deal_damage_persistent(attacker: Entity):
 	print("persistently dealing damage with ", name)
-	area_entered.connect(deal_damage_to)
+	area_entered.connect(func(area): deal_damage_to(area, attacker))
 
 func enable_shape():
 	visible = true
