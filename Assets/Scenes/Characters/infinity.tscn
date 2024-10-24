@@ -35,6 +35,7 @@ floor_snap_length = 0.3
 platform_floor_layers = 1
 safe_margin = 0.003
 script = ExtResource("2_pd53c")
+display_name = "Infinity"
 spells = [null, null, null]
 weapon_model_parent = NodePath("Armature/Skeleton3D/Blade")
 

@@ -108,8 +108,9 @@ func _ready():
 		
 	shoot_marker = get_node_or_null("ShootMarker")
 	
-	# create UI
-	call_deferred("create_gui")
+	# create UI if this is an enemy
+	if entity_type == EntityType.ENEMY:
+		call_deferred("create_gui")
 
 func create_gui():
 	enemy_gui = enemy_gui_scene.instantiate() as EnemyGUI

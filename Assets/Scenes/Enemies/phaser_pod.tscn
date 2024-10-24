@@ -24,6 +24,7 @@ collision_mask = 5
 display_name = "Phaser Pod"
 entity_type = 1
 spells = [null]
+max_hit_points = 25
 
 [node name="Loadout" type="Node3D" parent="." index="0"]
 editor_description = "Once weapons/spells are added, if loadout is added to the player, it should be here, processed before input. This is because currently as of writing, main attack state is stored in input, which the state machine reads if it is requested to send to the main attack state."
