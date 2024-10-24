@@ -23,7 +23,7 @@ enum EntityType {
 @export var hit_points: int = 10
 
 # If a material is assigned, character will flash with that material when damaged.
-@export var damage_flash_mat: Material
+@export var damage_flash_mat: Material = preload("res://Assets/Materials/damage-flash.tres")
 
 #Equipped weapons should be parented to this node (usually an exposed armature bone)
 @export var weapon_model_parent: Node3D
@@ -52,6 +52,7 @@ var hit_stun_timer: float = 0
 
 # All meshes on this character, saved to this array on ready, for use with damage flashes.
 var flash_meshes: Array[MeshInstance3D]
+var flash_mesh_restore_overrides: Array[Material]
 
 func _ready():
 	if entity_type == EntityType.PLAYER:
@@ -64,8 +65,9 @@ func _ready():
 		Entity.player = self
 	
 	if damage_flash_mat:
-		for mesh in $Armature.find_children("*", "MeshInstance3D", true):
+		for mesh: MeshInstance3D in $Armature.find_children("*", "MeshInstance3D", true):
 			flash_meshes.append(mesh)
+			flash_mesh_restore_overrides.append(mesh.material_override)
 			
 	# Check if entity already has a weapon in the weapon node - it will equip this without need for extra code
 	if not weapon:
@@ -160,19 +162,20 @@ func face_angle(angle: float, rotation_snap: float = 45):
 func take_damage(damage: int):
 	hit_points -= damage
 	damage_flash()
-	state_machine.switch_to_state_name("Hurt")
+	if state_machine:
+		state_machine.switch_to_state_name("Hurt")
 	print(name+" took "+str(damage)+" damage - HP: "+str(hit_points))
 
 func damage_flash():
 	flash_timer = 0.125
-	for mesh in flash_meshes:
-		mesh.material_override = damage_flash_mat
+	for i in len(flash_meshes):
+		flash_meshes[i].material_override = damage_flash_mat
 		
 func damage_flash_tick(delta: float):
 	flash_timer -= delta
 	if flash_timer <= 0:
-		for mesh in flash_meshes:
-			mesh.material_override = null
+		for i in len(flash_meshes):
+			flash_meshes[i].material_override = flash_mesh_restore_overrides[i]
 
 func take_hit_stun(duration: float):
 	hit_stun_timer = maxf(hit_stun_timer, duration)

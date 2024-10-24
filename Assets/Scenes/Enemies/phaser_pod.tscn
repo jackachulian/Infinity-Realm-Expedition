@@ -1,0 +1,63 @@
+[gd_scene load_steps=9 format=3 uid="uid://533ohv8gj0yg"]
+
+[ext_resource type="PackedScene" uid="uid://bmkkf7ydj6ou4" path="res://Assets/Models/Enemies/phaser-pod.glb" id="1_qt2gn"]
+[ext_resource type="Material" uid="uid://dym8w57x0d5hr" path="res://Assets/Materials/Enemies/PhaserPod/PhaserPodPurple.tres" id="2_74qek"]
+[ext_resource type="Material" uid="uid://nydtdl6ny0w6" path="res://Assets/Materials/Enemies/PhaserPod/PhaserPodBlack.tres" id="3_fe82o"]
+[ext_resource type="Material" uid="uid://dyrp2p8knvtef" path="res://Assets/Materials/Enemies/PhaserPod/PhaserPodGreen.tres" id="4_228oi"]
+[ext_resource type="Script" path="res://Assets/Scripts/Hurtbox.gd" id="5_1o0m5"]
+[ext_resource type="Script" path="res://Assets/Scripts/Movement.gd" id="6_hmrkd"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_8auxm"]
+height = 1.33078
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_f4uu2"]
+height = 1.33044
+radius = 0.620143
+
+[node name="phaser-pod" groups=["screen_snap"] instance=ExtResource("1_qt2gn")]
+collision_layer = 4
+collision_mask = 5
+entity_type = 1
+
+[node name="Armature" parent="." index="0"]
+transform = Transform3D(0.425, 0, 0, 0, 0.425, 0, 0, 0, 0.425, 0, 0, 0)
+
+[node name="Skeleton3D" parent="Armature" index="0"]
+bones/0/rotation = Quaternion(-0.0842415, -2.68291e-17, -2.68291e-17, 0.996445)
+bones/1/rotation = Quaternion(0.120158, -7.70848e-17, -9.83903e-17, 0.992755)
+bones/2/position = Vector3(0.714331, 0.876022, -0.198869)
+bones/2/rotation = Quaternion(0.716187, 0.242896, -0.249515, 0.604831)
+bones/3/rotation = Quaternion(-0.108575, -0.0274203, 0.267002, 0.957167)
+bones/3/scale = Vector3(1, 1, 1)
+bones/4/position = Vector3(-0.714331, 0.876022, -0.198869)
+bones/4/rotation = Quaternion(0.716187, -0.242896, 0.249515, 0.604831)
+bones/5/rotation = Quaternion(-0.108575, 0.0274203, -0.267002, 0.957167)
+bones/5/scale = Vector3(1, 1, 1)
+
+[node name="Cube" parent="Armature/Skeleton3D" index="0"]
+surface_material_override/0 = ExtResource("2_74qek")
+surface_material_override/1 = ExtResource("3_fe82o")
+surface_material_override/2 = ExtResource("4_228oi")
+
+[node name="Cube_001" parent="Armature/Skeleton3D" index="1"]
+surface_material_override/0 = ExtResource("2_74qek")
+surface_material_override/1 = ExtResource("3_fe82o")
+surface_material_override/2 = ExtResource("4_228oi")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." index="2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.669052, 0)
+shape = SubResource("CapsuleShape3D_8auxm")
+
+[node name="Hurtbox" type="Area3D" parent="." index="3"]
+collision_layer = 0
+collision_mask = 0
+script = ExtResource("5_1o0m5")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Hurtbox" index="0"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.688077, 0)
+shape = SubResource("CylinderShape3D_f4uu2")
+
+[node name="Movement" type="Node" parent="." index="4"]
+script = ExtResource("6_hmrkd")
+air_accel = 1.0
+air_decel = 0.5

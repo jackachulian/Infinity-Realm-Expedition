@@ -24,6 +24,7 @@ var remaining_lifetime: float
 func _ready() -> void:
 	freeze = true
 
+# entity: the entity shooting the projectile.
 func shoot(entity: Entity):
 	remaining_lifetime = lifetime;
 	freeze = false
@@ -43,7 +44,7 @@ func shoot(entity: Entity):
 		body_entered.connect(on_collide)
 	
 	if hitbox:
-		hitbox.deal_damage_persistent()
+		hitbox.deal_damage_persistent(entity)
 		hitbox.on_deal_damage.connect(on_hitbox_deal_damage)
 		
 func on_hitbox_deal_damage(area: Area3D):

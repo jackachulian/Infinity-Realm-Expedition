@@ -37,7 +37,7 @@ func _process(delta: float) -> void:
 	if move_cooldown_remaining <= 0:
 		direction = facing
 	
-	if entity.input.main_attack_state:
+	if entity.input.main_attack_state or entity.weapon:
 		attack_cooldown_remaining = move_toward(attack_cooldown_remaining, 0, delta)
 		
 	if remove_cooldown_on_hit and entity.get_current_state().name == "Hurt":
@@ -48,10 +48,23 @@ func clear_main_attack_buffer():
 	attack_cooldown_remaining = main_attack_cooldown
 
 func is_main_attack_requested():
-	return target and attack_cooldown_remaining <= 0
+	if target and attack_cooldown_remaining <= 0 and entity.weapon and entity.weapon.entry_state:
+		var pos = Vector2(global_position.x, global_position.z)
+		var target_pos = Vector2(target.global_position.x, target.global_position.z)
+		var distance_from_target = pos.distance_to(target_pos)
+		if distance_from_target <= entity.weapon.ai_distance:
+			return true
+			
+	return false
 
 func clear_move_buffer():
 	move_cooldown_remaining = move_cooldown
 
 func is_move_requested():
 	return target and move_cooldown_remaining <= 0
+	
+func get_aim_target() -> Vector3:
+	if target:
+		return target.global_position
+	else:
+		return Vector3.ZERO

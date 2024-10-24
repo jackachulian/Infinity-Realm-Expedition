@@ -1,0 +1,29 @@
+[gd_resource type="ShaderMaterial" load_steps=4 format=3 uid="uid://c2846f7m7sd1j"]
+
+[ext_resource type="Shader" path="res://Assets/Shaders/toon.gdshader" id="1_6ylbq"]
+[ext_resource type="Shader" path="res://Assets/Shaders/outline_spatial_shader.gdshader" id="1_gxhx3"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_4ja0t"]
+render_priority = 0
+shader = ExtResource("1_gxhx3")
+shader_parameter/depth_threshold = 0.297
+shader_parameter/reverse_depth_threshold = 0.25
+shader_parameter/normal_threshold = 0.6
+shader_parameter/darken_amount = 0.05
+shader_parameter/lighten_amount = 0.26
+shader_parameter/debug = false
+shader_parameter/normal_edge_bias = Vector3(1, 1, 1)
+
+[resource]
+render_priority = 0
+next_pass = SubResource("ShaderMaterial_4ja0t")
+shader = ExtResource("1_6ylbq")
+shader_parameter/color = Color(0.849469, 0.18492, 0.300639, 1)
+shader_parameter/shadow = 0.5
+shader_parameter/shadow_width = 0.0
+shader_parameter/shadow_color = Color(0.705, 0.705, 0.705, 0.705)
+shader_parameter/_specular_smoothness = 0.01
+shader_parameter/_specular_strength = 0.19
+shader_parameter/_glossiness = 0.075
+shader_parameter/_rim_size = 0.464
+shader_parameter/_rim_smoothness = 0.0
