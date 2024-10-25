@@ -24,6 +24,8 @@ extends Node3D
 # Material assigned to the grass.
 @export var grass_material: Material
 
+@onready var elemental_effect_manager: ElementalEffectManager = $ElementalEffectManager
+
 @export var grass_subdivisions := 4:
 	set(value):
 		grass_subdivisions = value
