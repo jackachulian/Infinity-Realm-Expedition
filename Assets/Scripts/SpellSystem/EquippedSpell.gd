@@ -16,6 +16,9 @@ var entity: Entity
 
 var cast_cooldown_remaining: float
 
+# AI-controlled entities using this spell will wait until a target is at least within 
+@export var ai_distance: float = 10.0
+
 func _process(delta: float) -> void:
 	if cast_cooldown_remaining > 0:
 		cast_cooldown_remaining = move_toward(cast_cooldown_remaining, 0, delta)

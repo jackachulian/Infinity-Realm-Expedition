@@ -94,7 +94,7 @@ layout_mode = 1
 [node name="SaveManager" type="Node" parent="."]
 script = ExtResource("10_ietri")
 
-[node name="TestingLevel" parent="." instance=ExtResource("2_je3iq")]
-
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_aoddd")
+
+[node name="TestingLevel" parent="." instance=ExtResource("2_je3iq")]
