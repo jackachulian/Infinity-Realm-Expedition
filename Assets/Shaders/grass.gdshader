@@ -22,6 +22,7 @@ uniform int wind_point_count;  // Number of active wind points
 uniform vec3 ambient_wind = vec3(1, 0, 0.25);
 uniform float ambient_wind_speed = 1.5;
 uniform float ambient_wind_scale = 32.0;
+uniform float ambient_wind_resolution = 5;
 
 varying float wind_noise;
 varying float ambient_wind_noise;
@@ -35,11 +36,12 @@ float random(vec2 uv) {
 
 void vertex() {
 	ambient_wind_noise = texture(windNoise, (vec2(NODE_POSITION_WORLD.x, NODE_POSITION_WORLD.z) + TIME * ambient_wind_speed) / ambient_wind_scale).r;
+	ambient_wind_noise = round(ambient_wind_noise*ambient_wind_resolution) / ambient_wind_resolution;
 	
 	vec3 screen_wind = (VIEW_MATRIX * vec4(ambient_wind, 0)).xyz;
 	
 	NORMAL = vec3(0.0, 1.0, 0.0);
-	VERTEX += ((ambient_wind_noise) + UV.y) * ( 1.0 - UV.y) * screen_wind;
+	VERTEX += ((ambient_wind_noise - 0.25) + UV.y) * ( 1.0 - UV.y) * screen_wind;
 	//VERTEX.x += sin(NODE_POSITION_WORLD.x + TIME * ambient_wind_speed + UV.y) * ( 1.0 - UV.y) * ambient_wind.x;
 	//VERTEX.z += cos(NODE_POSITION_WORLD.z + TIME * ambient_wind_speed + UV.y) * ( 1.0 - UV.y) * ambient_wind.z;
 	//VERTEX = VERTEX * vec3(scale.x, scale.y, scale.z);

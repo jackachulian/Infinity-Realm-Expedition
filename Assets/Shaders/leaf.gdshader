@@ -39,23 +39,21 @@ void fragment() {
 	if (tex.a < 0.5) {
 		discard;
 	}
-
-	//ALBEDO = vec3(UV.x, UV.y, 0);
 }
-
-void light() {
-	float NdotL = dot(NORMAL, LIGHT);
-
-	float rounded = round(smoothstep(shadow_size, shadow_blend + shadow_size, NdotL) * shadow_banding) / shadow_banding;
-	float one_minus = 1.0 - rounded;
-	vec3 mult1 = LIGHT_COLOR * rounded * light_tint.rgb * ATTENUATION;
-	vec3 mult2 = (one_minus * 1.4 * shadow_color.rgb) - shadow_extra_intensity;
-	vec3 add1 = mult1 + mult2;
-
-	float add3  = rimlight_blend + rimlight_size;
-	float basic_fresnel = fresnel(1.0, NORMAL, VIEW);
-	float smoothed = round(smoothstep(rimlight_size, add3, basic_fresnel) * rimlight_banding) / rimlight_banding;
-
-	vec3 add2 = add1 + smoothed * rimlight_color.rgb;
-	DIFFUSE_LIGHT += ALBEDO * add2;
-}
+//
+//void light() {
+	//float NdotL = dot(NORMAL, LIGHT);
+//
+	//float rounded = round(smoothstep(shadow_size, shadow_blend + shadow_size, NdotL) * shadow_banding) / shadow_banding;
+	//float one_minus = 1.0 - rounded;
+	//vec3 mult1 = LIGHT_COLOR * rounded * light_tint.rgb * ATTENUATION;
+	//vec3 mult2 = (one_minus * 1.4 * shadow_color.rgb) - shadow_extra_intensity;
+	//vec3 add1 = mult1 + mult2;
+//
+	//float add3  = rimlight_blend + rimlight_size;
+	//float basic_fresnel = fresnel(1.0, NORMAL, VIEW);
+	//float smoothed = round(smoothstep(rimlight_size, add3, basic_fresnel) * rimlight_banding) / rimlight_banding;
+//
+	//vec3 add2 = add1 + smoothed * rimlight_color.rgb;
+	//DIFFUSE_LIGHT += ALBEDO * add2;
+//}

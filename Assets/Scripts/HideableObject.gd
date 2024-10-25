@@ -1,3 +1,4 @@
+class_name HideableObject
 extends Area3D
 
 @export var meshes_to_animate_hide: Array[GeometryInstance3D]
@@ -25,6 +26,9 @@ func hide_object():
 	hidden = true
 	hiding_materials.clear()
 	for mesh in meshes_to_animate_hide:
+		if not mesh:
+			continue
+			
 		var mat = mesh.material_override
 		if mat is ShaderMaterial:
 			hiding_materials.append(mat);
