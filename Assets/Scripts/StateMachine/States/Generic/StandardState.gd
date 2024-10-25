@@ -107,14 +107,14 @@ func update_rotation(delta: float):
 	var input_angle
 	
 	if rotate_mode == RotateMode.FACE_INPUT_DURING and entity.input:
-		input_angle = entity.input.uniform_input_angle()
+		input_angle = entity.input.uniform_input_angle(false)
 	elif rotate_mode == RotateMode.FACE_KNOCKBACK:
 		if entity.velocity == Vector3.ZERO:
 			return
 		var screen_uniform_vel = entity.movement.screen_uniform_vector(entity.velocity)
 		input_angle = atan2(screen_uniform_vel.x, screen_uniform_vel.z)
-		var snap_rad = deg_to_rad(45)
-		input_angle = round(input_angle / snap_rad) * snap_rad
+		#var snap_rad = deg_to_rad(45)
+		#input_angle = round(input_angle / snap_rad) * snap_rad
 	else:
 		return
 		
@@ -145,7 +145,7 @@ func on_enter_state():
 		entity.movement.direction = Vector3.ZERO
 	
 	if rotate_mode == RotateMode.FACE_INPUT_AT_START or rotate_mode == RotateMode.FACE_INPUT_DURING and entity.input:
-		entity.face_angle(entity.input.uniform_input_angle(true))
+		entity.face_angle(entity.input.uniform_input_angle(false))
 	if instant_velocity_on_enter:
 		entity.velocity = entity.movement.screen_uniform_vector(instant_velocity_on_enter.rotated(Vector3.UP, entity.input.uniform_input_angle(false)));
 

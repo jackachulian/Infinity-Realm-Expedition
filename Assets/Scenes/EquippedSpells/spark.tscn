@@ -111,6 +111,7 @@ shape = SubResource("CapsuleShape3D_6kwo0")
 [node name="Spark-State" type="Node3D" parent="." node_paths=PackedStringArray("projectile")]
 script = ExtResource("7_favji")
 animation_name = "Cast"
+rotation_snap = 0.0
 cancel_delay = 0.225
-attack_delay = 0.0
+attack_delay = 0.4
 projectile = NodePath("../Spark-Projectile")

@@ -1,9 +1,22 @@
-[gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://dym8w57x0d5hr"]
+[gd_resource type="ShaderMaterial" load_steps=4 format=3 uid="uid://dym8w57x0d5hr"]
 
 [ext_resource type="Shader" path="res://Assets/Shaders/botw-toon-shader.gdshader" id="1_o38be"]
+[ext_resource type="Shader" path="res://Assets/Shaders/outline_spatial_shader.gdshader" id="1_yuc2n"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_xwtck"]
+render_priority = 0
+shader = ExtResource("1_yuc2n")
+shader_parameter/depth_threshold = 0.15
+shader_parameter/reverse_depth_threshold = 0.25
+shader_parameter/normal_threshold = 0.6
+shader_parameter/darken_amount = 0.3
+shader_parameter/lighten_amount = 1.5
+shader_parameter/debug = false
+shader_parameter/normal_edge_bias = Vector3(1, 1, 1)
 
 [resource]
 render_priority = 0
+next_pass = SubResource("ShaderMaterial_xwtck")
 shader = ExtResource("1_o38be")
 shader_parameter/tint = Color(0.470582, 0.386136, 0.985759, 1)
 shader_parameter/metallic = 0.0

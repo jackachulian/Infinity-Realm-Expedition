@@ -78,6 +78,7 @@ shape = SubResource("CapsuleShape3D_6kwo0")
 [node name="Fireball-State" type="Node3D" parent="." node_paths=PackedStringArray("projectile")]
 script = ExtResource("6_8tjbl")
 animation_name = "Cast"
+rotation_snap = 0.0
 cancel_delay = 0.225
 attack_delay = 0.0
 projectile = NodePath("../Fireball-Projectile")

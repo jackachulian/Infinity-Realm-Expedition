@@ -29,7 +29,13 @@ func setup_states(state_parent: Node):
 			# make sure all inactive states are not being processed
 			state.set_process(false)
 
-func _process(delta):
+func _process(delta):		
+	if (current_state): current_state.update(delta)
+		
+	# after this, all inactive states will be disabled
+	# and only the active one will have inherit (pausable)
+
+func _physics_process(delta):
 	if not current_state:
 		switch_to(get_child(0))
 		
@@ -39,12 +45,6 @@ func _process(delta):
 	if next_state:
 		switch_to(next_state)
 		
-	current_state.update(delta)
-		
-	# after this, all inactive states will be disabled
-	# and only the active one will have inherit (pausable)
-
-func _physics_process(delta):
 	if (current_state): current_state.physics_update(delta)
 
 func switch_to_state_name(state_name: String):

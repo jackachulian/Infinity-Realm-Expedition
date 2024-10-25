@@ -47,6 +47,7 @@ script = ExtResource("2_f47qs")
 [node name="Idle" type="Node" parent="StateMachine" index="0"]
 script = ExtResource("3_xwjkq")
 rotate_mode = 2
+rotation_snap = 0.0
 movement_speed = 4.0
 can_use_actions = true
 
@@ -55,6 +56,7 @@ script = ExtResource("3_xwjkq")
 animation_name = "Hurt"
 state_on_anim_finish = NodePath("../Idle")
 rotate_mode = 3
+rotation_snap = 0.0
 
 [node name="Movement" type="Node" parent="." index="3"]
 script = ExtResource("6_hmrkd")
