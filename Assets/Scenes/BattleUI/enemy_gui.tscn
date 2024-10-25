@@ -1,6 +1,10 @@
-[gd_scene load_steps=4 format=3 uid="uid://dc0dntuusjno4"]
+[gd_scene load_steps=5 format=3 uid="uid://dc0dntuusjno4"]
 
 [ext_resource type="Script" path="res://Assets/Scripts/UI/Battle/enemy_gui.gd" id="1_8nvjd"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_4ri6v"]
+outline_size = 4
+outline_color = Color(0, 0, 0, 0.627451)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_btlum"]
 bg_color = Color(0.0616, 0.06436, 0.08, 0.67451)
@@ -33,6 +37,7 @@ anchor_right = 1.0
 offset_bottom = 16.0
 grow_horizontal = 2
 text = "EnemyName"
+label_settings = SubResource("LabelSettings_4ri6v")
 horizontal_alignment = 1
 
 [node name="HealthBar" type="ProgressBar" parent="."]

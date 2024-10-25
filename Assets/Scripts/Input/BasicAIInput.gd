@@ -98,6 +98,6 @@ func clear_spell_buffer(spell_number: int):
 	
 func get_aim_target() -> Vector3:
 	if target:
-		return target.global_position
+		return target.global_position + Vector3.UP
 	else:
 		return Vector3.ZERO
