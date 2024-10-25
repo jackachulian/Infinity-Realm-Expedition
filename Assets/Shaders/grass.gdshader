@@ -36,12 +36,19 @@ float random(vec2 uv) {
 void vertex() {
 	ambient_wind_noise = texture(windNoise, (vec2(NODE_POSITION_WORLD.x, NODE_POSITION_WORLD.z) + TIME * ambient_wind_speed) / ambient_wind_scale).r;
 	
+	vec3 screen_wind = (VIEW_MATRIX * vec4(ambient_wind, 0)).xyz;
+	
 	NORMAL = vec3(0.0, 1.0, 0.0);
-	VERTEX += ((ambient_wind_noise - 0.4) + UV.y) * ( 1.0 - UV.y) * ambient_wind;
+	VERTEX += ((ambient_wind_noise) + UV.y) * ( 1.0 - UV.y) * screen_wind;
 	//VERTEX.x += sin(NODE_POSITION_WORLD.x + TIME * ambient_wind_speed + UV.y) * ( 1.0 - UV.y) * ambient_wind.x;
 	//VERTEX.z += cos(NODE_POSITION_WORLD.z + TIME * ambient_wind_speed + UV.y) * ( 1.0 - UV.y) * ambient_wind.z;
 	//VERTEX = VERTEX * vec3(scale.x, scale.y, scale.z);
-	MODELVIEW_MATRIX = VIEW_MATRIX * mat4(vec4(normalize(cross(vec3(0.0, 1.0, 0.0), INV_VIEW_MATRIX[2].xyz)), 0.0), vec4(0.0, 1.0, 0.0, 0.0), vec4(normalize(cross(INV_VIEW_MATRIX[0].xyz, vec3(0.0, 1.0, 0.0))), 0.0), MODEL_MATRIX[3]);
+	MODELVIEW_MATRIX = VIEW_MATRIX * mat4(
+		vec4(normalize(cross(vec3(0.0, 1.0, 0.0), INV_VIEW_MATRIX[2].xyz)), 0.0), 
+		vec4(0.0, 1.0, 0.0, 0.0), 
+		vec4(normalize(cross(INV_VIEW_MATRIX[0].xyz, vec3(0.0, 1.0, 0.0))), 0.0), 
+		MODEL_MATRIX[3]
+	);
 	
 	//VERTEX += ambient_wind_noise;
 	//VERTEX.x += sin(NODE_POSITION_WORLD.x + TIME * ambient_wind_speed + UV.y) * ( 1.0 - UV.y) * ambient_wind_strength;
