@@ -9,14 +9,19 @@
 [resource]
 render_priority = -3
 shader = ExtResource("1_5lc43")
+shader_parameter/grassHeight = 1.25
+shader_parameter/grassHeightVariance = 0.5
+shader_parameter/grassHeightScale = 16.0
 shader_parameter/grassNoiseScale = 64.0
+shader_parameter/grassExtraNoiseScale = 16.0
+shader_parameter/grassExtraNoiseStrength = 0.08
 shader_parameter/wind_points = PackedVector3Array(10, 0, -20)
-shader_parameter/wind_vectors = PackedVector2Array(-3, 3)
+shader_parameter/wind_vectors = PackedVector2Array(-2, 0)
 shader_parameter/wind_radii = PackedFloat32Array(5)
 shader_parameter/wind_point_count = 1
-shader_parameter/ambient_wind = Vector3(1, 0, 0)
-shader_parameter/ambient_wind_speed = 1.0
-shader_parameter/ambient_wind_scale = 16.0
+shader_parameter/ambient_wind_vector = Vector3(0.5, 0, 0)
+shader_parameter/ambient_wind_speed = 1.25
+shader_parameter/ambient_wind_scale = 32.0
 shader_parameter/ambient_wind_resolution = 5.0
 shader_parameter/grassTexture = ExtResource("4_b8gvn")
 shader_parameter/grassGradient = ExtResource("2_nffi1")

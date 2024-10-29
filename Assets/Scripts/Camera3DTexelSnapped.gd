@@ -46,6 +46,9 @@ func _process(_delta: float) -> void:
 			_snap_objects.call_deferred()
 	else:
 		texel_error = Vector2.ZERO
+		
+	if Input.is_action_just_pressed("PerspectiveToggle"):
+		projection = ProjectionType.PROJECTION_ORTHOGONAL if projection == ProjectionType.PROJECTION_PERSPECTIVE else ProjectionType.PROJECTION_PERSPECTIVE
 
 
 func _snap_objects() -> void:
