@@ -1,4 +1,4 @@
-[gd_resource type="ShaderMaterial" load_steps=17 format=3 uid="uid://cw068lng8rddd"]
+[gd_resource type="ShaderMaterial" load_steps=16 format=3 uid="uid://cw068lng8rddd"]
 
 [ext_resource type="Shader" path="res://Assets/Shaders/terrain.gdshader" id="1_21hti"]
 [ext_resource type="Material" uid="uid://bq12e5723wc0o" path="res://Assets/Materials/Terrain/terrain_outline.tres" id="1_ry4uo"]
@@ -6,7 +6,6 @@
 [ext_resource type="Texture2D" uid="uid://b6j1ifkybyob6" path="res://Assets/Textures/rock_gradient.tres" id="3_sbgp3"]
 [ext_resource type="Texture2D" uid="uid://bj4dkjgl0shna" path="res://Assets/Textures/grass_noise.tres" id="4_ugfyc"]
 [ext_resource type="NoiseTexture3D" uid="uid://3jnauc3rxtsh" path="res://Assets/Textures/wall_3d_noise.tres" id="5_dkbif"]
-[ext_resource type="Texture2D" uid="uid://dxqhry4vpf6hx" path="res://Assets/Textures/wind_noise.tres" id="7_136ik"]
 
 [sub_resource type="Gradient" id="Gradient_wpj7c"]
 offsets = PackedFloat32Array(0, 0.429668, 0.721228, 1)
@@ -73,4 +72,3 @@ shader_parameter/rockWallNoise = ExtResource("5_dkbif")
 shader_parameter/rockLedgeNoise = ExtResource("5_dkbif")
 shader_parameter/rockPathNoise = SubResource("NoiseTexture2D_4tgk0")
 shader_parameter/rockPathEdgeNoise = SubResource("NoiseTexture2D_8fhf7")
-shader_parameter/windNoise = ExtResource("7_136ik")
