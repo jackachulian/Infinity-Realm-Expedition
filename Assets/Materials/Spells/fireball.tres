@@ -3,7 +3,7 @@
 [ext_resource type="Shader" uid="uid://bu5urmu1rlhbu" path="res://Assets/Shaders/emissive.tres" id="1_hre3s"]
 
 [resource]
-render_priority = 2
+render_priority = 0
 shader = ExtResource("1_hre3s")
 shader_parameter/albedo = Color(0.229796, 0.136547, 0.211766, 1)
 shader_parameter/point_size = 1.0

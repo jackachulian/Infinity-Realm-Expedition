@@ -16,9 +16,19 @@ extends RigidBody3D
 # if true, projectile will be destroyed when colliding with another body (terrain, other objects, etc)
 @export var destroy_on_hit_wall: bool = true
 
+@export var max_snap_distance: float = 2.0
+
+@export var max_snap_speed: float = 2.0
+
 @onready var hitbox: Hitbox = $Hitbox
 
+@onready var ground_snap: RayCast3D = $GroundSnapRayCast3D
+
+
 var remaining_lifetime: float
+
+var base_snap_height: float
+var current_offset: float
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -52,6 +62,11 @@ func shoot(entity: Entity):
 		hitbox.deal_damage_persistent(entity)
 		hitbox.on_deal_damage.connect(on_hitbox_deal_damage)
 		
+	if ground_snap:
+		base_snap_height = global_position.y - entity.global_position.y
+		ground_snap.target_position = (base_snap_height + max_snap_distance) * Vector3.DOWN
+	
+		
 func on_hitbox_deal_damage(area: Area3D):
 	max_hits -= 1
 	if max_hits <= 0:
@@ -63,6 +78,17 @@ func _physics_process(delta: float) -> void:
 		remaining_lifetime -= delta;
 		if remaining_lifetime <= 0.0:
 			destroy()
+			return
+			
+	if ground_snap and ground_snap.is_colliding():
+		var point := ground_snap.get_collision_point()
+		var prev_offset = current_offset
+		current_offset = global_position.y - point.y
+		if abs(current_offset - base_snap_height) < max_snap_distance:
+			var target_height := point.y + base_snap_height
+			var height = move_toward(global_position.y, target_height, max_snap_speed * delta)
+			global_position = Vector3(global_position.x, height, global_position.z)
+			
 
 func on_collide(body: Node):
 	if destroy_on_hit_wall:

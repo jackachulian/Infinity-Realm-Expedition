@@ -1,4 +1,4 @@
-[gd_scene load_steps=21 format=3 uid="uid://bktdf5kpipna2"]
+[gd_scene load_steps=24 format=3 uid="uid://bktdf5kpipna2"]
 
 [ext_resource type="Script" path="res://Assets/Scripts/SpellSystem/EquippedSpell.gd" id="1_tswqt"]
 [ext_resource type="PhysicsMaterial" uid="uid://cnqil3k1wtly4" path="res://Assets/Physics/frictionless.tres" id="2_lb8at"]
@@ -11,7 +11,6 @@
 [ext_resource type="Shader" path="res://Packages/GPUTrail-main/shaders/trail.gdshader" id="9_nkp3c"]
 [ext_resource type="Shader" path="res://Packages/GPUTrail-main/shaders/trail_draw_pass.gdshader" id="10_0g46g"]
 [ext_resource type="Texture2D" uid="uid://crk6pkb7e5rwc" path="res://Packages/GPUTrail-main/defaults/texture.tres" id="11_78286"]
-[ext_resource type="Texture2D" uid="uid://ct31fhxvcragr" path="res://Packages/GPUTrail-main/defaults/curve.tres" id="12_dhxe6"]
 [ext_resource type="Script" path="res://Packages/GPUTrail-main/GPUTrail3D.gd" id="13_tl4m1"]
 
 [sub_resource type="SphereMesh" id="SphereMesh_mqn5h"]
@@ -37,14 +36,29 @@ radius = 0.518561
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_8q58m"]
 shader = ExtResource("9_nkp3c")
 
+[sub_resource type="Gradient" id="Gradient_w1v67"]
+offsets = PackedFloat32Array(0, 0.160156, 0.453125, 0.802734, 1)
+colors = PackedColorArray(1, 0.949521, 0.817545, 1, 0.98375, 0.775709, 0.400374, 1, 0.816836, 0.546654, 0.0101261, 1, 0.75262, 0.312756, 0.0239522, 1, 0.319635, 0.0969898, 0.0201091, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_h85f5"]
+gradient = SubResource("Gradient_w1v67")
+
+[sub_resource type="Curve" id="Curve_rnphn"]
+_data = [Vector2(0, 0), 0.0, 26.2142, 0, 0, Vector2(0.0925926, 1), 0.0, -0.140139, 0, 0, Vector2(0.496296, 0.374829), -0.570064, -0.570064, 0, 0, Vector2(1, 0), -1.28922, 0.0, 0, 0]
+point_count = 4
+
+[sub_resource type="CurveTexture" id="CurveTexture_2dwv1"]
+curve = SubResource("Curve_rnphn")
+
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_tkx7p"]
 resource_local_to_scene = true
 render_priority = 0
 shader = ExtResource("10_0g46g")
 shader_parameter/emmission_transform = Projection(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1)
 shader_parameter/flags = 44
-shader_parameter/color_ramp = ExtResource("11_78286")
-shader_parameter/curve = ExtResource("12_dhxe6")
+shader_parameter/tex = ExtResource("11_78286")
+shader_parameter/color_ramp = SubResource("GradientTexture1D_h85f5")
+shader_parameter/curve = SubResource("CurveTexture_2dwv1")
 
 [sub_resource type="QuadMesh" id="QuadMesh_nsibh"]
 material = SubResource("ShaderMaterial_tkx7p")
@@ -58,6 +72,7 @@ collision_layer = 8
 collision_mask = 9
 physics_material_override = ExtResource("2_lb8at")
 gravity_scale = 0.0
+can_sleep = false
 lock_rotation = true
 contact_monitor = true
 max_contacts_reported = 1
@@ -65,9 +80,11 @@ script = ExtResource("2_n4kaa")
 type = 1
 lifetime = 3.0
 shoot_velocity = Vector3(0, 0, 15)
+max_snap_distance = 1.0
+max_snap_speed = 4.0
 
 [node name="Inner" type="MeshInstance3D" parent="Fireball-Projectile"]
-transform = Transform3D(0.6, 0, 0, 0, 0.6, 0, 0, 0, 0.6, 0, 0, 0)
+transform = Transform3D(0.575, 0, 0, 0, 0.575, 0, 0, 0, 0.575, 0, 0, 0)
 layers = 8
 mesh = SubResource("SphereMesh_mqn5h")
 skeleton = NodePath("../..")
@@ -81,6 +98,7 @@ skeleton = NodePath("../..")
 
 [node name="Outer2" type="MeshInstance3D" parent="Fireball-Projectile"]
 transform = Transform3D(1.25, 0, 0, 0, 1.25, 0, 0, 0, 1.25, 0, 0, 0)
+visible = false
 layers = 8
 transparency = 0.5
 mesh = ExtResource("6_mup0r")
@@ -104,19 +122,22 @@ script = ExtResource("6_t4nuj")
 shape = SubResource("CapsuleShape3D_6kwo0")
 
 [node name="GPUTrail3D" type="GPUParticles3D" parent="Fireball-Projectile"]
-transform = Transform3D(0.2, 0, 0, 0, 0.2, 0, 0, 0, 0.2, 0, 0, 0)
-amount = 20
-lifetime = 20.0
+transform = Transform3D(0.25, 0, 0, 0, 0.25, 0, 0, 0, 0.25, 0, 0, -0.293551)
+custom_aabb = AABB(-100, -100, -100, 200, 200, 200)
+amount = 40
+lifetime = 40.0
 explosiveness = 1.0
 fixed_fps = 0
 process_material = SubResource("ShaderMaterial_8q58m")
 draw_pass_1 = SubResource("QuadMesh_nsibh")
 script = ExtResource("13_tl4m1")
-length = 20
-color_ramp = ExtResource("11_78286")
-curve = ExtResource("12_dhxe6")
+length = 40
+color_ramp = SubResource("GradientTexture1D_h85f5")
+curve = SubResource("CurveTexture_2dwv1")
 billboard = true
 _defaults_have_been_set = true
+
+[node name="GroundSnapRayCast3D" type="RayCast3D" parent="Fireball-Projectile"]
 
 [node name="Fireball-State" type="Node3D" parent="." node_paths=PackedStringArray("projectile")]
 script = ExtResource("6_8tjbl")

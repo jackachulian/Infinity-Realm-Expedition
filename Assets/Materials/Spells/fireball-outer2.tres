@@ -5,13 +5,13 @@
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_43ntu"]
 render_priority = 0
 shader = ExtResource("1_bkgt7")
-shader_parameter/albedo = Color(0.93198, 0.369834, 0.141401, 1)
+shader_parameter/albedo = Color(0.565928, 0.133388, 0.0458487, 1)
 shader_parameter/point_size = 1.0
 shader_parameter/roughness = 1.0
 shader_parameter/metallic_texture_channel = null
 shader_parameter/specular = 0.5
 shader_parameter/metallic = 0.0
-shader_parameter/emission = Color(0.746618, 0.269466, 0.0379846, 1)
+shader_parameter/emission = Color(0.655872, 0.189879, 0.140297, 1)
 shader_parameter/emission_energy = 1.44
 shader_parameter/uv1_scale = Vector3(1, 1, 1)
 shader_parameter/uv1_offset = Vector3(0, 0, 0)
