@@ -57,7 +57,7 @@ void vertex() {
 		wind_vector_sum = vec2(0.0);
 		highest_influence = 0.0;
 	   	
-		float point_wind_noise = texture(windNoise, (vec2(NODE_POSITION_WORLD.x, NODE_POSITION_WORLD.z) + TIME * ambient_wind_speed * 2.23) / ambient_wind_scale).r;
+		float point_wind_noise = texture(windNoise, (vec2(NODE_POSITION_WORLD.x, NODE_POSITION_WORLD.z) + TIME * ambient_wind_speed * 3.0) / (ambient_wind_scale * 0.75)).r;
 		point_wind_noise = round(point_wind_noise*ambient_wind_resolution) / ambient_wind_resolution;
 		
 	    // Loop through wind points
@@ -68,10 +68,11 @@ void vertex() {
 	        // Only affect vertices within the wind_radius
 	        if (dist < radius) {
 				vec2 vector = wind_vectors[i];
+				vec2 screen_vector = (VIEW_MATRIX * vec4(vector.x, 0, vector.y, 0)).xz;
 	            // Calculate influence based on distance (closer = stronger)
 	            float influence = 1.0 - (dist / radius);
 				highest_influence = max(influence, highest_influence);
-				vec2 wind = ((point_wind_noise - 0.25) + UV.y) * ( 1.0 - UV.y) * vector;
+				vec2 wind = ((point_wind_noise - 0.125) + UV.y) * ( 1.0 - UV.y) * screen_vector;
 	            wind_vector_sum += wind * influence;
 				//ALBEDO = vec3(influence + wind_noise - 0.5);
 	        }
