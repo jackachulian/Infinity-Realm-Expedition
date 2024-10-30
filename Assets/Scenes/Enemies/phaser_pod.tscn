@@ -1,7 +1,7 @@
-[gd_scene load_steps=13 format=3 uid="uid://533ohv8gj0yg"]
+[gd_scene load_steps=14 format=3 uid="uid://533ohv8gj0yg"]
 
 [ext_resource type="PackedScene" uid="uid://bmkkf7ydj6ou4" path="res://Assets/Models/Enemies/phaser-pod.glb" id="1_qt2gn"]
-[ext_resource type="PackedScene" uid="uid://wlfevcme3etk" path="res://Assets/Scenes/EquippedSpells/spark.tscn" id="2_68qqe"]
+[ext_resource type="PackedScene" uid="uid://wlfevcme3etk" path="res://Assets/Scenes/EquippedSpells/phase-spark.tscn" id="2_68qqe"]
 [ext_resource type="Material" uid="uid://dym8w57x0d5hr" path="res://Assets/Materials/Enemies/PhaserPod/PhaserPodPurple.tres" id="2_74qek"]
 [ext_resource type="Script" path="res://Assets/Scripts/StateMachine/StateMachine.gd" id="2_f47qs"]
 [ext_resource type="Script" path="res://Assets/Scripts/Input/BasicAIInput.gd" id="2_th1kn"]
@@ -10,6 +10,7 @@
 [ext_resource type="Material" uid="uid://dyrp2p8knvtef" path="res://Assets/Materials/Enemies/PhaserPod/PhaserPodGreen.tres" id="4_228oi"]
 [ext_resource type="Script" path="res://Assets/Scripts/Hurtbox.gd" id="5_1o0m5"]
 [ext_resource type="Script" path="res://Assets/Scripts/Movement.gd" id="6_hmrkd"]
+[ext_resource type="Script" path="res://Assets/Scripts/StateMachine/States/Generic/MoveState.gd" id="6_o6ryw"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_8auxm"]
 height = 1.33078
@@ -36,9 +37,9 @@ editor_description = "Once weapons/spells are added, if loadout is added to the 
 [node name="spark" parent="Loadout/Spells" index="0" instance=ExtResource("2_68qqe")]
 visible = false
 
-[node name="Input" type="Node3D" parent="." index="1"]
+[node name="Input" type="Node3D" parent="." index="1" node_paths=PackedStringArray("move_state")]
 script = ExtResource("2_th1kn")
-move_cooldown = 2.0
+move_state = NodePath("../StateMachine/Move")
 dash_count = 0
 
 [node name="StateMachine" type="Node3D" parent="." index="2"]
@@ -51,7 +52,20 @@ rotation_snap = 0.0
 movement_speed = 4.0
 can_use_actions = true
 
-[node name="Hurt" type="Node" parent="StateMachine" index="1" node_paths=PackedStringArray("state_on_anim_finish")]
+[node name="Move" type="Node3D" parent="StateMachine" index="1" node_paths=PackedStringArray("move_stop_state", "fall_state")]
+script = ExtResource("6_o6ryw")
+animation_name = "Walk"
+move_stop_state = NodePath("../Idle")
+fall_state = NodePath(".")
+speed = 3.0
+
+[node name="JumpCheckRayCast3D" type="RayCast3D" parent="StateMachine/Move" index="0"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.67108, -0.495605)
+target_position = Vector3(0, -5, 0)
+hit_from_inside = true
+hit_back_faces = false
+
+[node name="Hurt" type="Node" parent="StateMachine" index="2" node_paths=PackedStringArray("state_on_anim_finish")]
 script = ExtResource("3_xwjkq")
 animation_name = "Hurt"
 state_on_anim_finish = NodePath("../Idle")
@@ -67,16 +81,17 @@ air_decel = 0.5
 transform = Transform3D(-0.425, 0, -3.71547e-08, 0, 0.425, 0, 3.71547e-08, 0, -0.425, 0, 0, 0)
 
 [node name="Skeleton3D" parent="Armature" index="0"]
-bones/0/rotation = Quaternion(0.0298186, -2.14673e-17, -5.49154e-17, 0.999555)
+bones/0/rotation = Quaternion(-0.100384, -2.75637e-17, -2.28038e-17, 0.994949)
 bones/0/scale = Vector3(1, 1, 1)
-bones/1/rotation = Quaternion(-0.00567791, -9.66977e-17, -5.30239e-17, 0.999984)
+bones/1/rotation = Quaternion(0.338665, -3.92617e-17, -1.75002e-16, 0.940907)
+bones/1/scale = Vector3(1, 1, 1)
 bones/2/position = Vector3(0.714331, 0.876022, -0.198869)
-bones/2/rotation = Quaternion(0.708977, 0.0497734, -0.156494, 0.685846)
-bones/3/rotation = Quaternion(-0.0517501, 0.0368927, 0.162587, 0.984645)
+bones/2/rotation = Quaternion(0.887879, 0.310251, -0.139503, 0.309764)
+bones/3/rotation = Quaternion(-0.387775, -0.16148, 0.256696, 0.870438)
 bones/3/scale = Vector3(1, 1, 1)
 bones/4/position = Vector3(-0.714331, 0.876022, -0.198869)
-bones/4/rotation = Quaternion(0.708977, -0.0497734, 0.156494, 0.685846)
-bones/5/rotation = Quaternion(-0.0517501, -0.0368927, -0.162587, 0.984645)
+bones/4/rotation = Quaternion(0.887879, -0.310251, 0.139503, 0.309764)
+bones/5/rotation = Quaternion(-0.387775, 0.16148, -0.256696, 0.870438)
 bones/5/scale = Vector3(1, 1, 1)
 
 [node name="Cube" parent="Armature/Skeleton3D" index="0"]

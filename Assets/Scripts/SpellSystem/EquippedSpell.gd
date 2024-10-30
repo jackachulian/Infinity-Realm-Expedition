@@ -28,7 +28,7 @@ func can_be_used(entity: Entity) -> bool:
 	if not data:
 		return false
 	
-	# If this is a projectile-type spell and shoot marker is obstructed, can't use this spell
+	# If this is a projectile-type spell and shoot marker idws obstructed, can't use this spell
 	if data.spell_type == SpellData.SpellType.PROJECTILE and entity.is_shoot_obstructed():
 		return false
 	

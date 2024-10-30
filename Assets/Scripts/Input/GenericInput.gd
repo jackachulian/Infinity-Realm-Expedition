@@ -4,8 +4,8 @@ class_name GenericInput
 # State switched to when the move button is pressed while not in delay
 @export var move_state : State
 
-# Melee attack state that is used if there is no weapon equipped. only really used on enemies who don't use weapons. 
-# don't think im going to give playable characters weaponless melee attacks
+# Can be used if the player is not holding a weapon, in place of the weapon attack.
+# Probably will only be used on enemies.
 @export var main_attack_state: State
 
 # State switched to when dash is requested while not in delay
@@ -70,7 +70,7 @@ func get_aim_target() -> Vector3:
 	return Vector3.ZERO
 
 
-func _process(delta):
+func _physics_process(delta):
 	dash_cooldown_remaining = move_toward(dash_cooldown_remaining, 0, delta)
 	if (dash_cooldown_remaining <= 0):
 		dashes_left = dash_count
@@ -115,7 +115,7 @@ func request_action() -> State:
 		else: # Main attack
 			if entity.weapon:
 				requested_state = entity.weapon.entry_state
-			else:
+			elif main_attack_state:
 				requested_state = main_attack_state
 				
 		if requested_state:

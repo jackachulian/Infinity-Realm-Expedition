@@ -44,8 +44,8 @@ func _ready():
 	await get_tree().process_frame
 	equip_spell(1)
 
-func _process(delta):
-	super._process(delta)
+func _physics_process(delta):
+	super._physics_process(delta)
 	
 	# movement direction input
 	var input_dir = Input.get_vector("left", "right", "forward", "back")

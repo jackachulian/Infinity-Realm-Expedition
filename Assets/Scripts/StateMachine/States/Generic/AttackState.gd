@@ -8,7 +8,9 @@ class_name AttackState
 @export var animation_name: String
 
 # If true, will face the cursor aim direction upoon entering this state. If false, will face move direction
-@export var face_aim: bool = true
+@export var face_aim_start: bool = true
+
+@export var face_aim_during: bool = false
 
 @export var rotation_snap: float = 45
 
@@ -60,6 +62,11 @@ func is_in_delay() -> bool:
 	return time_elapsed < cancel_delay
 
 func physics_update(delta: float):
+	if face_aim_during:
+		var offset = (entity.input.get_aim_target() - entity.global_position).normalized()
+		var aim_angle = atan2(-offset.x, -offset.z);
+		entity.face_angle(aim_angle, rotation_snap);
+		
 	if not hitbox_activated and time_elapsed >= attack_delay:
 		hitbox_activated = true
 		if hitbox:
@@ -96,7 +103,8 @@ func on_enter_state():
 	hitbox_activated = false
 	
 	# upon entering this attack state, turn to face the input direction
-	if face_aim:
+	# towards aim if face aim, towards move direction if not
+	if face_aim_start:
 		var offset = (entity.input.get_aim_target() - entity.global_position).normalized()
 		var aim_angle = atan2(-offset.x, -offset.z);
 		entity.face_angle(aim_angle, rotation_snap);

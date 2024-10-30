@@ -12,6 +12,9 @@ var target: Node3D
 
 @export var remove_cooldown_on_hit: bool = true
 
+# Will not move towards the target if already this close to the target.
+@export var min_approach_distance: float = 5.0
+
 var move_cooldown_remaining: float
 var attack_cooldown_remaining: float
 var spell_cooldown_remaining: float
@@ -31,9 +34,10 @@ func _ready():
 	spell_cooldown_remaining = spell_cooldown
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta: float) -> void:
-	# face/move towards target
+func _physics_process(delta: float) -> void:
+	super._physics_process(delta)
 	
+	# face/move towards target
 	if is_instance_valid(target):	
 		facing = (target.global_position - global_position)
 		facing.y = 0
@@ -54,12 +58,13 @@ func _process(delta: float) -> void:
 		
 	spell_cooldown_remaining = move_toward(spell_cooldown_remaining, 0, delta)
 		
-	if remove_cooldown_on_hit and entity.get_current_state().name == "Hurt":
+	var current_state := entity.get_current_state()
+	if current_state and remove_cooldown_on_hit and current_state.name == "Hurt":
 		move_cooldown_remaining = 0
 		attack_cooldown_remaining = 0
 
 func is_move_requested():
-	return target and move_cooldown_remaining <= 0
+	return target and move_cooldown_remaining <= 0 and distance_from_target > min_approach_distance and entity.get_current_state().name == "Idle"
 
 func clear_move_buffer():
 	move_cooldown_remaining = move_cooldown
