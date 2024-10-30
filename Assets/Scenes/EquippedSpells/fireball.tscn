@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3 uid="uid://bktdf5kpipna2"]
+[gd_scene load_steps=21 format=3 uid="uid://bktdf5kpipna2"]
 
 [ext_resource type="Script" path="res://Assets/Scripts/SpellSystem/EquippedSpell.gd" id="1_tswqt"]
 [ext_resource type="PhysicsMaterial" uid="uid://cnqil3k1wtly4" path="res://Assets/Physics/frictionless.tres" id="2_lb8at"]
@@ -6,27 +6,48 @@
 [ext_resource type="Material" uid="uid://t55lhnyxnspc" path="res://Assets/Materials/Spells/fireball.tres" id="2_r6ltc"]
 [ext_resource type="Material" uid="uid://b85w67gym317b" path="res://Assets/Materials/Spells/fireball-outer.tres" id="3_vc3i4"]
 [ext_resource type="Script" path="res://Assets/Scripts/StateMachine/States/Generic/AttackState.gd" id="6_8tjbl"]
+[ext_resource type="SphereMesh" uid="uid://8i6fneykaadu" path="res://Assets/Materials/Spells/fireball-outer2.tres" id="6_mup0r"]
 [ext_resource type="Script" path="res://Assets/Scripts/Hitbox.gd" id="6_t4nuj"]
+[ext_resource type="Shader" path="res://Packages/GPUTrail-main/shaders/trail.gdshader" id="9_nkp3c"]
+[ext_resource type="Shader" path="res://Packages/GPUTrail-main/shaders/trail_draw_pass.gdshader" id="10_0g46g"]
+[ext_resource type="Texture2D" uid="uid://crk6pkb7e5rwc" path="res://Packages/GPUTrail-main/defaults/texture.tres" id="11_78286"]
+[ext_resource type="Texture2D" uid="uid://ct31fhxvcragr" path="res://Packages/GPUTrail-main/defaults/curve.tres" id="12_dhxe6"]
+[ext_resource type="Script" path="res://Packages/GPUTrail-main/GPUTrail3D.gd" id="13_tl4m1"]
 
 [sub_resource type="SphereMesh" id="SphereMesh_mqn5h"]
 material = ExtResource("2_r6ltc")
 radius = 0.25
 height = 0.5
-radial_segments = 6
-rings = 3
+radial_segments = 8
+rings = 6
 
-[sub_resource type="SphereMesh" id="SphereMesh_emrk8"]
+[sub_resource type="SphereMesh" id="SphereMesh_f81pr"]
 material = ExtResource("3_vc3i4")
 radius = 0.25
 height = 0.5
-radial_segments = 6
-rings = 3
+radial_segments = 8
+rings = 6
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_r154p"]
 radius = 0.318723
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_6kwo0"]
 radius = 0.518561
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_8q58m"]
+shader = ExtResource("9_nkp3c")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_tkx7p"]
+resource_local_to_scene = true
+render_priority = 0
+shader = ExtResource("10_0g46g")
+shader_parameter/emmission_transform = Projection(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1)
+shader_parameter/flags = 44
+shader_parameter/color_ramp = ExtResource("11_78286")
+shader_parameter/curve = ExtResource("12_dhxe6")
+
+[sub_resource type="QuadMesh" id="QuadMesh_nsibh"]
+material = SubResource("ShaderMaterial_tkx7p")
 
 [node name="fireball" type="Node3D" node_paths=PackedStringArray("entry_state")]
 script = ExtResource("1_tswqt")
@@ -43,19 +64,26 @@ max_contacts_reported = 1
 script = ExtResource("2_n4kaa")
 type = 1
 lifetime = 3.0
-shoot_velocity = Vector3(0, 0, 12)
+shoot_velocity = Vector3(0, 0, 15)
 
 [node name="Inner" type="MeshInstance3D" parent="Fireball-Projectile"]
-transform = Transform3D(0.75, 0, 0, 0, 0.75, 0, 0, 0, 0.75, 0, 0, 0)
+transform = Transform3D(0.6, 0, 0, 0, 0.6, 0, 0, 0, 0.6, 0, 0, 0)
 layers = 8
 mesh = SubResource("SphereMesh_mqn5h")
 skeleton = NodePath("../..")
 
 [node name="Outer" type="MeshInstance3D" parent="Fireball-Projectile"]
-transform = Transform3D(1.2, 0, 0, 0, 1.2, 0, 0, 0, 1.2, 0, 0, 0)
+transform = Transform3D(0.95, 0, 0, 0, 0.95, 0, 0, 0, 0.95, 0, 0, 0)
 layers = 8
 transparency = 0.5
-mesh = SubResource("SphereMesh_emrk8")
+mesh = SubResource("SphereMesh_f81pr")
+skeleton = NodePath("../..")
+
+[node name="Outer2" type="MeshInstance3D" parent="Fireball-Projectile"]
+transform = Transform3D(1.25, 0, 0, 0, 1.25, 0, 0, 0, 1.25, 0, 0, 0)
+layers = 8
+transparency = 0.5
+mesh = ExtResource("6_mup0r")
 skeleton = NodePath("../..")
 
 [node name="Shadow" type="MeshInstance3D" parent="Fireball-Projectile"]
@@ -74,6 +102,21 @@ script = ExtResource("6_t4nuj")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Fireball-Projectile/Hitbox"]
 shape = SubResource("CapsuleShape3D_6kwo0")
+
+[node name="GPUTrail3D" type="GPUParticles3D" parent="Fireball-Projectile"]
+transform = Transform3D(0.2, 0, 0, 0, 0.2, 0, 0, 0, 0.2, 0, 0, 0)
+amount = 20
+lifetime = 20.0
+explosiveness = 1.0
+fixed_fps = 0
+process_material = SubResource("ShaderMaterial_8q58m")
+draw_pass_1 = SubResource("QuadMesh_nsibh")
+script = ExtResource("13_tl4m1")
+length = 20
+color_ramp = ExtResource("11_78286")
+curve = ExtResource("12_dhxe6")
+billboard = true
+_defaults_have_been_set = true
 
 [node name="Fireball-State" type="Node3D" parent="." node_paths=PackedStringArray("projectile")]
 script = ExtResource("6_8tjbl")
