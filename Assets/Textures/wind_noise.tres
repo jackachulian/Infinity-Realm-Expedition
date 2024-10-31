@@ -2,7 +2,6 @@
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_2yccj"]
 seed = 3
-frequency = 0.015
 fractal_octaves = 1
 
 [resource]

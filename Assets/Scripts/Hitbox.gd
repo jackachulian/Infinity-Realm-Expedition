@@ -42,10 +42,14 @@ func deal_damage(attacker: Entity):
 # area = the area to deal damage to
 # attacker - the entity that using the attack that is dealing this damage to the other
 func deal_damage_to(area: Area3D, attacker: Entity):
-	# Don't deal damage to self
 	if area is Hurtbox:
+		# Don't deal damage to self
 		if attacker and area.entity == attacker:
 			return 
+			
+		# Don't deal damage to fellow players or enemies
+		if area.entity and attacker and attacker.entity_type == area.entity.entity_type:
+			return
 	
 	print("overlapping with area "+area.name)
 	if area.has_method("take_damage"):

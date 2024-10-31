@@ -62,6 +62,9 @@ func _physics_process(delta: float) -> void:
 	if current_state and remove_cooldown_on_hit and current_state.name == "Hurt":
 		move_cooldown_remaining = 0
 		attack_cooldown_remaining = 0
+	#if target and current_state is not AttackState:
+	if target:
+		current_aim_target = target.global_position + Vector3.UP
 
 func is_move_requested():
 	return target and move_cooldown_remaining <= 0 and distance_from_target > min_approach_distance and entity.get_current_state().name == "Idle"
@@ -101,8 +104,7 @@ func clear_spell_buffer(spell_number: int):
 	spell_cooldown_remaining = spell_cooldown
 
 	
+var current_aim_target: Vector3
 func get_aim_target() -> Vector3:
-	if target:
-		return target.global_position + Vector3.UP
-	else:
-		return Vector3.ZERO
+	
+	return current_aim_target;

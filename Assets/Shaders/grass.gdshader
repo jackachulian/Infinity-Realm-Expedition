@@ -24,9 +24,9 @@ uniform vec2[MAX_WIND_POINTS] wind_vectors;
 uniform float[MAX_WIND_POINTS] wind_radii;
 uniform int wind_point_count;  // Number of active wind points
 
-uniform vec3 ambient_wind_vector = vec3(1, 0, 0.25);
-uniform float ambient_wind_speed = 1.5;
-uniform float ambient_wind_scale = 32.0;
+global uniform vec3 ambient_wind_vector = vec3(1, 0, 0.25);
+global uniform float ambient_wind_speed = 1.5;
+global uniform float ambient_wind_scale = 32.0;
 uniform float ambient_wind_resolution = 5;
 
 varying float wind_noise;

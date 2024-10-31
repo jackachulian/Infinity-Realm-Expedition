@@ -1,7 +1,8 @@
-[gd_resource type="ShaderMaterial" load_steps=3 format=3 uid="uid://11048jvnti0n"]
+[gd_resource type="ShaderMaterial" load_steps=4 format=3 uid="uid://11048jvnti0n"]
 
 [ext_resource type="Shader" path="res://Assets/Shaders/leaf.gdshader" id="1_bcg3s"]
 [ext_resource type="Texture2D" uid="uid://u6vomsyblmbe" path="res://Assets/Sprites/misc/leaf.png" id="2_a47l6"]
+[ext_resource type="Texture2D" uid="uid://dxqhry4vpf6hx" path="res://Assets/Textures/wind_noise.tres" id="3_ydmbe"]
 
 [resource]
 resource_local_to_scene = true
@@ -18,5 +19,11 @@ shader_parameter/rimlight_size = -0.264
 shader_parameter/rimlight_blend = 0.985
 shader_parameter/rimlight_banding = 2.0
 shader_parameter/rimlight_color = Color(1, 1, 1, 1)
+shader_parameter/ambient_wind_resolution = 3.0
+shader_parameter/wind_points = PackedVector3Array()
+shader_parameter/wind_vectors = PackedVector2Array()
+shader_parameter/wind_radii = PackedFloat32Array()
+shader_parameter/wind_point_count = null
 shader_parameter/hide_amount = 0.0
 shader_parameter/leaf_texture = ExtResource("2_a47l6")
+shader_parameter/windNoise = ExtResource("3_ydmbe")

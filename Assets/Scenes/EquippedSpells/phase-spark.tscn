@@ -1,4 +1,4 @@
-[gd_scene load_steps=24 format=3 uid="uid://bgdde0ohcumry"]
+[gd_scene load_steps=23 format=3 uid="uid://bgdde0ohcumry"]
 
 [ext_resource type="Script" path="res://Assets/Scripts/SpellSystem/EquippedSpell.gd" id="1_qlfki"]
 [ext_resource type="PhysicsMaterial" uid="uid://cnqil3k1wtly4" path="res://Assets/Physics/frictionless.tres" id="2_ktlxm"]
@@ -6,7 +6,6 @@
 [ext_resource type="Shader" uid="uid://bu5urmu1rlhbu" path="res://Assets/Shaders/emissive.tres" id="4_lt8gj"]
 [ext_resource type="Script" path="res://Assets/Scripts/Hitbox.gd" id="5_sullx"]
 [ext_resource type="Script" path="res://Assets/Scripts/StateMachine/States/Generic/AttackState.gd" id="6_4xvfx"]
-[ext_resource type="SphereMesh" uid="uid://8i6fneykaadu" path="res://Assets/Materials/Spells/fireball-outer2.tres" id="6_brwqu"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_cu6o7"]
 render_priority = 0
@@ -147,31 +146,23 @@ max_contacts_reported = 1
 script = ExtResource("3_fs883")
 type = 7
 lifetime = 3.0
-shoot_velocity = Vector3(0, 0, 15)
+shoot_velocity = Vector3(0, 0, 12)
 max_snap_distance = 1.0
 max_snap_speed = 4.0
 
 [node name="Inner" type="MeshInstance3D" parent="PhaseSpark-Projectile"]
-transform = Transform3D(0.6, 0, 0, 0, 0.6, 0, 0, 0, 0.6, 0, 0, 0)
+transform = Transform3D(0.875, 0, 0, 0, 0.875, 0, 0, 0, 0.875, 0, 0, 0)
 layers = 8
 cast_shadow = 0
 mesh = SubResource("SphereMesh_mqn5h")
 skeleton = NodePath("../..")
 
 [node name="Outer" type="MeshInstance3D" parent="PhaseSpark-Projectile"]
+transform = Transform3D(1.5, 0, 0, 0, 1.5, 0, 0, 0, 1.5, 0, 0, 0)
 layers = 8
 transparency = 0.5
 cast_shadow = 0
 mesh = SubResource("SphereMesh_f81pr")
-skeleton = NodePath("../..")
-
-[node name="Outer2" type="MeshInstance3D" parent="PhaseSpark-Projectile"]
-transform = Transform3D(1.25, 0, 0, 0, 1.25, 0, 0, 0, 1.25, 0, 0, 0)
-visible = false
-layers = 8
-transparency = 0.5
-cast_shadow = 0
-mesh = ExtResource("6_brwqu")
 skeleton = NodePath("../..")
 
 [node name="Shadow" type="MeshInstance3D" parent="PhaseSpark-Projectile"]
@@ -223,6 +214,6 @@ omni_range = 3.0
 script = ExtResource("6_4xvfx")
 animation_name = "Cast"
 rotation_snap = 0.0
-cancel_delay = 0.225
-attack_delay = 0.0
+cancel_delay = 0.5
+attack_delay = 0.4
 projectile = NodePath("../PhaseSpark-Projectile")

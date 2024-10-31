@@ -188,15 +188,26 @@ func take_damage(damage: int):
 	hit_points -= damage
 	
 	if hit_points <= 0:
-		print(display_name, " was defeated")
-		queue_free()
-		return
+		death()
 	else:
 		damage_flash()
 		if state_machine:
 			state_machine.switch_to_state_name("Hurt")
 		damaged.emit(damage)
 		print(name+" took "+str(damage)+" damage - HP: "+str(hit_points))
+
+func death():
+	print(display_name, " was defeated")
+	queue_free()
+	
+	if entity_type == EntityType.PLAYER:
+		await get_tree().create_timer(0.5).timeout
+			
+		# Get the current scene path
+		var current_scene_path = get_tree().current_scene.resource_path
+
+		# Change the scene to itself to reload it
+		get_tree().change_scene_to_file(current_scene_path)
 
 func damage_flash():
 	flash_timer = 0.125

@@ -20,6 +20,11 @@ shader_parameter/rimlight_size = 0.921
 shader_parameter/rimlight_blend = 0.01
 shader_parameter/rimlight_banding = 3.0
 shader_parameter/rimlight_color = null
+shader_parameter/ambient_wind_resolution = 5.0
+shader_parameter/wind_points = null
+shader_parameter/wind_vectors = null
+shader_parameter/wind_radii = null
+shader_parameter/wind_point_count = null
 shader_parameter/hide_amount = 0.0
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_7htng"]
@@ -79,7 +84,7 @@ visible = false
 material_override = SubResource("ShaderMaterial_nvgor")
 
 [node name="Leaf" parent="." index="2"]
-transform = Transform3D(0.8, 0, 0, 0, 0.8, 0, 0, 0, 0.8, 3, 0, 0)
+transform = Transform3D(0.8, 0, 0, 0, 0.8, 0, 0, 0, 0.8, 7, 0, 0)
 visible = false
 material_override = ExtResource("2_m6vlq")
 
