@@ -112,6 +112,7 @@ void fragment() {
 	//}
 
 	ALPHA = texture(grassTexture, UV).a;
+	//ALBEDO = vec3(highest_influence);
 }
 
 //void light() {

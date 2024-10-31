@@ -1,7 +1,7 @@
 [gd_scene load_steps=14 format=3 uid="uid://533ohv8gj0yg"]
 
 [ext_resource type="PackedScene" uid="uid://bmkkf7ydj6ou4" path="res://Assets/Models/Enemies/phaser-pod.glb" id="1_qt2gn"]
-[ext_resource type="PackedScene" uid="uid://wlfevcme3etk" path="res://Assets/Scenes/EquippedSpells/phase-spark.tscn" id="2_68qqe"]
+[ext_resource type="PackedScene" uid="uid://bgdde0ohcumry" path="res://Assets/Scenes/EquippedSpells/phase-spark.tscn" id="2_68qqe"]
 [ext_resource type="Material" uid="uid://dym8w57x0d5hr" path="res://Assets/Materials/Enemies/PhaserPod/PhaserPodPurple.tres" id="2_74qek"]
 [ext_resource type="Script" path="res://Assets/Scripts/StateMachine/StateMachine.gd" id="2_f47qs"]
 [ext_resource type="Script" path="res://Assets/Scripts/Input/BasicAIInput.gd" id="2_th1kn"]

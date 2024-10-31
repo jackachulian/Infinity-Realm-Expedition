@@ -20,10 +20,6 @@ extends RigidBody3D
 
 @export var max_snap_speed: float = 2.0
 
-# all children that should last a little bit longer after the projectile is destroyed. (particle effects, etc)
-# they are moved out of the projectile parent upon destroy, and freed after a short delay.
-@export var lingering_effects: Array[Node]
-
 @onready var hitbox: Hitbox = $Hitbox
 
 @onready var ground_snap: RayCast3D = $GroundSnapRayCast3D
@@ -32,6 +28,7 @@ extends RigidBody3D
 @onready var burst_particles: GPUParticles3D = $BurstGPUParticles3D
 @onready var omni_light_3d: OmniLight3D = $OmniLight3D
 
+@onready var collision_shape_3d: CollisionShape3D = $CollisionShape3D
 
 
 var remaining_lifetime: float
@@ -44,6 +41,8 @@ var entity: Entity
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
+	freeze = true
+	
 	#if not entity:
 		#print("clearing proj without an entity that shot it: ", self)
 		#queue_free()
@@ -120,22 +119,30 @@ func destroy(collided: bool = true):
 		return
 	destroyed = true
 	
+	freeze = true
+	
+	collision_shape_3d.disabled = true
+	hitbox.queue_free()
+	
+	for node in get_children():
+		if node is MeshInstance3D:
+			node.visible = false
+	
 	if particles:
+		particles.visible = true
 		particles.emitting = false
 	if burst_particles:
+		burst_particles.visible = true
 		burst_particles.emitting = true
 	
-	for node in lingering_effects:
-		node.reparent(entity.get_parent() if entity else Entity.player.get_parent())
-	queue_free()
-	
 	if omni_light_3d:
+		omni_light_3d.visible = true
 		var anim_dur := burst_particles.lifetime*0.667 if burst_particles else 0.33
-		get_tree().create_tween().tween_property(omni_light_3d, "light_energy", 0, anim_dur)
 		get_tree().create_tween().tween_property(omni_light_3d, "omni_range", omni_light_3d.omni_range*1.5, anim_dur)
+		get_tree().create_tween().tween_property(omni_light_3d, "light_energy", 0, anim_dur)
 		
 	await get_tree().create_timer(2.0).timeout
 	
-	for node in lingering_effects:
-		node.queue_free()
+	queue_free()
+
 	return

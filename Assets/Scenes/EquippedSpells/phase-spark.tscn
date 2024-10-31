@@ -1,57 +1,58 @@
-[gd_scene load_steps=13 format=3 uid="uid://wlfevcme3etk"]
+[gd_scene load_steps=24 format=3 uid="uid://bgdde0ohcumry"]
 
 [ext_resource type="Script" path="res://Assets/Scripts/SpellSystem/EquippedSpell.gd" id="1_qlfki"]
-[ext_resource type="PhysicsMaterial" uid="uid://bokkekxboxktn" path="res://Assets/Physics/bouncy.tres" id="2_mqhgr"]
+[ext_resource type="PhysicsMaterial" uid="uid://cnqil3k1wtly4" path="res://Assets/Physics/frictionless.tres" id="2_ktlxm"]
 [ext_resource type="Script" path="res://Assets/Scripts/Projectile.gd" id="3_fs883"]
 [ext_resource type="Shader" uid="uid://bu5urmu1rlhbu" path="res://Assets/Shaders/emissive.tres" id="4_lt8gj"]
 [ext_resource type="Script" path="res://Assets/Scripts/Hitbox.gd" id="5_sullx"]
 [ext_resource type="Script" path="res://Assets/Scripts/StateMachine/States/Generic/AttackState.gd" id="6_4xvfx"]
+[ext_resource type="SphereMesh" uid="uid://8i6fneykaadu" path="res://Assets/Materials/Spells/fireball-outer2.tres" id="6_brwqu"]
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_mitgy"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_cu6o7"]
 render_priority = 0
 shader = ExtResource("4_lt8gj")
-shader_parameter/albedo = Color(0.93698, 0.993834, 0.873399, 1)
-shader_parameter/point_size = null
-shader_parameter/roughness = null
+shader_parameter/albedo = Color(0.229796, 0.136547, 0.211766, 1)
+shader_parameter/point_size = 1.0
+shader_parameter/roughness = 1.0
 shader_parameter/metallic_texture_channel = null
-shader_parameter/specular = null
-shader_parameter/metallic = null
-shader_parameter/emission = Color(0.939769, 0.957042, 0.896401, 1)
-shader_parameter/emission_energy = 4.45
-shader_parameter/uv1_scale = null
-shader_parameter/uv1_offset = null
-shader_parameter/uv2_scale = null
-shader_parameter/uv2_offset = null
+shader_parameter/specular = 0.5
+shader_parameter/metallic = 0.0
+shader_parameter/emission = Color(0.534886, 0.724373, 0.147414, 1)
+shader_parameter/emission_energy = 8.2
+shader_parameter/uv1_scale = Vector3(1, 1, 1)
+shader_parameter/uv1_offset = Vector3(0, 0, 0)
+shader_parameter/uv2_scale = Vector3(1, 1, 1)
+shader_parameter/uv2_offset = Vector3(0, 0, 0)
 
 [sub_resource type="SphereMesh" id="SphereMesh_mqn5h"]
-material = SubResource("ShaderMaterial_mitgy")
+material = SubResource("ShaderMaterial_cu6o7")
 radius = 0.25
 height = 0.5
-radial_segments = 8
-rings = 4
+radial_segments = 4
+rings = 2
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_8xvh1"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_n0b45"]
 render_priority = 0
 shader = ExtResource("4_lt8gj")
-shader_parameter/albedo = Color(0.315814, 0.670818, 0.287805, 1)
-shader_parameter/point_size = null
-shader_parameter/roughness = 0.102
+shader_parameter/albedo = Color(0.14071, 0.35065, 0.108479, 1)
+shader_parameter/point_size = 1.0
+shader_parameter/roughness = 1.0
 shader_parameter/metallic_texture_channel = null
-shader_parameter/specular = null
-shader_parameter/metallic = null
-shader_parameter/emission = Color(0.456447, 0.780823, 0.255171, 1)
-shader_parameter/emission_energy = 2.13
-shader_parameter/uv1_scale = null
-shader_parameter/uv1_offset = null
-shader_parameter/uv2_scale = null
-shader_parameter/uv2_offset = null
+shader_parameter/specular = 0.5
+shader_parameter/metallic = 0.0
+shader_parameter/emission = Color(0.353236, 0.557769, 0.133822, 1)
+shader_parameter/emission_energy = 4.82
+shader_parameter/uv1_scale = Vector3(1, 1, 1)
+shader_parameter/uv1_offset = Vector3(0, 0, 0)
+shader_parameter/uv2_scale = Vector3(1, 1, 1)
+shader_parameter/uv2_offset = Vector3(0, 0, 0)
 
-[sub_resource type="SphereMesh" id="SphereMesh_emrk8"]
-material = SubResource("ShaderMaterial_8xvh1")
+[sub_resource type="SphereMesh" id="SphereMesh_f81pr"]
+material = SubResource("ShaderMaterial_n0b45")
 radius = 0.25
 height = 0.5
-radial_segments = 8
-rings = 4
+radial_segments = 4
+rings = 2
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_r154p"]
 radius = 0.318723
@@ -60,58 +61,168 @@ radius = 0.318723
 radius = 0.518561
 height = 1.30478
 
-[node name="PhaseSpark" type="Node3D" node_paths=PackedStringArray("entry_state")]
-script = ExtResource("1_qlfki")
-entry_state = NodePath("Spark-State")
+[sub_resource type="Gradient" id="Gradient_fgref"]
+offsets = PackedFloat32Array(0, 0.469136, 1)
+colors = PackedColorArray(0.692031, 0.990914, 0.372542, 1, 0.459116, 0.759155, 0.104325, 1, 0.254241, 0.543877, 1.92523e-07, 1)
 
-[node name="Spark-Projectile" type="RigidBody3D" parent="."]
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_ijqis"]
+gradient = SubResource("Gradient_fgref")
+
+[sub_resource type="Curve" id="Curve_qu4f3"]
+_data = [Vector2(0, 0.990137), 0.0, 0.0, 0, 0, Vector2(1, 0), -1.76162, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_s2mdo"]
+curve = SubResource("Curve_qu4f3")
+
+[sub_resource type="Curve" id="Curve_7xsf0"]
+_data = [Vector2(0, 1), 0.0, -0.853082, 0, 0, Vector2(1, 0), -0.0973966, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_8e5u3"]
+curve = SubResource("Curve_7xsf0")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_nkjjc"]
+angle_min = 1.07288e-05
+angle_max = 1.07288e-05
+direction = Vector3(0, 0, 0)
+spread = 15.0
+initial_velocity_min = 3.0
+initial_velocity_max = 5.0
+angular_velocity_min = -1.60933e-05
+angular_velocity_max = -1.60933e-05
+gravity = Vector3(0, 0, 0)
+damping_min = 4.0
+damping_max = 4.0
+scale_min = 0.2
+scale_max = 0.3
+scale_curve = SubResource("CurveTexture_8e5u3")
+color_ramp = SubResource("GradientTexture1D_ijqis")
+emission_curve = SubResource("CurveTexture_s2mdo")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_v7btg"]
+render_priority = 1
+shading_mode = 0
+vertex_color_use_as_albedo = true
+billboard_mode = 3
+billboard_keep_scale = true
+particles_anim_h_frames = 1
+particles_anim_v_frames = 1
+particles_anim_loop = false
+
+[sub_resource type="QuadMesh" id="QuadMesh_slmc3"]
+material = SubResource("StandardMaterial3D_v7btg")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_xeab3"]
+angle_min = 1.07288e-05
+angle_max = 1.07288e-05
+direction = Vector3(0, 0, 0)
+spread = 60.0
+initial_velocity_min = 1.0
+initial_velocity_max = 5.0
+angular_velocity_min = -1.60933e-05
+angular_velocity_max = -1.60933e-05
+gravity = Vector3(0, 0, 0)
+damping_min = 4.0
+damping_max = 4.0
+scale_min = 0.2
+scale_max = 0.3
+scale_curve = SubResource("CurveTexture_8e5u3")
+color_ramp = SubResource("GradientTexture1D_ijqis")
+emission_curve = SubResource("CurveTexture_s2mdo")
+
+[node name="phase-spark" type="Node3D" node_paths=PackedStringArray("entry_state")]
+script = ExtResource("1_qlfki")
+entry_state = NodePath("PhaseSpark-State")
+
+[node name="PhaseSpark-Projectile" type="RigidBody3D" parent="."]
 collision_layer = 8
 collision_mask = 9
-physics_material_override = ExtResource("2_mqhgr")
+physics_material_override = ExtResource("2_ktlxm")
 gravity_scale = 0.0
+can_sleep = false
 lock_rotation = true
+contact_monitor = true
+max_contacts_reported = 1
 script = ExtResource("3_fs883")
 type = 7
 lifetime = 3.0
-shoot_velocity = Vector3(0, 5, 10)
+shoot_velocity = Vector3(0, 0, 15)
+max_snap_distance = 1.0
+max_snap_speed = 4.0
 
-[node name="Inner" type="MeshInstance3D" parent="Spark-Projectile"]
-transform = Transform3D(0.7, 0, 0, 0, 0.7, 0, 0, 0, 0.7, 0, 0, 0)
+[node name="Inner" type="MeshInstance3D" parent="PhaseSpark-Projectile"]
+transform = Transform3D(0.6, 0, 0, 0, 0.6, 0, 0, 0, 0.6, 0, 0, 0)
 layers = 8
+cast_shadow = 0
 mesh = SubResource("SphereMesh_mqn5h")
 skeleton = NodePath("../..")
 
-[node name="Outer" type="MeshInstance3D" parent="Spark-Projectile"]
-transform = Transform3D(1.35, 0, 0, 0, 1.35, 0, 0, 0, 1.35, 0, 0, 0)
+[node name="Outer" type="MeshInstance3D" parent="PhaseSpark-Projectile"]
 layers = 8
-transparency = 0.33
-mesh = SubResource("SphereMesh_emrk8")
+transparency = 0.5
+cast_shadow = 0
+mesh = SubResource("SphereMesh_f81pr")
 skeleton = NodePath("../..")
 
-[node name="Shadow" type="MeshInstance3D" parent="Spark-Projectile"]
-transform = Transform3D(1.35, 0, 0, 0, 1.35, 0, 0, 0, 1.35, 0, 0, 0)
+[node name="Outer2" type="MeshInstance3D" parent="PhaseSpark-Projectile"]
+transform = Transform3D(1.25, 0, 0, 0, 1.25, 0, 0, 0, 1.25, 0, 0, 0)
+visible = false
+layers = 8
+transparency = 0.5
+cast_shadow = 0
+mesh = ExtResource("6_brwqu")
+skeleton = NodePath("../..")
+
+[node name="Shadow" type="MeshInstance3D" parent="PhaseSpark-Projectile"]
+transform = Transform3D(1.2, 0, 0, 0, 1.2, 0, 0, 0, 1.2, 0, 0, 0)
+visible = false
 layers = 8
 cast_shadow = 3
 skeleton = NodePath("../..")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Spark-Projectile"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="PhaseSpark-Projectile"]
 shape = SubResource("SphereShape3D_r154p")
 
-[node name="Hitbox" type="Area3D" parent="Spark-Projectile"]
+[node name="Hitbox" type="Area3D" parent="PhaseSpark-Projectile"]
 collision_layer = 0
 collision_mask = 0
 script = ExtResource("5_sullx")
-damage = 4
-knockback = 7.5
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Spark-Projectile/Hitbox"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="PhaseSpark-Projectile/Hitbox"]
 shape = SubResource("CapsuleShape3D_6kwo0")
 
-[node name="Spark-State" type="Node3D" parent="." node_paths=PackedStringArray("projectile")]
+[node name="GroundSnapRayCast3D" type="RayCast3D" parent="PhaseSpark-Projectile"]
+
+[node name="GPUParticles3D" type="GPUParticles3D" parent="PhaseSpark-Projectile"]
+cast_shadow = 0
+emitting = false
+amount = 20
+lifetime = 0.33
+randomness = 1.0
+fixed_fps = 0
+process_material = SubResource("ParticleProcessMaterial_nkjjc")
+draw_pass_1 = SubResource("QuadMesh_slmc3")
+
+[node name="BurstGPUParticles3D" type="GPUParticles3D" parent="PhaseSpark-Projectile"]
+cast_shadow = 0
+emitting = false
+amount = 25
+lifetime = 0.5
+one_shot = true
+explosiveness = 1.0
+fixed_fps = 0
+process_material = SubResource("ParticleProcessMaterial_xeab3")
+draw_pass_1 = SubResource("QuadMesh_slmc3")
+
+[node name="OmniLight3D" type="OmniLight3D" parent="PhaseSpark-Projectile"]
+light_color = Color(0.73598, 0.954729, 0.246832, 1)
+omni_range = 3.0
+
+[node name="PhaseSpark-State" type="Node3D" parent="." node_paths=PackedStringArray("projectile")]
 script = ExtResource("6_4xvfx")
 animation_name = "Cast"
-face_aim_during = true
 rotation_snap = 0.0
-cancel_delay = 0.5
-attack_delay = 0.4
-projectile = NodePath("../Spark-Projectile")
+cancel_delay = 0.225
+attack_delay = 0.0
+projectile = NodePath("../PhaseSpark-Projectile")

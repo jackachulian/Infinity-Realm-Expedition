@@ -87,7 +87,7 @@ material = SubResource("StandardMaterial3D_v7btg")
 script = ExtResource("1_tswqt")
 entry_state = NodePath("Fireball-State")
 
-[node name="Fireball-Projectile" type="RigidBody3D" parent="." node_paths=PackedStringArray("lingering_effects")]
+[node name="Fireball-Projectile" type="RigidBody3D" parent="."]
 collision_layer = 8
 collision_mask = 9
 physics_material_override = ExtResource("2_lb8at")
@@ -102,7 +102,6 @@ lifetime = 3.0
 shoot_velocity = Vector3(0, 0, 15)
 max_snap_distance = 1.0
 max_snap_speed = 4.0
-lingering_effects = [NodePath("GPUParticles3D"), NodePath("BurstGPUParticles3D"), NodePath("OmniLight3D")]
 
 [node name="Inner" type="MeshInstance3D" parent="Fireball-Projectile"]
 transform = Transform3D(0.575, 0, 0, 0, 0.575, 0, 0, 0, 0.575, 0, 0, 0)
