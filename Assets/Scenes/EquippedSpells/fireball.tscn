@@ -1,4 +1,4 @@
-[gd_scene load_steps=27 format=3 uid="uid://bktdf5kpipna2"]
+[gd_scene load_steps=22 format=3 uid="uid://bktdf5kpipna2"]
 
 [ext_resource type="Script" path="res://Assets/Scripts/SpellSystem/EquippedSpell.gd" id="1_tswqt"]
 [ext_resource type="PhysicsMaterial" uid="uid://cnqil3k1wtly4" path="res://Assets/Physics/frictionless.tres" id="2_lb8at"]
@@ -8,11 +8,6 @@
 [ext_resource type="Script" path="res://Assets/Scripts/StateMachine/States/Generic/AttackState.gd" id="6_8tjbl"]
 [ext_resource type="SphereMesh" uid="uid://8i6fneykaadu" path="res://Assets/Materials/Spells/fireball-outer2.tres" id="6_mup0r"]
 [ext_resource type="Script" path="res://Assets/Scripts/Hitbox.gd" id="6_t4nuj"]
-[ext_resource type="Shader" path="res://Packages/GPUTrail-main/shaders/trail.gdshader" id="9_nkp3c"]
-[ext_resource type="Shader" path="res://Packages/GPUTrail-main/shaders/trail_draw_pass.gdshader" id="10_0g46g"]
-[ext_resource type="Texture2D" uid="uid://crk6pkb7e5rwc" path="res://Packages/GPUTrail-main/defaults/texture.tres" id="11_78286"]
-[ext_resource type="Material" uid="uid://b4afjlto2oiho" path="res://Assets/Materials/Spells/fireball_particle.tres" id="12_6d31n"]
-[ext_resource type="Script" path="res://Packages/GPUTrail-main/GPUTrail3D.gd" id="13_tl4m1"]
 
 [sub_resource type="SphereMesh" id="SphereMesh_mqn5h"]
 material = ExtResource("2_r6ltc")
@@ -34,45 +29,54 @@ radius = 0.318723
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_6kwo0"]
 radius = 0.518561
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_8q58m"]
-shader = ExtResource("9_nkp3c")
+[sub_resource type="Gradient" id="Gradient_fgref"]
+offsets = PackedFloat32Array(0, 0.255144, 0.567901, 1)
+colors = PackedColorArray(0.9029, 0.681385, 0.127708, 1, 0.879862, 0.485057, 0.0926199, 1, 0.965471, 0.289737, 0.0941536, 1, 0.340301, 0.0617923, 0.0414567, 1)
 
-[sub_resource type="Gradient" id="Gradient_w1v67"]
-offsets = PackedFloat32Array(0, 0.487805, 0.843206, 0.958188, 1)
-colors = PackedColorArray(1, 0.949521, 0.817545, 1, 0.98375, 0.775709, 0.400374, 1, 0.816836, 0.546654, 0.0101261, 1, 0.75, 0.3135, 0.0225, 1, 0.319635, 0.0969898, 0.0201091, 1)
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_ijqis"]
+gradient = SubResource("Gradient_fgref")
 
-[sub_resource type="GradientTexture1D" id="GradientTexture1D_h85f5"]
-gradient = SubResource("Gradient_w1v67")
+[sub_resource type="Curve" id="Curve_qu4f3"]
+_data = [Vector2(0, 0.990137), 0.0, 0.0, 0, 0, Vector2(1, 0), -1.76162, 0.0, 0, 0]
+point_count = 2
 
-[sub_resource type="Curve" id="Curve_rnphn"]
-_data = [Vector2(0, 0), 0.0, 26.2142, 0, 0, Vector2(0.0571429, 0.991782), 0.0, -0.140139, 0, 0, Vector2(0.511111, 0.285082), -1.65095, -1.65095, 0, 0, Vector2(1, 0), -1.28922, 0.0, 0, 0]
-point_count = 4
+[sub_resource type="CurveTexture" id="CurveTexture_s2mdo"]
+curve = SubResource("Curve_qu4f3")
 
-[sub_resource type="CurveTexture" id="CurveTexture_2dwv1"]
-curve = SubResource("Curve_rnphn")
+[sub_resource type="Curve" id="Curve_7xsf0"]
+_data = [Vector2(0, 1), 0.0, -1.40684, 0, 0, Vector2(1, 0), -1.53183, 0.0, 0, 0]
+point_count = 2
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_tkx7p"]
-resource_local_to_scene = true
-render_priority = 0
-shader = ExtResource("10_0g46g")
-shader_parameter/emmission_transform = Projection(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1)
-shader_parameter/flags = 44
-shader_parameter/tex = ExtResource("11_78286")
-shader_parameter/color_ramp = SubResource("GradientTexture1D_h85f5")
-shader_parameter/curve = SubResource("CurveTexture_2dwv1")
-
-[sub_resource type="QuadMesh" id="QuadMesh_nsibh"]
-material = SubResource("ShaderMaterial_tkx7p")
+[sub_resource type="CurveTexture" id="CurveTexture_8e5u3"]
+curve = SubResource("Curve_7xsf0")
 
 [sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_nkjjc"]
-initial_velocity_min = 3.0
-initial_velocity_max = 3.0
+emission_shape = 1
+emission_sphere_radius = 0.25
+direction = Vector3(0, 0, 1)
+initial_velocity_min = 0.1
+initial_velocity_max = 0.2
 angular_velocity_min = -1.60933e-05
 angular_velocity_max = -1.60933e-05
 gravity = Vector3(0, 0, 0)
+scale_min = 0.2
+scale_max = 0.3
+scale_curve = SubResource("CurveTexture_8e5u3")
+color_ramp = SubResource("GradientTexture1D_ijqis")
+emission_curve = SubResource("CurveTexture_s2mdo")
 
-[sub_resource type="QuadMesh" id="QuadMesh_uvp60"]
-material = ExtResource("12_6d31n")
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_v7btg"]
+render_priority = 1
+shading_mode = 0
+vertex_color_use_as_albedo = true
+billboard_mode = 3
+billboard_keep_scale = true
+particles_anim_h_frames = 1
+particles_anim_v_frames = 1
+particles_anim_loop = false
+
+[sub_resource type="QuadMesh" id="QuadMesh_slmc3"]
+material = SubResource("StandardMaterial3D_v7btg")
 
 [node name="fireball" type="Node3D" node_paths=PackedStringArray("entry_state")]
 script = ExtResource("1_tswqt")
@@ -132,27 +136,15 @@ script = ExtResource("6_t4nuj")
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Fireball-Projectile/Hitbox"]
 shape = SubResource("CapsuleShape3D_6kwo0")
 
-[node name="GPUTrail3D" type="GPUParticles3D" parent="Fireball-Projectile"]
-transform = Transform3D(0.25, 0, 0, 0, 0.25, 0, 0, 0, 0.25, 0, 0, -0.293551)
-custom_aabb = AABB(-100, -100, -100, 200, 200, 200)
-amount = 12
-lifetime = 12.0
-explosiveness = 1.0
-fixed_fps = 0
-process_material = SubResource("ShaderMaterial_8q58m")
-draw_pass_1 = SubResource("QuadMesh_nsibh")
-script = ExtResource("13_tl4m1")
-length = 12
-color_ramp = SubResource("GradientTexture1D_h85f5")
-curve = SubResource("CurveTexture_2dwv1")
-billboard = true
-_defaults_have_been_set = true
-
 [node name="GroundSnapRayCast3D" type="RayCast3D" parent="Fireball-Projectile"]
 
 [node name="GPUParticles3D" type="GPUParticles3D" parent="Fireball-Projectile"]
+amount = 20
+lifetime = 0.25
+randomness = 1.0
+fixed_fps = 0
 process_material = SubResource("ParticleProcessMaterial_nkjjc")
-draw_pass_1 = SubResource("QuadMesh_uvp60")
+draw_pass_1 = SubResource("QuadMesh_slmc3")
 
 [node name="Fireball-State" type="Node3D" parent="." node_paths=PackedStringArray("projectile")]
 script = ExtResource("6_8tjbl")
