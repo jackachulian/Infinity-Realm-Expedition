@@ -26,6 +26,7 @@ extends RigidBody3D
 
 @onready var particles: GPUParticles3D = $GPUParticles3D
 @onready var burst_particles: GPUParticles3D = $BurstGPUParticles3D
+@onready var extinguish_particles: GPUParticles3D = $ExtinguishGPUParticles3D
 @onready var omni_light_3d: OmniLight3D = $OmniLight3D
 
 @onready var collision_shape_3d: CollisionShape3D = $CollisionShape3D
@@ -113,7 +114,7 @@ func on_collide(body: Node):
 
 # true if the projectile hit something and bursted. False if it despawned at the end of its lifetime.
 var destroyed: bool = false
-func destroy(collided: bool = true):
+func destroy(collided: bool = false, extinguished: bool = true):
 	if destroyed:
 		return
 	destroyed = true
@@ -130,15 +131,20 @@ func destroy(collided: bool = true):
 	if particles:
 		particles.visible = true
 		particles.emitting = false
-	if burst_particles:
+	if collided and burst_particles:
 		burst_particles.visible = true
 		burst_particles.emitting = true
+	elif extinguished and extinguish_particles:
+		extinguish_particles.visible = true
+		extinguish_particles.emitting = true
 	
-	if omni_light_3d:
+	if collided and omni_light_3d:
 		omni_light_3d.visible = true
 		var anim_dur := burst_particles.lifetime*0.667 if burst_particles else 0.33
 		get_tree().create_tween().tween_property(omni_light_3d, "omni_range", omni_light_3d.omni_range*1.5, anim_dur)
 		get_tree().create_tween().tween_property(omni_light_3d, "light_energy", 0, anim_dur)
+	else:
+		omni_light_3d.visible = false
 		
 	await get_tree().create_timer(2.0).timeout
 	

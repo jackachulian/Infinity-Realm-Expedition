@@ -68,10 +68,7 @@ void fragment() {
 	bool bottomLedge = bottomLedgeValue > 0.0;
 
 	if (debug) {
-		//ALBEDO = texture(windNoise, (vec2(position.x, position.z) + TIME * 1.0) / 32.0).rgb;
-		//ALBEDO = COLOR.rgb;
-		//ALBEDO = vec3(UV.x, UV.y, 0);
-		//ALBEDO = NORMAL;
+		ALBEDO = COLOR.rgb;
 	}
 
 	// ==== Walls

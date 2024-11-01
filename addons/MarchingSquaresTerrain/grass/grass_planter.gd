@@ -95,7 +95,8 @@ func generate_grass_on_cell(cell_coords: Vector2i):
 				
 				# Don't place grass on anything except grass color (0,0,0,0)
 				var color = colors[i]*u + colors[i+1]*v + colors[i+2]*(1-u-v)
-				var on_path: bool = color.r > 0.25 or color.g > 0.5 or color.b > 0.5 or color.a > 0.5
+				var on_path: bool = color.r > 0.25 or color.g > 0.5 or color.b > 0.5
+				#var on_path: bool = false
 				
 				if not on_ledge and not on_path:
 					#print("placing grass at ", p)a
