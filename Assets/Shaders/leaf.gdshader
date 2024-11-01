@@ -34,9 +34,9 @@ uniform float hide_amount = 0.0;
 
 void vertex() {
 	float ambient_wind_noise = texture(windNoise, (vec2(NODE_POSITION_WORLD.x, NODE_POSITION_WORLD.z) + TIME * ambient_wind_speed) / ambient_wind_scale).r;
-	//ambient_wind_noise = round(ambient_wind_noise*ambient_wind_resolution) / ambient_wind_resolution;
+	ambient_wind_noise = round(ambient_wind_noise*ambient_wind_resolution) / ambient_wind_resolution;
 	
-	vec3 screen_wind_vector = (VIEW_MATRIX * vec4(ambient_wind_vector * 0.2, 0)).xyz;
+	vec3 screen_wind_vector = (VIEW_MATRIX * vec4(ambient_wind_vector * 0.25, 0)).xyz;
 	
 	vec3 ambient_wind = ((ambient_wind_noise - 0.25)) * screen_wind_vector;
 	

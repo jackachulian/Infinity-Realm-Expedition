@@ -1,10 +1,10 @@
-extends Node
 class_name State
+extends Node
 
 # Set by enclosing state machine on its ready()
 var entity: Entity
 
-# Time elapsed that this state has been active. Managed & incremented by StateMachine script
+# Time elapsed that this state has been active. Managed & incremented by StateMachine script in physics update
 var time_elapsed: float = 0.0
 
 # Set to true via StateMachine when the current animation finishes
