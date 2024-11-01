@@ -1,4 +1,4 @@
-[gd_scene load_steps=26 format=3 uid="uid://c7vlx700fgtqs"]
+[gd_scene load_steps=27 format=3 uid="uid://c7vlx700fgtqs"]
 
 [ext_resource type="PackedScene" uid="uid://bfdvxynauwmtj" path="res://Assets/Models/Characters/infinity.glb" id="1_rm5qk"]
 [ext_resource type="Script" path="res://Assets/Scripts/Entity.gd" id="2_pd53c"]
@@ -48,6 +48,9 @@ shader_parameter/radius = 1.365
 shader_parameter/power = 1.0
 shader_parameter/hide_incomplete = false
 shader_parameter/color_map = SubResource("GradientTexture1D_hwfv3")
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_55ksa"]
+size = Vector3(1.17893, 1, 0.303192)
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_5hlel"]
 radius = 0.375
@@ -146,6 +149,17 @@ transform = Transform3D(-0.875, 0, -1.32121e-07, 0, 0.73, 0, 1.32121e-07, 0, -0.
 
 [node name="Plane" parent="StateMachine/Shield/shield" index="0"]
 material_override = SubResource("ShaderMaterial_r0cg6")
+
+[node name="ShieldHurtbox" type="Area3D" parent="StateMachine/Shield" index="1" node_paths=PackedStringArray("entity")]
+collision_layer = 0
+collision_mask = 0
+script = ExtResource("31_pkqhk")
+entity = NodePath("../../..")
+damage_multiplier = 0.25
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StateMachine/Shield/ShieldHurtbox" index="0"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.00215387, 0.9, -0.705521)
+shape = SubResource("BoxShape3D_55ksa")
 
 [node name="JumpRise" type="Node" parent="StateMachine" index="6" node_paths=PackedStringArray("grounded_state", "falling_state")]
 script = ExtResource("9_blb1u")
@@ -363,10 +377,11 @@ autoplay = "Sword-Standby"
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, 0)
 shape = SubResource("CapsuleShape3D_5hlel")
 
-[node name="Hurtbox" type="Area3D" parent="." index="7"]
+[node name="Hurtbox" type="Area3D" parent="." index="7" node_paths=PackedStringArray("entity")]
 collision_layer = 0
 collision_mask = 0
 script = ExtResource("31_pkqhk")
+entity = NodePath("..")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Hurtbox" index="0"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, 0)

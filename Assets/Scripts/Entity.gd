@@ -184,8 +184,8 @@ func face_angle(angle: float, rotation_snap: float = 45):
 		angle = round(angle / snap) * snap
 	rotation.y = angle
 
-func take_damage(damage: int):
-	hit_points -= damage
+func take_damage(damage: float):
+	hit_points -= roundi(damage)
 	
 	if hit_points <= 0:
 		death()

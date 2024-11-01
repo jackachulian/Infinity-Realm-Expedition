@@ -9,10 +9,13 @@ extends State
 
 @onready var shield_mesh: Node3D = $shield
 
+@onready var shield_hurtbox: Hurtbox = $ShieldHurtbox
+@onready var shield_hurtbox_shape: CollisionShape3D = $ShieldHurtbox/CollisionShape3D
 
 
 func _ready() -> void:
 	shield_mesh.visible = false
+	shield_hurtbox_shape.disabled = true
 
 func check_transition(delta: float) -> State:	
 	# check for general action input. Prevent looping from shield back into shield
@@ -37,6 +40,7 @@ func physics_update(delta: float):
 	entity.face_angle(aim_angle, 22.5);
 	
 	if time_elapsed >= shield_delay:
+		shield_hurtbox_shape.disabled = false
 		shield_mesh.visible = true
 
 func on_enter_state():
@@ -49,3 +53,4 @@ func on_enter_state():
 
 func on_exit_state():
 	shield_mesh.visible = false
+	shield_hurtbox_shape.disabled = true

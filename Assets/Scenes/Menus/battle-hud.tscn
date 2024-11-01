@@ -1,7 +1,23 @@
-[gd_scene load_steps=3 format=3 uid="uid://dpfh6ela6sv1l"]
+[gd_scene load_steps=5 format=3 uid="uid://dpfh6ela6sv1l"]
 
 [ext_resource type="Script" path="res://Assets/Scripts/BattleHud.gd" id="1_2arqo"]
 [ext_resource type="PackedScene" uid="uid://877fb26ym5ek" path="res://Assets/Scenes/Menus/spell_icon_display.tscn" id="1_tlqap"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_u4m8o"]
+bg_color = Color(0.0616, 0.06436, 0.08, 0.67451)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0, 0, 0, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_b2iy1"]
+bg_color = Color(0.575864, 0.954619, 0.291404, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.8, 0.8, 0.8, 0)
 
 [node name="BattleHUD" type="Control"]
 layout_mode = 3
@@ -39,3 +55,14 @@ layout_mode = 2
 layout_mode = 2
 
 [node name="EnemyGUIs" type="CanvasLayer" parent="."]
+
+[node name="HealthBar" type="ProgressBar" parent="."]
+layout_mode = 1
+offset_left = 11.0
+offset_top = 11.0
+offset_right = 142.0
+offset_bottom = 25.0
+theme_override_styles/background = SubResource("StyleBoxFlat_u4m8o")
+theme_override_styles/fill = SubResource("StyleBoxFlat_b2iy1")
+value = 75.0
+show_percentage = false

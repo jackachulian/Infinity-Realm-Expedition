@@ -8,13 +8,11 @@ extends Control
 static var instance: BattleHud
 
 @onready var spell_container: HBoxContainer = $SpellContainer
-
 @onready var weapon_display: SpellIconDisplay = $WeaponSpellDisplayItem
-
 @onready var enemy_guis: CanvasLayer = $EnemyGUIs
-
-
+@onready var health_bar: ProgressBar = $HealthBar
 @onready var spell_display_item_scene: PackedScene = preload("res://Assets/Scenes/Menus/spell_icon_display.tscn")
+
 
 func _enter_tree() -> void:
 	instance = self
@@ -23,6 +21,8 @@ func _ready():
 	instance = self
 	if Entity.player:
 		setup_spells()
+		health_bar.max_value = Entity.player.max_hit_points
+		Entity.player.damaged.connect(on_entity_damaged)
 
 func setup_spells():
 	for child in spell_container.get_children():
@@ -43,3 +43,6 @@ func select_spell(spell_number: int):
 	var disp: SpellIconDisplay = spell_container.get_child(spell_number - 1)
 	if disp:
 		disp.grab_focus()
+
+func on_entity_damaged(damage: int):
+	health_bar.value = Entity.player.hit_points

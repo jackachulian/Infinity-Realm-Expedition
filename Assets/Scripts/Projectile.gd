@@ -66,7 +66,6 @@ func shoot(entity: Entity):
 	var aim_target := entity.input.get_aim_target()
 	var offset_direction := (aim_target - aim_origin).normalized()
 	look_at(aim_target)
-	print("towards ", aim_target)
 	#var shoot_basis: Basis = Basis(offset_direction.rotated(Vector3.UP, deg_to_rad(90)), Vector3.UP, offset_direction)
 	linear_velocity = offset_direction * shoot_velocity.z;
 	
