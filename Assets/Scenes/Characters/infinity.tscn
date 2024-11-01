@@ -143,10 +143,10 @@ state_on_anim_finished = NodePath("../Idle")
 script = ExtResource("10_jxd4a")
 animation_name = "Sword-Shield"
 idle_state = NodePath("../Idle")
-shield_delay = 0.1
 
 [node name="shield" parent="StateMachine/Shield" index="0" instance=ExtResource("9_ny8un")]
 transform = Transform3D(-0.875, 0, -1.32121e-07, 0, 0.73, 0, 1.32121e-07, 0, -0.875, 0, 0.93369, -0.741412)
+visible = false
 
 [node name="Plane" parent="StateMachine/Shield/shield" index="0"]
 material_override = SubResource("ShaderMaterial_r0cg6")
