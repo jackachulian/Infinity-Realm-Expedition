@@ -841,3 +841,10 @@ func notify_needs_update(z: int, x: int):
 		return
 		
 	needs_update[z][x] = true
+
+func regenerate_all_cells():
+	for z in range(dimensions.z-1):
+		for x in range(dimensions.x-1):
+			needs_update[z][x] = true
+			
+	regenerate_mesh()

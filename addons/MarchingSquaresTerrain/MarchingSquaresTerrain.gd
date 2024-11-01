@@ -12,7 +12,11 @@ extends Node3D
 @export var terrain_material: Material
 
 # The max height distance between points before a wall is created between them
-@export var merge_threshold: float = 0.6
+@export var merge_threshold: float = 0.6:
+	set(value):
+		merge_threshold = value
+		for chunk: MarchingSquaresTerrainChunk in chunks.values():
+			chunk.regenerate_all_cells()
 
 # If above 0, round height values to this nearest interval.
 @export var height_banding: float = 0.25

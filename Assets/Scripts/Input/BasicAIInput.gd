@@ -64,7 +64,7 @@ func _physics_process(delta: float) -> void:
 		attack_cooldown_remaining = 0
 	#if target and current_state is not AttackState:
 	if target:
-		current_aim_target = target.global_position + Vector3.UP
+		current_aim_target = target.global_position + Vector3.UP * 1.5
 
 func is_move_requested():
 	return target and move_cooldown_remaining <= 0 and distance_from_target > min_approach_distance and entity.get_current_state().name == "Idle"
