@@ -119,6 +119,4 @@ void fragment() {
 	ALBEDO = n_out12p0;
 	ALPHA = n_out10p0;
 	EMISSION = vec3(n_out25p0);
-
-
 }

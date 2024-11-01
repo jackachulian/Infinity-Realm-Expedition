@@ -1,5 +1,6 @@
 shader_type spatial;
 //render_mode cull_disabled;
+//render_mode unshaded;
 
 uniform vec4 slash_color : source_color = vec4(0.8, 0.8, 0.8, 1.0);
 

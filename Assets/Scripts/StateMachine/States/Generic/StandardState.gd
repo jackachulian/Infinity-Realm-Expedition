@@ -152,7 +152,7 @@ func on_enter_state():
 		entity.velocity = entity.movement.screen_uniform_vector(instant_velocity_on_enter.rotated(Vector3.UP, entity.input.uniform_input_angle(false)));
 		
 	for shape in disable_shapes_during:
-		shape.disabled = false
+		shape.disabled = true
 
 func on_exit_state():
 	if prevent_wall_slide:

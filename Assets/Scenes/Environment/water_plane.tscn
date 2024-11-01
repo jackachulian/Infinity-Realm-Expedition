@@ -10,3 +10,6 @@ orientation = 1
 [node name="WaterPlane" type="MeshInstance3D"]
 mesh = SubResource("QuadMesh_abki8")
 surface_material_override/0 = ExtResource("1_lr3qi")
+
+[node name="ReflectionProbe" type="ReflectionProbe" parent="."]
+size = Vector3(2, 2, 2)
