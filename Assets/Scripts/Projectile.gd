@@ -1,5 +1,10 @@
 class_name Projectile
 extends RigidBody3D
+# TODO: may want to make this work with PhysicsBody3D.
+#what i will probably do instead though is make seperate classes.
+# like one for non-standard projectiles via animatablebody3d or whatever it is,
+# and a "Helper" class for summoned helper spells.
+# probably also a separate mount class too
 
 # Elemental type. used for damage calculation and may be used for elemental reactions
 @export var type: Elements.Element
@@ -71,7 +76,7 @@ func shoot(entity: Entity):
 	linear_velocity = offset_direction * shoot_velocity.z;
 	
 	if destroy_on_hit_wall:
-		body_entered.connect(on_collide)
+		body_entered.connect(on_body_entered)
 	
 	if hitbox:
 		hitbox.deal_damage_persistent(entity)
@@ -107,8 +112,12 @@ func _physics_process(delta: float) -> void:
 			var height = move_toward(global_position.y, target_height, max_snap_speed * delta)
 			global_position = Vector3(global_position.x, height, global_position.z)
 			
-
-func on_collide(body: Node):
+			
+			
+# On collision with a body that this projectile can collide with. 
+# Includes StaticBody3D from terrain, CharacterBody3D for entities, etc.
+func on_body_entered(body: Node):
+	# destroy() will be called when hitting an enemy's hurtbox.
 	if destroy_on_hit_wall:
 		destroy()
 
@@ -138,13 +147,14 @@ func destroy(collided: bool = false, extinguished: bool = true):
 		extinguish_particles.visible = true
 		extinguish_particles.emitting = true
 	
-	if collided and omni_light_3d:
-		omni_light_3d.visible = true
-		var anim_dur := burst_particles.lifetime*0.667 if burst_particles else 0.33
-		get_tree().create_tween().tween_property(omni_light_3d, "omni_range", omni_light_3d.omni_range*1.5, anim_dur)
-		get_tree().create_tween().tween_property(omni_light_3d, "light_energy", 0, anim_dur)
-	else:
-		omni_light_3d.visible = false
+	if omni_light_3d:
+		if collided:
+			omni_light_3d.visible = true
+			var anim_dur := burst_particles.lifetime*0.667 if burst_particles else 0.33
+			get_tree().create_tween().tween_property(omni_light_3d, "omni_range", omni_light_3d.omni_range*1.5, anim_dur)
+			get_tree().create_tween().tween_property(omni_light_3d, "light_energy", 0, anim_dur)
+		else:
+			omni_light_3d.visible = false
 		
 	await get_tree().create_timer(2.0).timeout
 	
