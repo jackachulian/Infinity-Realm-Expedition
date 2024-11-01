@@ -70,6 +70,8 @@ enum MovementMode {
 # If true, this state cannot switch to itself via action request.
 @export var prevent_self_action_request: bool = false
 
+@export var disable_shapes_during: Array[CollisionShape3D]
+
 func check_transition(delta: float) -> State:	
 	if anim_finished:
 		if action_on_anim_finish:
@@ -148,6 +150,9 @@ func on_enter_state():
 		entity.face_angle(entity.input.uniform_input_angle(false))
 	if instant_velocity_on_enter:
 		entity.velocity = entity.movement.screen_uniform_vector(instant_velocity_on_enter.rotated(Vector3.UP, entity.input.uniform_input_angle(false)));
+		
+	for shape in disable_shapes_during:
+		shape.disabled = true
 
 func on_exit_state():
 	if prevent_wall_slide:
@@ -161,6 +166,9 @@ func on_exit_state():
 	if limit_exit_linear_velocity:
 		if entity.velocity.length() > entity.movement.speed:
 			entity.velocity = entity.velocity.normalized() * entity.movement.speed
+			
+	for shape in disable_shapes_during:
+		shape.disabled = false
 
 func get_decel_override():
 	return decel_override

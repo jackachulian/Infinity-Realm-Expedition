@@ -133,6 +133,7 @@ emission_curve = SubResource("CurveTexture_s2mdo")
 [node name="phase-spark" type="Node3D" node_paths=PackedStringArray("entry_state")]
 script = ExtResource("1_qlfki")
 entry_state = NodePath("PhaseSpark-State")
+ai_distance = 15.0
 
 [node name="PhaseSpark-Projectile" type="RigidBody3D" parent="."]
 collision_layer = 8

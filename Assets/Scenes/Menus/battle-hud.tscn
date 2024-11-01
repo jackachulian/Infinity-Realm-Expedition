@@ -12,7 +12,7 @@ border_width_bottom = 2
 border_color = Color(0, 0, 0, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_b2iy1"]
-bg_color = Color(0.575864, 0.954619, 0.291404, 1)
+bg_color = Color(0.54508, 0.924475, 0.327767, 1)
 border_width_left = 2
 border_width_top = 2
 border_width_right = 2

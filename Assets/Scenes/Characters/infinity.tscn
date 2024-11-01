@@ -119,7 +119,7 @@ script = ExtResource("5_yhrb3")
 animation_name = "Run-Stop"
 state_on_anim_finished = NodePath("../Idle")
 
-[node name="Dash" type="Node" parent="StateMachine" index="3" node_paths=PackedStringArray("state_on_anim_finish")]
+[node name="Dash" type="Node" parent="StateMachine" index="3" node_paths=PackedStringArray("state_on_anim_finish", "disable_shapes_during")]
 script = ExtResource("9_blb1u")
 animation_name = "Dash"
 action_on_anim_finish = true
@@ -132,6 +132,7 @@ gravity_multiplier = 0.0
 decel_override = 0.0
 movement_speed_on_exit = 8.0
 can_move = false
+disable_shapes_during = [NodePath("../../Hurtbox/CollisionShape3D")]
 
 [node name="DashStop" type="Node" parent="StateMachine" index="4" node_paths=PackedStringArray("state_on_anim_finished")]
 script = ExtResource("5_yhrb3")
@@ -248,7 +249,6 @@ bones/13/rotation = Quaternion(-0.0321947, 0.00184918, -0.680364, 0.732164)
 bones/13/scale = Vector3(1, 1, 1)
 bones/14/position = Vector3(-7.51809e-09, 0.362667, 3.51468e-08)
 bones/14/rotation = Quaternion(0.176206, -0.448279, -0.425716, 0.766005)
-bones/14/scale = Vector3(1, 1, 1)
 bones/15/position = Vector3(-5.88311e-10, 0.120048, 4.02597e-08)
 bones/15/rotation = Quaternion(-0.831766, 0.0239164, 0.422068, 0.359795)
 bones/16/position = Vector3(0.0573631, 0.0211383, 0.0155378)
@@ -321,14 +321,14 @@ bones/39/rotation = Quaternion(0.109349, 0.122558, -0.0265328, 0.986062)
 bones/39/scale = Vector3(1, 1, 0.999998)
 
 [node name="Helmet" parent="Armature/Skeleton3D" index="0"]
-transform = Transform3D(0.731335, -0.0297448, -0.322899, -0.0206804, 0.790727, -0.119679, 0.323606, 0.117754, 0.722089, 0.0612768, 0.145755, -0.0196598)
+transform = Transform3D(0.731336, -0.0297445, -0.322899, -0.0206811, 0.790727, -0.11968, 0.323606, 0.117755, 0.722089, 0.0612765, 0.145756, -0.0196604)
 visible = false
 
 [node name="Helmet" parent="Armature/Skeleton3D/Helmet" index="0"]
 material_override = ExtResource("21_uqxah")
 
 [node name="Blade" parent="Armature/Skeleton3D" index="1"]
-transform = Transform3D(0.253295, -0.135209, 0.409341, 0.32789, -0.247805, -0.284747, 0.279874, 0.412688, -0.0368681, -0.461445, 0.769992, -0.178083)
+transform = Transform3D(0.253296, -0.135209, 0.409341, 0.32789, -0.247805, -0.284747, 0.279874, 0.412688, -0.0368692, -0.461445, 0.769992, -0.178083)
 
 [node name="Blade" parent="Armature/Skeleton3D/Blade" index="0"]
 visible = false
