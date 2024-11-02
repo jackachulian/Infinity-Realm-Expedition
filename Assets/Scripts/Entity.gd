@@ -44,6 +44,9 @@ enum EntityType {
 # Current amount of hit points
 @onready var hit_points: int = max_hit_points
 
+# Height - used for things like enemy aiming, water physics, health bar placing, etc
+@export var height: float = 1.5
+
 #contains a EnemyGUI node
 @onready var enemy_gui_scene: PackedScene = preload("res://Assets/Scenes/BattleUI/enemy_gui.tscn")
 
@@ -57,6 +60,11 @@ var flash_timer: float = 0
 # Entity is hit stunned if this is above 0.
 # Will not be able to control movement during hit stun, input attacks, etc
 var hit_stun_timer: float = 0
+
+# All status effects currently affecting this entity.
+# Each physics frame the duration will tick down, unless its duration is already 0 or lower.
+# When a status reached 0 duration it is cleared.
+var status_effects: Dictionary
 
 # All meshes on this character, saved to this array on ready, for use with damage flashes.
 var flash_meshes: Array[MeshInstance3D]
@@ -123,6 +131,13 @@ func _process(delta: float):
 
 func _physics_process(delta: float):
 	hit_stun_timer = move_toward(hit_stun_timer, 0, delta)
+	
+	for status_type: String in status_effects.keys():
+		var status: StatusEffect = status_effects[status_type]
+		if status.duration > 0.0:
+			status.duration -= delta
+			if status.duration <= 0.0:
+				status_effects.erase(status)
 
 func equip(spell_number: int, spell_data: SpellData):
 	if spell_number <= 0:
@@ -242,3 +257,14 @@ func is_shoot_obstructed() -> bool:
 	query.collide_with_bodies = true
 	var result = space_state.intersect_ray(query)
 	return not result.is_empty()
+
+func add_status_effect(status: StatusEffect):
+	status_effects[status.status_type] = status
+	
+func remove_status_effect_type(status_type: String):
+	status_effects[status_type] = null
+	
+func remove_status_effect(status: StatusEffect):
+	var status_of_type: StatusEffect = status_effects[status.status_type]
+	if status_of_type == status:
+		status_effects.erase(status.status_type)

@@ -74,7 +74,9 @@ rotation_snap = 0.0
 
 [node name="Movement" type="Node" parent="." index="3"]
 script = ExtResource("6_hmrkd")
+move_accel = 30.0
 air_accel = 1.0
+stop_decel = 20.0
 air_decel = 0.5
 
 [node name="Armature" parent="." index="4"]

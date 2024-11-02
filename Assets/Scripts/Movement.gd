@@ -53,6 +53,12 @@ func inverse_screen_uniform_vector(v: Vector3) -> Vector3:
 func _physics_process(delta):
 	update_camera_screen_uniform()
 	
+	var current_speed_multiplier := 1.0
+	var current_accel_multiplier := 1.0
+	for status: StatusEffect in entity.status_effects.values():
+		current_speed_multiplier *= status.speed_multiplier
+		current_accel_multiplier *= status.accel_multiplier
+	
 	# Apply root motion (subtract instead of add because model is flipped 180 degrees)
 	var root_motion_delta = entity.anim.get_root_motion_position()
 	entity.position -= screen_uniform_vector(entity.get_quaternion() * root_motion_delta * root_motion_multiplier);
@@ -67,7 +73,7 @@ func _physics_process(delta):
 	# Accelerate into in input direction if non-zero input and not stunned
 	if direction != Vector3.ZERO and not entity.is_hit_stunned():
 		var accel = move_accel if entity.is_on_floor() else air_accel
-		entity.velocity = entity.velocity.move_toward(direction * speed, accel * delta)
+		entity.velocity = entity.velocity.move_toward(direction * speed * current_speed_multiplier, accel * delta * current_accel_multiplier)
 	# Otherwise, decelerate towards zero if not in midair (simulates friction with ground)
 	elif entity.is_on_floor():
 		var decel;
@@ -81,7 +87,7 @@ func _physics_process(delta):
 			decel = air_decel
 		else:
 			decel = stop_decel
-		entity.velocity = entity.velocity.move_toward(Vector3.ZERO, decel * delta)
+		entity.velocity = entity.velocity.move_toward(Vector3.ZERO, decel * delta * current_accel_multiplier)
 	
 	# re-apply screen uiform movement
 	entity.velocity = screen_uniform_vector(entity.velocity);
