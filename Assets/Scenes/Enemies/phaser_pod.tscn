@@ -39,6 +39,7 @@ visible = false
 
 [node name="Input" type="Node3D" parent="." index="1" node_paths=PackedStringArray("move_state")]
 script = ExtResource("2_th1kn")
+min_approach_distance = 9.5
 move_state = NodePath("../StateMachine/Move")
 dash_count = 0
 
