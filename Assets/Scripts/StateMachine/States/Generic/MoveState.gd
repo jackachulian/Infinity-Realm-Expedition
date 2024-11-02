@@ -14,6 +14,8 @@ extends State
 
 @onready var jump_check: RayCast3D = $JumpCheckRayCast3D
 
+# The wall in front of the player can be at most this high above the entity's feet to trigger an auto jump
+@export var max_height_to_jump: float = 1.5
 
 func check_transition(delta: float) -> State:
 	# Go to idle when movement stops
@@ -26,10 +28,11 @@ func check_transition(delta: float) -> State:
 	# When running into a wall, auto-jump
 	if jump_state and entity.is_on_floor() and entity.is_on_wall():
 		# Only jump if wall normal is close to opposite of input vector
-		if (entity.get_wall_normal() + entity.movement.direction.normalized()).length() <= 0.65:
-			# Check raycast to make sure there is a ledge the player can jump onto in front of them. 
-			# if the ledge is too tall, the ray won't hit anything.
-			if jump_check.is_colliding() and (jump_check.get_collision_point().y - entity.global_position.y) >= 0.05 and jump_check.get_collision_normal() != Vector3.ZERO:
+		# Check raycast to make sure there is a ledge the player can jump onto in front of them. 
+		if (entity.get_wall_normal() + entity.movement.direction.normalized()).length() <= 0.65 and jump_check.is_colliding():
+			var wall_height = jump_check.get_collision_point().y - entity.global_position.y
+			var max_height = max_height_to_jump / sqrt(entity.movement.current_accel_multiplier)
+			if wall_height >= 0.05 and wall_height < max_height and jump_check.get_collision_normal() != Vector3.ZERO:
 				return jump_state
 		
 	# Accept general action. but don't go into move while already in move 

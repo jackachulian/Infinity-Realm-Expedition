@@ -33,6 +33,9 @@ var camera_axis: Vector3
 # amont to scale the camera forward axis movement by. set to 1 for no change
 @onready var scale_factor: float = 1.25
 
+var current_speed_multiplier: float
+var current_accel_multiplier: float
+
 func update_camera_screen_uniform():
 	camera_axis = Camera3DTexelSnapped.instance.global_transform.basis.z
 	camera_axis.y = 0
@@ -53,8 +56,8 @@ func inverse_screen_uniform_vector(v: Vector3) -> Vector3:
 func _physics_process(delta):
 	update_camera_screen_uniform()
 	
-	var current_speed_multiplier := 1.0
-	var current_accel_multiplier := 1.0
+	current_speed_multiplier = 1.0
+	current_accel_multiplier = 1.0
 	for status: StatusEffect in entity.status_effects.values():
 		current_speed_multiplier *= status.speed_multiplier
 		current_accel_multiplier *= status.accel_multiplier
@@ -75,7 +78,7 @@ func _physics_process(delta):
 		var accel = move_accel if entity.is_on_floor() else air_accel
 		entity.velocity = entity.velocity.move_toward(direction * speed * current_speed_multiplier, accel * delta * current_accel_multiplier)
 	# Otherwise, decelerate towards zero if not in midair (simulates friction with ground)
-	elif entity.is_on_floor():
+	else:
 		var decel;
 		
 		var decel_override = entity.state_machine.current_state.get_decel_override() if entity.state_machine and entity.state_machine.current_state else -1
@@ -88,8 +91,7 @@ func _physics_process(delta):
 		else:
 			decel = stop_decel
 			
-		var decel_multiplier = current_accel_multiplier + 0.0
-		entity.velocity = entity.velocity.move_toward(Vector3.ZERO, decel * delta * decel_multiplier)
+		entity.velocity = entity.velocity.move_toward(Vector3.ZERO, decel * delta * current_accel_multiplier)
 	
 	# re-apply screen uiform movement
 	entity.velocity = screen_uniform_vector(entity.velocity);
@@ -98,6 +100,6 @@ func _physics_process(delta):
 	entity.velocity.y = stored_yvel
 	
 	if not entity.is_on_floor():
-		entity.velocity.y -= (rise_gravity if entity.velocity.y > 0 else fall_gravity) * gravity_multiplier * delta
+		entity.velocity.y -= (rise_gravity if entity.velocity.y > 0 else fall_gravity) * gravity_multiplier * delta * current_accel_multiplier
 		
 	entity.move_and_slide()
