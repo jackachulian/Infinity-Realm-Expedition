@@ -87,7 +87,9 @@ func _physics_process(delta):
 			decel = air_decel
 		else:
 			decel = stop_decel
-		entity.velocity = entity.velocity.move_toward(Vector3.ZERO, decel * delta * current_accel_multiplier)
+			
+		var decel_multiplier = current_accel_multiplier + 0.0
+		entity.velocity = entity.velocity.move_toward(Vector3.ZERO, decel * delta * decel_multiplier)
 	
 	# re-apply screen uiform movement
 	entity.velocity = screen_uniform_vector(entity.velocity);
