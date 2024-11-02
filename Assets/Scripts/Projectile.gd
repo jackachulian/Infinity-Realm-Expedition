@@ -25,6 +25,9 @@ extends RigidBody3D
 
 @export var max_snap_speed: float = 2.0
 
+@export_flags("Neutral", "Fire", "Spirit", "Water", "Ice", "Stone", "Wind", "Electric", "Plant", "Copy", "Metal", "Light", "Dark"
+	) var extinguish_elements: int
+
 @onready var hitbox: Hitbox = $Hitbox
 
 @onready var ground_snap: RayCast3D = $GroundSnapRayCast3D
@@ -47,6 +50,7 @@ var entity: Entity
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
+	set_process(false)
 	freeze = true
 	
 	#if not entity:
@@ -61,6 +65,7 @@ func _ready() -> void:
 func shoot(entity: Entity):
 	self.entity = entity
 	remaining_lifetime = lifetime;
+	set_process(true)
 	freeze = false
 	#linear_velocity = entity.quaternion * shoot_velocity # forward
 	
@@ -93,14 +98,14 @@ func shoot(entity: Entity):
 func on_hitbox_deal_damage(area: Area3D):
 	max_hits -= 1
 	if max_hits <= 0:
-		destroy()
+		destroy(true, false)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _physics_process(delta: float) -> void:
 	if remaining_lifetime > 0.0:
 		remaining_lifetime -= delta;
 		if remaining_lifetime <= 0.0:
-			destroy()
+			destroy(false, false)
 			return
 			
 	if ground_snap and ground_snap.is_colliding():
@@ -119,11 +124,11 @@ func _physics_process(delta: float) -> void:
 func on_body_entered(body: Node):
 	# destroy() will be called when hitting an enemy's hurtbox.
 	if destroy_on_hit_wall:
-		destroy()
+		destroy(true, false)
 
 # true if the projectile hit something and bursted. False if it despawned at the end of its lifetime.
 var destroyed: bool = false
-func destroy(collided: bool = false, extinguished: bool = true):
+func destroy(collided: bool, extinguished: bool):
 	if destroyed:
 		return
 	destroyed = true
@@ -161,3 +166,9 @@ func destroy(collided: bool = false, extinguished: bool = true):
 	queue_free()
 
 	return
+	
+func on_element_touched(element: int):
+	if not is_processing():
+		return
+	if element & extinguish_elements:
+		destroy(false, true)

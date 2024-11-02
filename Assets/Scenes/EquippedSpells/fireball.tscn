@@ -130,6 +130,7 @@ lifetime = 3.0
 shoot_velocity = Vector3(0, 0, 15)
 max_snap_distance = 1.0
 max_snap_speed = 4.0
+extinguish_elements = 8
 
 [node name="Inner" type="MeshInstance3D" parent="Fireball-Projectile"]
 transform = Transform3D(0.575, 0, 0, 0, 0.575, 0, 0, 0, 0.575, 0, 0, 0)

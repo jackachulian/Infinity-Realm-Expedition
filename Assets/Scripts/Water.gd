@@ -19,9 +19,10 @@ func _on_body_entered(body: Node3D) -> void:
 		var status := StatusEffect.new("submerged", -1.0)
 		submerged_status_effects[entity] = status
 		entity.add_status_effect(status)
-		
-		# TEMP
 		update_submerged_status(status, entity)
+		
+	if body.has_method("on_element_touched"):
+		body.on_element_touched(Elements.WATER)
 
 func _on_body_exited(body: Node3D) -> void:
 	var entity: Entity = body as Entity
