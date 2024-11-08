@@ -1,7 +1,7 @@
 [gd_scene load_steps=15 format=3 uid="uid://oo33f7t80pj5"]
 
 [ext_resource type="Script" path="res://Assets/Scripts/GameplayBaseNode.gd" id="1_5seeb"]
-[ext_resource type="PackedScene" uid="uid://d0tvg6r1qe2m1" path="res://Assets/Scenes/Levels/testing-level.tscn" id="2_je3iq"]
+[ext_resource type="PackedScene" uid="uid://lqhebv3b5j15" path="res://Assets/Scenes/Levels/flare-arena.tscn" id="2_odtvn"]
 [ext_resource type="Script" path="res://Assets/Scripts/CameraPivot.gd" id="3_4fxb2"]
 [ext_resource type="Script" path="res://Assets/Scripts/Camera3DTexelSnapped.gd" id="4_4e4e3"]
 [ext_resource type="Script" path="res://Assets/Scripts/ObjectHider.gd" id="5_btpna"]
@@ -28,7 +28,9 @@ tonemap_mode = 2
 glow_enabled = true
 
 [node name="GameplayBaseNode" type="Node3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.45661, 0)
 script = ExtResource("1_5seeb")
+first_level_scene = ExtResource("2_odtvn")
 
 [node name="SubViewport" type="SubViewport" parent="."]
 size = Vector2i(640, 360)
@@ -96,5 +98,3 @@ script = ExtResource("10_ietri")
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_aoddd")
-
-[node name="TestingLevel" parent="." instance=ExtResource("2_je3iq")]

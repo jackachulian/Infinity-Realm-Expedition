@@ -12,9 +12,10 @@ func _ready() -> void:
 			
 		# this may be quite an expensive call in the future, so may want to add a loading screen and load in the background
 		level = first_level_scene.instantiate() as Level
+		print("instantiated ", level.name)
 		
 		add_child(level)
 		move_child(level, 2) # after subviewport and after player
 
-		if level.spawnpoint:
+		if level and level.spawnpoint:
 			Entity.player.global_position = level.spawnpoint.global_position

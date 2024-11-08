@@ -1,5 +1,5 @@
-extends GenericInput
 class_name BasicAIInput
+extends GenericInput
 
 var target: Node3D
 
@@ -50,8 +50,10 @@ func _physics_process(delta: float) -> void:
 		target = null
 	
 	move_cooldown_remaining = move_toward(move_cooldown_remaining, 0, delta)
-	if move_cooldown_remaining <= 0:
+	if distance_from_target >= min_approach_distance:
 		direction = facing
+	else:
+		direction = Vector3.ZERO
 	
 	if entity.input.main_attack_state or entity.weapon:
 		attack_cooldown_remaining = move_toward(attack_cooldown_remaining, 0, delta)
@@ -67,7 +69,7 @@ func _physics_process(delta: float) -> void:
 		current_aim_target = target.global_position + Vector3.UP * 1.5
 
 func is_move_requested():
-	return target and move_cooldown_remaining <= 0 and distance_from_target > min_approach_distance and entity.get_current_state().name == "Idle"
+	return target and move_cooldown_remaining <= 0 and distance_from_target >= min_approach_distance
 
 func clear_move_buffer():
 	move_cooldown_remaining = move_cooldown

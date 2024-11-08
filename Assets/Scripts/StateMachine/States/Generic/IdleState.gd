@@ -9,17 +9,18 @@ extends State
 
 func check_transition(delta: float) -> State:
 	# Go to run (move) state when movement starts (does not matter if move key was just pressed)
-	if entity.input.direction != Vector3.ZERO and entity.input.move_state:
-		return entity.input.move_state
+	#if entity.input and entity.input.direction != Vector3.ZERO and entity.input.move_state:
+		#return entity.input.move_state
 		
 	# used for run-stop
 	if anim_finished and state_on_anim_finished:
 		return state_on_anim_finished
 		
 	# check for general action input (attack, dash, shield, etc)
-	var requested_action: State = entity.input.request_action()
-	if requested_action:
-		return requested_action
+	if entity.input:
+		var requested_action: State = entity.input.request_action()
+		if requested_action:
+			return requested_action
 		
 	# check for fall
 	if entity.velocity.y < 0:
@@ -32,8 +33,9 @@ func physics_update(delta: float):
 
 func on_enter_state():
 	entity.anim.play(animation_name)
-	entity.movement.direction = Vector3.ZERO
+	if entity.movement:
+		entity.movement.direction = Vector3.ZERO
 	
-	if limit_aerial_velocity:
-		if entity.velocity.length() > entity.movement.speed:
-			entity.velocity = entity.velocity.normalized() * entity.movement.speed
+		if limit_aerial_velocity:
+			if entity.velocity.length() > entity.movement.speed:
+				entity.velocity = entity.velocity.normalized() * entity.movement.speed

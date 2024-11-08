@@ -1,10 +1,24 @@
-[gd_scene load_steps=2 format=3 uid="uid://lqhebv3b5j15"]
+[gd_scene load_steps=4 format=3 uid="uid://lqhebv3b5j15"]
 
 [ext_resource type="Material" uid="uid://ouneihdn0d3k" path="res://Assets/Materials/Terrain/flare-arena.tres" id="1_0vbtc"]
+[ext_resource type="Script" path="res://Assets/Scripts/Level.gd" id="1_swxnv"]
+[ext_resource type="PackedScene" uid="uid://bwdbfebe4g6ud" path="res://Assets/Scenes/Characters/blaze.tscn" id="3_py2jf"]
 
-[node name="Node3D" type="Node3D"]
+[node name="FlareArena" type="Node3D"]
+script = ExtResource("1_swxnv")
 
 [node name="ArenaOuter" type="CSGBox3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -12.425, 0)
+use_collision = true
+collision_layer = 17
 size = Vector3(48, 2, 48)
 material = ExtResource("1_0vbtc")
+
+[node name="TerrainDirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(-4.37114e-08, 0.991445, -0.130526, 0, 0.130526, 0.991445, 1, 4.33374e-08, -5.70548e-09, 0, 8.20936, 0)
+layers = 2147483647
+light_cull_mask = 31
+shadow_enabled = true
+
+[node name="blaze" parent="." instance=ExtResource("3_py2jf")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -10.5389, -7.93819)

@@ -18,15 +18,15 @@
 [ext_resource type="Material" uid="uid://cfe0foe1wlito" path="res://Assets/Materials/Characters/infinity-with-cutout.tres" id="21_uqxah"]
 [ext_resource type="Script" path="res://Assets/Scripts/Hurtbox.gd" id="31_pkqhk"]
 
-[sub_resource type="Gradient" id="Gradient_6p32o"]
+[sub_resource type="Gradient" id="Gradient_llrog"]
 interpolation_mode = 2
 offsets = PackedFloat32Array(0.728745, 0.874494, 1)
 colors = PackedColorArray(0, 0, 0, 0, 0.870588, 0.94902, 1, 0.4, 1, 1, 1, 1)
 
 [sub_resource type="GradientTexture1D" id="GradientTexture1D_qty7r"]
-gradient = SubResource("Gradient_6p32o")
+gradient = SubResource("Gradient_llrog")
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_iryfl"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_x5x4p"]
 render_priority = 3
 shader = ExtResource("10_v6krh")
 shader_parameter/color_map = SubResource("GradientTexture1D_qty7r")
@@ -36,18 +36,18 @@ interpolation_mode = 2
 offsets = PackedFloat32Array(0, 0.505882, 0.819608, 0.85098)
 colors = PackedColorArray(0, 0.517647, 0.901961, 0.164706, 0.356863, 0.760784, 0.901961, 0.270588, 0.596078, 0.882353, 0.996078, 0.686275, 0.756524, 0.911012, 1, 0)
 
-[sub_resource type="GradientTexture1D" id="GradientTexture1D_hwfv3"]
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_4hxmy"]
 gradient = SubResource("Gradient_rua71")
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_r0cg6"]
 render_priority = 0
-next_pass = SubResource("ShaderMaterial_iryfl")
+next_pass = SubResource("ShaderMaterial_x5x4p")
 shader = ExtResource("10_1xblg")
 shader_parameter/scale = Vector2(10.42, 7.235)
 shader_parameter/radius = 1.365
 shader_parameter/power = 1.0
 shader_parameter/hide_incomplete = false
-shader_parameter/color_map = SubResource("GradientTexture1D_hwfv3")
+shader_parameter/color_map = SubResource("GradientTexture1D_4hxmy")
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_55ksa"]
 size = Vector3(1.17893, 1, 0.303192)
@@ -320,14 +320,14 @@ bones/39/rotation = Quaternion(0.179465, 0.0443442, -0.0256563, 0.982429)
 bones/39/scale = Vector3(1, 1, 0.999998)
 
 [node name="Helmet" parent="Armature/Skeleton3D" index="0"]
-transform = Transform3D(0.8, -0.000522979, 0.000410358, 0.00052269, 0.8, 0.000592317, -0.000410736, -0.000592233, 0.8, 0.0245001, 0.325956, -0.0140021)
+transform = Transform3D(0.8, -0.000523163, 0.000410333, 0.000522874, 0.8, 0.000592483, -0.000410718, -0.000592244, 0.8, 0.0245003, 0.325956, -0.0140021)
 visible = false
 
 [node name="Helmet" parent="Armature/Skeleton3D/Helmet" index="0"]
 material_override = ExtResource("21_uqxah")
 
 [node name="Blade" parent="Armature/Skeleton3D" index="1"]
-transform = Transform3D(0.154654, -0.0686341, 0.470501, 0.445081, 0.194968, -0.117857, -0.167288, 0.455276, 0.1214, -0.459657, 0.982034, 0.374686)
+transform = Transform3D(0.154655, -0.0686347, 0.470501, 0.445081, 0.194968, -0.117858, -0.167287, 0.455276, 0.121401, -0.459659, 0.982033, 0.374685)
 
 [node name="Blade" parent="Armature/Skeleton3D/Blade" index="0"]
 visible = false
