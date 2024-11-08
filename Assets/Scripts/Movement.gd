@@ -91,7 +91,7 @@ func _physics_process(delta):
 		else:
 			decel = stop_decel
 			
-		entity.velocity = entity.velocity.move_toward(Vector3.ZERO, decel * delta * current_accel_multiplier)
+		entity.velocity = entity.velocity.move_toward(Vector3.ZERO, decel * delta * lerp(current_accel_multiplier, 1.0, 0.33))
 	
 	# re-apply screen uiform movement
 	entity.velocity = screen_uniform_vector(entity.velocity);
