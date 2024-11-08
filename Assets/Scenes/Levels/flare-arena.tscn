@@ -1,0 +1,10 @@
+[gd_scene load_steps=2 format=3 uid="uid://lqhebv3b5j15"]
+
+[ext_resource type="Material" uid="uid://ouneihdn0d3k" path="res://Assets/Materials/Terrain/flare-arena.tres" id="1_0vbtc"]
+
+[node name="Node3D" type="Node3D"]
+
+[node name="ArenaOuter" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1, 0)
+size = Vector3(48, 2, 48)
+material = ExtResource("1_0vbtc")
