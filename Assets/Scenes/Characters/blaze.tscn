@@ -59,8 +59,7 @@ movement_speed = 8.0
 gravity_multiplier = 0.0
 decel_override = 0.0
 movement_speed_on_exit = 8.0
-can_move = false
-disable_shapes_during = [NodePath("")]
+disable_shapes_during = [null]
 
 [node name="DashStop" type="Node" parent="StateMachine" index="4" node_paths=PackedStringArray("state_on_anim_finished")]
 script = ExtResource("4_7ltys")
@@ -84,7 +83,6 @@ movement_mode = 3
 movement_speed = 5.75
 prevent_wall_slide = true
 can_use_actions = true
-can_move = false
 prevent_self_action_request = true
 
 [node name="JumpFall" type="Node" parent="StateMachine" index="7" node_paths=PackedStringArray("grounded_state")]
@@ -180,23 +178,23 @@ bones/34/rotation = Quaternion(0.578579, -0.0232513, -0.790609, -0.199105)
 bones/34/scale = Vector3(1, 1, 1)
 
 [node name="Hair" parent="Armature/Skeleton3D" index="0"]
-transform = Transform3D(2.67665, 0.0496355, -0.143311, -0.114533, 2.32217, -1.33487, 0.0994188, 1.33886, 2.32057, -0.0936299, -0.130169, -2.66167)
+transform = Transform3D(2.67665, 0.0496353, -0.143311, -0.114532, 2.32217, -1.33487, 0.0994187, 1.33885, 2.32057, -0.0936297, -0.130169, -2.66167)
 visible = false
 
 [node name="Hair-HelmetOn" parent="Armature/Skeleton3D" index="1"]
-transform = Transform3D(2.67665, 0.0496355, -0.143311, -0.114533, 2.32217, -1.33487, 0.0994188, 1.33886, 2.32057, -0.0936299, -0.130169, -2.66167)
+transform = Transform3D(2.67665, 0.0496353, -0.143311, -0.114532, 2.32217, -1.33487, 0.0994187, 1.33885, 2.32057, -0.0936297, -0.130169, -2.66167)
 
 [node name="Head" parent="Armature/Skeleton3D" index="2"]
-transform = Transform3D(2.67665, 0.0496355, -0.143311, -0.114533, 2.32217, -1.33487, 0.0994188, 1.33886, 2.32057, -0.0936299, -0.130169, -2.66167)
+transform = Transform3D(2.67665, 0.0496353, -0.143311, -0.114532, 2.32217, -1.33487, 0.0994187, 1.33885, 2.32057, -0.0936297, -0.130169, -2.66167)
 
 [node name="Helmet" parent="Armature/Skeleton3D" index="3"]
-transform = Transform3D(2.67665, 0.0496355, -0.143311, -0.114533, 2.32217, -1.33487, 0.0994188, 1.33886, 2.32057, -0.0936299, -0.130169, -2.66167)
+transform = Transform3D(2.67665, 0.0496353, -0.143311, -0.114532, 2.32217, -1.33487, 0.0994187, 1.33885, 2.32057, -0.0936297, -0.130169, -2.66167)
 
 [node name="Claymore" parent="Armature/Skeleton3D" index="4"]
-transform = Transform3D(0.974778, -0.803268, 2.36475, 2.34866, -0.568267, -1.16118, 0.849158, 2.49385, 0.497089, -1.32353, 2.62339, -1.06644)
+transform = Transform3D(0.974778, -0.803268, 2.36475, 2.34866, -0.568271, -1.16118, 0.849161, 2.49386, 0.497088, -1.32353, 2.62339, -1.06644)
 
 [node name="Cape" parent="Armature/Skeleton3D" index="5"]
-transform = Transform3D(2.68053, 0.0177902, -0.0440284, -0.0259249, 2.63082, -0.515336, 0.0397856, 0.51568, 2.63058, -0.0283212, -0.406692, -0.797983)
+transform = Transform3D(2.68053, 0.0177902, -0.0440284, -0.0259249, 2.63082, -0.515335, 0.0397856, 0.51568, 2.63058, -0.0283212, -0.406691, -0.797983)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." index="5"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)

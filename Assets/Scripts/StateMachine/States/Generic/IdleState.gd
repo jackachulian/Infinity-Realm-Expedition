@@ -8,10 +8,6 @@ extends State
 @export var state_on_anim_finished: State
 
 func check_transition(delta: float) -> State:
-	# Go to run (move) state when movement starts (does not matter if move key was just pressed)
-	#if entity.input and entity.input.direction != Vector3.ZERO and entity.input.move_state:
-		#return entity.input.move_state
-		
 	# used for run-stop
 	if anim_finished and state_on_anim_finished:
 		return state_on_anim_finished

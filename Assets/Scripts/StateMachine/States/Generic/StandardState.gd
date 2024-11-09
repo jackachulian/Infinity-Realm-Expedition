@@ -61,8 +61,8 @@ enum MovementMode {
 # If true, can cancel into 
 @export var can_use_actions: bool
 
-# If can use actions is true but this is false, cannot transition to "Move" state
-@export var can_move: bool = true
+# Will transition to move if input direction is non-zero at end of animation
+@export var transition_to_move: bool = true
 
 # If can_use_actions, minimum state time elapsed before actions can be registered.
 @export var action_delay: float = 0.0
@@ -74,9 +74,11 @@ enum MovementMode {
 
 func check_transition(delta: float) -> State:	
 	if anim_finished:
-		if action_on_anim_finish:
+		if transition_to_move and entity.input.direction != Vector3.ZERO:
+			return entity.input.move_state
+		elif action_on_anim_finish:
 			var requested_action: State = entity.input.request_action()
-			if requested_action and (can_move or requested_action.name != "Move"):
+			if requested_action:
 				return requested_action
 	
 		# after possible action check, if branch skipped or no action requested, go to state on anim finished.
@@ -94,7 +96,7 @@ func check_transition(delta: float) -> State:
 		# If a state is requested, return that action
 		# Prevent same state if prevent_self_action_request bool is true, 
 		# but ignore that clause if requested action isn't this state
-		if requested_action and (can_move or requested_action != entity.input.move_state) and (not prevent_self_action_request or requested_action != self):
+		if requested_action and (not prevent_self_action_request or requested_action != self):
 			return requested_action
 	
 	return null
