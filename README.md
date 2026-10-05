@@ -1,6 +1,6 @@
 Infinity Realm Expedition is a 2d top-down RPG with 3d graphics.
 
-Solo developed by me (Jackachulian / Jack Caesar). Currently on hold.
+Solo developed by me. Currently on hold.
 
 [Check out the terrain plugin forked from this project!](https://github.com/ToumaKamijou/Yugens-Terrain-Authoring-Toolkit)
 
